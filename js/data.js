@@ -200,6 +200,18 @@ const TEENAGE_EVENTS = [
     {text:'上前请教',effect:{cultivation:15,comprehension:8,wealth:-5},log:'老者传你三道符箓之法'},{text:'觉得是骗子',effect:{sanity:3},log:'也许真是个骗子...也许不是'}]},
   {text:'月圆之夜，你做了一个奇怪的梦——梦里有人叫你的<span class="mys">另一个名字</span>。',choices:[
     {text:'努力记住那个名字',effect:{comprehension:8,sanity:-10,cultivation:5},log:'醒来后只记得一个模糊的音节'},{text:'惊醒后拼命忘掉',effect:{sanity:5},log:'那个名字在记忆边缘若隐若现'}]},
+  // === GENDER-SPECIFIC TEENAGE EVENTS ===
+  {text:'村里的<span class="npc">媒婆</span>找上门来，说要给你说一门亲事。',choices:[
+    {text:'答应相看',effect:{connections:10,qiyun:3},log:'对方家境殷实，但你心里另有打算'},
+    {text:'婉言谢绝',effect:{connections:-5},log:'媒婆嘀嘀咕咕地走了'}]},
+  {text:'一位<span class="npc">江湖女侠</span>路见不平拔刀相助，你恰好在旁边。',choices:[
+    {text:'上前帮忙',effect:{connections:10,cultivation:5,constitution:3},log:'你们联手击退了恶人',genderReq:'male'},
+    {text:'上前帮忙',effect:{connections:10,cultivation:5,constitution:3},log:'两位女侠并肩作战',genderReq:'female'},
+    {text:'在旁观看',effect:{comprehension:3},log:'看她的身手，受益匪浅'}]},
+  {text:'你在镇上被<span class="npc">一群纨绔子弟</span>围住，他们看你不顺眼。',choices:[
+    {text:'以武力突围',effect:{cultivation:5,constitution:3,connections:-5},log:'你打翻了几个，但也结了仇',req:{constitution:20}},
+    {text:'以言语化解',effect:{connections:5,comprehension:2},log:'你三言两语化解了冲突',req:{connections:5}},
+    {text:'忍气吞声',effect:{sanity:-5,karma:3},log:'被人欺负的滋味不好受'}]},
 ];
 
 const ADULT_EVENTS = [
@@ -280,6 +292,27 @@ const ADULT_EVENTS = [
     {text:'以命搏命突破',effect:{constitution:15,cultivation:10,sanity:-10},log:'一番痛苦之后，你感到浑身轻盈'},
     {text:'徐徐图之',effect:{constitution:5,comprehension:3},log:'循序渐进也是一种智慧'}],
     trigger:{minAge:25,constitution:50}},
+  // === GENDER-SPECIFIC ADULT EVENTS ===
+  {text:'你到了成家的年纪，<span class="npc">长辈</span>催促你成婚。',choices:[
+    {text:'娶妻成家',effect:{connections:15,wealth:-20,qiyun:5,karma:5},log:'你成了家，多了牵挂也多了动力',genderReq:'male'},
+    {text:'嫁为人妇',effect:{connections:15,wealth:10,qiyun:5,karma:5},log:'你出了嫁，多了依靠也多了责任',genderReq:'female'},
+    {text:'一心修道',effect:{cultivation:10,connections:-10,comprehension:5},log:'你拒绝了婚事，一心向道'}]},
+  {text:'一位<span class="npc">美貌女子</span>在路边向你求助，声称被人追杀。',genderReq:'male',choices:[
+    {text:'英雄救美',effect:{connections:15,karma:5,constitution:-3},log:'你击退了追兵，她对你感激涕零'},
+    {text:'假装没看见',effect:{karma:-5},log:'你心中有愧地走开了'},
+    {text:'识破圈套',effect:{comprehension:5,wealth:10},log:'果然是仙人跳，你反将一军',req:{comprehension:25}}]},
+  {text:'一位<span class="npc">俊朗少年</span>在路边向你搭话，言语间颇为殷勤。',genderReq:'female',choices:[
+    {text:'与他结伴同行',effect:{connections:15,qiyun:3},log:'他是个有趣的旅伴，一路上你们聊得很开心'},
+    {text:'保持距离',effect:{comprehension:3},log:'独行侠不需要同伴'},
+    {text:'识破居心',effect:{comprehension:5,connections:-3},log:'他别有用心，你看穿了他的伎俩',req:{comprehension:20}}]},
+  {text:'<span class="fac">门派</span>举办比武大会，冠军可获丰厚奖赏。',choices:[
+    {text:'报名参加',effect:{cultivation:10,connections:15,constitution:3,wealth:20},log:'你在比武中大放异彩！',req:{cultivation:20}},
+    {text:'台下观战',effect:{comprehension:5,connections:5},log:'看别人打架也能学到不少'}]},
+  {text:'你在酒楼饮酒时，隔壁桌有人议论<span class="npc">你的师门</span>是非。',choices:[
+    {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'zuowang'}},
+    {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'aojing'}},
+    {text:'默默听完',effect:{comprehension:5},log:'有时候忍耐比冲动更需要勇气'},
+    {text:'喝完酒走人',effect:{sanity:3},log:'和自己无关的事不必在意'}]},
 ];
 
 const SPECIAL_EVENTS = [

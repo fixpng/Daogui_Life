@@ -4,6 +4,7 @@ var gameState = {
   sanity:100, baseSanity:100, cultivation:0,
   wealth:10, connections:0, faction:'none',
   comprehension:10, karma:0, qiyun:0, constitution:50,
+  gender:'male',
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
@@ -99,6 +100,9 @@ function startGame() {
   gameState.visitedLocations = []; gameState.factionHistory = [];
   gameState.eventHistory = new Set(); gameState.dualCultWarned = false;
 
+  // Assign gender randomly
+  gameState.gender = Math.random() < 0.5 ? 'male' : 'female';
+
   // If a talent was kept from previous life, add it
   if(keptTalent && !gameState.talents.find(function(t){return t.id===keptTalent.id;})) {
     gameState.talents.unshift(keptTalent);
@@ -130,14 +134,16 @@ function startGame() {
 
   showPanel('born');
   document.getElementById('born-location').textContent = gameState.location.name;
-  document.getElementById('born-desc').textContent = gameState.location.desc;
+  var genderText = gameState.gender === 'male' ? '男子' : '女子';
+  document.getElementById('born-desc').textContent = gameState.location.desc + '　·　' + genderText;
 }
 
 function confirmBorn() {
   showPanel('game');
   document.getElementById('log').innerHTML = '';
   var names = gameState.talents.map(function(t){return '<span class="itm">'+t.name+'</span>';}).join('、');
-  addLog('出生于<span class="loc">'+gameState.location.name+'</span>');
+  var genderName = gameState.gender === 'male' ? '男' : '女';
+  addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+'）');
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
 
@@ -304,8 +310,21 @@ function nextYear() {
   else if(gameState.age < 18) eventPool = [].concat(CHILDHOOD_EVENTS.slice(-4), TEENAGE_EVENTS);
   else eventPool = [].concat(ADULT_EVENTS);
 
+  // Filter out gender-mismatched events and check trigger conditions on base events
+  eventPool = eventPool.filter(function(ev){
+    if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
+    if(ev.trigger) {
+      if(ev.trigger.minAge && gameState.age < ev.trigger.minAge) return false;
+      if(ev.trigger.maxAge && gameState.age > ev.trigger.maxAge) return false;
+      if(ev.trigger.cultivation && gameState.cultivation < ev.trigger.cultivation) return false;
+      if(ev.trigger.constitution && gameState.constitution < ev.trigger.constitution) return false;
+    }
+    return true;
+  });
+
   // Add special events
   SPECIAL_EVENTS.forEach(function(se){
+    if(se.genderReq && se.genderReq !== gameState.gender) return;
     if(!se.trigger) { eventPool.push(se); return; }
     if(gameState.age >= (se.trigger.minAge||0) && gameState.age <= (se.trigger.maxAge||999)) {
       if(!se.trigger.cultivation || gameState.cultivation >= se.trigger.cultivation) {
@@ -451,9 +470,13 @@ function quietYear() {
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 19) {
     var msgs = ['开始思考人生的方向','对远方的世界充满了好奇','在田间劳作，感到一丝对未来的迷茫','听老人们讲起修仙的传说，心中若有所动','有时候会独自坐在山头，看日落很久'];
+    if(gameState.gender === 'female') msgs.push('母亲开始教你女红，但你心思不在这上面','镇上的姑娘们叽叽喳喳讨论嫁人的事，你却想着远方');
+    if(gameState.gender === 'male') msgs.push('父亲开始让你独自去镇上办事，你觉得自己长大了','和同龄少年比试武艺，你总是不服输');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else {
     var msgs = ['平淡的一年','日子不好不坏','又一年过去了','波澜不惊','日复一日'];
+    if(gameState.gender === 'female' && a > 20 && a < 35) msgs.push('邻家嫂子又来催你成家的事了');
+    if(gameState.gender === 'male' && a > 25 && a < 40) msgs.push('你开始承担更多养家的责任');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   }
 }
@@ -496,7 +519,11 @@ function checkChoiceReq(c) {
 }
 
 function showEvent(event) {
-  var validChoices = event.choices.filter(function(c){return !c.check || gameState.talents.find(function(t){return t.id===c.check;});});
+  var validChoices = event.choices.filter(function(c){
+    if(c.check && !gameState.talents.find(function(t){return t.id===c.check;})) return false;
+    if(c.genderReq && c.genderReq !== gameState.gender) return false;
+    return true;
+  });
   if(!validChoices.length) { quietYear(); return; }
 
   // Play event sound
@@ -549,6 +576,10 @@ function applyChoice(c) {
   // === FACTION JOIN LOGIC (one faction only, betrayal mechanics) ===
   if(c.factionJoin) {
     var targetFaction = c.factionJoin;
+    // Skip if already in this faction
+    if(targetFaction === gameState.faction) {
+      addLog('你已经是<span class="fac">'+(FACTIONS[targetFaction]?FACTIONS[targetFaction].name:targetFaction)+'</span>的一员。');
+    } else {
     var factionData = FACTIONS[targetFaction];
     // Check requirements
     var canJoin = true;
@@ -585,6 +616,7 @@ function applyChoice(c) {
     } else {
       addLog('入门被拒：<span class="danger-text">' + rejectReason + '</span>（' + (factionData ? factionData.requireDesc : '') + '）');
     }
+    } // end else (not already in faction)
   }
 
   // Direct faction set (for leaving faction via event choices)
@@ -646,6 +678,9 @@ function updateDisplay() {
   document.getElementById('wealth').textContent = gameState.wealth;
   document.getElementById('faction').textContent = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
   document.getElementById('connections').textContent = gameState.connections;
+  // Gender display
+  var genderEl = document.getElementById('gender');
+  if(genderEl) genderEl.textContent = gameState.gender === 'male' ? '男' : '女';
   // New attributes
   var compEl = document.getElementById('comprehension');
   if(compEl) compEl.textContent = gameState.comprehension;
@@ -843,10 +878,11 @@ function gameOver(reason) {
 
   showPanel('ending');
   var factionName = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
+  var genderName = gameState.gender === 'male' ? '男' : '女';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
   document.getElementById('ending-text').innerHTML =
-    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁</p>' +
+    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span></p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +
     '<p>势力: <span style="color:var(--gold)">'+factionName+'</span></p>' +
@@ -972,7 +1008,7 @@ function initTalentsWithKept() {
 function restartAuto() {
   gameState.lastLifeTalents = gameState.talents.slice();
   keptTalent = null;
-  gameState.totalRuns++;
+  // Note: totalRuns already incremented in gameOver(), don't double-count
   autoMode = true;
   document.getElementById('btn-auto').classList.add('active');
   document.getElementById('btn-auto').textContent = '停止自动';
