@@ -383,6 +383,29 @@ function nextYear() {
   if(gameState.age > 70 + agingReduction * 15) gameState.constitution -= 1;
   // Comprehension slow growth from experience
   if(gameState.age > 10 && Math.random() < 0.15) gameState.comprehension += 1;
+
+  // === STAT INTERACTION EFFECTS ===
+  // High comprehension accelerates cultivation
+  if(gameState.comprehension >= 50 && Math.random() < 0.10) gameState.cultivation += 1;
+  if(gameState.comprehension >= 70 && Math.random() < 0.08) gameState.cultivation += 1;
+  // Low constitution hinders cultivation
+  if(gameState.constitution < 20 && Math.random() < 0.15) gameState.cultivation -= 1;
+  // High karma slowly improves qiyun
+  if(gameState.karma > 30 && Math.random() < 0.08) gameState.qiyun += 1;
+  // Low karma slowly worsens qiyun
+  if(gameState.karma < -30 && Math.random() < 0.08) gameState.qiyun -= 1;
+  // High connections slowly increase wealth (social opportunities)
+  if(gameState.connections > 30 && Math.random() < 0.10) gameState.wealth += 3;
+  // High cultivation maintains constitution (body refinement)
+  if(gameState.cultivation >= 60 && gameState.constitution < 60 && Math.random() < 0.08) gameState.constitution += 1;
+  // Very low qiyun can harm constitution (unlucky accidents)
+  if(gameState.qiyun < -40 && Math.random() < 0.05) gameState.constitution -= 1;
+  // High qiyun occasionally grants wealth (fortune)
+  if(gameState.qiyun > 40 && Math.random() < 0.08) gameState.wealth += 5;
+  // Low wealth can decrease connections (people avoid the poor)
+  if(gameState.wealth < -30 && Math.random() < 0.08) gameState.connections -= 1;
+  // Faction membership slowly builds connections
+  if(gameState.faction !== 'none' && Math.random() < 0.10) gameState.connections += 1;
   // Qiyun slowly returns toward 0 (natural balance)
   if(gameState.qiyun > 5 && Math.random() < 0.05) gameState.qiyun -= 1;
   if(gameState.qiyun < -5 && Math.random() < 0.05) gameState.qiyun += 1;
@@ -537,6 +560,110 @@ function nextYear() {
     });
   }
 
+  // Add constitution events
+  if(typeof CONSTITUTION_EVENTS !== 'undefined') {
+    CONSTITUTION_EVENTS.forEach(function(ce){
+      if(ce.constReq) {
+        if(ce.constReq.min !== undefined && gameState.constitution < ce.constReq.min) return;
+        if(ce.constReq.max !== undefined && gameState.constitution > ce.constReq.max) return;
+      }
+      if(ce.trigger) {
+        if(ce.trigger.minAge && gameState.age < ce.trigger.minAge) return;
+        if(ce.trigger.cultivation && gameState.cultivation < ce.trigger.cultivation) return;
+      }
+      eventPool.push(ce);
+    });
+  }
+
+  // Add comprehension events
+  if(typeof COMPREHENSION_EVENTS !== 'undefined') {
+    COMPREHENSION_EVENTS.forEach(function(ce){
+      if(ce.compReq) {
+        if(ce.compReq.min !== undefined && gameState.comprehension < ce.compReq.min) return;
+        if(ce.compReq.max !== undefined && gameState.comprehension > ce.compReq.max) return;
+      }
+      if(ce.trigger) {
+        if(ce.trigger.minAge && gameState.age < ce.trigger.minAge) return;
+        if(ce.trigger.cultivation && gameState.cultivation < ce.trigger.cultivation) return;
+      }
+      eventPool.push(ce);
+    });
+  }
+
+  // Add wealth events
+  if(typeof WEALTH_EVENTS !== 'undefined') {
+    WEALTH_EVENTS.forEach(function(we){
+      if(we.wealthReq) {
+        if(we.wealthReq.min !== undefined && gameState.wealth < we.wealthReq.min) return;
+        if(we.wealthReq.max !== undefined && gameState.wealth > we.wealthReq.max) return;
+      }
+      if(we.trigger) {
+        if(we.trigger.minAge && gameState.age < we.trigger.minAge) return;
+        if(we.trigger.cultivation && gameState.cultivation < we.trigger.cultivation) return;
+      }
+      eventPool.push(we);
+    });
+  }
+
+  // Add connections events
+  if(typeof CONNECTIONS_EVENTS !== 'undefined') {
+    CONNECTIONS_EVENTS.forEach(function(ce){
+      if(ce.connReq) {
+        if(ce.connReq.min !== undefined && gameState.connections < ce.connReq.min) return;
+        if(ce.connReq.max !== undefined && gameState.connections > ce.connReq.max) return;
+      }
+      if(ce.trigger) {
+        if(ce.trigger.minAge && gameState.age < ce.trigger.minAge) return;
+        if(ce.trigger.cultivation && gameState.cultivation < ce.trigger.cultivation) return;
+      }
+      eventPool.push(ce);
+    });
+  }
+
+  // Add cultivation breakthrough events
+  if(typeof BREAKTHROUGH_EVENTS !== 'undefined') {
+    BREAKTHROUGH_EVENTS.forEach(function(be){
+      if(be.cultReq) {
+        if(be.cultReq.min !== undefined && gameState.cultivation < be.cultReq.min) return;
+        if(be.cultReq.max !== undefined && gameState.cultivation > be.cultReq.max) return;
+      }
+      if(be.trigger) {
+        if(be.trigger.minAge && gameState.age < be.trigger.minAge) return;
+      }
+      eventPool.push(be);
+    });
+  }
+
+  // Add stat combination events
+  if(typeof STAT_COMBO_EVENTS !== 'undefined') {
+    STAT_COMBO_EVENTS.forEach(function(se){
+      if(se.comboReq) {
+        if(se.comboReq.karma_min !== undefined && gameState.karma < se.comboReq.karma_min) return;
+        if(se.comboReq.karma_max !== undefined && gameState.karma > se.comboReq.karma_max) return;
+        if(se.comboReq.comp_min !== undefined && gameState.comprehension < se.comboReq.comp_min) return;
+        if(se.comboReq.comp_max !== undefined && gameState.comprehension > se.comboReq.comp_max) return;
+        if(se.comboReq.cult_min !== undefined && gameState.cultivation < se.comboReq.cult_min) return;
+        if(se.comboReq.cult_max !== undefined && gameState.cultivation > se.comboReq.cult_max) return;
+        if(se.comboReq.qiyun_min !== undefined && gameState.qiyun < se.comboReq.qiyun_min) return;
+        if(se.comboReq.qiyun_max !== undefined && gameState.qiyun > se.comboReq.qiyun_max) return;
+        if(se.comboReq.wealth_min !== undefined && gameState.wealth < se.comboReq.wealth_min) return;
+        if(se.comboReq.wealth_max !== undefined && gameState.wealth > se.comboReq.wealth_max) return;
+        if(se.comboReq.conn_min !== undefined && gameState.connections < se.comboReq.conn_min) return;
+        if(se.comboReq.conn_max !== undefined && gameState.connections > se.comboReq.conn_max) return;
+        if(se.comboReq.const_min !== undefined && gameState.constitution < se.comboReq.const_min) return;
+        if(se.comboReq.const_max !== undefined && gameState.constitution > se.comboReq.const_max) return;
+        if(se.comboReq.sanity_min !== undefined && gameState.sanity < se.comboReq.sanity_min) return;
+        if(se.comboReq.sanity_max !== undefined && gameState.sanity > se.comboReq.sanity_max) return;
+      }
+      if(se.trigger) {
+        if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
+        if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
+      }
+      if(se.check && !gameState.talents.find(function(t){return t.id===se.check;})) return;
+      eventPool.push(se);
+    });
+  }
+
   // Trigger event or quiet year
   // 凡人阶段(cultivation < 10)事件触发概率大幅降低 - 修仙之路艰难
   var eventChance = 0.72;
@@ -547,6 +674,11 @@ function nextYear() {
   } else if(gameState.cultivation < 60) {
     eventChance = 0.60; // 筑基阶段适中
   }
+  // Stat modifiers on event chance
+  if(gameState.qiyun > 30) eventChance += 0.08; // 高气运更易遇到事件
+  if(gameState.qiyun < -30) eventChance += 0.05; // 低气运也容易遇到（坏）事件
+  if(gameState.connections > 30) eventChance += 0.05; // 人脉广，事情多
+  if(gameState.comprehension > 50) eventChance += 0.03; // 悟性高，感知到更多机缘
   if(Math.random() < eventChance && eventPool.length > 0) {
     var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
     showEvent(ev);
@@ -640,6 +772,21 @@ function quietYear() {
     }
     if(gameState.gender === 'female' && a > 20 && a < 35) msgs.push('邻家嫂子又来催你成家的事了');
     if(gameState.gender === 'male' && a > 25 && a < 40) msgs.push('你开始承担更多养家的责任');
+    // Stat-influenced quiet year messages
+    if(gameState.constitution < 20) msgs.push('你的身体越来越差，连起床都费力');
+    if(gameState.constitution > 80) msgs.push('你精力充沛，清晨打了一套拳便觉神清气爽');
+    if(gameState.karma > 40) msgs.push('你行善积德，路人见你皆面带微笑');
+    if(gameState.karma < -40) msgs.push('你走在路上，总觉得背后有目光在追随');
+    if(gameState.qiyun > 30) msgs.push('你随手在路边捡到了一颗品相不错的灵石');
+    if(gameState.qiyun < -30) msgs.push('你出门摔了一跤，还被泼了一身脏水');
+    if(gameState.comprehension > 60) msgs.push('你在冥想中若有所悟，修行精进');
+    if(gameState.comprehension < 15 && a > 18) msgs.push('你看着别人修炼，自己却怎么也参不透');
+    if(gameState.connections > 40) msgs.push('你在茶楼与三五好友谈天说地');
+    if(gameState.connections < -10) msgs.push('你独自行走，连个说话的人都没有');
+    if(gameState.wealth > 100) msgs.push('你坐拥万贯家财，锦衣玉食');
+    if(gameState.wealth < -30) msgs.push('你饿着肚子又过了一天，前路茫茫');
+    if(gameState.cultivation >= 100 && step <= 1) msgs.push('你盘坐在山巅，俯瞰云海翻涌');
+    if(gameState.cultivation >= 200 && step <= 1) msgs.push('天地灵气在你周身自然汇聚');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   }
 }
@@ -1142,6 +1289,15 @@ function gameOver(reason) {
   else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
   else if(gameState.cultivation>=200 && rankName) ending = '你以<span class="itm">' + factionName + '·' + rankName + '</span>之身达到大乘境界，名震天下！';
   else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
+  // Stat-influenced endings
+  else if(gameState.karma>=60 && gameState.cultivation>=60) ending = '你一生行善积德，功德圆满。金光护体之中，你安详地闭上了双眼——死后有万民自发送行。';
+  else if(gameState.karma<=-60 && gameState.cultivation>=60) ending = '你一生造业无数，业障深重。临终之际，无数冤魂在你面前浮现——你在恐惧中走完了这一世。';
+  else if(gameState.constitution<=0 && gameState.cultivation>=100) ending = '你修为高深却肉身崩溃——修仙之路，终究不能忽视根基。';
+  else if(gameState.qiyun>=50 && gameState.age>=70) ending = '你一生鸿运当头，善始善终。临终之际，天降祥瑞，后人将你的一生编成传奇故事。';
+  else if(gameState.qiyun<=-50) ending = '你一生时运不济，厄运缠身。临终之际，你不禁感叹——命运从未眷顾过你。';
+  else if(gameState.comprehension>=70 && gameState.cultivation>=30) ending = '你悟性通天，虽未能成就大道，但留下的道论将启发后来者。';
+  else if(gameState.connections>=60 && gameState.cultivation<10) ending = '你虽是凡人，却人脉广达，一生交友无数。临终之际，故友旧交纷纷前来送行——这一世，值了。';
+  else if(gameState.wealth>=200 && gameState.cultivation<10) ending = '你虽无修仙之缘，却富甲一方。临终之际，金银堆满了灵堂，但你知道这些带不走。';
 
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';

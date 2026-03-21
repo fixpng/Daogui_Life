@@ -1076,3 +1076,217 @@ const RANK_EVENTS = {
       {text:'叛出法教投奔大梁',effect:{faction:'none',connections:20,karma:25,qiyun:15},log:'你将法教的全部计划交给了监天司，成为了叛逃者'}]},
   ],
 };
+
+// === CONSTITUTION EVENTS (triggered by constitution thresholds) ===
+const CONSTITUTION_EVENTS = [
+  // High constitution events
+  {text:'你的体魄已臻化境，一位<span class="npc">武道宗师</span>慕名前来切磋。',
+    constReq:{min:70},trigger:{minAge:20},choices:[
+    {text:'痛快一战',effect:{cultivation:15,constitution:5,connections:10,comprehension:5},log:'你们大战三百回合不分胜负，惺惺相惜',combat:60},
+    {text:'以茶代酒',effect:{connections:15,comprehension:8},log:'武道宗师与你论道一夜，你受益匪浅'}]},
+  {text:'你在山中修炼时，体内气血翻涌如大河奔腾——<span class="mys">锻体极境</span>近在眼前！',
+    constReq:{min:80},trigger:{minAge:25},choices:[
+    {text:'以命搏极境',effect:{constitution:10,cultivation:20,sanity:-10},log:'你突破了锻体极境！肌肤如铁，百毒不侵',req:{cultivation:20}},
+    {text:'缓缓沉淀',effect:{constitution:5,comprehension:5},log:'极境不可强求，你选择打好根基'}]},
+  {text:'有<span class="npc">邪修</span>看上了你强健的体魄，想将你炼成<span class="danger-text">傀儡战尸</span>。',
+    constReq:{min:60},trigger:{minAge:18},choices:[
+    {text:'以力破法',effect:{cultivation:10,constitution:3,qiyun:5},log:'你凭蛮力挣脱了他的术法，一拳将他轰飞',combat:50},
+    {text:'假意就范再反杀',effect:{cultivation:15,comprehension:5,karma:-5},log:'你假装中术，在他放松警惕时一击致命',req:{comprehension:25}}]},
+  // Low constitution events
+  {text:'你的身体越来越虚弱，连走路都会<span class="danger-text">喘不上气</span>。',
+    constReq:{max:25},trigger:{minAge:15},choices:[
+    {text:'寻找灵药续命',effect:{wealth:-30,constitution:10,cultivation:5},log:'你花重金买到一颗续命丹，勉强稳住了身体',req:{wealth:30}},
+    {text:'以意志硬撑',effect:{comprehension:5,sanity:-5,constitution:-3},log:'你的精神在消耗，但肉体的枷锁反而让你悟到了什么'},
+    {text:'放弃修炼养身',effect:{cultivation:-10,constitution:8,sanity:5},log:'你暂停修炼，安心养病'}]},
+  {text:'你的经脉因体魄不足而<span class="danger-text">开裂</span>，修为有倒退之险。',
+    constReq:{max:20},trigger:{minAge:20,cultivation:20},choices:[
+    {text:'强行封脉',effect:{cultivation:-10,constitution:5,sanity:-10},log:'你封住了裂开的经脉，但修为大幅倒退'},
+    {text:'以药石缓和',effect:{wealth:-25,constitution:8},log:'灵药暂时修补了经脉',req:{wealth:25}}]},
+  {text:'一位<span class="npc">游方大夫</span>说你的身体已是<span class="danger-text">油尽灯枯</span>之相，但他有一法可救。',
+    constReq:{max:15},trigger:{minAge:30},choices:[
+    {text:'请大夫施治',effect:{constitution:15,wealth:-40,cultivation:-5},log:'大夫用了极端手法，你的身体暂时恢复了'},
+    {text:'问他何法',effect:{comprehension:10,constitution:5,karma:-5},log:'他说要以他人精血续命...你犹豫了'}]},
+];
+
+// === COMPREHENSION EVENTS (triggered by comprehension thresholds) ===
+const COMPREHENSION_EVENTS = [
+  // High comprehension events
+  {text:'你在打坐时忽然顿悟——万法归一，<span class="mys">道</span>不在天地之间，而在你心中。',
+    compReq:{min:60},trigger:{minAge:20},choices:[
+    {text:'深入参悟',effect:{cultivation:25,comprehension:10,sanity:-10},log:'你的修为在顿悟中暴涨！但这份领悟似乎触怒了什么存在...'},
+    {text:'记录心得',effect:{comprehension:8,cultivation:10},log:'你将这次顿悟的心得写成札记，或可传世'}]},
+  {text:'你看穿了一场<span class="fac">坐忘道</span>精心布置的<span class="mys">幻阵</span>——在别人看来那不过是普通的街市。',
+    compReq:{min:50},trigger:{minAge:18},choices:[
+    {text:'当众揭穿',effect:{connections:10,qiyun:5,karma:5},log:'你破了坐忘道的幻术，救了不少人'},
+    {text:'默默绕过',effect:{comprehension:5,cultivation:5},log:'你看穿了但选择不说——有些真相不该被人知道'},
+    {text:'暗中观察幻阵原理',effect:{comprehension:12,cultivation:10,sanity:-5},log:'你从幻阵中学到了坐忘道的术法原理'}]},
+  {text:'修炼时你偶然触碰到了<span class="mys">天道法则</span>的边缘——万物运转的底层规律清晰可见。',
+    compReq:{min:70},trigger:{minAge:30,cultivation:50},choices:[
+    {text:'尝试参悟天道',effect:{cultivation:40,comprehension:15,sanity:-20,constitution:-5},log:'你短暂地触碰了天道！身体承受不住这份力量但收获巨大'},
+    {text:'退而求其次',effect:{cultivation:15,comprehension:8},log:'天道太过深奥，你转而参悟其中的皮毛'}]},
+  {text:'你在阅读一本古籍时突然发现——<span class="mys">文字之间藏着另一层含义</span>，那是前人用隐语留下的修炼心得。',
+    compReq:{min:40},trigger:{minAge:15},choices:[
+    {text:'破译隐语',effect:{cultivation:15,comprehension:8},log:'你解开了前人的隐语，获得了宝贵的修炼经验'},
+    {text:'抄录下来慢慢研究',effect:{comprehension:5,connections:3},log:'你将隐语抄录了一份，日后再研究'}]},
+  // Low comprehension events
+  {text:'你遇到了一位<span class="npc">道士</span>，他愿意指点你修行——但他的话你<span class="danger-text">完全听不懂</span>。',
+    compReq:{max:20},trigger:{minAge:15},choices:[
+    {text:'虚心求教',effect:{comprehension:8,cultivation:5,wealth:-5},log:'你虽然听不太懂，但记下了一些口诀'},
+    {text:'老老实实干苦力活',effect:{constitution:5,wealth:10},log:'修道无缘，不如干点实在的'}]},
+  {text:'一位<span class="npc">修士</span>在你面前展示了一套<span class="mys">高深功法</span>，你看得一头雾水。',
+    compReq:{max:25},trigger:{minAge:18,cultivation:10},choices:[
+    {text:'硬背下来',effect:{cultivation:8,comprehension:3},log:'你虽然不理解其中奥妙，但死记硬背也有些效果'},
+    {text:'请他用简单话讲',effect:{comprehension:5,connections:5},log:'他笑了笑，用大白话又说了一遍'}]},
+];
+
+// === WEALTH EVENTS (triggered by wealth thresholds) ===
+const WEALTH_EVENTS = [
+  // Rich events
+  {text:'你的财富引来了<span class="npc">各方势力</span>的注意——有人请你<span class="itm">资助修建道观</span>。',
+    wealthReq:{min:100},trigger:{minAge:20},choices:[
+    {text:'慷慨解囊',effect:{wealth:-60,connections:25,karma:20,qiyun:10},log:'道观建成后，你的名字被刻在功德碑上'},
+    {text:'投资建商铺',effect:{wealth:30,connections:10},log:'你选择了更实际的投资方式'},
+    {text:'捂紧钱袋',effect:{qiyun:-5},log:'财不露白，你深谙此道'}]},
+  {text:'<span class="npc">黑市</span>有人出售一件<span class="itm">上古法器</span>，要价极高。',
+    wealthReq:{min:80},trigger:{minAge:18},choices:[
+    {text:'买下法器',effect:{wealth:-70,cultivation:25,comprehension:10},log:'法器入手的瞬间，你感到了一股远古的力量'},
+    {text:'还价',effect:{wealth:-40,cultivation:15},log:'你砍了半价买下，虽然品相差了点'},
+    {text:'不买',effect:{},log:'再贵的东西也不值得倾家荡产'}]},
+  {text:'你出手阔绰引来了<span class="danger-text">盗匪</span>的觊觎，深夜有人破门而入。',
+    wealthReq:{min:60},trigger:{minAge:15},choices:[
+    {text:'以财消灾',effect:{wealth:-30,qiyun:-3},log:'你丢出一袋金银，盗匪拿了就跑'},
+    {text:'奋起反抗',effect:{cultivation:8,constitution:3,wealth:-10},log:'你打跑了盗匪，但损失了一些财物',combat:40},
+    {text:'请镖局保护',effect:{wealth:-15,connections:10},log:'你雇了镖师守夜，从此多了层保障'}]},
+  // Poor events
+  {text:'你饿了三天，在路边看到有人丢弃的<span class="danger-text">残羹冷炙</span>。',
+    wealthReq:{max:-20},trigger:{minAge:10},choices:[
+    {text:'捡起来吃',effect:{sanity:-5,constitution:-3},log:'填饱肚子比什么都重要'},
+    {text:'忍住饥饿',effect:{constitution:-5,comprehension:3},log:'饥饿让人清醒，你开始思考如何改变现状'},
+    {text:'去寺庙讨斋饭',effect:{karma:5,connections:3},log:'僧人给你一碗热粥，你感激涕零'}]},
+  {text:'你身无分文，一个<span class="npc">商人</span>提议让你帮他做<span class="danger-text">违法勾当</span>换钱。',
+    wealthReq:{max:-10},trigger:{minAge:16},choices:[
+    {text:'铤而走险',effect:{wealth:40,karma:-15,qiyun:-10,connections:-5},log:'你赚到了钱，但良心不安'},
+    {text:'拒绝后自谋生路',effect:{wealth:10,constitution:3,comprehension:2},log:'你去码头扛包，虽然辛苦但心安'},
+    {text:'偷他的钱',effect:{wealth:25,karma:-10,qiyun:-5},log:'你顺手牵羊，他竟然没发现'}]},
+  {text:'贫困使你走投无路，<span class="fac">白莲教</span>的人找上门说入教可得<span class="itm">救济</span>。',
+    wealthReq:{max:0},trigger:{minAge:14},choices:[
+    {text:'加入白莲教',effect:{wealth:20,connections:10,sanity:-5},log:'你在走投无路之下加入了白莲教',factionJoin:'bailian'},
+    {text:'宁死不从',effect:{constitution:-3,comprehension:3,karma:5},log:'你宁可饿肚子也不愿入邪教'}]},
+];
+
+// === CONNECTIONS EVENTS (triggered by connections thresholds) ===
+const CONNECTIONS_EVENTS = [
+  // High connections events
+  {text:'你在江湖中颇有人脉，有人请你做<span class="npc">各门派之间的调解人</span>。',
+    connReq:{min:40},trigger:{minAge:25},choices:[
+    {text:'出面调解',effect:{connections:15,qiyun:10,karma:10,wealth:20},log:'在你的斡旋下，两派握手言和'},
+    {text:'两不相帮',effect:{connections:-5},log:'你不想卷入门派纷争'}]},
+  {text:'你的名声传到了<span class="fac">监天司</span>耳中，他们派人来<span class="npc">招揽你</span>。',
+    connReq:{min:30},trigger:{minAge:18},choices:[
+    {text:'加入监天司',effect:{connections:15,wealth:15},log:'你凭借人脉直接进入了监天司',factionJoin:'jiantian'},
+    {text:'婉拒',effect:{connections:5,comprehension:3},log:'你选择保持自由身'}]},
+  {text:'你认识的一位<span class="npc">老友</span>突然登门拜访，说有一桩<span class="itm">天大的机缘</span>要与你共享。',
+    connReq:{min:50},trigger:{minAge:20},choices:[
+    {text:'一同前往',effect:{cultivation:20,connections:10,wealth:15,comprehension:5},log:'老友没有骗你，你们在秘境中各有所得'},
+    {text:'怀疑有诈',effect:{connections:-10,sanity:5},log:'老友失望而去，你或许错过了什么'}]},
+  // Low connections events
+  {text:'你独来独往惯了，在<span class="loc">市集</span>上被人刁难却无人帮忙。',
+    connReq:{max:0},trigger:{minAge:15},choices:[
+    {text:'独自应对',effect:{cultivation:5,constitution:3,sanity:-3},log:'你一个人扛下了所有'},
+    {text:'忍气吞声',effect:{sanity:-5,comprehension:3},log:'你学会了一个人忍受'}]},
+  {text:'你生了一场大病，却没有任何人来<span class="danger-text">探望</span>。',
+    connReq:{max:-10},trigger:{minAge:20},choices:[
+    {text:'咬牙自愈',effect:{constitution:-5,comprehension:5,cultivation:3},log:'独行的代价，你比谁都清楚'},
+    {text:'去药铺抓药',effect:{wealth:-10,constitution:5},log:'银子还是能买到药的'}]},
+  {text:'你在修炼遇到瓶颈时无人可请教——<span class="danger-text">孤身一人的代价</span>。',
+    connReq:{max:5},trigger:{minAge:18,cultivation:15},choices:[
+    {text:'独自摸索',effect:{comprehension:8,cultivation:5,sanity:-5},log:'没有人指点，你只能靠自己'},
+    {text:'去书店买功法',effect:{wealth:-15,cultivation:8,comprehension:3},log:'花钱买经验，也算一条路',req:{wealth:15}}]},
+];
+
+// === CULTIVATION BREAKTHROUGH EVENTS (triggered during realm transitions) ===
+const BREAKTHROUGH_EVENTS = [
+  // 锻体→练气
+  {text:'你在修炼中感到体内有一股<span class="mys">气</span>隐隐浮现——你即将突破<span class="itm">练气</span>之境！',
+    cultReq:{min:8,max:12},trigger:{minAge:12},choices:[
+    {text:'全力冲关',effect:{cultivation:5,constitution:-3,sanity:-5},log:'你突破了！练气之境，能感知天地灵气了！'},
+    {text:'稳固根基后再突破',effect:{cultivation:2,constitution:3,comprehension:3},log:'你选择先打好根基，突破的机会还会有'}]},
+  // 练气→筑基
+  {text:'你的丹田内隐约有<span class="mys">灵气漩涡</span>形成——<span class="itm">筑基</span>的契机到了！',
+    cultReq:{min:25,max:35},trigger:{minAge:16},choices:[
+    {text:'闭关突破',effect:{cultivation:8,sanity:-10,constitution:-5},log:'筑基成功！你从此迈入了真正的修仙之路！'},
+    {text:'寻找筑基丹辅助',effect:{cultivation:5,wealth:-25,constitution:3},log:'筑基丹入腹，修为精进',req:{wealth:25}},
+    {text:'继续积累',effect:{cultivation:3,comprehension:5},log:'筑基之事急不来，你继续积累修为'}]},
+  // 筑基→金丹
+  {text:'你感到丹田中灵气凝聚，一颗<span class="mys">金色光球</span>若隐若现——<span class="itm">金丹</span>即将凝结！',
+    cultReq:{min:55,max:65},trigger:{minAge:20},choices:[
+    {text:'全力凝丹',effect:{cultivation:10,constitution:-8,sanity:-15,comprehension:5},log:'金丹凝结！你正式踏入了高手行列！'},
+    {text:'借助外力',effect:{cultivation:8,wealth:-40,connections:-5},log:'你花重金请人护法，金丹顺利凝结',req:{wealth:40}},
+    {text:'放弃此次机会',effect:{cultivation:3,constitution:5,sanity:5},log:'金丹不是一蹴而就的，你选择等待下一次'}]},
+  // 金丹→元婴
+  {text:'金丹裂开——这不是走火入魔，而是<span class="mys">元婴</span>即将破壳而出！',
+    cultReq:{min:95,max:105},trigger:{minAge:30},choices:[
+    {text:'助元婴破壳',effect:{cultivation:12,constitution:-10,sanity:-15,comprehension:10},log:'元婴出窍！你已是修仙界的顶尖存在！'},
+    {text:'封住裂痕',effect:{cultivation:5,constitution:5},log:'你暂时封住了金丹裂痕，元婴之事来日方长'}]},
+  // 元婴→化神
+  {text:'你的元婴在体内不断膨胀，已与天地之力产生<span class="mys">共鸣</span>——<span class="itm">化神</span>之境触手可及。',
+    cultReq:{min:145,max:155},trigger:{minAge:50},choices:[
+    {text:'顺势化神',effect:{cultivation:15,constitution:-10,sanity:-20,comprehension:15},log:'化神成功！你已超脱凡俗，举手投足间自带天威！'},
+    {text:'压制冲动',effect:{cultivation:5,comprehension:8,constitution:5},log:'化神太过凶险，你选择再等等'}]},
+  // 化神→大乘
+  {text:'天地间的<span class="mys">大道法则</span>向你敞开了一角——<span class="itm">大乘</span>之门就在眼前！',
+    cultReq:{min:195,max:205},trigger:{minAge:80},choices:[
+    {text:'踏入大乘',effect:{cultivation:20,constitution:-15,sanity:-25,comprehension:20},log:'大乘之境！你的存在已可影响天地运转！'},
+    {text:'止步于此',effect:{cultivation:8,comprehension:10,constitution:5},log:'大乘之路太过凶险，你选择在化神之巅驻足'}]},
+];
+
+// === STAT COMBINATION EVENTS (triggered by specific stat combinations) ===
+const STAT_COMBO_EVENTS = [
+  // High karma + high comprehension = 道心通明
+  {text:'你的因果清明、悟性通达，在冥想中触碰到了<span class="mys">道心</span>——那是修士梦寐以求的至纯之心。',
+    comboReq:{karma_min:40,comp_min:50},trigger:{minAge:25},choices:[
+    {text:'凝聚道心',effect:{cultivation:30,comprehension:15,sanity:10,qiyun:15},log:'道心通明！你的修行将事半功倍！'},
+    {text:'不敢轻举妄动',effect:{comprehension:8},log:'道心可遇不可求，你怕贪心反失去'}]},
+  // Low karma + high cultivation = 心魔降临
+  {text:'你修为高深却因果深重，<span class="danger-text">心魔</span>在某个夜晚降临——它有着你的脸，却笑得阴森恐怖。',
+    comboReq:{karma_max:-30,cult_min:60},trigger:{minAge:20},choices:[
+    {text:'斩杀心魔',effect:{cultivation:15,karma:10,sanity:-15,constitution:-5},log:'你与心魔大战三天三夜，最终将它斩灭',combat:70},
+    {text:'与心魔对话',effect:{comprehension:15,cultivation:10,karma:-5,sanity:-10},log:'心魔说出了你心底最不愿面对的真相'},
+    {text:'逃避',effect:{sanity:-20,qiyun:-10},log:'心魔会再来的...你知道'}]},
+  // High qiyun + high wealth = 鸿运降财
+  {text:'你气运旺盛又家底丰厚，一位<span class="npc">仙人</span>主动找上门来——他想借用你的<span class="itm">气运</span>完成一场交易。',
+    comboReq:{qiyun_min:30,wealth_min:50},trigger:{minAge:20},choices:[
+    {text:'同意交易',effect:{cultivation:25,wealth:40,qiyun:-15},log:'仙人留下一份传承和大量钱财作为酬劳'},
+    {text:'拒绝',effect:{qiyun:5},log:'仙人微微一笑消失了'}]},
+  // Low sanity + high cultivation (xinsu) = 两界融合
+  {text:'你的神志在两个世界间摇摆，修为却让你成了连接两界的<span class="mys">锚点</span>——两个世界开始在你身上重叠。',
+    comboReq:{sanity_max:30,cult_min:80},trigger:{minAge:20},check:'xinsu',choices:[
+    {text:'承受两界之力',effect:{cultivation:40,sanity:-25,constitution:-10,comprehension:20},log:'你同时存在于两个世界！这种力量前所未有！'},
+    {text:'切断连接',effect:{cultivation:-15,sanity:15,constitution:5},log:'你强行切断了与另一个世界的联系'}]},
+  // High constitution + low cultivation = 武道极致
+  {text:'你的体魄无比强健但修为有限，一位<span class="npc">武痴</span>找到你：他研究出一种<span class="mys">以武入道</span>之法。',
+    comboReq:{const_min:70,cult_max:30},trigger:{minAge:18},choices:[
+    {text:'修习以武入道',effect:{cultivation:20,constitution:5,comprehension:10},log:'你以纯粹的体魄触碰到了修仙的门槛！'},
+    {text:'继续苦练体魄',effect:{constitution:8,cultivation:3},log:'你不信那些玄乎的东西，拳头才是真理'}]},
+  // High connections + high karma = 侠义之名
+  {text:'你行侠仗义、广结善缘，<span class="npc">江湖人</span>尊称你为"<span class="itm">义士</span>"——各门派争相拉拢。',
+    comboReq:{conn_min:40,karma_min:30},trigger:{minAge:22},choices:[
+    {text:'趁势而起',effect:{connections:20,wealth:20,qiyun:10,cultivation:5},log:'你的名声为你带来了实实在在的好处'},
+    {text:'低调行事',effect:{karma:10,comprehension:5},log:'名声是双刃剑，你不想太高调'}]},
+  // Very low constitution + high comprehension = 以神御体
+  {text:'你的体魄羸弱不堪，但悟性极高——你领悟了一种<span class="mys">以神魂驱动肉体</span>的法门。',
+    comboReq:{const_max:25,comp_min:50},trigger:{minAge:20,cultivation:20},choices:[
+    {text:'修习此法',effect:{constitution:10,comprehension:8,sanity:-10,cultivation:10},log:'你以精神力弥补了肉体的不足！'},
+    {text:'这太危险了',effect:{comprehension:5},log:'用精神力驱动身体终究不是长久之计'}]},
+  // High karma + low qiyun = 功德护体
+  {text:'你因果清明但气运不济——忽有一日，过去积累的<span class="mys">功德</span>化为金光护住了你，挡下了一场飞来横祸。',
+    comboReq:{karma_min:40,qiyun_max:-20},trigger:{minAge:18},choices:[
+    {text:'感悟因果之道',effect:{comprehension:10,qiyun:15,karma:5,cultivation:10},log:'善有善报，你的功德在关键时刻救了你一命'},
+    {text:'继续行善',effect:{karma:10,connections:5},log:'你更加坚定了行善积德的信念'}]},
+  // Low karma + low qiyun = 天地不容
+  {text:'因果深重、气运极衰——你走到哪里，<span class="danger-text">天灾人祸</span>就跟到哪里。',
+    comboReq:{karma_max:-30,qiyun_max:-30},trigger:{minAge:15},choices:[
+    {text:'诵经忏悔',effect:{karma:15,qiyun:10,sanity:-5,wealth:-10},log:'你开始反思自己的所作所为'},
+    {text:'破罐破摔',effect:{karma:-10,cultivation:10,qiyun:-5},log:'既然天地不容我，那我便逆天而行'},
+    {text:'远离人群',effect:{connections:-15,sanity:-5,constitution:-3},log:'你怕连累他人，独自逃入深山'}]},
+];
