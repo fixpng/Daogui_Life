@@ -683,9 +683,27 @@ function nextYear() {
   if(gameState.qiyun < -30) eventChance += 0.05; // 低气运也容易遇到（坏）事件
   if(gameState.connections > 30) eventChance += 0.05; // 人脉广，事情多
   if(gameState.comprehension > 50) eventChance += 0.03; // 悟性高，感知到更多机缘
-  if(Math.random() < eventChance && eventPool.length > 0) {
-    var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
+
+  // Priority: mandatory events that haven't been seen yet are guaranteed to trigger
+  var mandatoryPool = eventPool.filter(function(ev){
+    return ev.mandatory && !gameState.eventHistory.has(ev.text);
+  });
+  if(mandatoryPool.length > 0) {
+    var ev = mandatoryPool[Math.floor(Math.random()*mandatoryPool.length)];
+    gameState.eventHistory.add(ev.text);
     showEvent(ev);
+  } else if(Math.random() < eventChance && eventPool.length > 0) {
+    // Filter out already-seen mandatory events from pool, keep non-mandatory (replayable)
+    var availablePool = eventPool.filter(function(ev){
+      return !ev.mandatory || !gameState.eventHistory.has(ev.text);
+    });
+    if(availablePool.length > 0) {
+      var ev = availablePool[Math.floor(Math.random()*availablePool.length)];
+      if(ev.mandatory) gameState.eventHistory.add(ev.text);
+      showEvent(ev);
+    } else {
+      quietYear();
+    }
   } else {
     quietYear();
   }

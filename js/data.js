@@ -1,7 +1,7 @@
 // === GAME DATA ===
 const TALENTS = {
   special: [
-    {id:'xinsu',name:'心素',desc:'先天一炁，体内能同时存在于现实与大傩两个世界，是天道规则的“扰动者”。无意识“心想事成”可将幻觉实体化，身体是顶级“药引/材料”被各方争夺。精神极不稳定，易陷入疯狂与自我怀疑。代表：李火旺、杨娜等。',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10 穿梭两界 身体是顶级药引 易陷入疯狂'},
+    {id:'xinsu',name:'心素',desc:'先天一炁，体内能同时存在于现实与大傩两个世界，是天道规则的”扰动者”。无意识”心想事成”可将幻觉实体化，身体是顶级”药引/材料”被各方争夺。精神极不稳定，易陷入疯狂与自我怀疑。代表：李火旺。',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10 穿梭两界 身体是顶级药引 易陷入疯狂'},
     {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30,comprehension:15},type:'special',rarity:'legendary',hint:'修为+30 悟性+15'},
     {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10,constitution:15},type:'special',rarity:'legendary',hint:'神志+20 修为+10 体魄+15'},
     {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15,comprehension:20},type:'special',rarity:'epic',hint:'修为+15 悟性+20 神志-10'},
@@ -560,12 +560,26 @@ const SPECIAL_EVENTS = [
     {text:'以身镇压异变',effect:{cultivation:50,constitution:-15,sanity:-20,qiyun:25},log:'你燃烧修为稳住了一方天地！',req:{cultivation:150,constitution:30}},
     {text:'趁机修炼',effect:{cultivation:35,qiyun:-10},log:'乱世中你吸收了大量游离灵气'},
     {text:'保全自身',effect:{sanity:-5},log:'天地异变不是你能管的'}]},
-  // === 新增特殊事件 ===
-  {text:'你在一处偏僻的驿站中遇到了<span class="npc">杨娜</span>——另一位<span class="mys">心素</span>持有者。她正在用一种你看不懂的方式在两个世界之间穿梭。她看到你的一瞬间愣住了："你…也能看到？"',
-    trigger:{minAge:18,maxAge:50,yearMin:5,yearMax:30},choices:[
-    {text:'"我能看到两个世界"',effect:{sanity:-20,cultivation:20,comprehension:15,connections:15},log:'杨娜深深地看着你："我们是同类。但我不会像李火旺那样迷失。"她教了你一种在两界中保持清醒的方法'},
-    {text:'"你是谁？"',effect:{comprehension:10,connections:10},log:'杨娜淡淡一笑："一个清醒的疯子。"她转身消失在虚空中'},
-    {text:'假装看不到她',effect:{sanity:-5},log:'杨娜嗤笑一声："胆小鬼。"说完便消失了'}],check:'xinsu'},
+  // === 心素专属：两界穿梭事件（现实世界的景象闪入道诡世界） ===
+  {text:'你的视野突然<span class="mys">扭曲</span>——眼前的山林变成了一间白色的房间，穿白衣的人在对你说话，他们叫你"病人"。有人尖叫着被按在床上打针。然后一切消失了，山林回来了。',
+    trigger:{minAge:12},choices:[
+    {text:'试着记住那个世界的细节',effect:{sanity:-20,comprehension:15,cultivation:10},log:'白色房间...穿白衣的人...你不知道哪边才是真实的'},
+    {text:'告诉自己这边才是真的',effect:{sanity:5,cultivation:3},log:'你紧紧攥住手中的泥土——这边是真的，一定是'},
+    {text:'顺着那个世界的感觉深入',effect:{sanity:-30,cultivation:25,comprehension:20},log:'你短暂地"去了"另一边——那里的人管这地方叫"精神病院"...'}],check:'xinsu'},
+  {text:'你在修炼时突然听到了<span class="mys">另一个世界</span>的声音——有人在用你听不懂的方式说话，提到"<span class="npc">李火旺</span>又发病了""他说自己是修仙的"。',
+    trigger:{minAge:15,yearMin:-5,yearMax:30},choices:[
+    {text:'顺着声音追溯',effect:{sanity:-25,comprehension:20,cultivation:15},log:'你短暂看到了另一个世界——那里没有灵气，没有修士，一切都灰蒙蒙的。而"李火旺"在那边只是一个...被绑在床上的少年'},
+    {text:'强行隔绝声音',effect:{sanity:10,cultivation:5},log:'你封闭了感知，那些声音渐渐消散了'},
+    {text:'尝试和那边的人对话',effect:{sanity:-35,cultivation:20,comprehension:15},log:'你对着虚空喊了一句话——那边的"医生"惊恐地看着空气中凭空出现的声波纹'}],check:'xinsu'},
+  {text:'夜里你又<span class="mys">穿越</span>了——这次你看到一间满是铁栏杆的房间，墙上贴着"<span class="danger-text">六号病房</span>"的牌子。里面有个少年在纸上画符箓，旁边的人说他"精神分裂越来越严重了"。',
+    trigger:{minAge:18,yearMin:0,yearMax:35},choices:[
+    {text:'试着和那个少年沟通',effect:{sanity:-25,cultivation:20,connections:10},log:'那个少年猛地抬头看向你——是李火旺。他的眼神在两个世界间闪烁："你也被困在这里了？"'},
+    {text:'仔细观察那个世界',effect:{sanity:-15,comprehension:15},log:'那个世界没有灵气，人们用一种叫"科学"的东西解释一切。你觉得那才是疯了...还是说？'},
+    {text:'拼命回到这边',effect:{sanity:-5},log:'你猛地睁开眼，冷汗浸透了衣衫。这边是真的...对吧？'}],check:'xinsu'},
+  {text:'你走在路上时眼前突然出现了<span class="mys">另一层世界</span>的影像——车水马龙的铁盒子在平坦的黑色路面上飞驰，人们盯着手里发光的薄板，天上有银色的巨鸟划过。',
+    trigger:{minAge:10},choices:[
+    {text:'惊讶地观察',effect:{sanity:-15,comprehension:12,cultivation:5},log:'那个世界...完全没有修仙，没有邪祟，没有门派。但那些"铁盒子"和"银色巨鸟"到底是什么？'},
+    {text:'闭上眼等它消失',effect:{sanity:-5},log:'你闭上眼，等幻象消散。但你知道那不是幻象——那是真实存在的另一个世界'}],check:'xinsu'},
   {text:'你在一间废弃的老屋中发现了一个<span class="itm">暗格</span>——里面藏着一把<span class="itm">赊刀</span>和大量<span class="fac">监天司</span>的秘密档案。这是某位<span class="npc">赊刀人</span>的藏身处。',
     trigger:{minAge:16,yearMin:0,yearMax:25},choices:[
     {text:'仔细翻阅档案',effect:{comprehension:15,cultivation:10,connections:10,sanity:-10},log:'档案中记载着各地邪祟的详细信息和应对之法——其中一些邪祟就在你附近'},
@@ -1031,7 +1045,7 @@ const CANONICAL_EVENTS = [
     {text:'前去打探',effect:{cultivation:10,sanity:-10,comprehension:5},log:'你远远看到了清风观，里面传出孩童的哭声...'},
     {text:'避而远之',effect:{sanity:5,qiyun:3},log:'那地方不干净，离远点好'}]},
   {text:'清风观突然发生<span class="danger-text">大爆炸</span>，方圆数里都能看到冲天火光。传闻是弟子反杀了<span class="npc">丹阳子</span>。',
-    trigger:{minAge:10,yearMin:-2,yearMax:3},choices:[
+    trigger:{minAge:10,yearMin:-2,yearMax:3},mandatory:true,choices:[
     {text:'前去查看废墟',effect:{cultivation:15,sanity:-12,comprehension:8},log:'废墟中有残留的灵气波动，你隐约感知到了一场惊天之战的余波',item:'dan_yang_jian'},
     {text:'听人议论',effect:{comprehension:5},log:'茶馆里众说纷纭——有人说丹阳子死了，有人说他还活着'}]},
   {text:'你在路上遇到一群从<span class="loc">清风观</span>逃出来的孩子，为首的少年神情坚毅却时常恍惚。',
@@ -1052,7 +1066,7 @@ const CANONICAL_EVENTS = [
 
   // --- 卷2 时期: 坐忘道动乱 / 李火旺加入监天司 (year 5 ~ 15) ---
   {text:'<span class="fac">坐忘道</span>在各地制造<span class="danger-text">缩阳事件</span>，百姓人心惶惶。<span class="fac">监天司</span>的<span class="npc">赊刀人</span>四处奔走平乱。',
-    trigger:{minAge:15,yearMin:5,yearMax:15},choices:[
+    trigger:{minAge:15,yearMin:5,yearMax:15},mandatory:true,choices:[
     {text:'协助监天司破案',effect:{connections:20,cultivation:10,qiyun:8},log:'你帮助揭穿了坐忘道的骗局，赊刀人对你刮目相看'},
     {text:'加入维护治安',effect:{connections:10,wealth:15,constitution:3},log:'你在乱局中维持了一方安宁'},
     {text:'闭门不出',effect:{wealth:-5},log:'风声鹤唳的日子里，买卖都做不成'}]},
@@ -1061,7 +1075,7 @@ const CANONICAL_EVENTS = [
     {text:'打探消息',effect:{comprehension:10,sanity:-10,connections:5},log:'越查越深，你发现坐忘道在朝中无处不在'},
     {text:'不关心朝政',effect:{},log:'天高皇帝远，和你没关系'}]},
   {text:'大梁皇城发生<span class="danger-text">剧变</span>！传闻有人在皇宫召唤了<span class="mys">斗姥</span>，天空出现两片太极鱼状的大海。整个上京城的人都看到了。',
-    trigger:{minAge:12,yearMin:10,yearMax:18},choices:[
+    trigger:{minAge:12,yearMin:10,yearMax:18},mandatory:true,choices:[
     {text:'朝皇城方向赶去',effect:{cultivation:25,sanity:-20,comprehension:15,constitution:-5},log:'你在远处看到了令人永生难忘的景象——一个混沌扭曲的存在降临了！'},
     {text:'跪地祈祷',effect:{sanity:-10,qiyun:5},log:'那一刻，所有人都感受到了神明的恐怖'},
     {text:'趁乱逃出上京',effect:{wealth:-20,sanity:-5},log:'你拼命跑出了上京城，身后是无尽的混乱'}]},
@@ -1078,7 +1092,7 @@ const CANONICAL_EVENTS = [
 
   // --- 卷3 时期: 龙脉纷争 / 李火旺成为司命 (year 15 ~ 25) ---
   {text:'天降异象——<span class="mys">天狗食日</span>，大地陷入黑暗。许多修士在这一刻失去了灵感，有人甚至失去了双眼。',
-    trigger:{minAge:12,yearMin:15,yearMax:22},choices:[
+    trigger:{minAge:12,yearMin:15,yearMax:22},mandatory:true,choices:[
     {text:'闭目修炼抵御',effect:{cultivation:15,comprehension:10,sanity:-10},log:'你在黑暗中感知到了天道的波动'},
     {text:'帮助受灾百姓',effect:{karma:15,connections:15,qiyun:5},log:'你在天灾中救助了不少人'},
     {text:'躲在家中',effect:{sanity:-5},log:'黑暗过去后，世界似乎变了'}]},
@@ -1088,13 +1102,13 @@ const CANONICAL_EVENTS = [
     {text:'收集龙脉情报',effect:{connections:15,comprehension:10,wealth:10},log:'你打听到龙脉可以免疫绝大部分的神通功法'},
     {text:'不碰这种东西',effect:{sanity:5},log:'龙脉之事，非凡人能染指'}]},
   {text:'江湖传闻<span class="npc">李火旺</span>已非凡人——他以<span class="itm">先天一炁</span>成就了自己的司命<span class="mys">季灾</span>，掌管迷惘与清醒。',
-    trigger:{minAge:18,yearMin:18,yearMax:28,cultivation:40},choices:[
+    trigger:{minAge:18,yearMin:18,yearMax:28,cultivation:40},mandatory:true,choices:[
     {text:'追寻季灾之道',effect:{cultivation:20,comprehension:20,sanity:-20},log:'迷惘与清醒...你第一次思考"道"的本质'},
     {text:'敬而远之',effect:{sanity:5,qiyun:3},log:'凡人不该妄想成为司命'}]},
 
   // --- 卷4 时期: 法教入侵 / 补白玉京 (year 20 ~ 35) ---
   {text:'<span class="fac">法教</span>大军从大齐涌入，<span class="danger-text">四齐沦陷</span>！法教的十二大巫以活人祭祀召唤<span class="npc">于儿神</span>，所过之处寸草不生。',
-    trigger:{minAge:15,yearMin:20,yearMax:32},choices:[
+    trigger:{minAge:15,yearMin:20,yearMax:32},mandatory:true,choices:[
     {text:'参加抵抗军',effect:{cultivation:15,connections:20,constitution:-5,karma:10,qiyun:5},log:'你加入了各门派联合的抵抗力量，与法教殊死搏斗',combat:70,achieve:'resist_fajiao'},
     {text:'护送难民撤离',effect:{karma:20,connections:15,wealth:-10},log:'你帮助大量四齐难民逃往大梁'},
     {text:'逃难',effect:{wealth:-15,sanity:-5},log:'法教的恐怖你无力抵挡'}]},
@@ -1104,22 +1118,22 @@ const CANONICAL_EVENTS = [
     {text:'提供情报支援',effect:{connections:15,wealth:15,comprehension:5},log:'你在后方为联军提供了关键情报'},
     {text:'隔岸观火',effect:{comprehension:5},log:'两边的力量都太过恐怖'}]},
   {text:'法教覆灭后，<span class="npc">于儿神</span>被斗杀，但天灾再次降临——<span class="danger-text">死亡消失了</span>！没有任何生物能够死去。',
-    trigger:{minAge:12,yearMin:25,yearMax:33},choices:[
+    trigger:{minAge:12,yearMin:25,yearMax:33},mandatory:true,choices:[
     {text:'利用不死之身修炼',effect:{cultivation:30,constitution:10,sanity:-20},log:'在无法死亡的日子里，你疯狂地修炼，承受着本该致死的痛苦'},
     {text:'寻找原因',effect:{comprehension:15,sanity:-15,cultivation:10},log:'你意识到是白玉京中掌管死亡的天道出了问题'},
     {text:'惊恐不安',effect:{sanity:-10},log:'不能死去...这比死亡更恐怖'}]},
   {text:'<span class="loc">白玉京</span>的裂隙肉眼可见地出现在天空中！巨大的倒悬之城时隐时现，<span class="mys">牦之门</span>的轮廓清晰可辨。',
-    trigger:{minAge:20,yearMin:28,yearMax:36,cultivation:80},choices:[
+    trigger:{minAge:20,yearMin:28,yearMax:36,cultivation:80},mandatory:true,choices:[
     {text:'尝试接近白玉京',effect:{cultivation:50,sanity:-30,comprehension:20,qiyun:-10},log:'你在白玉京的边缘感受到了十六条天道的余韵——迷惘、清醒、死亡、慈悲、谎言、痛苦、秘密、秩序...',achieve:'witness_baiyu'},
     {text:'远远膜拜',effect:{cultivation:15,sanity:-10,qiyun:5},log:'凡人只能仰望神的居所'}]},
   {text:'<span class="npc">玄牝</span>司丞突然化为<span class="mys">六爪金龙</span>，带着一群龙人冲入白玉京裂隙！传闻这是为了给<span class="npc">李火旺</span>补充龙气以修补白玉京。',
-    trigger:{minAge:15,yearMin:28,yearMax:35},choices:[
+    trigger:{minAge:15,yearMin:28,yearMax:35},mandatory:true,choices:[
     {text:'助阵',effect:{cultivation:20,constitution:-10,qiyun:15,connections:15},log:'你贡献了自己的一份力量，虽然微薄'},
     {text:'见证历史',effect:{comprehension:15,sanity:-10},log:'你亲眼看到了凡人化龙的壮观一幕'}]},
 
   // --- 卷5 时期: 福生天入侵 / 大傩觉醒 (year 30 ~ 45) ---
   {text:'天灾接连发生——先是<span class="danger-text">谎言消失</span>（没人能说谎了），然后<span class="danger-text">腐烂消失</span>（尸体不再腐烂）。天道一条条出了问题。',
-    trigger:{minAge:15,yearMin:30,yearMax:40},choices:[
+    trigger:{minAge:15,yearMin:30,yearMax:40},mandatory:true,choices:[
     {text:'寻找天灾根源',effect:{comprehension:20,cultivation:15,sanity:-20},log:'你逐渐意识到——白玉京中的司命们正在被什么东西侵蚀'},
     {text:'适应新世界',effect:{cultivation:10,comprehension:5},log:'没有谎言的世界...反而更混乱了'},
     {text:'恐惧退缩',effect:{sanity:-15},log:'世界正在崩塌，你无力阻止'}]},
@@ -1129,7 +1143,7 @@ const CANONICAL_EVENTS = [
     {text:'为天下祈祷',effect:{karma:10,sanity:-10,qiyun:5},log:'你跪地祈祷，愿天道平安'},
     {text:'在乱世中自保',effect:{constitution:5,sanity:-5},log:'天道之战，非凡人能干预'}]},
   {text:'一道<span class="mys">金光</span>从白玉京中射出，天地间所有天灾在同一时刻<span class="itm">消失</span>了。传闻<span class="npc">季灾</span>吞食了所有天道，以一己之力成为了新的<span class="itm">大傩</span>——守护着白玉京。',
-    trigger:{minAge:15,yearMin:35,yearMax:45},choices:[
+    trigger:{minAge:15,yearMin:35,yearMax:45},mandatory:true,choices:[
     {text:'感悟季灾之道',effect:{cultivation:40,comprehension:25,sanity:20},log:'迷惘即清醒，清醒即迷惘。你在季灾的道中看到了一切的答案。',achieve:'witness_jizai'},
     {text:'庆祝太平',effect:{qiyun:15,connections:10,karma:5},log:'天下终于太平了，百姓欢呼雀跃'},
     {text:'继续修行',effect:{cultivation:15,comprehension:10},log:'不管天道如何变迁，你只走自己的道'}]},
@@ -1155,12 +1169,17 @@ const CANONICAL_EVENTS = [
     {text:'请教罗教修行',effect:{cultivation:15,comprehension:10,connections:10},log:'罗教的修行平和内敛，与其他教派截然不同'},
     {text:'收集铜钱仿制',effect:{cultivation:5,wealth:-10},log:'仿制品不及真品万一，但聊胜于无'}]},
 
-  // --- 杨娜相关 (year 5 ~ 30) ---
-  {text:'你听闻有一位名叫<span class="npc">杨娜</span>的女子，据说她和<span class="npc">李火旺</span>一样拥有<span class="mys">心素</span>——能同时存在于两个世界。但她与李火旺截然不同，她更加冷静、理性，甚至试图利用双界之力谋取权势。',
-    trigger:{minAge:18,yearMin:5,yearMax:30,cultivation:30},choices:[
-    {text:'设法接触杨娜',effect:{connections:20,comprehension:15,sanity:-10},log:'你见到了杨娜——她目光锐利如刀，与李火旺的迷茫截然不同。她说："两个世界都是真的，问题是你选择哪一个。"'},
-    {text:'打听她的情报',effect:{comprehension:10,connections:5},log:'据说杨娜曾试图与李火旺合作，但两人最终理念不合而分道扬镳'},
-    {text:'不去招惹心素持有者',effect:{sanity:5},log:'心素持有者是最危险的存在之一'}]},
+  // --- 心素穿界：现实世界新闻（仅心素可见） (year 5 ~ 30) ---
+  {text:'你突然听到了<span class="mys">另一个世界</span>的喧哗——有人在讨论"<span class="danger-text">精神病院出了大事</span>"，说有个叫李火旺的病人把整间病房都砸了，还伤了三个护工。你"看到"一群穿白衣的人手忙脚乱地按住一个少年。',
+    trigger:{minAge:15,yearMin:5,yearMax:30},mandatory:true,check:'xinsu',choices:[
+    {text:'借助两界共鸣感应李火旺的状态',effect:{sanity:-20,cultivation:20,comprehension:15},log:'你通过两界的裂缝感知到了——每当李火旺在那边"发病"时，这边的世界也在剧烈震荡。他的疯狂不是病，是两个世界在他身上碰撞'},
+    {text:'试着向李火旺传递信息',effect:{sanity:-25,connections:10,cultivation:10},log:'你对着虚空低声说了几句话——不知道他那边能不能听到'},
+    {text:'切断连接',effect:{sanity:5},log:'你不想再看到那个世界的事了'}]},
+  {text:'<span class="mys">两界</span>的边界又模糊了——你短暂"看到"了另一个世界的<span class="danger-text">新闻</span>：一场大规模传染病让所有人都戴上了白色面罩，街上空无一人。你甚至闻到了一股消毒水的味道。',
+    trigger:{minAge:18,yearMin:10,yearMax:35},check:'xinsu',choices:[
+    {text:'仔细观察那个世界的变化',effect:{sanity:-15,comprehension:12},log:'那个世界和这个世界一样充满灾难——只是形式不同罢了'},
+    {text:'思考两个世界的关联',effect:{sanity:-20,comprehension:18,cultivation:10},log:'你开始怀疑——那边的"传染病"和这边的"天灾"，是否有某种因果关系？'},
+    {text:'赶紧收回视线',effect:{sanity:-5},log:'看太多另一个世界的事会让你迷失'}]},
 
   // --- 齐衡与监天司 (year 10 ~ 25) ---
   {text:'<span class="fac">监天司</span>的<span class="npc">齐衡</span>——一位冷面铁腕的监察使——正在大梁各地巡视。他以严苛闻名，凡是被他盯上的邪修无一幸免。',
@@ -1178,7 +1197,7 @@ const CANONICAL_EVENTS = [
 
   // --- 死亡消失后的混乱 (year 25 ~ 35) ---
   {text:'<span class="danger-text">死亡消失</span>的日子里，世界陷入了前所未有的混乱——被砍成两半的人还在爬行，被火烧成焦炭的人还在嚎叫。有人将此视为天堂，有人将此视为<span class="danger-text">地狱</span>。',
-    trigger:{minAge:15,yearMin:25,yearMax:35},choices:[
+    trigger:{minAge:15,yearMin:25,yearMax:35},mandatory:true,choices:[
     {text:'利用不死研究修炼极限',effect:{cultivation:25,constitution:-10,sanity:-20,comprehension:10},log:'你在不死之身上进行了各种修炼尝试——痛苦却不会死，你获得了常人无法获得的经验'},
     {text:'救助那些"死不了"的受苦者',effect:{karma:15,connections:15,sanity:-10},log:'你将那些生不如死的人聚集起来，尽力减轻他们的痛苦'},
     {text:'自闭不出',effect:{sanity:-15},log:'窗外传来的永无休止的惨叫声让你快要疯了'}]},
@@ -1192,7 +1211,7 @@ const CANONICAL_EVENTS = [
 
   // --- 于儿神降临的恐怖 (year 22 ~ 32) ---
   {text:'<span class="fac">法教</span>十二大巫齐聚，以万人血祭召唤<span class="npc">于儿神</span>降临！天空撕裂，一只<span class="danger-text">巨大的不可名状之物</span>从裂缝中探出——那是超越凡人理解的存在。所到之处，生灵化为齑粉。',
-    trigger:{minAge:18,yearMin:22,yearMax:32,cultivation:50},choices:[
+    trigger:{minAge:18,yearMin:22,yearMax:32,cultivation:50},mandatory:true,choices:[
     {text:'拼死抵抗',effect:{cultivation:25,constitution:-15,sanity:-25,qiyun:15,karma:15},log:'你加入了对抗于儿神的战斗——虽然你的力量微不足道，但每一份力量都不可或缺',combat:95},
     {text:'尝试理解于儿神',effect:{comprehension:20,sanity:-30,cultivation:15},log:'你在恐惧中保持了一丝清明——于儿神不是邪恶，它只是…另一种存在的法则'},
     {text:'逃离战场',effect:{sanity:-15,qiyun:-5},log:'你拼命逃跑，身后是毁天灭地的战斗余波'}]},
