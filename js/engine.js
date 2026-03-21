@@ -127,7 +127,7 @@ function startGame() {
   if(gameState.talents.find(function(t){return t.id==='gu_ren';})) {
     gameState.year = -(200 + Math.floor(Math.random() * 1800));
   } else {
-    gameState.year = Math.floor(Math.random()*60)-30;
+    gameState.year = Math.floor(Math.random()*60)-50;
   }
 
   gameState.visitedLocations.push(gameState.location.id);
@@ -241,6 +241,7 @@ function getEraName() {
 function getMaxAge() {
   var base = 70;
   if(gameState.talents.find(function(t){return t.id==='shou_xing';})) base = 90;
+  if(gameState.talents.find(function(t){return t.id==='duan_ming';})) base -= 20;
   // 体魄影响：每10点体魄增加5年寿命
   var constitutionBonus = Math.floor(gameState.constitution / 10) * 5;
   base += constitutionBonus;
@@ -270,7 +271,20 @@ function nextYear() {
     }
     return;
   }
-  gameState.age++; gameState.year++;
+  // 150岁后年岁跨度随机增大，修为越高跨度越大
+  var ageStep = 1;
+  if(gameState.age >= 150) {
+    var cultLevel = gameState.cultivation;
+    if(cultLevel >= 400) ageStep = Math.floor(Math.random() * 30) + 10; // 造化: 10-39年
+    else if(cultLevel >= 300) ageStep = Math.floor(Math.random() * 20) + 5; // 大傩: 5-24年
+    else if(cultLevel >= 200) ageStep = Math.floor(Math.random() * 15) + 3; // 大乘: 3-17年
+    else if(cultLevel >= 150) ageStep = Math.floor(Math.random() * 10) + 2; // 化神: 2-11年
+    else if(cultLevel >= 100) ageStep = Math.floor(Math.random() * 7) + 2; // 元婴: 2-8年
+    else if(cultLevel >= 60) ageStep = Math.floor(Math.random() * 5) + 1; // 金丹: 1-5年
+    else ageStep = Math.floor(Math.random() * 3) + 1; // 其他: 1-3年
+  }
+  gameState.age += ageStep; gameState.year += ageStep;
+  gameState.lastAgeStep = ageStep;
 
   // Cultivation gain - 极低概率，模拟修仙之路极为艰难
   // 普通人没有机缘难以突破修为，每年只有约3%概率能获得提升
@@ -349,6 +363,19 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='tian_yun';}) && Math.random()<0.15) { gameState.qiyun += 2; gameState.wealth += 3; }
   if(gameState.talents.find(function(t){return t.id==='zhuan_yun';}) && Math.random()<0.12) { gameState.qiyun += 1; gameState.constitution += 1; }
   if(gameState.talents.find(function(t){return t.id==='po_yun';}) && Math.random()<0.10) { gameState.qiyun -= 2; gameState.cultivation += 3; }
+  // New novel-based talent yearly effects
+  if(gameState.talents.find(function(t){return t.id==='tian_sha';}) && Math.random()<0.08) { gameState.connections -= 2; gameState.cultivation += 3; }
+  if(gameState.talents.find(function(t){return t.id==='shi_yi';}) && Math.random()<0.06) { gameState.comprehension += 3; } // 前世记忆闪回
+  if(gameState.talents.find(function(t){return t.id==='gui_ying';}) && Math.random()<0.08) { gameState.cultivation += 4; gameState.sanity = Math.max(0, gameState.sanity - 2); }
+  if(gameState.talents.find(function(t){return t.id==='fan_gu';}) && Math.random()<0.10) { gameState.comprehension += 2; gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.05) { gameState.constitution -= 1; } // 命格短促
+  if(gameState.talents.find(function(t){return t.id==='dan_yang_chuan';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.comprehension += 1; }
+  if(gameState.talents.find(function(t){return t.id==='she_dao_ren';}) && Math.random()<0.10) { gameState.connections += 2; }
+  if(gameState.talents.find(function(t){return t.id==='nuo_wu_ti';}) && Math.random()<0.08) { gameState.cultivation += 2; gameState.sanity = Math.min(120, gameState.sanity + 1); }
+  if(gameState.talents.find(function(t){return t.id==='shuang_sheng';}) && Math.random()<0.10) { gameState.comprehension += 2; gameState.sanity = Math.max(0, gameState.sanity - 2); }
+  if(gameState.talents.find(function(t){return t.id==='ba_xu_xue_mai';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.constitution += 1; }
+  if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.15) { gameState.cultivation += 2; }
+  if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.12) { gameState.constitution += 1; }
 
   // Constitution natural drift (age affects constitution, cultivation slows aging)
   var agingReduction = Math.floor(gameState.cultivation / 50); // high cultivation slows aging
@@ -604,7 +631,13 @@ function quietYear() {
     if(gameState.gender === 'male') msgs.push('父亲开始让你独自去镇上办事，你觉得自己长大了','和同龄少年比试武艺，你总是不服输');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else {
-    var msgs = ['平淡的一年','日子不好不坏','又一年过去了','波澜不惊','日复一日'];
+    var step = gameState.lastAgeStep || 1;
+    var msgs;
+    if(step > 1) {
+      msgs = [step+'年光阴如白驹过隙',step+'年弹指一挥间','这'+step+'年波澜不惊','又是'+step+'年匆匆而过','岁月悠悠，'+step+'年转瞬即逝'];
+    } else {
+      msgs = ['平淡的一年','日子不好不坏','又一年过去了','波澜不惊','日复一日'];
+    }
     if(gameState.gender === 'female' && a > 20 && a < 35) msgs.push('邻家嫂子又来催你成家的事了');
     if(gameState.gender === 'male' && a > 25 && a < 40) msgs.push('你开始承担更多养家的责任');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);

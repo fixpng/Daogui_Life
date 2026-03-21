@@ -22,6 +22,14 @@ const TALENTS = {
     {id:'qi_chen',name:'七晨',desc:'生辰特殊，每月七日出生，与季灾有天然联系',effect:{cultivation:15,qiyun:10,comprehension:15},type:'special',rarity:'epic',hint:'修为+15 气运+10 悟性+15 季灾对你有所关注'},
     {id:'ji_jing',name:'极镜',desc:'心如明镜，能看穿一切幻象与谎言',effect:{comprehension:25,sanity:10,cultivation:5},type:'special',rarity:'epic',hint:'悟性+25 神志+10 修为+5 破除虚妄'},
     {id:'hong_yan',name:'火眼',desc:'修炼火功法门事半功倍，与红莲业火有缘',effect:{cultivation:20,constitution:10},type:'special',rarity:'epic',hint:'修为+20 体魄+10 火系功法威力倍增'},
+    {id:'dan_yang_chuan',name:'丹阳传承',desc:'身负丹阳子残留道意，与天书有天然联系',effect:{cultivation:20,comprehension:15,sanity:-5},type:'special',rarity:'legendary',hint:'修为+20 悟性+15 神志-5 与丹阳子传承相关事件概率提升'},
+    {id:'she_dao_ren',name:'赊刀人血统',desc:'监天司赊刀人后裔，天生能感知邪祟',effect:{cultivation:15,connections:15,comprehension:10},type:'special',rarity:'epic',hint:'修为+15 人脉+15 悟性+10 监天司好感度提升'},
+    {id:'wu_sheng_xin_pan',name:'无生老母心蟠',desc:'你是无生老母的心蟠之一，天生拥有慈悲之力',effect:{cultivation:25,sanity:15,karma:20,connections:10},type:'special',rarity:'legendary',hint:'修为+25 神志+15 因果+20 人脉+10 白莲教视你为圣物'},
+    {id:'ba_xu_xue_mai',name:'巴虺血脉',desc:'体内流淌着远古巴虺的血液，以痛苦喂养力量',effect:{cultivation:20,constitution:20,sanity:-15,karma:-10},type:'special',rarity:'epic',hint:'修为+20 体魄+20 神志-15 因果-10 袄景教视你为圣体'},
+    {id:'fu_sheng_tian_yin',name:'福生天印',desc:'被福生天污染的胎记，天生与腐朽之力相连',effect:{cultivation:25,sanity:-25,qiyun:-15,comprehension:10},type:'special',rarity:'legendary',hint:'修为+25 悟性+10 神志-25 气运-15 能感知福生天的气息'},
+    {id:'nuo_wu_ti',name:'傩巫体',desc:'天生可以承载傩面的力量，大傩仪式中人格不会崩溃',effect:{cultivation:15,sanity:10,constitution:10,comprehension:10},type:'special',rarity:'epic',hint:'修为+15 神志+10 体魄+10 悟性+10 傩面对你无副作用'},
+    {id:'shuang_sheng',name:'双生',desc:'你有一个看不见的"双生体"，ta存在于另一个世界',effect:{cultivation:15,sanity:-20,comprehension:15,qiyun:5},type:'special',rarity:'epic',hint:'修为+15 悟性+15 气运+5 神志-20 偶尔能听见另一个自己的声音'},
+    {id:'tian_dao_qi_zi',name:'天道弃子',desc:'被天道遗忘的存在，不受天道规则约束但也无法得到庇护',effect:{cultivation:10,qiyun:-20,karma:0,constitution:15,comprehension:15},type:'special',rarity:'legendary',hint:'修为+10 体魄+15 悟性+15 气运-20 天道对你无感'},
   ],
   good: [
     {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10,comprehension:10},type:'good',rarity:'rare',hint:'修为+10 悟性+10 每年额外修炼加成'},
@@ -38,6 +46,12 @@ const TALENTS = {
     {id:'fu_yuan',name:'福缘',desc:'前世积德，今生有福',effect:{karma:20,qiyun:10,wealth:10},type:'good',rarity:'uncommon',hint:'因果+20 气运+10 金银+10'},
     {id:'tian_yun',name:'天运',desc:'天生气运加身，万事顺遂',effect:{qiyun:25,wealth:15,connections:5},type:'good',rarity:'rare',hint:'气运+25 金银+15 人脉+5'},
     {id:'zhuan_yun',name:'转运星',desc:'命中自带逢凶化吉之相',effect:{qiyun:15,constitution:10,sanity:5},type:'good',rarity:'uncommon',hint:'气运+15 体魄+10 神志+5'},
+    {id:'ling_gen',name:'灵根',desc:'天生灵根，吸收灵气事半功倍',effect:{cultivation:15,comprehension:8},type:'good',rarity:'rare',hint:'修为+15 悟性+8 修炼加速'},
+    {id:'shan_min',name:'善民',desc:'心存善念，行事端正',effect:{karma:15,qiyun:10,connections:5},type:'good',rarity:'uncommon',hint:'因果+15 气运+10 人脉+5'},
+    {id:'tie_gu',name:'铁骨',desc:'天生铁骨铜皮，刀枪难入',effect:{constitution:20,cultivation:5},type:'good',rarity:'uncommon',hint:'体魄+20 修为+5'},
+    {id:'duo_mou',name:'多谋',desc:'心思缜密，善于筹划',effect:{comprehension:12,connections:8,qiyun:5},type:'good',rarity:'rare',hint:'悟性+12 人脉+8 气运+5'},
+    {id:'jing_shang',name:'精商',desc:'天生生意头脑，善于经营',effect:{wealth:35,connections:10},type:'good',rarity:'uncommon',hint:'金银+35 人脉+10'},
+    {id:'yi_xin',name:'医心',desc:'天生对药理有天赋，懂得养生之道',effect:{constitution:10,comprehension:8,sanity:5},type:'good',rarity:'uncommon',hint:'体魄+10 悟性+8 神志+5'},
   ],
   bad: [
     {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20,constitution:-15},type:'bad',rarity:'common',hint:'神志-20 体魄-15 但久病成医，偶有奇遇'},
@@ -55,6 +69,11 @@ const TALENTS = {
     {id:'ye_zhang',name:'业障',desc:'前世造业深重，今生因果沉重',effect:{karma:-30,qiyun:-10,sanity:-10},type:'bad',rarity:'cursed',hint:'因果-30 气运-10 神志-10 但业火焚身，偶可借力修炼'},
     {id:'ti_ruo',name:'体弱',desc:'先天体弱，弱不禁风',effect:{constitution:-25},type:'bad',rarity:'common',hint:'体魄-25 但心思细腻，悟性偶有提升'},
     {id:'po_yun',name:'破运',desc:'天生克运，诸事不顺',effect:{qiyun:-25,karma:-10,wealth:-10},type:'bad',rarity:'cursed',hint:'气运-25 因果-10 金银-10 但逆运而行，偶有奇遇'},
+    {id:'tian_sha',name:'天煞孤星',desc:'命犯天煞，近身之人皆遭横祸',effect:{connections:-25,qiyun:-10,cultivation:5},type:'bad',rarity:'cursed',hint:'人脉-25 气运-10 修为+5 但无人敢近身'},
+    {id:'shi_yi',name:'失忆',desc:'出生时便失去了所有前世记忆，对世界一片茫然',effect:{comprehension:-10,connections:-5,sanity:-5},type:'bad',rarity:'common',hint:'悟性-10 人脉-5 神志-5 但偶尔闪回前世片段'},
+    {id:'gui_ying',name:'鬼婴',desc:'出生时便有鬼魂附体，阴气极重',effect:{sanity:-20,cultivation:10,constitution:-10},type:'bad',rarity:'cursed',hint:'神志-20 体魄-10 修为+10 阴气吸引邪祟'},
+    {id:'fan_gu',name:'反骨',desc:'天生反骨，不服管束',effect:{connections:-15,karma:-10,comprehension:5},type:'bad',rarity:'common',hint:'人脉-15 因果-10 悟性+5 难以融入任何势力'},
+    {id:'duan_ming',name:'短命',desc:'先天命格短促，阳寿不永',effect:{constitution:-15,qiyun:-10},type:'bad',rarity:'cursed',hint:'体魄-15 气运-10 寿命大幅缩短'},
   ]
 };
 
@@ -729,21 +748,21 @@ const SANXIU_EVENTS = [
 
 // === TALENT CONFLICTS (bidirectional) ===
 const TALENT_CONFLICTS = {
-  jian_kang: ['ti_ruo','ji_bing','bai_bing'],
-  ti_ruo: ['jian_kang','wu_xing','xian_gu'],
+  jian_kang: ['ti_ruo','ji_bing','bai_bing','gui_ying'],
+  ti_ruo: ['jian_kang','wu_xing','xian_gu','tie_gu'],
   fu_gui: ['pin_kun','du_zhai','wu_qin'],
   pin_kun: ['fu_gui'],
   du_zhai: ['fu_gui'],
   wu_qin: ['gui_ren','fu_gui'],
-  gui_ren: ['wu_qin','sha_qi'],
+  gui_ren: ['wu_qin','sha_qi','tian_sha'],
   zhi_hui: ['yu_ben'],
-  yu_ben: ['zhi_hui'],
+  yu_ben: ['zhi_hui','ling_gen'],
   fu_yuan: ['ye_zhang','sha_qi','po_yun'],
-  ye_zhang: ['fu_yuan','tian_yun'],
-  mei_mao: ['chou_lou'],
+  ye_zhang: ['fu_yuan','tian_yun','shan_min'],
+  mei_mao: ['chou_lou','tian_sha'],
   chou_lou: ['mei_mao'],
   wu_xing: ['can_ji','ti_ruo'],
-  can_ji: ['wu_xing','jian_kang'],
+  can_ji: ['wu_xing','jian_kang','tie_gu'],
   xian_gu: ['ti_ruo'],
   ji_bing: ['jian_kang'],
   bai_bing: ['jian_kang'],
@@ -751,6 +770,14 @@ const TALENT_CONFLICTS = {
   tian_yun: ['po_yun','ye_zhang'],
   po_yun: ['tian_yun','fu_yuan','zhuan_yun'],
   zhuan_yun: ['po_yun'],
+  tian_sha: ['gui_ren','mei_mao','kou_cai'],
+  duan_ming: ['shou_xing','jian_kang'],
+  shou_xing: ['duan_ming'],
+  shan_min: ['ye_zhang','sha_qi'],
+  tie_gu: ['ti_ruo','can_ji'],
+  ling_gen: ['yu_ben'],
+  gui_ying: ['jian_kang','xu_jing'],
+  fan_gu: ['kou_cai'],
 };
 
 // === ATTRIBUTE TOOLTIP DESCRIPTIONS ===
