@@ -1038,6 +1038,337 @@ const KARMA_EVENTS = [
     {text:'自己的命自己扛',effect:{comprehension:5,constitution:3},log:'不假他人之手，也是一种修行'}]},
 ];
 
+// === CULTIVATION TIER EVENTS (filtered by cultivation range) ===
+const CULTIVATION_TIER_EVENTS = [
+  // --- 凡人 tier (cultMin:0, cultMax:3) ---
+  {text:'你走在夜路上，突然窜出几个<span class="danger-text">小毛贼</span>，把你仅有的铜板抢了个干净。',
+    cultMin:0,cultMax:3,trigger:{minAge:10},choices:[
+    {text:'大喊抓贼',effect:{connections:3,constitution:2},log:'路人帮忙追回了一些铜板'},
+    {text:'自认倒霉',effect:{wealth:-10,comprehension:2},log:'穷人的命不值钱'},
+    {text:'记住他们的脸',effect:{comprehension:3,karma:-3},log:'总有一天你会报这个仇'}]},
+  {text:'路边蹲着一个衣衫褴褛的<span class="npc">乞丐</span>，他用浑浊的眼睛盯着你看了半天，忽然说："你身上有<span class="mys">气</span>。"',
+    cultMin:0,cultMax:3,trigger:{minAge:12},choices:[
+    {text:'追问他什么意思',effect:{comprehension:5,sanity:-3},log:'乞丐说完就走了，留你在风中发呆'},
+    {text:'给他一些吃的',effect:{karma:5,connections:2},log:'乞丐接过食物，冲你笑了笑'},
+    {text:'赶紧走开',effect:{sanity:2},log:'这年头疯子太多了'}]},
+  {text:'隔壁村传来消息，说<span class="loc">后山</span>的废宅里<span class="danger-text">闹鬼</span>了——半夜能听到女人的哭声。',
+    cultMin:0,cultMax:3,trigger:{minAge:10},choices:[
+    {text:'壮着胆子去看',effect:{cultivation:3,sanity:-8,comprehension:5},log:'你什么都没看到，但浑身鸡皮疙瘩起了一路'},
+    {text:'避而远之',effect:{sanity:3},log:'鬼神之事少沾为妙'},
+    {text:'跟村里人打听',effect:{connections:3,comprehension:3},log:'老人们说那宅子死过人，怨气未散'}]},
+  {text:'你亲眼看到一个人在街上<span class="danger-text">口吐白沫</span>，浑身抽搐，嘴里说着不属于他的声音——旁人说他被<span class="mys">邪祟附体</span>了。',
+    cultMin:0,cultMax:3,trigger:{minAge:13},choices:[
+    {text:'试着帮忙',effect:{karma:5,constitution:-3,sanity:-5},log:'你拉住他却被甩出好远，你根本无能为力'},
+    {text:'去请修行人来',effect:{connections:5,wealth:-5},log:'修行人来时那人已经断气了...'},
+    {text:'吓得跑开',effect:{sanity:-3},log:'那不属于人的声音在你耳边回响了很久'}]},
+  {text:'村口的<span class="npc">算命先生</span>拉住你，说你面相奇特——"有修仙之缘，却也有<span class="danger-text">早夭之相</span>"。',
+    cultMin:0,cultMax:3,trigger:{minAge:11},choices:[
+    {text:'请他详细看看',effect:{comprehension:5,wealth:-5,sanity:-3},log:'算命先生说你命中注定要走一条不寻常的路'},
+    {text:'不信这些',effect:{sanity:3,comprehension:2},log:'命运是自己走出来的'},
+    {text:'偷偷记在心里',effect:{comprehension:3,qiyun:2},log:'也许...真有修仙这回事？'}]},
+
+  // --- 锻体 tier (cultMin:3, cultMax:10) ---
+  {text:'清晨打坐时，你忽然感受到天地间有一种看不见的<span class="mys">灵气</span>在流动——这是你第一次触碰到修行的门槛！',
+    cultMin:3,cultMax:10,trigger:{minAge:13},choices:[
+    {text:'尝试吸纳灵气',effect:{cultivation:8,constitution:3,comprehension:5},log:'灵气涌入体内的感觉如同久旱逢甘霖！'},
+    {text:'仔细感受不急着修炼',effect:{comprehension:8,sanity:3},log:'你记住了灵气流动的规律，这对日后大有帮助'},
+    {text:'兴奋地告诉别人',effect:{connections:5,cultivation:3},log:'修行人嘲笑你大惊小怪，但也有人投来羡慕的目光'}]},
+  {text:'夜间赶路时，你发现自己在原地<span class="danger-text">绕圈</span>——这是<span class="mys">鬼打墙</span>！一种低级邪祟的伎俩。',
+    cultMin:3,cultMax:10,trigger:{minAge:14},choices:[
+    {text:'用学到的驱邪法破解',effect:{cultivation:5,comprehension:5,sanity:-3},log:'你用最基本的驱邪手段破了鬼打墙，邪祟哀嚎着散去'},
+    {text:'闭眼凭感觉走',effect:{comprehension:3,constitution:2,sanity:-5},log:'你跌跌撞撞走出了鬼打墙，但心有余悸'},
+    {text:'大喊大叫壮胆',effect:{sanity:-3,qiyun:2},log:'你的叫声惊动了附近的修行人，他帮你解了围'}]},
+  {text:'你的眼前忽然蒙上一层雾——看什么都像隔了一层纱，这是<span class="mys">鬼遮眼</span>！',
+    cultMin:3,cultMax:10,trigger:{minAge:14},choices:[
+    {text:'咬破舌尖喷血破邪',effect:{cultivation:5,constitution:-3,sanity:3},log:'鲜血蕴含阳气，鬼遮眼当即被破'},
+    {text:'用灵气冲击双目',effect:{cultivation:5,comprehension:3,sanity:-5},log:'灵气驱散了迷雾，你看到了藏在暗处的一团黑影'},
+    {text:'原地不动等它消失',effect:{sanity:-8,comprehension:2},log:'半个时辰后鬼遮眼自行消散，但你已被吓得不轻'}]},
+  {text:'路过一处<span class="loc">修行之地</span>，你远远看到有人盘膝而坐，周身灵气环绕——那是真正的修行者在修炼。',
+    cultMin:3,cultMax:10,trigger:{minAge:13},choices:[
+    {text:'上前请教',effect:{connections:5,comprehension:8,cultivation:3},log:'修行者见你有缘，指点了你几句入门心法'},
+    {text:'远远观摩',effect:{comprehension:5,cultivation:3},log:'光是看着就让你心生向往——总有一天你也要达到那个境界'},
+    {text:'暗中模仿他的修炼方式',effect:{cultivation:5,sanity:-3},log:'你学了个大概，但没有心法指引，修炼起来磕磕绊绊'}]},
+  {text:'你在锻体过程中感到<span class="danger-text">经脉发热</span>，似乎有什么东西在体内觉醒——但你不确定那是好事还是坏事。',
+    cultMin:3,cultMax:10,trigger:{minAge:15},choices:[
+    {text:'顺其自然让它觉醒',effect:{cultivation:8,constitution:3,sanity:-5},log:'一股暖流在经脉中运行了一个周天，你的锻体修行更进一步'},
+    {text:'强行压制',effect:{constitution:5,comprehension:3},log:'你不敢冒险，选择稳扎稳打'},
+    {text:'找人帮你查看',effect:{connections:3,wealth:-5,comprehension:5},log:'前辈说你体内有一丝先天灵气，好好培养前途无量'}]},
+
+  // --- 练气 tier (cultMin:10, cultMax:30) ---
+  {text:'你在荒野遇到一具<span class="danger-text">走尸</span>——它穿着破烂的衣服，双目无神地朝你走来。这是最常见的低阶邪祟。',
+    cultMin:10,cultMax:30,trigger:{minAge:16},choices:[
+    {text:'以灵气斩杀走尸',effect:{cultivation:5,comprehension:3,karma:3},log:'走尸在你的灵气攻击下化为灰烬',combat:20},
+    {text:'将它引走避开',effect:{comprehension:3,sanity:-3},log:'走尸追了你一段路就停了，它的活动范围有限'},
+    {text:'查看走尸身上有没有线索',effect:{comprehension:5,cultivation:3,sanity:-5},log:'走尸身上有一枚令牌，上面刻着某个门派的标记'}]},
+  {text:'深山中，你撞见了一只<span class="danger-text">人面蜘蛛</span>——人的脸长在蜘蛛的身体上，嘴里还在念念有词。',
+    cultMin:10,cultMax:30,trigger:{minAge:18},locReq:'nan_jiang',choices:[
+    {text:'出手斩杀',effect:{cultivation:8,constitution:-3,karma:3,sanity:-8},log:'人面蜘蛛临死前用人的声音说了一句"谢谢"——它曾经是人',combat:30},
+    {text:'以符咒将它封印',effect:{cultivation:5,comprehension:5,sanity:-5},log:'你将人面蜘蛛封在一块石头里，带着它离开'},
+    {text:'转身就跑',effect:{constitution:3,sanity:-5},log:'你跑出去好远才敢回头——身后空无一人'}]},
+  {text:'一具<span class="danger-text">行尸</span>出现在路上——比走尸更强，它还保留着生前的部分武艺！',
+    cultMin:10,cultMax:30,trigger:{minAge:17},choices:[
+    {text:'正面迎战',effect:{cultivation:8,constitution:-3,comprehension:3},log:'你与行尸搏斗数十回合，最终将它打散',combat:35},
+    {text:'以巧取胜',effect:{cultivation:5,comprehension:5,sanity:-3},log:'你利用地形和符咒消灭了行尸',req:{comprehension:15}},
+    {text:'呼叫同伴帮忙',effect:{connections:3,cultivation:3},log:'你和同伴合力消灭了行尸'}]},
+  {text:'你第一次和邪祟<span class="danger-text">正面交锋</span>——对方是一团黑雾形态的怨灵，能冻结你周围的空气。',
+    cultMin:10,cultMax:30,trigger:{minAge:18},choices:[
+    {text:'以灵气硬抗',effect:{cultivation:10,constitution:-5,sanity:-8,comprehension:5},log:'你几乎拼尽全力才将怨灵驱散——原来邪祟如此可怕',combat:40},
+    {text:'诵驱邪咒',effect:{cultivation:8,sanity:-5,comprehension:5},log:'驱邪咒发挥了作用，怨灵在咒声中痛苦消散'},
+    {text:'拖延等天亮',effect:{constitution:-3,sanity:-10,comprehension:3},log:'你死死撑到天亮，阳光一出，怨灵自行散去——但你也快虚脱了'}]},
+  {text:'你感知到一处<span class="mys">灵气异常</span>的地方——那里的植物枯死、动物绝迹，只有一棵歪脖子树上挂着什么东西。',
+    cultMin:10,cultMax:30,trigger:{minAge:17},choices:[
+    {text:'靠近查看',effect:{cultivation:8,sanity:-10,comprehension:8},log:'树上挂着的是一件法器残片，上面残留着强大的邪气'},
+    {text:'在远处以灵力探查',effect:{comprehension:8,cultivation:5},log:'你感知到地下埋着什么东西，但你不敢挖'},
+    {text:'做好标记以后再来',effect:{comprehension:3},log:'你记下了位置，日后修为更高时再来探索'}]},
+
+  // --- 筑基 tier (cultMin:30, cultMax:60) ---
+  {text:'你在一座古寺中看到了传说中的<span class="danger-text">肉身佛</span>——一尊金光闪闪的佛像里，包裹着一具真人的尸体。最诡异的是，它的手指还在微微颤动。',
+    cultMin:30,cultMax:60,trigger:{minAge:20},locReq:'zheng_de_si',choices:[
+    {text:'以灵力探查肉身佛',effect:{cultivation:10,comprehension:10,sanity:-15},log:'肉身佛里的人还活着！他被封在里面已经上百年，处于一种非死非活的状态'},
+    {text:'将肉身佛打碎解救他',effect:{cultivation:8,karma:10,constitution:-5,sanity:-10},log:'你打碎佛像，里面的人睁开眼，说了句"别让我出来"后化为飞灰',combat:45},
+    {text:'向寺中僧人询问',effect:{connections:5,comprehension:8},log:'僧人面色惊慌地把你赶了出去'}]},
+  {text:'你发现了一个被囚禁的<span class="danger-text">活人彘</span>——被人砍去四肢、挖去双眼，却被邪法维持着生命。它在对你求救。',
+    cultMin:30,cultMax:60,trigger:{minAge:20},choices:[
+    {text:'救下他并送去医治',effect:{karma:15,wealth:-15,connections:5,sanity:-10},log:'你将人彘救下，但他已经失去了活下去的意志'},
+    {text:'给他一个痛快',effect:{karma:5,sanity:-5},log:'你结束了他的痛苦，这也许是最大的慈悲'},
+    {text:'追查是谁做的',effect:{cultivation:5,comprehension:8,sanity:-8,connections:3},log:'你顺着线索查到了一个邪修的巢穴'}]},
+  {text:'<span class="fac">坐忘道</span>的人盯上了你——一个戴面具的人出现在你面前，说<span class="npc">骰子</span>对你很感兴趣。',
+    cultMin:30,cultMax:60,trigger:{minAge:22},choices:[
+    {text:'拒绝并驱逐他',effect:{cultivation:5,connections:-5,sanity:5},log:'面具人笑着消失了，但你知道坐忘道不会善罢甘休',combat:50},
+    {text:'试着和他周旋套话',effect:{comprehension:10,connections:5,sanity:-10},log:'你从他口中得知了坐忘道的一些内幕——他们在寻找"心蟠"'},
+    {text:'假意答应暗中调查',effect:{comprehension:8,cultivation:5,karma:-3,sanity:-5},log:'你假装被拉拢，实则在暗中搜集坐忘道的情报'}]},
+  {text:'你接到了一个<span class="danger-text">驱邪任务</span>——某个村子被邪祟笼罩，三天内死了七个人，急需筑基以上的修士前去。',
+    cultMin:30,cultMax:60,trigger:{minAge:21},choices:[
+    {text:'独自前往',effect:{cultivation:12,karma:10,constitution:-5,sanity:-10,comprehension:5},log:'你花了三天三夜才将邪祟驱散——它比你想象的强大得多',combat:55},
+    {text:'召集同伴一起去',effect:{cultivation:8,connections:8,karma:8},log:'你们合力将邪祟消灭，村民感恩戴德'},
+    {text:'要求高额报酬再去',effect:{cultivation:8,wealth:20,karma:-5},log:'你完成了任务赚了一笔，但心里有点过意不去'}]},
+  {text:'筑基之后你的感知大幅提升，你发现了一处<span class="mys">上古遗迹</span>的入口——里面传来微弱的灵气波动。',
+    cultMin:30,cultMax:60,trigger:{minAge:22},choices:[
+    {text:'独自探索遗迹',effect:{cultivation:15,comprehension:10,sanity:-12,constitution:-5},log:'遗迹中有上古修士留下的传承碎片，你获益匪浅'},
+    {text:'做好准备再进去',effect:{comprehension:8,cultivation:5},log:'你在入口处布下防护阵法再进入，虽然收获少了些但更安全'},
+    {text:'将消息告知门派',effect:{connections:10,cultivation:3},log:'门派派人来探索，你因为发现遗迹获得了嘉奖'}]},
+
+  // --- 金丹 tier (cultMin:60, cultMax:100) ---
+  {text:'你遭遇了一头<span class="danger-text">千年邪物</span>——它有着人的上半身和蛇的下半身，周围的灵气被它吞噬殆尽。',
+    cultMin:60,cultMax:100,trigger:{minAge:25},choices:[
+    {text:'金丹之力全力出击',effect:{cultivation:15,constitution:-8,sanity:-10,comprehension:8},log:'你与千年邪物大战，最终以金丹之力将它封印',combat:75},
+    {text:'以阵法困住它',effect:{cultivation:10,comprehension:10,sanity:-8},log:'你布下困阵暂时压制了邪物，但它终有一天会挣脱',req:{comprehension:30}},
+    {text:'撤退保命',effect:{constitution:3,sanity:-5},log:'金丹修士也不是万能的，活着才有未来'}]},
+  {text:'一个<span class="danger-text">邪修势力</span>在暗中对你出手——他们用了<span class="mys">七星蚀魂阵</span>，企图在你突破时偷袭。',
+    cultMin:60,cultMax:100,trigger:{minAge:26},choices:[
+    {text:'反杀邪修',effect:{cultivation:12,connections:8,karma:5,constitution:-5},log:'你将计就计，在他们阵法启动的一刻反向攻击',combat:70},
+    {text:'以金丹护体硬撑',effect:{cultivation:8,constitution:-8,sanity:-5},log:'金丹化为护盾挡住了偷袭，但你也受了内伤'},
+    {text:'提前布置陷阱',effect:{cultivation:10,comprehension:8,connections:5},log:'你早已察觉异常，邪修反而落入了你的陷阱',req:{comprehension:35}}]},
+  {text:'你被卷入了两个<span class="fac">门派</span>之间的争斗——双方都想拉拢你这个金丹修士。',
+    cultMin:60,cultMax:100,trigger:{minAge:27},choices:[
+    {text:'选择一方效力',effect:{connections:15,cultivation:10,karma:-5},log:'你成为了争斗的一环，实力增长的同时也树立了敌人'},
+    {text:'两不相帮',effect:{connections:-10,sanity:5,comprehension:5},log:'两个门派都对你心生不满'},
+    {text:'调解双方',effect:{connections:15,karma:10,comprehension:5},log:'你居中调解，双方暂时停战，你获得了两方的尊重',req:{connections:30}}]},
+  {text:'你在修炼中感应到了<span class="mys">天地法则</span>的一丝波动——这是金丹修士才能触碰到的层次。',
+    cultMin:60,cultMax:100,trigger:{minAge:25},choices:[
+    {text:'全力感悟法则',effect:{cultivation:15,comprehension:12,sanity:-8},log:'你对天地法则有了初步理解，修为大进'},
+    {text:'谨慎接触',effect:{comprehension:8,cultivation:8},log:'你小心翼翼地感受法则的边缘，虽然进展慢但很稳'},
+    {text:'记录下感悟分享给他人',effect:{comprehension:5,connections:10,karma:5},log:'你将感悟记录成册，帮助了许多后辈修士'}]},
+
+  // --- 元婴+ tier (cultMin:100) ---
+  {text:'天空出现了<span class="mys">天道异象</span>——九色祥云翻涌，隐约可见一只巨大的眼睛在注视人间。你能感受到那是<span class="npc">司命</span>的气息。',
+    cultMin:100,trigger:{minAge:30},choices:[
+    {text:'以元婴感应司命',effect:{cultivation:20,comprehension:15,sanity:-20},log:'你短暂地触碰到了司命的意志——那是远超凡人理解的存在'},
+    {text:'收敛气息不引起注意',effect:{sanity:5,comprehension:8},log:'在司命面前，即使是元婴修士也不过是蝼蚁'},
+    {text:'参悟天道异象中的玄机',effect:{cultivation:15,comprehension:15,sanity:-10},log:'天道异象中蕴含着宇宙运行的部分规律'}]},
+  {text:'你参与了一场<span class="danger-text">大规模灵界战斗</span>——数百名修士联手对抗从裂缝中涌出的域外邪魔。',
+    cultMin:100,trigger:{minAge:32},choices:[
+    {text:'冲锋在前',effect:{cultivation:20,constitution:-10,karma:15,connections:15,sanity:-10},log:'你以元婴之力斩杀数十头邪魔，威名远播',combat:90},
+    {text:'布阵支援',effect:{cultivation:15,comprehension:10,connections:10},log:'你以阵法封锁裂缝，挽救了无数修士的性命',req:{comprehension:40}},
+    {text:'保护平民撤离',effect:{karma:15,connections:8,cultivation:8,sanity:-5},log:'你护送百姓安全撤离战场，功德无量'}]},
+  {text:'你在突破境界时，感应到了<span class="mys">天道的压制</span>——仿佛有一只无形的手在阻止你变得更强。',
+    cultMin:100,trigger:{minAge:31},choices:[
+    {text:'硬抗天道压制',effect:{cultivation:18,constitution:-8,sanity:-15,comprehension:10},log:'你以不屈的意志对抗天道，虽然受了重伤但境界突破了'},
+    {text:'顺势而为',effect:{cultivation:12,comprehension:12,sanity:-5},log:'你不与天道硬碰，而是找到天道的缝隙悄然突破'},
+    {text:'暂时放弃突破',effect:{comprehension:8,sanity:5},log:'天道的威压让你明白——你还没准备好'}]},
+  {text:'一位<span class="npc">上古大能</span>的残魂出现在你面前，要传你一门<span class="mys">失传神通</span>——代价是帮他完成生前未了的心愿。',
+    cultMin:100,trigger:{minAge:30},choices:[
+    {text:'接受传承',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-5},log:'残魂将毕生所学灌入你的神识——代价是你要替他杀一个人'},
+    {text:'帮他了却心愿但不要传承',effect:{karma:15,connections:5,comprehension:8},log:'你帮残魂找到了他的后人，他安详地消散了'},
+    {text:'拒绝',effect:{comprehension:5},log:'无功不受禄，你不想欠一个死人的因果'}]},
+  {text:'你发现<span class="loc">天地之间</span>存在着看不见的<span class="mys">因果之线</span>——每个人的命运都被线牵引着，而你已经能看到这些线了。',
+    cultMin:100,trigger:{minAge:33},choices:[
+    {text:'尝试斩断自己的因果线',effect:{cultivation:20,karma:-10,sanity:-20,qiyun:15},log:'你斩断了部分因果——从此你不再受某些命运的束缚，但也失去了一些联系'},
+    {text:'只是观察不干预',effect:{comprehension:15,cultivation:10},log:'你明白了因果的运行规律，但选择不去干预'},
+    {text:'帮别人理顺因果',effect:{karma:15,connections:10,sanity:-8},log:'你用因果之力帮人解除了纠缠的业障'}]},
+];
+
+// === DEATH EVENTS (events where death is a possible outcome) ===
+const DEATH_EVENTS = [
+  {text:'<span class="loc">白玉京</span>之战已到最后关头，<span class="fac">兵家</span>将士们一个个倒下。你手中的兵书发出血色光芒——<span class="mys">兵家自刎归天之法</span>，以命换命，化为<span class="itm">将相首</span>永镇白玉京。',
+    factionReq:'bingjia',locReq:'baiyu_jing',trigger:{yearMin:28,yearMax:36},cultMin:30,choices:[
+    {text:'自刎归天，化为将相首',effect:{cultivation:100,karma:50},log:'你以兵书为刃，慨然自刎！',die:true,deathMsg:'你以兵家之法自刎归天，化为将相首永镇白玉京！血染兵书，英魂不灭！'},
+    {text:'拼死突围求生',effect:{cultivation:15,constitution:-15,sanity:-10,karma:5},log:'你杀出一条血路逃出了白玉京，但身后的战友再也回不来了',combat:85}]},
+  {text:'突破<span class="mys">金丹</span>大境界的关键时刻，你的内丹出现了裂纹——<span class="danger-text">走火入魔</span>的征兆！体内的灵气开始失控暴走！',
+    cultMin:60,trigger:{minAge:25},choices:[
+    {text:'强行镇压内丹',effect:{cultivation:-20,constitution:-15,sanity:-15},log:'你拼尽全力稳住了内丹，但修为大幅倒退，经脉也受损严重'},
+    {text:'破而后立，任其爆发',effect:{cultivation:30,constitution:-10,sanity:-20},log:'内丹碎裂又重凝！你以命搏得了更高的境界！',die:true,deathMsg:'内丹崩碎，灵气暴走！你的身体承受不住如此恐怖的力量，化为飞灰消散于天地间。'},
+    {text:'服用保命丹药',effect:{cultivation:-10,wealth:-30,constitution:-5},log:'丹药暂时压制了走火入魔，但后遗症严重',req:{wealth:30}}]},
+  {text:'你独自探索一处<span class="danger-text">邪祟巢穴</span>，深处盘踞着一头<span class="mys">百年邪物</span>——它张开血盆大口，周围的光线都被吞噬。',
+    cultMin:20,trigger:{minAge:18},choices:[
+    {text:'与邪物殊死一搏',effect:{cultivation:15,constitution:-10,sanity:-15,karma:5},log:'你与邪物激战！',die:true,deathMsg:'邪物的力量远超你的想象——它将你的灵魂和肉体一同吞噬，你消失在了无尽的黑暗中。'},
+    {text:'用法器自保并撤退',effect:{cultivation:5,constitution:-5,sanity:-10},log:'你以法器挡住邪物的攻击，趁隙逃出了巢穴'},
+    {text:'以自身为饵引它到阳光下',effect:{cultivation:12,comprehension:8,constitution:-8,sanity:-8},log:'邪物追出洞穴后被阳光灼伤，你趁机将它消灭',req:{comprehension:20}}]},
+  {text:'<span class="fac">法教</span>的<span class="danger-text">血祭仪式</span>即将开始——而你，被选为了祭品之一。法坛上的血槽已经刻好，于儿神的气息越来越浓。',
+    factionReq:'fa_jiao',trigger:{minAge:20},cultMin:20,choices:[
+    {text:'慨然赴死献祭于儿神',effect:{cultivation:50,karma:-30},log:'你的血液流入法坛...',die:true,deathMsg:'你的血液浇灌了于儿神的法坛，灵魂被于儿神吞噬——在最后一刻你看到了于儿神的真面目，那是超越理解的恐怖。'},
+    {text:'拼死反抗逃出法坛',effect:{cultivation:10,constitution:-10,connections:-15,sanity:-10},log:'你挣脱了束缚杀出一条血路，从此成为法教叛徒',combat:65},
+    {text:'以邪法反噬法坛',effect:{cultivation:15,sanity:-20,karma:-10,constitution:-5},log:'你以自身修为搅乱了血祭仪式，法坛爆炸！',req:{cultivation:40}}]},
+  {text:'<span class="fac">坐忘道</span>的<span class="npc">骰子</span>找到你，笑嘻嘻地说要玩一个<span class="danger-text">游戏</span>——"赢了给你一个大造化，输了嘛...嘿嘿。"他手中的骰子已经开始转动。',
+    factionReq:'zuowang',trigger:{minAge:18},cultMin:15,choices:[
+    {text:'接受骰子的游戏',effect:{cultivation:20,qiyun:-15,sanity:-15},log:'骰子落定...',die:true,deathMsg:'骰子停在了最坏的那一面——骰子大笑着说"运气不好呢"，你的意识被永远封印在了骰子里，成为了它的一部分。'},
+    {text:'拒绝并警惕他的诡计',effect:{connections:-10,sanity:-5},log:'骰子撇了撇嘴说"真无趣"，消失在阴影中'},
+    {text:'提出你自己的规则',effect:{comprehension:10,sanity:-10,connections:3},log:'骰子似乎对你的提议来了兴趣，你暂时化解了危机',req:{comprehension:25}}]},
+  {text:'一群平民被<span class="danger-text">邪祟围困</span>在山谷中，邪祟数量太多——要救他们，你必须以命相搏。',
+    karmaMin:30,trigger:{minAge:20},cultMin:30,choices:[
+    {text:'燃烧修为护送他们突围',effect:{cultivation:-30,karma:30,connections:20},log:'你燃烧自身修为化为光墙挡住了邪祟...',die:true,deathMsg:'你以自身为代价救下了所有人——在生命的最后一刻，你看到了他们安全离去的背影。百姓为你立了一座碑。'},
+    {text:'带领他们且战且退',effect:{cultivation:10,constitution:-10,karma:10,connections:10,sanity:-8},log:'你拼尽全力带领众人杀出了一条路',combat:70},
+    {text:'先去搬救兵',effect:{cultivation:3,karma:-5,connections:5},log:'你去找了援军回来，但已经有人在等待中遇难了'}]},
+  {text:'你发现了一处<span class="mys">龙脉</span>的露头——那是大地深处的灵脉核心。强大的力量在诱惑你触碰它。',
+    cultMin:80,trigger:{minAge:28},choices:[
+    {text:'触碰龙脉汲取力量',effect:{cultivation:40,constitution:-15,sanity:-20},log:'龙脉的力量涌入你的身体...',die:true,deathMsg:'龙脉的力量远超你所能承受——滔天的灵力将你的经脉、肉身、元神一一撕碎，你化为了龙脉的养分。'},
+    {text:'以阵法缓慢抽取',effect:{cultivation:20,comprehension:10,constitution:-5},log:'你小心翼翼地抽取了一丝龙脉之力，已足够受用',req:{comprehension:35}},
+    {text:'只是观察不触碰',effect:{comprehension:12,cultivation:5},log:'你记录下了龙脉的位置和特征，这些信息本身就是宝贵的资源'}]},
+  {text:'你试图直接<span class="danger-text">参悟天道</span>——以元神直面天地法则的本源。这是修士最疯狂的行为。',
+    cultMin:150,trigger:{minAge:35},choices:[
+    {text:'以元神直面天道',effect:{cultivation:50,comprehension:30,sanity:-30},log:'你的元神触碰到了天道的边缘...',die:true,deathMsg:'天道不可直视！你的元神在天道的威压下崩碎，无数法则之力将你的存在从这个世界上抹去——仿佛你从未存在过。'},
+    {text:'以天道碎片间接参悟',effect:{cultivation:25,comprehension:20,sanity:-15},log:'你从天道的碎片中领悟了一丝法则，受益无穷'},
+    {text:'放弃这个疯狂的想法',effect:{comprehension:8,sanity:5},log:'你及时收手——有些东西不是现在的你能触碰的'}]},
+  {text:'你修为日高，却发现有人一直在<span class="danger-text">暗中跟踪</span>你——今夜，刺客终于动手了。',
+    cultMin:40,trigger:{minAge:22},karmaMax:-10,choices:[
+    {text:'迎战刺客',effect:{cultivation:10,constitution:-8,connections:-5},log:'你与刺客在黑暗中搏斗...',die:true,deathMsg:'刺客的毒针穿透了你的护体灵气——剧毒侵入心脉，你在黑暗中缓缓倒下。没有人知道是谁派来的刺客。'},
+    {text:'以替身术脱身',effect:{cultivation:5,comprehension:5,wealth:-10},log:'你提前布下了替身，刺客杀了个假的你',req:{comprehension:25}},
+    {text:'引刺客到人多的地方',effect:{connections:5,sanity:-5,karma:3},log:'刺客不敢在众目睽睽之下动手，悄然遁去'}]},
+  {text:'<span class="loc">南疆</span>的<span class="danger-text">蛊母</span>对你下了<span class="mys">七日噬心蛊</span>——如果七天内找不到解法，蛊虫会吃掉你的心脏。',
+    locReq:'nan_jiang',trigger:{minAge:20},cultMin:20,choices:[
+    {text:'硬撑七日寻找解法',effect:{constitution:-15,sanity:-15,comprehension:10},log:'你拼命寻找解蛊之法...',die:true,deathMsg:'第七日，蛊虫准时发作——它从你的心脏中钻出，带着你最后一丝生机离去。南疆的蛊，果然名不虚传。'},
+    {text:'割肉取蛊',effect:{constitution:-10,sanity:-10,cultivation:5},log:'你以惊人的意志力割开自己的胸口取出了蛊虫！'},
+    {text:'以毒攻毒',effect:{constitution:-8,cultivation:8,comprehension:5,sanity:-5},log:'你服下烈性毒药以毒攻毒，蛊虫被毒死了，你也差点跟着去',req:{comprehension:20}}]},
+];
+
+// === ERA EVENTS (world state changes based on year) ===
+const ERA_EVENTS = [
+  // --- Pre-坐忘道乱 (year < 5): 太平日子 ---
+  {text:'天下<span class="loc">太平</span>，集市上人来人往。偶尔有人提起<span class="mys">修仙</span>的传闻，旁人都当作是茶余饭后的谈资。',
+    trigger:{yearMax:5,minAge:10},choices:[
+    {text:'打听修仙的事',effect:{comprehension:5,connections:3},log:'卖茶的老头说他年轻时见过一个会飞的人，但谁也不信他'},
+    {text:'安心过日子',effect:{wealth:5,sanity:3},log:'太平盛世，活着就好'}]},
+  {text:'街头<span class="npc">说书人</span>讲起了修仙的故事——什么练气筑基、飞剑御空。小孩们听得入迷，大人们嗤之以鼻。',
+    trigger:{yearMax:5,minAge:10},choices:[
+    {text:'认真听完',effect:{comprehension:5,cultivation:2},log:'说书人的故事里有几分真实——你好像听到了一些修行的门道'},
+    {text:'给说书人打赏',effect:{wealth:-3,connections:3,karma:3},log:'说书人向你道谢，多讲了一段秘闻'}]},
+  {text:'村里的老人说这几年<span class="loc">风调雨顺</span>，是国运昌盛之兆。但他也压低声音说："太平得太久了，总要出事的。"',
+    trigger:{yearMax:5,minAge:11},choices:[
+    {text:'追问他什么意思',effect:{comprehension:5,sanity:-3},log:'老人讲了一个关于"坐忘"的传说，你听得似懂非懂'},
+    {text:'不以为然',effect:{sanity:3},log:'杞人忧天罢了'}]},
+
+  // --- 坐忘道乱期间 (year 5-15): 人心惶惶 ---
+  {text:'<span class="fac">坐忘道</span>作乱的消息传遍天下！各地出现了<span class="danger-text">缩阳事件</span>——人们恐慌不已，互相猜疑。',
+    trigger:{yearMin:5,yearMax:15,minAge:12},choices:[
+    {text:'打探详细消息',effect:{comprehension:8,sanity:-8,connections:3},log:'你了解到坐忘道利用人心之恐惧传播邪法——缩阳事件只是开始'},
+    {text:'加强自身防备',effect:{constitution:3,cultivation:3,sanity:-3},log:'你日夜戒备，不敢松懈'},
+    {text:'安抚周围的人',effect:{connections:8,karma:5,sanity:-3},log:'你劝慰邻里不要自乱阵脚，渐渐成了大家的主心骨'}]},
+  {text:'街上的人越来越少了——<span class="fac">坐忘道</span>的阴影笼罩一切。有人说夜里能听到<span class="danger-text">诡异的笑声</span>，像骰子碰撞的声音。',
+    trigger:{yearMin:5,yearMax:15,minAge:13},choices:[
+    {text:'夜里出去查看',effect:{cultivation:5,sanity:-10,comprehension:5},log:'你在黑暗中看到了一个戴面具的人影——它冲你笑了笑就消失了'},
+    {text:'紧闭门户',effect:{sanity:-3},log:'笑声持续了整夜，你一夜未眠'},
+    {text:'去监天司报告',effect:{connections:5,karma:3},log:'监天司的人面色凝重地记录了你的情报'}]},
+  {text:'坐忘道的<span class="danger-text">余波</span>未消，百姓中开始流传各种谣言——"坐忘道的骰子能预知未来"、"加入坐忘道就能长生不老"。',
+    trigger:{yearMin:7,yearMax:15,minAge:12},choices:[
+    {text:'辟谣',effect:{connections:5,karma:5,sanity:-3},log:'你尽力辟谣，但信的人还是信'},
+    {text:'趁乱搜集情报',effect:{comprehension:8,connections:3,sanity:-5},log:'乱世出情报，你从谣言中筛出了一些有价值的信息'},
+    {text:'装作不知道',effect:{sanity:3},log:'多一事不如少一事'}]},
+
+  // --- 斗姥降临后 (year 10-20): 各派备战 ---
+  {text:'天空出现了<span class="mys">诡异的裂缝</span>——传言那是<span class="npc">斗姥</span>降临的前兆。各大门派开始紧急备战。',
+    trigger:{yearMin:10,yearMax:20,minAge:15},choices:[
+    {text:'响应号召加入备战',effect:{cultivation:8,connections:8,karma:5},log:'你加入了备战的队伍，日夜修炼以应对即将到来的大劫'},
+    {text:'趁此机会修炼',effect:{cultivation:10,comprehension:5},log:'大劫将至，只有实力才是保命的根本'},
+    {text:'储备物资以防万一',effect:{wealth:10,constitution:3},log:'你囤积了大量灵药和食物，以备不时之需'}]},
+  {text:'各派<span class="fac">修士</span>纷纷奔走——有的结盟、有的备战、有的逃离。天下局势一日三变。',
+    trigger:{yearMin:10,yearMax:20,minAge:16},choices:[
+    {text:'加入同盟共抗大敌',effect:{connections:10,cultivation:5,karma:5},log:'你与其他修士结成了同盟，约定共抗斗姥'},
+    {text:'独善其身',effect:{cultivation:8,comprehension:5,connections:-5},log:'乱世之中，你选择了独自修行'},
+    {text:'趁乱发财',effect:{wealth:15,karma:-8},log:'你在混乱中低买高卖，赚了一笔横财'}]},
+  {text:'修士们议论纷纷——<span class="npc">斗姥</span>到底是什么？有人说是邪神，有人说是<span class="mys">司命</span>，没人说得清楚。',
+    trigger:{yearMin:10,yearMax:20,minAge:14},choices:[
+    {text:'查阅古籍寻找答案',effect:{comprehension:10,sanity:-8},log:'古籍中的记载支离破碎，但你隐约拼凑出了斗姥的真相——它是掌管谎言的司命'},
+    {text:'向高人请教',effect:{connections:5,comprehension:8,sanity:-5},log:'高人面色凝重地说："斗姥...不是我们能对抗的存在。"'}]},
+
+  // --- 法教入侵期间 (year 20-32): 战火纷飞 ---
+  {text:'<span class="fac">法教</span>大军压境！<span class="loc">边境</span>告急，大批<span class="danger-text">难民</span>涌入内地。',
+    trigger:{yearMin:20,yearMax:32,minAge:15},choices:[
+    {text:'去边境支援',effect:{cultivation:10,constitution:-5,karma:10,connections:8},log:'你赶赴边境参与抵抗法教的入侵',combat:50},
+    {text:'帮助安置难民',effect:{karma:10,connections:10,wealth:-10},log:'你出钱出力帮助难民安顿下来'},
+    {text:'趁乱修炼',effect:{cultivation:8,comprehension:5,karma:-5},log:'你闭关修炼，对外面的战火充耳不闻'}]},
+  {text:'物价飞涨！一颗普通的<span class="itm">辟谷丹</span>要价以前的十倍。黑市上什么都能买到——只要你出得起价。',
+    trigger:{yearMin:20,yearMax:32,minAge:14},choices:[
+    {text:'高价囤积物资',effect:{wealth:-20,constitution:5,cultivation:3},log:'你咬牙买下了必需品，钱袋大幅缩水'},
+    {text:'去黑市碰运气',effect:{wealth:-10,cultivation:5,sanity:-5,qiyun:-3},log:'黑市上的东西良莠不齐，你买到了一些有用的东西'},
+    {text:'以物易物',effect:{connections:5,wealth:5},log:'你用自己的本事换取了所需的物资'}]},
+  {text:'法教的<span class="danger-text">于儿神</span>信徒在各地散布恐怖——活人祭祀、血池灌溉。整个大梁笼罩在恐惧之中。',
+    trigger:{yearMin:22,yearMax:32,minAge:16},choices:[
+    {text:'加入对抗法教的队伍',effect:{cultivation:8,karma:10,connections:10,constitution:-3},log:'你和其他修士组成了抗击法教的游击队'},
+    {text:'暗中搜集法教情报',effect:{comprehension:8,connections:5,sanity:-8},log:'你冒险潜入法教控制区，获取了重要情报'},
+    {text:'保护自己的村庄',effect:{karma:5,connections:5,constitution:-3},log:'你日夜守卫村庄，不让法教的魔爪伸过来'}]},
+
+  // --- 死亡消失期间 (year 25-35): 秩序崩坏 ---
+  {text:'世界出了大问题——<span class="danger-text">没有人能死了</span>。被砍成两段的人还在挣扎，被毒杀的人痛苦地活着。死亡，消失了。',
+    trigger:{yearMin:25,yearMax:35,minAge:16},choices:[
+    {text:'研究死亡消失的原因',effect:{comprehension:12,sanity:-15,cultivation:5},log:'你发现这与司命有关——掌管死亡的力量被某种更大的力量干扰了'},
+    {text:'帮助那些想死却死不了的人',effect:{karma:10,sanity:-10,connections:5},log:'你无法给他们解脱，只能减轻他们的痛苦'},
+    {text:'趁机突破境界',effect:{cultivation:10,karma:-5,sanity:-8},log:'不会死？那就拼命修炼！——虽然痛苦不会减少'}]},
+  {text:'不死之人越来越多——有些已经不成人形却依然<span class="danger-text">活着</span>。他们的哀嚎日夜不绝。世间秩序正在崩坏。',
+    trigger:{yearMin:27,yearMax:35,minAge:17},choices:[
+    {text:'以封印术让他们沉睡',effect:{cultivation:8,karma:8,comprehension:5,sanity:-8},log:'你将不死之人封印入睡——这是你能做的最大仁慈'},
+    {text:'寻找恢复死亡的方法',effect:{comprehension:10,cultivation:5,sanity:-10},log:'你走遍各地寻找答案，但这已经超出了凡人能解决的范畴'},
+    {text:'远离人群避世',effect:{sanity:-5,cultivation:5},log:'不死人的哀嚎让你精神崩溃，你选择逃入深山'}]},
+  {text:'死亡消失的副作用蔓延——<span class="danger-text">食物不再腐烂</span>，但也不再有新的生命诞生。整个世界陷入了一种诡异的停滞。',
+    trigger:{yearMin:28,yearMax:35,minAge:15},choices:[
+    {text:'深入研究这个现象',effect:{comprehension:12,cultivation:5,sanity:-10},log:'你发现这不仅是死亡消失——而是"终结"这个概念本身被抹去了'},
+    {text:'尽力维持秩序',effect:{connections:8,karma:8,sanity:-5},log:'你在混乱中努力维持着周围人的正常生活'},
+    {text:'这是修行的契机',effect:{cultivation:10,comprehension:8,sanity:-8},log:'你在这诡异的环境中领悟了关于生死的道理'}]},
+
+  // --- 天灾期间 (year 30-40): 谎言与腐烂消失 ---
+  {text:'又一场<span class="danger-text">天灾</span>降临——<span class="mys">谎言</span>在世间消失了。所有人都只能说真话，整个社会陷入了前所未有的混乱。',
+    trigger:{yearMin:30,yearMax:40,minAge:16},choices:[
+    {text:'趁机了解真相',effect:{comprehension:12,connections:-5,sanity:-8},log:'你从人们口中听到了无数隐藏多年的秘密——有些你宁可不知道'},
+    {text:'闭口不言',effect:{sanity:-3,comprehension:5},log:'不说话就不会暴露秘密——但别人的真话已经够可怕了'},
+    {text:'以此参悟天道',effect:{cultivation:10,comprehension:10,sanity:-10},log:'谎言消失...这是哪位司命的力量在动摇？'}]},
+  {text:'<span class="danger-text">腐烂消失了</span>——尸体不再腐烂、垃圾永远堆积。城市开始被无法分解的废物淹没。',
+    trigger:{yearMin:31,yearMax:40,minAge:15},choices:[
+    {text:'以灵力分解废物',effect:{cultivation:5,constitution:-3,karma:5},log:'你用修为帮助清理，但这只是杯水车薪'},
+    {text:'研究天灾的根源',effect:{comprehension:10,sanity:-10,cultivation:5},log:'你逐渐明白——这些天灾与季灵的成道之路有关'},
+    {text:'离开城市去荒野',effect:{constitution:3,sanity:-3},log:'荒野中影响小一些，但也好不到哪去'}]},
+  {text:'天灾接连不断——<span class="mys">季灵</span>成道的代价正在由整个世界承受。修士们开始讨论是否应该阻止他。',
+    trigger:{yearMin:32,yearMax:40,minAge:18},choices:[
+    {text:'支持季灵成道',effect:{comprehension:10,cultivation:8,karma:-5,sanity:-8},log:'天灾虽然可怕，但季灵成道也许能带来更好的世界'},
+    {text:'反对季灵成道',effect:{connections:8,karma:5,cultivation:5},log:'你认为不能让一个人的成道牺牲整个世界'},
+    {text:'只关心自己的修行',effect:{cultivation:10,comprehension:5,connections:-5},log:'天灾也好成道也罢，与你何干？'}]},
+
+  // --- 太平后 (year > 40): 重建 ---
+  {text:'<span class="npc">季灵</span>成道之后，天下重归太平。各地开始<span class="loc">重建</span>，修士们也从战火中缓过气来。',
+    trigger:{yearMin:40,minAge:18},choices:[
+    {text:'参与重建',effect:{karma:10,connections:10,wealth:10},log:'你投身于重建工作中，帮助百姓恢复家园'},
+    {text:'闭关修炼',effect:{cultivation:12,comprehension:8},log:'太平年月正适合闭关——你要弥补这些年耽搁的修行'},
+    {text:'游历四方',effect:{comprehension:10,connections:8,cultivation:5},log:'你踏遍山河，见证了这个世界从废墟中新生'}]},
+  {text:'战后的世界百废待兴——但也有无数<span class="mys">机缘</span>浮出水面。战火中被破坏的遗迹暴露了出来，失落的传承重见天日。',
+    trigger:{yearMin:40,minAge:20},choices:[
+    {text:'探索战后遗迹',effect:{cultivation:12,comprehension:10,sanity:-5},log:'你在废墟中发现了战前修士留下的传承'},
+    {text:'搜集散落的法器',effect:{wealth:15,cultivation:5},log:'战场上遗留了大量法器，你收集了不少'},
+    {text:'招收弟子传承衣钵',effect:{connections:15,karma:10,comprehension:5},log:'你收了几个有天赋的弟子，将自己的所学传给下一代'}]},
+  {text:'太平之世，修仙界重新建立了秩序。各派开始论功行赏——那些在天灾中守护苍生的修士受到了最高礼遇。',
+    trigger:{yearMin:42,minAge:20},choices:[
+    {text:'参加论功大会',effect:{connections:15,cultivation:8,karma:5},log:'你在大会上受到了嘉奖，名声远播'},
+    {text:'推辞功劳',effect:{karma:10,comprehension:5},log:'你推辞了赏赐，只说自己做了该做的事'},
+    {text:'趁此机会拉拢人脉',effect:{connections:15,wealth:10,karma:-3},log:'你在大会上广结善缘，积累了大量人脉资源'}]},
+];
+
 // === TRAVEL EVENTS (triggered when traveling) ===
 const TRAVEL_EVENTS = [
   {text:'游历途中，你在<span class="loc">山间小路</span>遇到一伙<span class="danger-text">山贼</span>拦路。',choices:[
@@ -1174,11 +1505,11 @@ const CANONICAL_EVENTS = [
     {text:'惊恐不安',effect:{sanity:-10},log:'不能死去...这比死亡更恐怖'}]},
   {text:'<span class="loc">白玉京</span>的裂隙肉眼可见地出现在天空中！巨大的倒悬之城时隐时现，<span class="mys">牦之门</span>的轮廓清晰可辨。',
     trigger:{minAge:20,yearMin:28,yearMax:36,cultivation:80},mandatory:true,choices:[
-    {text:'尝试接近白玉京',effect:{cultivation:50,sanity:-30,comprehension:20,qiyun:-10},log:'你在白玉京的边缘感受到了十六条天道的余韵——迷惘、清醒、死亡、慈悲、谎言、痛苦、秘密、秩序...',achieve:'witness_baiyu'},
+    {text:'尝试接近白玉京',effect:{cultivation:50,sanity:-30,comprehension:20,qiyun:-10},log:'你在白玉京的边缘感受到了十六条天道的余韵——迷惘、清醒、死亡、慈悲、谎言、痛苦、秘密、秩序...',achieve:'witness_baiyu',visit:'baiyu_jing'},
     {text:'远远膜拜',effect:{cultivation:15,sanity:-10,qiyun:5},log:'凡人只能仰望神的居所'}]},
   {text:'<span class="npc">玄牝</span>司丞突然化为<span class="mys">六爪金龙</span>，带着一群龙人冲入白玉京裂隙！传闻这是为了给<span class="npc">李火旺</span>补充龙气以修补白玉京。',
     trigger:{minAge:15,yearMin:28,yearMax:35},mandatory:true,choices:[
-    {text:'助阵',effect:{cultivation:20,constitution:-10,qiyun:15,connections:15},log:'你贡献了自己的一份力量，虽然微薄'},
+    {text:'助阵',effect:{cultivation:20,constitution:-10,qiyun:15,connections:15},log:'你贡献了自己的一份力量，虽然微薄',visit:'baiyu_jing'},
     {text:'见证历史',effect:{comprehension:15,sanity:-10},log:'你亲眼看到了凡人化龙的壮观一幕'}]},
 
   // --- 卷5 时期: 福生天入侵 / 大傩觉醒 (year 30 ~ 45) ---
@@ -1361,6 +1692,103 @@ const LOCAL_STORIES = [
     locReq:'an_ci',trigger:{minAge:12},choices:[
     {text:'学习画符',effect:{cultivation:10,comprehension:5},log:'你照着师太留下的符箓样子练习，居然有几张真的亮了'},
     {text:'取一张符防身',effect:{qiyun:5,sanity:3},log:'贴在门上后确实安心了不少'}]},
+
+  // --- 邪祟 location-bound events ---
+  // --- 赵家村 邪祟 ---
+  {text:'<span class="loc">赵家村</span>村口的古井最近不对劲——井水变成了<span class="danger-text">暗红色</span>，半夜能听到井底传来咕噜咕噜的声音，像是有什么东西在翻涌。',
+    locReq:'zhao_cun',trigger:{minAge:13},choices:[
+    {text:'趴在井口往下看',effect:{cultivation:5,sanity:-12,comprehension:5},log:'你看到了——井底有一张人脸在冲你笑。你吓得摔了出去，再看时什么都没有'},
+    {text:'往井里扔石头',effect:{sanity:-5,comprehension:3},log:'石头落入水中没有溅起水花——仿佛被什么东西接住了'},
+    {text:'通知村民封井',effect:{connections:5,karma:5},log:'村民用石板封了井口，但到了半夜石板又被推开了'}]},
+  {text:'深夜，有人<span class="danger-text">模仿你家人的声音叫门</span>——声音一模一样，但你的家人明明就在屋里。<span class="loc">赵家村</span>的夜晚从来都不安全。',
+    locReq:'zhao_cun',trigger:{minAge:14},choices:[
+    {text:'坚决不开门',effect:{sanity:-8,comprehension:5},log:'叫门声持续了一整夜，天亮后门口只有一排不属于人类的脚印'},
+    {text:'隔着门问它是谁',effect:{sanity:-12,comprehension:8},log:'声音顿了一下，然后用你自己的声音说了一句："我就是你啊。"'},
+    {text:'从窗户偷看',effect:{sanity:-15,cultivation:5,comprehension:5},log:'你看到门外站着一个<span class="danger-text">没有脸的人形</span>——它用你母亲的声音在喊你的名字'}]},
+
+  // --- 鲁城 邪祟 ---
+  {text:'<span class="loc">鲁城</span>西巷新开了一家包子铺，生意兴隆。但有人注意到——自从这家铺子开张后，<span class="danger-text">城里失踪的人越来越多</span>了。',
+    locReq:'lu_cheng',trigger:{minAge:15},choices:[
+    {text:'暗中调查包子铺',effect:{comprehension:8,sanity:-12,karma:5,cultivation:5},log:'你在铺子后面发现了一间密室——里面挂着几具被剔了肉的<span class="danger-text">人彘</span>。你差点吐出来'},
+    {text:'去官府报案',effect:{connections:5,karma:5},log:'官府去查时铺子已经人去楼空，只剩下满地的血迹'},
+    {text:'再也不去那家铺子',effect:{sanity:-3},log:'不久后铺子自己关了门，但那些失踪的人再也没有回来'}]},
+  {text:'<span class="loc">鲁城</span>出了一桩<span class="danger-text">猛鬼案</span>——城东的一户人家，一夜之间全家七口暴毙，死状极其诡异：每个人的脸上都带着笑容。',
+    locReq:'lu_cheng',trigger:{minAge:16,cultivation:5},choices:[
+    {text:'去现场查看',effect:{cultivation:8,comprehension:8,sanity:-15},log:'你感知到现场弥漫着浓重的邪气——这是一种能让人"笑死"的邪祟'},
+    {text:'询问目击者',effect:{connections:5,comprehension:5,sanity:-5},log:'邻居说半夜听到了他们家传来的笑声，笑了整整一夜'},
+    {text:'去请修行人来',effect:{connections:3,wealth:-5},log:'修行人来后面色凝重，说这是"笑面鬼"所为，极难对付'}]},
+
+  // --- 玉清山 邪祟 ---
+  {text:'你在<span class="loc">玉清山</span>中迷了路——四周浓雾弥漫，无论怎么走都回到同一个地方。远处隐约出现了一座<span class="mys">道观的残影</span>，但你明明知道那里没有道观。',
+    locReq:'shan_qu',trigger:{minAge:16,cultivation:3},choices:[
+    {text:'朝道观走去',effect:{cultivation:8,sanity:-15,comprehension:10},log:'你走进了道观——里面坐着一排打坐的道士，但他们都已经死了上百年。你从他们身上感受到了残留的修行之意'},
+    {text:'原地打坐破解迷雾',effect:{cultivation:5,comprehension:8,sanity:-5},log:'你以灵气对抗鬼打墙，终于在天亮时破解了迷雾'},
+    {text:'用刀在树上做记号',effect:{comprehension:5,sanity:-8},log:'你惊恐地发现——每棵树上都已经有了刀痕。有人比你更早被困在这里'}]},
+  {text:'<span class="loc">玉清山</span>深处，你看到了一个穿<span class="danger-text">红衣</span>的女子站在悬崖边——她背对着你，长发在风中飘荡。',
+    locReq:'shan_qu',trigger:{minAge:17,cultivation:5},choices:[
+    {text:'出声询问',effect:{sanity:-12,comprehension:5,cultivation:5},log:'女子转过身来——她没有脸。你后退一步，她就消失了'},
+    {text:'以灵力探查',effect:{cultivation:8,comprehension:8,sanity:-8},log:'你的灵力触碰到她时感受到了无尽的怨念——她是被害死在这里的冤魂'},
+    {text:'立刻后退离开',effect:{sanity:-5,constitution:3},log:'直觉告诉你不该靠近。你转身就走，身后传来了轻微的哭声'}]},
+
+  // --- 边境 邪祟 ---
+  {text:'<span class="loc">边境</span>的古战场上，每到月圆之夜就会出现<span class="danger-text">怨灵聚集</span>的景象——数百个穿着铠甲的鬼兵在无声地厮杀。',
+    locReq:'bian_jing',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'尝试超度怨灵',effect:{cultivation:10,karma:10,sanity:-10,comprehension:5},log:'你的法力只超度了一小部分怨灵，但它们临走时向你投来了感激的目光'},
+    {text:'从怨灵中汲取修为',effect:{cultivation:12,karma:-10,sanity:-15},log:'你以邪法汲取了怨灵的力量——这很有效，但你感觉自己正在失去什么'},
+    {text:'远远观察',effect:{comprehension:8,sanity:-8},log:'你观察鬼兵的战斗方式，从中学到了一些已经失传的武技'}]},
+  {text:'<span class="loc">边境</span>巡逻时你遇到了<span class="danger-text">无头尸兵</span>——它们没有头颅却行动自如，手中的兵器锈迹斑斑但杀意冲天。',
+    locReq:'bian_jing',trigger:{minAge:19,cultivation:15},choices:[
+    {text:'以修为将它们打散',effect:{cultivation:10,constitution:-5,sanity:-8,karma:3},log:'你费了好大力气才将无头尸兵消灭——它们比普通走尸强太多了',combat:45},
+    {text:'以火焚烧',effect:{cultivation:8,comprehension:5,sanity:-5},log:'尸兵遇火后发出无声的惨叫，你感觉到它们曾经也是活生生的人'},
+    {text:'绕路避开',effect:{comprehension:3,sanity:-3},log:'惹不起还躲不起吗？你绕了一大圈才脱离了它们的活动范围'}]},
+
+  // --- 南疆 邪祟 ---
+  {text:'<span class="loc">南疆</span>的密林中，你感觉身体不对劲——一条<span class="danger-text">蛊虫</span>不知何时钻入了你的皮肤，正在往心脏的方向爬。',
+    locReq:'nan_jiang',trigger:{minAge:17,cultivation:8},choices:[
+    {text:'以灵气将蛊虫逼出',effect:{cultivation:8,constitution:-5,sanity:-5},log:'你逼出了蛊虫——它有拇指大小，通体漆黑，还在扭动'},
+    {text:'割开皮肉取出蛊虫',effect:{constitution:-8,sanity:-8,comprehension:5},log:'你忍着剧痛挖出了蛊虫，伤口流出的血是黑色的'},
+    {text:'找当地巫师求救',effect:{wealth:-15,connections:5,constitution:-3},log:'巫师用一种特殊的药汁将蛊虫引了出来'}]},
+  {text:'<span class="loc">南疆</span>的洞穴深处，你遇到了一只巨型<span class="danger-text">人面蜘蛛</span>——它有牛车大小，八只腿上长满了人的手指，脸上的五官还在不断变化。',
+    locReq:'nan_jiang',trigger:{minAge:20,cultivation:20},choices:[
+    {text:'全力出手斩杀',effect:{cultivation:12,constitution:-8,sanity:-15,comprehension:5,karma:3},log:'你与巨型人面蜘蛛殊死搏斗，最终将它斩杀。它死前脸上露出了解脱的表情',combat:55},
+    {text:'以火攻之',effect:{cultivation:10,sanity:-10,comprehension:5},log:'蛛丝易燃，火势一起蜘蛛就疯狂地挣扎——但那人脸发出的惨叫让你终身难忘'},
+    {text:'封住洞口困死它',effect:{cultivation:5,comprehension:8,sanity:-8},log:'你用碎石封住了洞口——但你不确定这能困住它多久'}]},
+
+  // --- 四齐 邪祟 ---
+  {text:'<span class="loc">四齐</span>废弃的<span class="fac">法教</span>祭坛上，残留的<span class="danger-text">邪祟</span>还在游荡——那是血祭未完成留下的怨念凝聚体。',
+    locReq:'si_qi',trigger:{minAge:18,cultivation:15},choices:[
+    {text:'净化祭坛',effect:{cultivation:10,karma:10,sanity:-10,comprehension:5},log:'你花了三天时间才将祭坛上的邪气清除——那些怨念在消散时似乎在说"谢谢"'},
+    {text:'从祭坛中汲取残余力量',effect:{cultivation:12,karma:-10,sanity:-12},log:'邪气涌入你的体内，力量暴增但你的心性也开始动摇'},
+    {text:'摧毁祭坛',effect:{cultivation:5,karma:8,constitution:-3},log:'你将祭坛彻底摧毁，邪气四散——总比留在这里祸害人好'}]},
+  {text:'<span class="loc">四齐</span>被<span class="npc">于儿神</span>污染过的土地上，庄稼长出了<span class="danger-text">诡异的变异</span>——小麦结出了红色的穗，每一粒都像是一只紧闭的眼睛。',
+    locReq:'si_qi',trigger:{minAge:16},choices:[
+    {text:'以灵力净化土地',effect:{cultivation:8,karma:8,constitution:-3,sanity:-5},log:'你净化了一小片土地，但于儿神的污染太深——这需要数十年才能完全恢复'},
+    {text:'采集变异作物研究',effect:{comprehension:10,sanity:-10,cultivation:5},log:'变异的小麦蕴含着于儿神残留的力量——危险但也是珍贵的研究素材'},
+    {text:'烧掉变异作物',effect:{karma:5,sanity:-3},log:'你一把火烧掉了所有变异作物，火焰是黑色的'}]},
+
+  // --- 上京城 邪祟 ---
+  {text:'<span class="loc">上京城</span>的<span class="mys">龙气</span>压制着大部分邪祟，但有些东西依然能在夜晚出没——你在皇城根下看到了一个<span class="danger-text">影子</span>，它在没有主人的情况下独自行走。',
+    locReq:'shang_jing',trigger:{minAge:16},choices:[
+    {text:'跟踪影子',effect:{cultivation:5,sanity:-12,comprehension:8},log:'影子带你来到了一处地下通道——那里有上古王朝留下的封印，正在慢慢失效'},
+    {text:'以灵力探查',effect:{cultivation:5,comprehension:5,sanity:-5},log:'你发现这个影子是被龙气压制后残留的邪祟碎片，它已经不能伤人了'},
+    {text:'向监天司报告',effect:{connections:5,karma:3},log:'监天司派人来处理——他们说这种事最近越来越多了'}]},
+  {text:'<span class="loc">上京城</span>看似繁华太平，但夜深人静时，你能听到皇城的方向传来低沉的<span class="mys">诵经声</span>——那不是人的声音。',
+    locReq:'shang_jing',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'循声探查',effect:{cultivation:8,comprehension:10,sanity:-12},log:'你发现诵经声来自皇城地下——那里镇压着一头上古邪物，诵经声是它在自我封印'},
+    {text:'以修为感应',effect:{comprehension:8,cultivation:5,sanity:-8},log:'你感知到龙气下面还有更古老的力量在沉睡——上京城建在了一座封印之上'},
+    {text:'当作没听到',effect:{sanity:-3},log:'有些事情知道了反而是祸。你选择装聋作哑'}]},
+
+  // --- 鬼市 邪祟 ---
+  {text:'你在<span class="loc">鬼市</span>上买到了一面<span class="itm">古铜镜</span>——卖镜子的老人说"千万不要在半夜照"。当然，你没忍住。',
+    locReq:'gui_shi',trigger:{minAge:16,cultivation:5},choices:[
+    {text:'半夜照了铜镜',effect:{cultivation:8,sanity:-15,comprehension:10},log:'铜镜里映出的不是你的脸——而是一个穿着古代衣服的人。他冲你点了点头，然后镜子碎了'},
+    {text:'遵守忠告不在半夜照',effect:{sanity:3,comprehension:3},log:'第二天你把镜子拿出来时发现——镜面上多了一个手印，从里面按上去的'},
+    {text:'把铜镜转卖',effect:{wealth:10,karma:-5},log:'你把铜镜卖给了一个不知情的人——希望他会听劝不在半夜照'}]},
+  {text:'你在<span class="loc">鬼市</span>里逛着逛着发现出不去了——<span class="danger-text">鬼市困住了你</span>。周围的鬼商贩们冲你露出了意味深长的笑容。',
+    locReq:'gui_shi',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'以灵力强行破开鬼市结界',effect:{cultivation:10,constitution:-5,sanity:-10},log:'你消耗了大量修为才撕开了鬼市的结界逃出来——天已经亮了，你在鬼市里待了一整夜',combat:40},
+    {text:'和鬼市管理者交涉',effect:{connections:5,wealth:-15,sanity:-8,comprehension:5},log:'你花了一大笔"阴币"才从鬼市管理者那里买到了出去的路'},
+    {text:'等到天亮自然脱困',effect:{sanity:-12,comprehension:8},log:'你在鬼市里忍到了天亮——鬼市消散时你看到了它的真面目：那是一座埋在地下的古城'}]},
 ];
 
 

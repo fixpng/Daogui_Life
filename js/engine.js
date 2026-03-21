@@ -699,6 +699,58 @@ function nextYear() {
     });
   }
 
+  // Add cultivation-tier events
+  if(typeof CULTIVATION_TIER_EVENTS !== 'undefined') {
+    CULTIVATION_TIER_EVENTS.forEach(function(ce){
+      if(ce.cultMin !== undefined && gameState.cultivation < ce.cultMin) return;
+      if(ce.cultMax !== undefined && gameState.cultivation > ce.cultMax) return;
+      if(ce.factionReq && gameState.faction !== ce.factionReq) return;
+      if(ce.locReq && !gameState.visitedLocations.includes(ce.locReq)) return;
+      if(ce.trigger) {
+        if(ce.trigger.minAge && gameState.age < ce.trigger.minAge) return;
+        if(ce.trigger.cultivation && gameState.cultivation < ce.trigger.cultivation) return;
+        if(ce.trigger.yearMin !== undefined && gameState.year < ce.trigger.yearMin) return;
+        if(ce.trigger.yearMax !== undefined && gameState.year > ce.trigger.yearMax) return;
+      }
+      if(ce.check && !gameState.talents.find(function(t){return t.id===ce.check;})) return;
+      eventPool.push(ce);
+    });
+  }
+
+  // Add death events
+  if(typeof DEATH_EVENTS !== 'undefined') {
+    DEATH_EVENTS.forEach(function(de){
+      if(de.cultMin !== undefined && gameState.cultivation < de.cultMin) return;
+      if(de.cultMax !== undefined && gameState.cultivation > de.cultMax) return;
+      if(de.factionReq && gameState.faction !== de.factionReq) return;
+      if(de.locReq && !gameState.visitedLocations.includes(de.locReq)) return;
+      if(de.karmaMin !== undefined && gameState.karma < de.karmaMin) return;
+      if(de.karmaMax !== undefined && gameState.karma > de.karmaMax) return;
+      if(de.trigger) {
+        if(de.trigger.minAge && gameState.age < de.trigger.minAge) return;
+        if(de.trigger.yearMin !== undefined && gameState.year < de.trigger.yearMin) return;
+        if(de.trigger.yearMax !== undefined && gameState.year > de.trigger.yearMax) return;
+      }
+      if(de.check && !gameState.talents.find(function(t){return t.id===de.check;})) return;
+      eventPool.push(de);
+    });
+  }
+
+  // Add era-specific events (world state changes)
+  if(typeof ERA_EVENTS !== 'undefined') {
+    ERA_EVENTS.forEach(function(ee){
+      if(ee.trigger) {
+        if(ee.trigger.minAge && gameState.age < ee.trigger.minAge) return;
+        if(ee.trigger.yearMin !== undefined && gameState.year < ee.trigger.yearMin) return;
+        if(ee.trigger.yearMax !== undefined && gameState.year > ee.trigger.yearMax) return;
+        if(ee.trigger.cultivation && gameState.cultivation < ee.trigger.cultivation) return;
+      }
+      if(ee.locReq && !gameState.visitedLocations.includes(ee.locReq)) return;
+      if(ee.check && !gameState.talents.find(function(t){return t.id===ee.check;})) return;
+      eventPool.push(ee);
+    });
+  }
+
   // Trigger event or quiet year
   // 凡人阶段(cultivation < 10)事件触发概率大幅降低 - 修仙之路艰难
   var eventChance = 0.72;
@@ -1054,6 +1106,13 @@ function applyChoice(c) {
       document.getElementById('current-location').textContent = newLoc.name;
       addLog('你辗转来到了<span class="loc">'+newLoc.name+'</span>。');
     }
+  }
+  // Death event handling
+  if(c.die) {
+    var deathMsg = c.deathMsg || '你在这次事件中失去了生命。';
+    addLog(c.log);
+    gameOver(deathMsg);
+    return;
   }
   if(c.achieve) unlockAchieve(c.achieve);
   addLog(c.log);
