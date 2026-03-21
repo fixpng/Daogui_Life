@@ -365,6 +365,14 @@ body::after {
   margin-top: 6px;
   letter-spacing: 1px;
 }
+.talent-hint {
+  font-size: 0.72em;
+  color: var(--text-dim);
+  margin-top: 6px;
+  line-height: 1.4;
+  opacity: 0.7;
+  font-style: italic;
+}
 .tag-good { background: rgba(74,122,58,0.4); color: #8aba7a; border: 1px solid rgba(74,122,58,0.5); }
 .tag-bad { background: rgba(139,0,0,0.4); color: #cc6666; border: 1px solid rgba(139,0,0,0.5); }
 .tag-special { background: rgba(106,58,106,0.4); color: #ba8aba; border: 1px solid rgba(106,58,106,0.5); }
@@ -837,37 +845,37 @@ body::after {
 // === GAME DATA ===
 const TALENTS = {
   special: [
-    {id:'xinsu',name:'心素',desc:'先天一炁，可感知两个世界的边界',effect:{sanity:30,cultivation:5},type:'special',rarity:'legendary'},
-    {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30},type:'special',rarity:'legendary'},
-    {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10},type:'special',rarity:'legendary'},
-    {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15},type:'special',rarity:'epic'},
-    {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20},type:'special',rarity:'epic'},
+    {id:'xinsu',name:'心素',desc:'先天一炁，可感知两个世界的边界',effect:{sanity:30,cultivation:5},type:'special',rarity:'legendary',hint:'神志+30 修为+5'},
+    {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30},type:'special',rarity:'legendary',hint:'修为+30'},
+    {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10},type:'special',rarity:'legendary',hint:'神志+20 修为+10'},
+    {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15},type:'special',rarity:'epic',hint:'修为+15 神志-10'},
+    {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20},type:'special',rarity:'epic',hint:'修为+20 神志-15'},
   ],
   good: [
-    {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10},type:'good',rarity:'rare'},
-    {id:'fu_gui',name:'富贵',desc:'出身富足，家有余财',effect:{wealth:50},type:'good',rarity:'rare'},
-    {id:'ji_xing',name:'吉星',desc:'运气极好，逢凶化吉',effect:{luck:30},type:'good',rarity:'rare'},
-    {id:'jian_kang',name:'健康',desc:'体魄强健，百病不侵',effect:{sanity:10},type:'good',rarity:'uncommon'},
-    {id:'shou_xing',name:'寿星',desc:'天生长寿之相',effect:{lifespan:15},type:'good',rarity:'rare'},
-    {id:'mei_mao',name:'美貌',desc:'生得一副好皮囊',effect:{connections:10},type:'good',rarity:'uncommon'},
-    {id:'kou_cai',name:'口才',desc:'能言善辩，左右逢源',effect:{connections:15},type:'good',rarity:'uncommon'},
-    {id:'zhi_hui',name:'聪慧',desc:'头脑灵光，过目不忘',effect:{cultivation:5,connections:5},type:'good',rarity:'uncommon'},
-    {id:'wu_xing',name:'武星',desc:'筋骨奇佳，天生习武之才',effect:{cultivation:8},type:'good',rarity:'uncommon'},
-    {id:'gui_ren',name:'贵人',desc:'命中有贵人相助',effect:{connections:20},type:'good',rarity:'rare'},
+    {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10},type:'good',rarity:'rare',hint:'修为+10 每年额外修炼加成'},
+    {id:'fu_gui',name:'富贵',desc:'出身富足，家有余财',effect:{wealth:50},type:'good',rarity:'rare',hint:'金银+50'},
+    {id:'ji_xing',name:'吉星',desc:'运气极好，逢凶化吉',effect:{luck:30},type:'good',rarity:'rare',hint:'遭遇危险时有概率化解'},
+    {id:'jian_kang',name:'健康',desc:'体魄强健，百病不侵',effect:{sanity:10},type:'good',rarity:'uncommon',hint:'神志+10'},
+    {id:'shou_xing',name:'寿星',desc:'天生长寿之相',effect:{lifespan:15},type:'good',rarity:'rare',hint:'寿命上限大幅提升'},
+    {id:'mei_mao',name:'美貌',desc:'生得一副好皮囊',effect:{connections:10},type:'good',rarity:'uncommon',hint:'人脉+10'},
+    {id:'kou_cai',name:'口才',desc:'能言善辩，左右逢源',effect:{connections:15},type:'good',rarity:'uncommon',hint:'人脉+15'},
+    {id:'zhi_hui',name:'聪慧',desc:'头脑灵光，过目不忘',effect:{cultivation:5,connections:5},type:'good',rarity:'uncommon',hint:'修为+5 人脉+5'},
+    {id:'wu_xing',name:'武星',desc:'筋骨奇佳，天生习武之才',effect:{cultivation:8},type:'good',rarity:'uncommon',hint:'修为+8'},
+    {id:'gui_ren',name:'贵人',desc:'命中有贵人相助',effect:{connections:20},type:'good',rarity:'rare',hint:'人脉+20'},
   ],
   bad: [
-    {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20},type:'bad',rarity:'common'},
-    {id:'pin_kun',name:'贫困',desc:'出身贫寒，衣食无着',effect:{wealth:-30},type:'bad',rarity:'common'},
-    {id:'can_ji',name:'残疾',desc:'身有残缺，行动不便',effect:{sanity:-15,connections:-10},type:'bad',rarity:'cursed'},
-    {id:'wu_qin',name:'孤儿',desc:'无父无母，孤苦伶仃',effect:{connections:-20},type:'bad',rarity:'common'},
-    {id:'zai_min',name:'灾民',desc:'出身战乱之地',effect:{wealth:-20,sanity:-10},type:'bad',rarity:'cursed'},
-    {id:'yu_ben',name:'愚钝',desc:'资质鲁钝，修道无望',effect:{cultivation:-10},type:'bad',rarity:'common'},
-    {id:'e_meng',name:'噩梦',desc:'夜夜噩梦缠身',effect:{sanity:-15},type:'bad',rarity:'common'},
-    {id:'du_zhai',name:'赌债',desc:'家中欠了巨额赌债',effect:{wealth:-50},type:'bad',rarity:'cursed'},
-    {id:'chou_lou',name:'丑陋',desc:'面容丑陋，人见人避',effect:{connections:-15},type:'bad',rarity:'common'},
-    {id:'bai_bing',name:'百病',desc:'先天不足，诸疾缠身',effect:{sanity:-25},type:'bad',rarity:'cursed'},
-    {id:'sha_qi',name:'煞气',desc:'命带煞气，亲近之人皆遭厄运',effect:{connections:-10,sanity:-5},type:'bad',rarity:'common'},
-    {id:'mo_ying',name:'魔影',desc:'总感觉背后有东西跟着',effect:{sanity:-20},type:'bad',rarity:'cursed'},
+    {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20},type:'bad',rarity:'common',hint:'神志-20 但久病成医，偶有奇遇'},
+    {id:'pin_kun',name:'贫困',desc:'出身贫寒，衣食无着',effect:{wealth:-30},type:'bad',rarity:'common',hint:'金银-30 但穷则思变，意志坚韧'},
+    {id:'can_ji',name:'残疾',desc:'身有残缺，行动不便',effect:{sanity:-15,connections:-10},type:'bad',rarity:'cursed',hint:'神志-15 人脉-10 但心志超凡'},
+    {id:'wu_qin',name:'孤儿',desc:'无父无母，孤苦伶仃',effect:{connections:-20},type:'bad',rarity:'common',hint:'人脉-20 但无牵无挂，修道少阻'},
+    {id:'zai_min',name:'灾民',desc:'出身战乱之地',effect:{wealth:-20,sanity:-10},type:'bad',rarity:'cursed',hint:'金银-20 神志-10 但见惯生死'},
+    {id:'yu_ben',name:'愚钝',desc:'资质鲁钝，修道无望',effect:{cultivation:-10},type:'bad',rarity:'common',hint:'修为-10 但大智若愚，心性沉稳'},
+    {id:'e_meng',name:'噩梦',desc:'夜夜噩梦缠身',effect:{sanity:-15},type:'bad',rarity:'common',hint:'神志-15 但梦中偶见天机'},
+    {id:'du_zhai',name:'赌债',desc:'家中欠了巨额赌债',effect:{wealth:-50},type:'bad',rarity:'cursed',hint:'金银-50 但逆境求生，人脉广'},
+    {id:'chou_lou',name:'丑陋',desc:'面容丑陋，人见人避',effect:{connections:-15},type:'bad',rarity:'common',hint:'人脉-15 但不为色所困'},
+    {id:'bai_bing',name:'百病',desc:'先天不足，诸疾缠身',effect:{sanity:-25},type:'bad',rarity:'cursed',hint:'神志-25 但对药理极为敏感'},
+    {id:'sha_qi',name:'煞气',desc:'命带煞气，亲近之人皆遭厄运',effect:{connections:-10,sanity:-5},type:'bad',rarity:'common',hint:'人脉-10 神志-5 但邪祟不近身'},
+    {id:'mo_ying',name:'魔影',desc:'总感觉背后有东西跟着',effect:{sanity:-20},type:'bad',rarity:'cursed',hint:'神志-20 但灵觉异常敏锐'},
   ]
 };
 
@@ -921,6 +929,14 @@ const ACHIEVEMENTS = [
   {id:'meet_li',name:'命运交织',desc:'遇到李火旺',icon:'🔥'},
   {id:'early_death',name:'夭折',desc:'10岁前死亡',icon:'💀'},
   {id:'peaceful',name:'平淡一生',desc:'以凡人之身安享晚年',icon:'🕊'},
+  {id:'orphan_rise',name:'草根崛起',desc:'孤儿出身却人脉超过50',icon:'🌱'},
+  {id:'poor_rich',name:'白手起家',desc:'贫困出身却金银超过150',icon:'🏆'},
+  {id:'sick_healer',name:'久病成医',desc:'疾病天赋却活过60岁',icon:'💊'},
+  {id:'ugly_charm',name:'以德服人',desc:'丑陋却人脉超过40',icon:'🎭'},
+  {id:'nightmare_seer',name:'梦中天机',desc:'噩梦天赋且修为达筑基',icon:'🌙'},
+  {id:'disabled_warrior',name:'身残志坚',desc:'残疾天赋且修为达金丹',icon:'⚔'},
+  {id:'debt_free',name:'还清赌债',desc:'赌债出身且金银超过100',icon:'🎲'},
+  {id:'shadow_friend',name:'与影共生',desc:'魔影天赋且活过50岁',icon:'👤'},
 ];
 
 // === EVENTS ===
@@ -1102,6 +1118,7 @@ let gameState = {
   eventHistory: new Set()
 };
 let autoMode = false, speed = 2, autoTimer = null, availableTalents = [];
+let waitingForChoice = false;
 let achievements = JSON.parse(localStorage.getItem('dg_achievements')||'{}');
 
 // === TALENT DRAW ===
@@ -1129,6 +1146,7 @@ function initTalents() {
     <div class="talent-card rarity-${t.rarity}" onclick="selectTalent(${i})" id="talent-${i}">
       <div class="talent-name">${t.name}</div>
       <div class="talent-desc">${t.desc}</div>
+      <div class="talent-hint">${t.hint||''}</div>
       <span class="talent-tag">${RARITY_NAMES[t.rarity]||'凡品'}</span>
     </div>`).join('');
   updateSelectCount();
@@ -1224,6 +1242,7 @@ function getEraName() {
 // === NEXT YEAR ===
 function nextYear() {
   if(!gameState.alive) return;
+  if(waitingForChoice) return;
   gameState.age++; gameState.year++;
 
   // Cultivation gain
@@ -1238,6 +1257,20 @@ function nextYear() {
     if(fb.sanity && gameState.talents.find(t=>t.id==='xinsu')) gameState.sanity += fb.sanity;
   }
   gameState.cultivation += cultGain;
+
+  // Bad talent hidden positive effects (small yearly bonuses)
+  if(gameState.talents.find(t=>t.id==='ji_bing') && Math.random()<0.12) { gameState.cultivation += 2; } // 久病成医，偶尔顿悟
+  if(gameState.talents.find(t=>t.id==='pin_kun') && Math.random()<0.1) { gameState.wealth += 5; } // 穷则思变
+  if(gameState.talents.find(t=>t.id==='wu_qin') && gameState.age>=12) { gameState.cultivation += 1; } // 无牵无挂，修道少阻
+  if(gameState.talents.find(t=>t.id==='yu_ben') && Math.random()<0.15) { gameState.connections += 2; } // 大智若愚，人缘反好
+  if(gameState.talents.find(t=>t.id==='e_meng') && Math.random()<0.08) { gameState.cultivation += 5; } // 梦中偶见天机
+  if(gameState.talents.find(t=>t.id==='du_zhai') && Math.random()<0.1) { gameState.connections += 3; } // 三教九流都认识
+  if(gameState.talents.find(t=>t.id==='chou_lou') && Math.random()<0.1) { gameState.cultivation += 2; } // 不为色所困，心性坚定
+  if(gameState.talents.find(t=>t.id==='sha_qi') && Math.random()<0.1) { gameState.cultivation += 3; } // 邪祟不近身
+  if(gameState.talents.find(t=>t.id==='mo_ying') && Math.random()<0.08) { gameState.cultivation += 4; } // 灵觉敏锐
+  if(gameState.talents.find(t=>t.id==='can_ji') && Math.random()<0.1) { gameState.cultivation += 3; } // 身残志坚
+  if(gameState.talents.find(t=>t.id==='zai_min') && Math.random()<0.1) { gameState.cultivation += 2; gameState.connections += 1; } // 见惯生死
+  if(gameState.talents.find(t=>t.id==='bai_bing') && Math.random()<0.08) { gameState.cultivation += 3; } // 对药理敏感
 
   // Sanity drift - ONLY for xinsu talent holders
   const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
@@ -1345,6 +1378,8 @@ function showEvent(event) {
   ).join('');
   // Store choices for handler
   window._currentChoices = validChoices;
+  waitingForChoice = true;
+  document.getElementById('btn-next').disabled = true;
 }
 
 function handleChoice(idx) {
@@ -1374,6 +1409,8 @@ function applyChoice(c) {
   addLog(c.log);
   document.getElementById('choices').innerHTML = '';
   document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
+  waitingForChoice = false;
+  document.getElementById('btn-next').disabled = false;
 
   // Check stat-based achievements
   if(gameState.cultivation>=60) unlockAchieve('reach_jindan');
@@ -1501,6 +1538,7 @@ function setSpeed(s) {
 function gameOver(reason) {
   gameState.alive = false;
   autoMode = false;
+  waitingForChoice = false;
   clearTimeout(autoTimer);
   document.body.style.filter = '';
 
@@ -1511,6 +1549,16 @@ function gameOver(reason) {
   if(gameState.cultivation>=300) unlockAchieve('reach_danuo');
   if(gameState.wealth>=200) unlockAchieve('rich');
   if(gameState.cultivation<10 && gameState.age>=70) unlockAchieve('peaceful');
+
+  // Bad talent achievements
+  if(gameState.talents.find(t=>t.id==='wu_qin') && gameState.connections>=50) unlockAchieve('orphan_rise');
+  if(gameState.talents.find(t=>t.id==='pin_kun') && gameState.wealth>=150) unlockAchieve('poor_rich');
+  if(gameState.talents.find(t=>t.id==='ji_bing') && gameState.age>=60) unlockAchieve('sick_healer');
+  if(gameState.talents.find(t=>t.id==='chou_lou') && gameState.connections>=40) unlockAchieve('ugly_charm');
+  if(gameState.talents.find(t=>t.id==='e_meng') && gameState.cultivation>=30) unlockAchieve('nightmare_seer');
+  if(gameState.talents.find(t=>t.id==='can_ji') && gameState.cultivation>=60) unlockAchieve('disabled_warrior');
+  if(gameState.talents.find(t=>t.id==='du_zhai') && gameState.wealth>=100) unlockAchieve('debt_free');
+  if(gameState.talents.find(t=>t.id==='mo_ying') && gameState.age>=50) unlockAchieve('shadow_friend');
 
   gameState.totalRuns++;
   localStorage.setItem('dg_runs', gameState.totalRuns);
@@ -1554,6 +1602,7 @@ function renderAchievements() {
 // === RESTART ===
 function restart() {
   autoMode = false;
+  waitingForChoice = false;
   clearTimeout(autoTimer);
   document.body.style.filter = '';
   document.getElementById('btn-auto').classList.remove('active');
