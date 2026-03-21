@@ -1606,6 +1606,96 @@ const CANONICAL_EVENTS = [
     {text:'拼死抵抗',effect:{cultivation:25,constitution:-15,sanity:-25,qiyun:15,karma:15},log:'你加入了对抗于儿神的战斗——虽然你的力量微不足道，但每一份力量都不可或缺',combat:95},
     {text:'尝试理解于儿神',effect:{comprehension:20,sanity:-30,cultivation:15},log:'你在恐惧中保持了一丝清明——于儿神不是邪恶，它只是…另一种存在的法则'},
     {text:'逃离战场',effect:{sanity:-15,qiyun:-5},log:'你拼命逃跑，身后是毁天灭地的战斗余波'}]},
+
+  // --- 李火旺相关补充 (多时期) ---
+  {text:'你在<span class="loc">赵家村</span>附近遇到一个年轻人，他神情恍惚，手里攥着一个<span class="itm">铜铃</span>，嘴里反复念叨着"这个世界是真的…这个世界是真的…"',
+    trigger:{minAge:12,yearMin:0,yearMax:8},choices:[
+    {text:'上前询问',effect:{connections:10,sanity:-8,comprehension:5},log:'他叫李火旺。他问你："你觉得这个世界是真的吗？"你不知如何回答'},
+    {text:'给他一碗水',effect:{connections:5,karma:5,qiyun:5},log:'他接过水喝了一口，恍惚间像是清醒了片刻，对你说了声"谢谢"'},
+    {text:'绕道走开',effect:{},log:'那个年轻人的眼神让你不安'}]},
+  {text:'<span class="npc">李火旺</span>正在路边与一群从清风观逃出来的孩子一起生火做饭。他的眼中既有温柔又有挣扎——他在努力照顾那些比他小的孩子。',
+    trigger:{minAge:10,yearMin:0,yearMax:6},choices:[
+    {text:'加入他们的篝火',effect:{connections:15,sanity:-5,qiyun:5},log:'李火旺对你点点头。孩子们虽然瘦弱却很团结——他们都是从丹阳子手下逃出来的幸存者'},
+    {text:'暗中留下一些干粮',effect:{karma:8,wealth:-5},log:'你不想打扰他们，但希望能帮上一点忙'},
+    {text:'只是远远看着',effect:{comprehension:3},log:'那个少年身上有一种说不清的气质——仿佛两个世界在他身上重叠'}]},
+  {text:'<span class="fac">监天司</span>新来了一个奇怪的人——<span class="npc">李火旺</span>。据说他既不是修士也不是世家子弟，却被直接破格录用。更奇怪的是，他时不时会对着空气说话。',
+    trigger:{minAge:15,yearMin:5,yearMax:12},choices:[
+    {text:'找机会与他交谈',effect:{connections:15,comprehension:10,sanity:-8},log:'李火旺的话半真半假，但你隐约感到他能看到常人看不到的东西'},
+    {text:'跟踪观察他',effect:{comprehension:8,sanity:-10},log:'你发现他夜晚会独自一人坐在屋顶，对着月亮自言自语——仿佛在和另一个世界的人对话'},
+    {text:'保持距离',effect:{sanity:3},log:'监天司的人说他是"心素"，身体是上好的药引，各方势力都在盯着他'}]},
+
+  // --- 赊刀人 (year 0 ~ 20) ---
+  {text:'一位戴着斗笠的<span class="npc">赊刀人</span>出现在集市上，他不卖东西，只留下物件说"等那一天来了再收账"。人们都说他是<span class="fac">监天司</span>的人。',
+    trigger:{minAge:12,yearMin:0,yearMax:20},choices:[
+    {text:'向他打探监天司的事',effect:{connections:10,comprehension:8},log:'赊刀人说了一句："天道有十六条，但不是每条都为人好。"便消失了'},
+    {text:'收下他留的东西',effect:{qiyun:5,wealth:5},log:'他留给你一枚铜钱，说"日后自会知晓其用"'},
+    {text:'觉得他是骗子',effect:{},log:'免费的东西最贵——你不信这一套'}]},
+
+  // --- 无根生 (远古/传说) ---
+  {text:'你在古籍中读到了一个名字——<span class="npc">无根生</span>。据说他在世时走遍大梁，创建了<span class="fac">坐忘道</span>并成就了司命<span class="mys">斗姥</span>。但最终他选择将自己的一切散尽，以<span class="itm">先天一炁</span>转世重来。',
+    trigger:{minAge:18,cultivation:30},choices:[
+    {text:'研究无根生的生平',effect:{comprehension:15,cultivation:10,sanity:-10},log:'无根生的一生就像一场自我毁灭的壮举——他用全部的自己去证明"道"不在天上，在人心'},
+    {text:'尝试寻找他的转世',effect:{cultivation:8,sanity:-12,comprehension:8},log:'有人说无根生的转世就是李火旺...但这话太过骇人'},
+    {text:'翻过这一页',effect:{comprehension:5},log:'无根生的事迹太过久远，真假难辨'}]},
+
+  // --- 柳挽晴（李火旺的妻子） (year 3 ~ 20) ---
+  {text:'你听说<span class="npc">李火旺</span>成婚了——新娘是一个名叫<span class="npc">柳挽晴</span>的女子。她不是修士，只是一个普通的采药女。但据说她是唯一能让李火旺安静下来的人。',
+    trigger:{minAge:15,yearMin:3,yearMax:20},choices:[
+    {text:'前去道贺',effect:{connections:10,qiyun:5},log:'你看到了那个传说中在两界间挣扎的男人，在她面前笑得像个普通人'},
+    {text:'感叹世间有情',effect:{sanity:5,comprehension:3},log:'在这充满邪祟和阴谋的世界里，竟然还有这样纯粹的感情'}]},
+
+  // --- 孟婆（孟斓音） (year 15 ~ 35) ---
+  {text:'修士圈中流传着一个可怕的传闻：有人在黄泉路上遇到了<span class="npc">孟婆</span>——不是传说中的老太婆，而是一个年轻美貌的女子。她端着<span class="itm">孟婆汤</span>，微笑着说"忘了吧"。凡是喝下去的人，都忘记了最重要的人。',
+    trigger:{minAge:20,yearMin:15,yearMax:35,cultivation:40},choices:[
+    {text:'打探孟婆的真实身份',effect:{comprehension:12,sanity:-12,cultivation:8},log:'有人说孟婆就是"遗忘"的天道化身，也有人说她叫孟斓音，曾经也是一个普通人'},
+    {text:'告诫自己不要靠近',effect:{sanity:5},log:'遗忘比死亡更可怕——你决不去碰那碗汤'}]},
+
+  // --- 袄景教巴虺 (year 10 ~ 30) ---
+  {text:'<span class="fac">袄景教</span>的信徒在荒野中举行<span class="danger-text">血祭</span>——他们用自己的血肉供奉<span class="npc">巴虺</span>。你看到一个教徒面带狂喜地割下自己的手指，鲜血滴落的瞬间地面裂开了一条缝，里面传出低沉的吼声。',
+    trigger:{minAge:18,yearMin:10,yearMax:30},choices:[
+    {text:'观察仪式全程',effect:{cultivation:15,sanity:-18,comprehension:10},log:'巴虺没有完全降临，但你感受到了"痛苦"天道的力量——那是一种让人在极致痛苦中获得力量的法则'},
+    {text:'试图阻止仪式',effect:{karma:10,cultivation:5,constitution:-5,connections:-8},log:'你打断了仪式，但那些教徒反而感激地看着你——"巴虺说痛苦是恩赐"',combat:55},
+    {text:'赶紧离开',effect:{sanity:-8},log:'那种发自灵魂深处的吼声，你这辈子都忘不了'}]},
+
+  // --- 高智坚篡位细节 (year 12 ~ 20) ---
+  {text:'<span class="npc">高智坚</span>入主皇宫的那天夜里，大梁上京城满城火光。据知情人说，高智坚本是大齐皇室后裔，但他体内流淌着<span class="mys">龙脉</span>之血——这赋予了他凌驾于常人的力量和权谋。',
+    trigger:{minAge:15,yearMin:12,yearMax:20},choices:[
+    {text:'深入了解高智坚其人',effect:{comprehension:12,connections:8,sanity:-5},log:'高智坚不简单——他既是政客也是修士，而且似乎与龙脉有着某种先天联系'},
+    {text:'这不过是改朝换代',effect:{comprehension:3},log:'对百姓来说，谁做皇帝都一样苦'}]},
+
+  // --- 红中（坐忘道高层） (year 8 ~ 20) ---
+  {text:'<span class="fac">坐忘道</span>的<span class="npc">红中</span>在一座城镇中现身——他戴着红色面具，所到之处百姓不由自主地开始说谎。这就是谎言天道的力量。',
+    trigger:{minAge:18,yearMin:8,yearMax:20,cultivation:20},choices:[
+    {text:'尝试抵抗谎言之力',effect:{cultivation:10,sanity:-15,comprehension:10},log:'你咬破舌尖保持清醒——红中注意到了你，笑着说"有意思"'},
+    {text:'向监天司报告红中的行踪',effect:{connections:10,karma:5,qiyun:5},log:'等监天司的人赶到时，红中早已消失无踪'},
+    {text:'立刻逃离',effect:{sanity:-5},log:'红中太过恐怖——在他面前连自己的想法都不可信'}]},
+
+  // --- 福生天 (year 30 ~ 42) ---
+  {text:'天空中出现了一道<span class="danger-text">黑色裂隙</span>——<span class="npc">福生天</span>的气息从中泄露。那是一个比所有司命都更古老的存在，它的目的只有一个：<span class="mys">让一切归于虚无</span>。',
+    trigger:{minAge:20,yearMin:30,yearMax:42,cultivation:80},mandatory:true,choices:[
+    {text:'直面福生天的气息',effect:{cultivation:30,sanity:-30,comprehension:20},log:'那一瞬间你理解了——福生天不是"恶"，它是"无"。它要抹去的不只是生命，而是存在本身'},
+    {text:'以修为护住心神',effect:{cultivation:10,sanity:-15,constitution:-5},log:'福生天的气息如同万蚁噬心，你勉强保住了自己不被同化'},
+    {text:'祈求天道庇护',effect:{sanity:-10,qiyun:5},log:'你跪地祈祷——不知是哪条天道回应了你，一道微光将你笼罩'}]},
+
+  // --- 三清元尊 (year 32 ~ 42) ---
+  {text:'被<span class="npc">福生天</span>污染的<span class="npc">三清元尊</span>从白玉京中走出——它曾是道教至高的象征，如今却成了毁灭的化身。它所过之处，天道法则被逐一<span class="danger-text">扭曲</span>。',
+    trigger:{minAge:20,yearMin:32,yearMax:42,cultivation:100},choices:[
+    {text:'参与围攻三清元尊',effect:{cultivation:25,constitution:-15,sanity:-25,karma:10,qiyun:10},log:'你加入了各方联军，但三清元尊的力量远超想象——它一挥手就让方圆百里的天道法则全部失效',combat:99},
+    {text:'远远观战',effect:{comprehension:15,sanity:-15},log:'你看到了司命之间的战斗——那已经超越了凡人所能理解的维度'}]},
+
+  // --- 季灾成道后 (year 40+) ---
+  {text:'<span class="npc">季灾</span>——曾经的李火旺——在白玉京中守护着天道。你偶尔能感受到他的存在：一种<span class="mys">迷惘与清醒交织</span>的力量笼罩着整个世界。',
+    trigger:{minAge:25,yearMin:40,cultivation:60},choices:[
+    {text:'尝试与季灾沟通',effect:{cultivation:20,sanity:-15,comprehension:15},log:'你在冥想中触碰到了季灾的意识——他说："我曾经也不知道哪个世界是真的。现在我知道了——两个都是。"'},
+    {text:'在季灾的庇护下修行',effect:{cultivation:15,sanity:10,comprehension:8},log:'季灾的存在让天道趋于稳定，你在这份安宁中修行受益匪浅'},
+    {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
+
+  // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
+  {text:'<span class="npc">左丘咏</span>被击败后，他的女儿<span class="npc">左千户</span>加入了<span class="fac">监天司</span>。你在一次任务中与她同行——她沉默寡言，但出手凌厉，身上隐隐有<span class="mys">天陈</span>的残余气息。',
+    trigger:{minAge:18,yearMin:28,yearMax:36,cultivation:40},choices:[
+    {text:'与她并肩作战',effect:{connections:15,cultivation:10,comprehension:5},log:'左千户的实力远超你的想象——她继承了父亲的部分天道之力',combat:75},
+    {text:'问她关于天陈的事',effect:{comprehension:12,connections:8,sanity:-5},log:'她沉默了很久，最后只说了一句："天陈已经不存在了。"'},
+    {text:'保持同僚关系',effect:{connections:5},log:'她不太与人交谈，但你能感受到她心中的重担'}]},
 ];
 
 // === LOCAL STORIES (birthplace/location-specific events) ===

@@ -256,18 +256,16 @@ function getRealmName(c) {
 
 function getEraName() {
   var y = gameState.year;
-  if(y<-1500) return '混沌初开';
-  if(y<-1000) return '万仙大战';
-  if(y<-500) return '上古仙朝';
-  if(y<-200) return '百家争道';
-  if(y<-100) return '仙道衰微';
-  if(y<-10) return '丹阳子时期';
-  if(y<0) return '清风观覆灭后';
-  if(y<5) return '李火旺成长期';
-  if(y<15) return '坐忘道动乱';
-  if(y<25) return '法教入侵';
+  if(y<-500) return '远古';
+  if(y<-100) return '诸司命并立';
+  if(y<-10) return '丹阳子活跃';
+  if(y<1) return '清风观覆灭';
+  if(y<5) return '李火旺入世';
+  if(y<15) return '坐忘道之乱';
+  if(y<25) return '龙脉纷争';
   if(y<35) return '白玉京之战';
-  return '末法时代';
+  if(y<50) return '季灾降世';
+  return '后季灾';
 }
 
 // === LIFESPAN BY CULTIVATION ===
@@ -1220,12 +1218,15 @@ function updateDisplay() {
   if(!gameState.location) return; // safety check
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
   document.getElementById('age').textContent = gameState.age;
+  var sanityBox = document.getElementById('sanity-stat-box');
   var sv = document.getElementById('sanity');
   if(isXinsu) {
+    if(sanityBox) sanityBox.style.display = '';
     sv.textContent = gameState.sanity;
     sv.className = 'stat-value' + (gameState.sanity<30?' danger':gameState.sanity<60?' low':'');
     document.getElementById('sanity-section').classList.remove('sanity-hidden');
   } else {
+    if(sanityBox) sanityBox.style.display = 'none';
     sv.textContent = '稳固';
     sv.className = 'stat-value';
     document.getElementById('sanity-section').classList.add('sanity-hidden');
