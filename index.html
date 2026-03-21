@@ -268,7 +268,7 @@
             gameState.alive = false;
             document.getElementById('game').classList.add('hidden');
             document.getElementById('ending').classList.remove('hidden');
-            let realm = gameState.cultivation >= 300 ? '大傩' : gameState.cultivation >= 200 ? '大乘' : '化神' : '元婴' : '金丹' : '筑基' : '练气' : '锻体';
+            let realm = gameState.cultivation >= 300 ? '大傩' : (gameState.cultivation >= 200 ? '大乘' : (gameState.cultivation >= 150 ? '化神' : (gameState.cultivation >= 100 ? '元婴' : (gameState.cultivation >= 60 ? '金丹' : (gameState.cultivation >= 30 ? '筑基' : (gameState.cultivation >= 10 ? '练气' : '锻体'))))));
             let ending = reason;
             if (gameState.cultivation >= 300) ending = '你成为了<span class="special">大傩</span>！超越了凡人的境界，看到了世界的最终真相！';
             else if (gameState.sanity < 20) ending = '你看到了太多真相，成为了他人眼中的"疯子"，却获得了真正的智慧。';
