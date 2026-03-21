@@ -10,9 +10,7 @@ var DaoguiAudio = (function() {
   
   // Music layers
   var nodes = {
-    bassDrone: [],
     melodyOsc: [],
-    texture: [],
     harmonics: []
   };
   
@@ -69,16 +67,6 @@ var DaoguiAudio = (function() {
       baseNote: pentatonic.jiao
     }
   };
-  
-  // Faction-specific sounds
-  var factionSounds = {
-    zuowang: { baseFreq: 55, filterQ: 4, character: 'mysterious' },
-    jiantian: { baseFreq: 110, filterQ: 1, character: 'official' },
-    aojing: { baseFreq: 165, filterQ: 2, character: 'fiery' },
-    bailian: { baseFreq: 220, filterQ: 3, character: 'holy' },
-    biaoju: { baseFreq: 82, filterQ: 1, character: 'martial' },
-    fa_jiao: { baseFreq: 73, filterQ: 5, character: 'dark' }
-  };
 
   function init() {
     if (audioCtx) return;
@@ -86,30 +74,6 @@ var DaoguiAudio = (function() {
     masterGain = audioCtx.createGain();
     masterGain.gain.value = 0;
     masterGain.connect(audioCtx.destination);
-  }
-
-  // Create a drone layer
-  function createDrone(freq, type, filterFreq, filterQ, gainVal) {
-    var osc = audioCtx.createOscillator();
-    var gain = audioCtx.createGain();
-    var filter = audioCtx.createBiquadFilter();
-    
-    osc.type = type;
-    osc.frequency.value = freq;
-    
-    filter.type = 'lowpass';
-    filter.frequency.value = filterFreq;
-    filter.Q.value = filterQ;
-    
-    gain.gain.setValueAtTime(0, audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(gainVal, audioCtx.currentTime + 2);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(masterGain);
-    osc.start();
-    
-    return { osc: osc, gain: gain, filter: filter };
   }
 
   // Create pentatonic melody
@@ -205,33 +169,13 @@ var DaoguiAudio = (function() {
     if (isPlaying) return;
     init();
     isPlaying = true;
-    
-    var mode = getCurrentMode();
-    var faction = factionSounds[gameState.faction] || { baseFreq: 55, filterQ: 1 };
-    
-    // Deep bass drone - foundation
-    nodes.bassDrone.push(createDrone(55, 'sine', 150, 1, 0.15));
-    
-    // Sub bass
-    nodes.bassDrone.push(createDrone(36.7, 'sine', 100, 0.5, 0.1));
-    
-    // Faction-specific drone
-    if (gameState.faction !== 'none') {
-      nodes.bassDrone.push(createDrone(faction.baseFreq, 'sine', 300, faction.filterQ, 0.08));
-    }
-    
-    // Mid texture
-    nodes.texture.push(createDrone(110, 'triangle', mode.filterFreq, 2, 0.05));
-    
-    // High harmonic
-    nodes.texture.push(createDrone(220, 'sine', 600, 3, 0.025));
-    
+
     // Create harmonic pad
     createHarmonicPad();
-    
+
     // Start melody loop
     createMelody();
-    
+
     setMuted(false);
   }
 
@@ -244,7 +188,7 @@ var DaoguiAudio = (function() {
         } catch(e) {}
       });
     });
-    nodes = { bassDrone: [], melodyOsc: [], texture: [], harmonics: [] };
+    nodes = { melodyOsc: [], harmonics: [] };
     isPlaying = false;
   }
 
@@ -274,26 +218,13 @@ var DaoguiAudio = (function() {
   // Update music based on game state changes
   function updateMusicState(age, faction, cultivation, isXinsu, location, sanity) {
     if (!isPlaying || !audioCtx) return;
-    
+
     var now = audioCtx.currentTime;
     currentState = { age, faction, cultivation, isXinsu, location, sanity };
-    
+
     var mode = getCurrentMode();
-    
-    // Update bass drone
-    if (nodes.bassDrone[0]) {
-      nodes.bassDrone[0].gain.gain.setTargetAtTime(0.15, now, 1);
-    }
-    
-    // Update filter based on cultivation
-    nodes.texture.forEach(function(n) {
-      if (n.filter) {
-        var filterFreq = mode.filterFreq + cultivation * 1.5;
-        n.filter.frequency.setTargetAtTime(filterFreq, now, 1);
-      }
-    });
-    
-    // Update harmonic filters
+
+    // Update harmonic filters based on age mode
     nodes.harmonics.forEach(function(n) {
       if (n.filter) {
         n.filter.frequency.setTargetAtTime(mode.filterFreq, now, 1);
@@ -301,29 +232,9 @@ var DaoguiAudio = (function() {
     });
   }
 
-  // Faction change - transition music
+  // Faction change - no longer uses drone, kept for API compatibility
   function onFactionChange(newFaction) {
-    if (!isPlaying || !audioCtx) return;
-    
-    var now = audioCtx.currentTime;
-    
-    // Remove old faction drone
-    if (nodes.bassDrone.length > 2) {
-      var oldFactionDrone = nodes.bassDrone.pop();
-      if (oldFactionDrone && oldFactionDrone.osc) {
-        oldFactionDrone.gain.gain.setTargetAtTime(0, now, 0.5);
-        setTimeout(function() {
-          try { oldFactionDrone.osc.stop(); } catch(e) {}
-        }, 1000);
-      }
-    }
-    
-    // Add new faction drone
-    if (newFaction !== 'none' && factionSounds[newFaction]) {
-      var faction = factionSounds[newFaction];
-      var newDrone = createDrone(faction.baseFreq, 'sine', 300, faction.filterQ, 0.08);
-      nodes.bassDrone.push(newDrone);
-    }
+    // Faction identity now only affects melody context, not drones
   }
 
   // Play event sound - gong
@@ -450,23 +361,19 @@ var DaoguiAudio = (function() {
   // Sanity intensity - for xinsu players
   function setSanityIntensity(intensity) {
     if (!isPlaying || !audioCtx) return;
-    
+
     var now = audioCtx.currentTime;
     intensity = Math.max(0, Math.min(1, intensity));
-    
-    // Increase filter frequency for more tension
-    nodes.texture.forEach(function(n) {
-      if (n.filter && n.filter.type === 'lowpass') {
-        var freq = 600 + intensity * 800;
-        n.filter.frequency.setTargetAtTime(freq, now, 0.5);
-      }
-    });
-    
-    // Increase harmonic brightness
+
+    // Increase harmonic brightness as sanity drops
     nodes.harmonics.forEach(function(n) {
       if (n.gain) {
         var g = 0.015 + intensity * 0.02;
         n.gain.gain.setTargetAtTime(g, now, 0.5);
+      }
+      if (n.filter) {
+        var freq = 600 + intensity * 800;
+        n.filter.frequency.setTargetAtTime(freq, now, 0.5);
       }
     });
   }
