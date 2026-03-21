@@ -1,17 +1,27 @@
 // === GAME DATA ===
 const TALENTS = {
   special: [
-    {id:'xinsu',name:'心素',desc:'先天一炁，可感知两个世界的边界',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10'},
+    {id:'xinsu',name:'心素',desc:'先天一炁，体内能同时存在于现实与大傩两个世界，是天道规则的“扰动者”。无意识“心想事成”可将幻觉实体化，身体是顶级“药引/材料”被各方争夺。精神极不稳定，易陷入疯狂与自我怀疑。代表：李火旺、杨娜等。',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10 穿梭两界 身体是顶级药引 易陷入疯狂'},
     {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30,comprehension:15},type:'special',rarity:'legendary',hint:'修为+30 悟性+15'},
     {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10,constitution:15},type:'special',rarity:'legendary',hint:'神志+20 修为+10 体魄+15'},
     {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15,comprehension:20},type:'special',rarity:'epic',hint:'修为+15 悟性+20 神志-10'},
     {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20,qiyun:-10,karma:-5},type:'special',rarity:'epic',hint:'修为+20 气运-10 因果-5 神志-15'},
     {id:'gu_ren',name:'古人',desc:'你并非此世之人，出生于数百乃至上千年前的远古时代',effect:{cultivation:15,connections:-15,comprehension:10},type:'special',rarity:'legendary',hint:'修为+15 悟性+10 人脉-15 出生年份为远古时代'},
-    // === NEW: 道诡异仙特色天赋 ===
+    // === 道诡异仙特色天赋 ===
     {id:'long_mai',name:'龙脉之体',desc:'天生与龙脉相合，可吸收龙脉之力修炼',effect:{cultivation:25,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 可感应龙脉'},
     {id:'si_ming',name:'司命之种',desc:'身负成为司命的潜质，感知天道之力',effect:{cultivation:20,comprehension:20,qiyun:15},type:'special',rarity:'legendary',hint:'修为+20 悟性+20 气运+15 风险与机遇并存'},
     {id:'yang_tian',name:'阳男',desc:'先天纯阳之体，修炼阳刚功法进境极快',effect:{cultivation:20,constitution:15,sanity:10},type:'special',rarity:'epic',hint:'修为+20 体魄+15 神志+10'},
     {id:'yin_nv',name:'阴女',desc:'先天纯阴之体，修炼阴柔功法进境极快',effect:{cultivation:20,comprehension:10,sanity:15},type:'special',rarity:'epic',hint:'修为+20 悟性+10 神志+15'},
+    // === 更多道诡异仙原创天赋 ===
+    {id:'wang_zai',name:'罔灾',desc:'坐忘道斗姥选中之人，注定成为灾祸的化身',effect:{cultivation:30,sanity:-25,qiyun:-15},type:'special',rarity:'legendary',hint:'修为+30 神志-25 气运-15 坐忘道有特殊机遇'},
+    {id:'tian_nai',name:'天内',desc:'生而为天内，天生能够看见白玉京',effect:{sanity:-20,cultivation:25,comprehension:15},type:'special',rarity:'legendary',hint:'神志-20 修为+25 悟性+15 白玉京对你敞开门户'},
+    {id:'xin_bo',name:'心蟠',desc:'身负无生老母的心蟠，擅长身份伪装与阵营庇护。可掩盖自身特质规避因果律束缚，坐忘道的欺骗手段对你效果较弱。加入监天司等势力可获得额外庇护。',effect:{cultivation:15,sanity:25,karma:10,connections:15},type:'special',rarity:'legendary',hint:'神志+25 人脉+15 因果+10 伪装身份 势力庇护'},
+    {id:'xin_zhuo',name:'心浊',desc:'空间干扰者，其存在可扰乱现实。头发可强化法器对空间的干扰，可形成领域性干扰场域影响敌人感知。常作为顶级法器材料被争夺。',effect:{cultivation:25,sanity:-15,qiyun:-10,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 气运-10 空间扰动 法器强化'},
+    {id:'xu_jing',name:'虚静',desc:'天生与虚空相合，不为幻象所迷',effect:{cultivation:20,sanity:15,comprehension:10},type:'special',rarity:'epic',hint:'修为+20 神志+15 悟性+10 虚空中自有一片天地'},
+    {id:'kuang_lu',name:'狂卢',desc:'体内流淌着巴虺的血脉，痛苦即是力量',effect:{cultivation:25,constitution:15,sanity:-10},type:'special',rarity:'epic',hint:'修为+25 体魄+15 神志-10 袄景教视你为血脉后裔'},
+    {id:'qi_chen',name:'七晨',desc:'生辰特殊，每月七日出生，与季灾有天然联系',effect:{cultivation:15,qiyun:10,comprehension:15},type:'special',rarity:'epic',hint:'修为+15 气运+10 悟性+15 季灾对你有所关注'},
+    {id:'ji_jing',name:'极镜',desc:'心如明镜，能看穿一切幻象与谎言',effect:{comprehension:25,sanity:10,cultivation:5},type:'special',rarity:'epic',hint:'悟性+25 神志+10 修为+5 破除虚妄'},
+    {id:'hong_yan',name:'火眼',desc:'修炼火功法门事半功倍，与红莲业火有缘',effect:{cultivation:20,constitution:10},type:'special',rarity:'epic',hint:'修为+20 体魄+10 火系功法威力倍增'},
   ],
   good: [
     {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10,comprehension:10},type:'good',rarity:'rare',hint:'修为+10 悟性+10 每年额外修炼加成'},

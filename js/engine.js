@@ -272,18 +272,20 @@ function nextYear() {
   }
   gameState.age++; gameState.year++;
 
-  // Cultivation gain - 大幅降低概率和幅度
-  // 只有约30%概率能获得修为提升（普通人没有机缘难以突破）
-  var compBonus = Math.floor(gameState.comprehension / 50); // 悟性影响减小，最多+2
+  // Cultivation gain - 极低概率，模拟修仙之路极为艰难
+  // 普通人没有机缘难以突破修为，每年只有约3%概率能获得提升
+  var compBonus = Math.floor(gameState.comprehension / 100); // 悟性影响很小，最多+1
   var cultGain = 0;
-  var hasCultivationChance = Math.random() < 0.30; // 只有30%概率获得修为
+  var hasCultivationChance = Math.random() < 0.03; // 降低到3%概率
   
   if (hasCultivationChance) {
-    // 即使有机会，基础提升也只有0-1点
+    // 即使有机会，基础提升也只有0-1点（普通人很难突破瓶颈）
     cultGain = Math.floor(Math.random() * 2) + compBonus;
-    // 有天赋加成
+    // 天赋加成（但仍需要有机缘才能触发）
     if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 2;
     if(gameState.talents.find(function(t){return t.id==='jie_dan';}) && gameState.cultivation<60) cultGain += 1;
+    if(gameState.talents.find(function(t){return t.id==='xian_gu';})) cultGain += 1;
+    if(gameState.talents.find(function(t){return t.id==='wu_xing';})) cultGain += 1;
   }
   if(gameState.faction!=='none' && FACTIONS[gameState.faction]) {
     var fb = FACTIONS[gameState.faction].bonus;
