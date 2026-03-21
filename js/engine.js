@@ -106,6 +106,9 @@ function confirmBorn() {
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
   updateDisplay();
+  
+  // Initialize audio state when game starts
+  updateAudioState();
 }
 
 // === REALM & ERA ===
@@ -241,14 +244,34 @@ function nextYear() {
   // Sanity visual effects
   applySanityEffects();
 
-  // Update audio sanity intensity
-  if(isXinsu && typeof DaoguiAudio !== 'undefined') {
-    var intensity = Math.max(0, 1 - (gameState.sanity / 100));
-    DaoguiAudio.setSanityIntensity(intensity);
-  }
+  // Update audio state
+  updateAudioState();
 
   updateDisplay();
   if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, 1000/speed);
+}
+
+// === AUDIO STATE UPDATE ===
+function updateAudioState() {
+  if(typeof DaoguiAudio === 'undefined') return;
+  
+  var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
+  
+  // Update music state with current game values
+  DaoguiAudio.updateMusicState(
+    gameState.age,
+    gameState.faction,
+    gameState.cultivation,
+    isXinsu,
+    gameState.location.id,
+    gameState.sanity
+  );
+  
+  // Update sanity intensity for xinsu players
+  if(isXinsu) {
+    var intensity = Math.max(0, 1 - (gameState.sanity / 100));
+    DaoguiAudio.setSanityIntensity(intensity);
+  }
 }
 
 function quietYear() {
@@ -318,14 +341,22 @@ function handleChoice(idx) {
 
 function applyChoice(c) {
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
+  var oldFaction = gameState.faction;
+  
   if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
   if(c.effect.cultivation) gameState.cultivation += c.effect.cultivation;
   if(c.effect.wealth) gameState.wealth += c.effect.wealth;
   if(c.effect.connections) gameState.connections += c.effect.connections;
   if(c.effect.faction) {
-    gameState.faction = c.effect.faction;
-    if(!gameState.factionHistory.includes(c.effect.faction)) gameState.factionHistory.push(c.effect.faction);
+    var newFaction = c.effect.faction;
+    gameState.faction = newFaction;
+    if(!gameState.factionHistory.includes(newFaction)) gameState.factionHistory.push(newFaction);
     if(gameState.factionHistory.length>=3) unlockAchieve('faction_all');
+    
+    // Trigger faction change music
+    if(oldFaction !== newFaction && typeof DaoguiAudio !== 'undefined') {
+      DaoguiAudio.onFactionChange(newFaction);
+    }
   }
   if(c.item) {
     var itemData = ITEMS.find(function(it){return it.id===c.item;});
