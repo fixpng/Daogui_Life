@@ -328,7 +328,10 @@ body::after {
   margin-bottom: 14px;
   flex-wrap: nowrap;
 }
-.playback-bar .btn { flex: 0 0 auto; min-width: auto; }
+.playback-bar .btn-pause {
+  flex: 1;
+  min-width: 0;
+}
 .speed-control {
   display: flex;
   align-items: center;
@@ -383,6 +386,12 @@ body::after {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin: 16px 0;
+}
+/* Header text inside talent grid (for carry-over screen) */
+.talent-grid > div[style*="text-align:center"],
+.talent-grid-header {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
 }
 .talent-card {
   background: rgba(0,0,0,0.4);

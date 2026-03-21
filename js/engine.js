@@ -93,12 +93,33 @@ function updateSelectCount() {
 
 // === GAME START ===
 function startGame() {
-  gameState.baseSanity = 100; gameState.wealth = 10; gameState.connections = 0;
-  gameState.cultivation = 0; gameState.age = 0; gameState.alive = true;
-  gameState.comprehension = 10; gameState.karma = 0; gameState.qiyun = 0; gameState.constitution = 50;
-  gameState.items = []; gameState.faction = 'none'; gameState.factionRank = 0;
-  gameState.visitedLocations = []; gameState.factionHistory = [];
-  gameState.eventHistory = new Set(); gameState.dualCultWarned = false;
+  // FULL RESET of gameState - ensure no carryover from previous runs
+  gameState = {
+    talents: gameState.talents, // Keep talents for this run selection
+    location: null,
+    age: 0,
+    year: 0,
+    sanity: 100,
+    baseSanity: 100,
+    cultivation: 0,  // ALWAYS reset to 0 - new life starts fresh
+    wealth: 10,
+    connections: 0,
+    faction: 'none',
+    comprehension: 10,
+    karma: 0,
+    qiyun: 0,
+    constitution: 50,
+    gender: 'male',
+    factionRank: 0,
+    alive: true,
+    totalRuns: gameState.totalRuns, // Keep totalRuns counter
+    items: [],
+    visitedLocations: [],
+    factionHistory: [],  // Reset faction history for new run
+    eventHistory: new Set(),
+    dualCultWarned: false,
+    lastLifeTalents: gameState.lastLifeTalents || []  // Keep last life's talents for carry-over feature
+  };
 
   // Assign gender randomly
   gameState.gender = Math.random() < 0.5 ? 'male' : 'female';
@@ -448,6 +469,35 @@ function nextYear() {
   else if(gameState.age < 18) eventPool = [].concat(CHILDHOOD_EVENTS.slice(-4), TEENAGE_EVENTS);
   else eventPool = [].concat(ADULT_EVENTS);
 
+  // Filter out faction join events for factions already in factionHistory
+  // and reduce faction join event probability by 70%
+  eventPool = eventPool.filter(function(ev){
+    // Check if this event has choices with factionJoin
+    if(!ev.choices) return true;
+    var hasFactionJoin = ev.choices.some(function(c){ return c.factionJoin; });
+    if(!hasFactionJoin) return true;
+    
+    // For events with factionJoin, keep only choices for factions not in factionHistory
+    // This is handled in showEvent when displaying choices
+    return true;
+  });
+
+  // Filter choices in events to remove factionJoin options for already-joined factions
+  eventPool.forEach(function(ev){
+    if(ev.choices) {
+      ev.choices = ev.choices.filter(function(c){
+        if(!c.factionJoin) return true;
+        // Skip if already in this faction's history
+        return !gameState.factionHistory.includes(c.factionJoin);
+      });
+    }
+  });
+
+  // Filter out events that have no valid choices after filtering
+  eventPool = eventPool.filter(function(ev){
+    return !ev.choices || ev.choices.length > 0;
+  });
+
   // Filter out gender-mismatched events and check trigger conditions on base events
   eventPool = eventPool.filter(function(ev){
     if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
@@ -466,6 +516,16 @@ function nextYear() {
   // Add special events
   SPECIAL_EVENTS.forEach(function(se){
     if(se.genderReq && se.genderReq !== gameState.gender) return;
+    // Filter factionJoin choices for already-joined factions
+    if(se.choices) {
+      se.choices = se.choices.filter(function(c){
+        if(!c.factionJoin) return true;
+        return !gameState.factionHistory.includes(c.factionJoin);
+      });
+    }
+    // Skip events with no valid choices after filtering
+    if(se.choices && se.choices.length === 0) return;
+    
     if(!se.trigger) { eventPool.push(se); return; }
     if(gameState.age >= (se.trigger.minAge||0) && gameState.age <= (se.trigger.maxAge||999)) {
       if(!se.trigger.cultivation || gameState.cultivation >= se.trigger.cultivation) {
@@ -1480,7 +1540,7 @@ function restart() {
 function showTalentCarryOver() {
   showPanel('setup');
   var grid = document.getElementById('talent-options');
-  grid.innerHTML = '<div style="text-align:center;color:var(--gold);margin-bottom:16px;font-size:1.1em;">前世天赋 — 选择一个保留至来世（或跳过）</div>' +
+  grid.innerHTML = '<div class="talent-grid-header" style="text-align:center;color:var(--gold);margin-bottom:16px;font-size:1.1em;">前世天赋 — 选择一个保留至来世（或跳过）</div>' +
     gameState.lastLifeTalents.map(function(t,i){return (
       '<div class="talent-card rarity-'+t.rarity+'" onclick="keepTalent('+i+')" id="keep-talent-'+i+'">' +
         '<div class="talent-name">'+t.name+'</div>' +
@@ -1512,7 +1572,7 @@ function initTalentsWithKept() {
   availableTalents = drawTalents().filter(function(t){return t.id !== keptTalent.id;}).slice(0,10);
   gameState.talents = [];
   var grid = document.getElementById('talent-options');
-  grid.innerHTML = '<div style="text-align:center;color:var(--gold);margin-bottom:10px;font-size:0.95em;">保留天赋: <span style="color:var(--crimson)">'+keptTalent.name+'</span> — 再选三个</div>' +
+  grid.innerHTML = '<div class="talent-grid-header" style="text-align:center;color:var(--gold);margin-bottom:10px;font-size:0.95em;">保留天赋: <span style="color:var(--crimson)">'+keptTalent.name+'</span> — 再选三个</div>' +
     availableTalents.map(function(t,i){return (
       '<div class="talent-card rarity-'+t.rarity+'" onclick="selectTalent('+i+')" id="talent-'+i+'">' +
         '<div class="talent-name">'+t.name+'</div>' +
