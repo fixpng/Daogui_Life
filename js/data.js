@@ -21,6 +21,8 @@ const TALENTS = {
     {id:'gui_ren',name:'贵人',desc:'命中有贵人相助',effect:{connections:20,qiyun:10},type:'good',rarity:'rare',hint:'人脉+20 气运+10'},
     {id:'xian_gu',name:'仙骨',desc:'骨骼清奇，天生道体',effect:{cultivation:12,comprehension:15,constitution:5},type:'good',rarity:'rare',hint:'修为+12 悟性+15 体魄+5'},
     {id:'fu_yuan',name:'福缘',desc:'前世积德，今生有福',effect:{karma:20,qiyun:10,wealth:10},type:'good',rarity:'uncommon',hint:'因果+20 气运+10 金银+10'},
+    {id:'tian_yun',name:'天运',desc:'天生气运加身，万事顺遂',effect:{qiyun:25,wealth:15,connections:5},type:'good',rarity:'rare',hint:'气运+25 金银+15 人脉+5'},
+    {id:'zhuan_yun',name:'转运星',desc:'命中自带逢凶化吉之相',effect:{qiyun:15,constitution:10,sanity:5},type:'good',rarity:'uncommon',hint:'气运+15 体魄+10 神志+5'},
   ],
   bad: [
     {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20,constitution:-15},type:'bad',rarity:'common',hint:'神志-20 体魄-15 但久病成医，偶有奇遇'},
@@ -37,6 +39,7 @@ const TALENTS = {
     {id:'mo_ying',name:'魔影',desc:'总感觉背后有东西跟着',effect:{sanity:-20,comprehension:5},type:'bad',rarity:'cursed',hint:'神志-20 悟性+5 但灵觉异常敏锐'},
     {id:'ye_zhang',name:'业障',desc:'前世造业深重，今生因果沉重',effect:{karma:-30,qiyun:-10,sanity:-10},type:'bad',rarity:'cursed',hint:'因果-30 气运-10 神志-10 但业火焚身，偶可借力修炼'},
     {id:'ti_ruo',name:'体弱',desc:'先天体弱，弱不禁风',effect:{constitution:-25},type:'bad',rarity:'common',hint:'体魄-25 但心思细腻，悟性偶有提升'},
+    {id:'po_yun',name:'破运',desc:'天生克运，诸事不顺',effect:{qiyun:-25,karma:-10,wealth:-10},type:'bad',rarity:'cursed',hint:'气运-25 因果-10 金银-10 但逆运而行，偶有奇遇'},
   ]
 };
 
@@ -234,7 +237,7 @@ const ADULT_EVENTS = [
     {text:'向官府举报',effect:{connections:15,wealth:20,qiyun:-5},log:'官府封赏了你'},
     {text:'假装没看见',effect:{},log:'多一事不如少一事'}]},
   {text:'<span class="danger-text">山贼</span>拦路抢劫，为首的是个独眼大汉。',choices:[
-    {text:'拼死反抗',effect:{cultivation:10,sanity:-5,constitution:3,qiyun:3},log:'打跑了山贼，身上添了几道伤疤',req:{constitution:20}},
+    {text:'拼死反抗',effect:{cultivation:10,sanity:-5,constitution:3,qiyun:3},log:'打跑了山贼，身上添了几道伤疤',combat:40},
     {text:'乖乖交钱',effect:{wealth:-30},log:'破财免灾'},
     {text:'动之以情',effect:{connections:5,comprehension:2},log:'居然说动了他，放你一马',req:{connections:10}}]},
   {text:'你在客栈休息时，隔壁传来<span class="mys">诡异的念经声</span>，持续了一整夜。',choices:[
@@ -313,6 +316,24 @@ const ADULT_EVENTS = [
     {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'aojing'}},
     {text:'默默听完',effect:{comprehension:5},log:'有时候忍耐比冲动更需要勇气'},
     {text:'喝完酒走人',effect:{sanity:3},log:'和自己无关的事不必在意'}]},
+  // === COMBAT SCALING EVENTS ===
+  {text:'一伙<span class="danger-text">江湖悍匪</span>在大路上设了路障，手持利刃凶神恶煞。',choices:[
+    {text:'正面突破',effect:{cultivation:8,constitution:5,qiyun:5},log:'你杀出一条血路！',combat:50},
+    {text:'绕道而行',effect:{wealth:-10},log:'浪费了不少时间，但总比丢命好'},
+    {text:'假装投降后偷袭',effect:{cultivation:5,karma:-5,qiyun:-3},log:'不太光彩，但管用',req:{comprehension:20}}]},
+  {text:'一头<span class="danger-text">下山猛虎</span>挡在了你的去路上，虎目如炬。',choices:[
+    {text:'与虎搏斗',effect:{cultivation:12,constitution:8,qiyun:8},log:'你打退了猛虎，虎皮卖了个好价钱',combat:60},
+    {text:'装死',effect:{sanity:-8},log:'猛虎嗅了嗅你，走了...吓出一身冷汗'},
+    {text:'慢慢后退',effect:{},log:'你缓缓退离虎的领地，松了一口气'}]},
+  {text:'夜间，三名<span class="danger-text">黑衣人</span>破门而入，说有人出钱买你的命。',choices:[
+    {text:'迎战杀手',effect:{cultivation:10,constitution:3,sanity:-5},log:'你击退了杀手，但不知是谁要害你',combat:55},
+    {text:'从窗户逃跑',effect:{wealth:-20,connections:-5},log:'你丢下行李仓皇逃出'},
+    {text:'报出门派名号',effect:{connections:-5},log:'他们犹豫了一下撤走了',req:{faction:'zuowang'}}]},
+  {text:'边境发生了<span class="danger-text">大规模冲突</span>，你被卷入了混战之中。',
+    trigger:{minAge:20},choices:[
+    {text:'奋力杀敌',effect:{cultivation:15,connections:10,constitution:5,wealth:15},log:'你在混战中立了大功！',combat:70},
+    {text:'保护平民撤退',effect:{karma:15,qiyun:10,connections:10},log:'你救了不少人，百姓感恩戴德'},
+    {text:'趁乱逃走',effect:{sanity:-5,karma:-3},log:'战场不是你该来的地方'}]},
 ];
 
 const SPECIAL_EVENTS = [
@@ -454,7 +475,7 @@ const FACTION_EVENTS = {
   ],
   biaoju: [
     {text:'押镖途中遇到<span class="danger-text">百人马贼</span>，镖头让你断后。',choices:[
-      {text:'誓死断后',effect:{cultivation:15,connections:25,sanity:-10,constitution:5,qiyun:10},log:'你浴血奋战，九死一生',req:{constitution:30}},{text:'弃镖而逃',effect:{faction:'none',connections:-30,qiyun:-15},log:'你成了逃兵'}]},
+      {text:'誓死断后',effect:{cultivation:15,connections:25,sanity:-10,constitution:5,qiyun:10},log:'你浴血奋战，九死一生',combat:80},{text:'弃镖而逃',effect:{faction:'none',connections:-30,qiyun:-15},log:'你成了逃兵'}]},
     // === NEW BIAOJU EVENTS ===
     {text:'镖局接到一单<span class="danger-text">死亡委托</span>——护送一名<span class="npc">神秘女子</span>穿越南疆。',choices:[
       {text:'接下委托',effect:{wealth:50,sanity:-15,constitution:-5,cultivation:10},log:'一路险象环生，那女子似乎不是普通人'},
@@ -549,6 +570,19 @@ const QIYUN_EVENTS = [
     qiyunReq:{abs:40},choices:[
     {text:'顺势引导',effect:{cultivation:20,comprehension:10,qiyun:0},log:'气运之力化为修炼的养分，你感到了一种奇妙的平衡'},
     {text:'强行压制',effect:{sanity:-10,constitution:-5},log:'你压制住了，但身体遭了罪'}]},
+  // Qiyun-talent interactions
+  {text:'你走在街上，突然一块<span class="mys">金砖</span>从天而降砸在你脚边。',
+    qiyunReq:{min:20},choices:[
+    {text:'收入囊中',effect:{wealth:40,qiyun:-5},log:'天降横财！但用了一点气运'},
+    {text:'交给官府',effect:{qiyun:10,karma:10,connections:5},log:'你将金砖上交，官差对你刮目相看'}]},
+  {text:'你无意间踩到了一个<span class="danger-text">陷阱</span>，差点丧命。',
+    qiyunReq:{max:-20},choices:[
+    {text:'挣脱陷阱',effect:{constitution:-8,cultivation:5},log:'你受了伤但活了下来',combat:30},
+    {text:'大喊救命',effect:{connections:5,qiyun:3},log:'幸好有路人经过救了你'}]},
+  {text:'你感到一股<span class="mys">神秘力量</span>在暗中庇护着你。',
+    qiyunReq:{min:40},choices:[
+    {text:'感应那股力量',effect:{cultivation:20,comprehension:10,qiyun:5},log:'那似乎是...天道的眷顾？'},
+    {text:'不去理会',effect:{qiyun:3},log:'顺其自然也是一种智慧'}]},
 ];
 
 // === DUAL CULTIVATION EVENTS (triggered when having faction history) ===
@@ -583,8 +617,8 @@ const TALENT_CONFLICTS = {
   gui_ren: ['wu_qin','sha_qi'],
   zhi_hui: ['yu_ben'],
   yu_ben: ['zhi_hui'],
-  fu_yuan: ['ye_zhang','sha_qi'],
-  ye_zhang: ['fu_yuan'],
+  fu_yuan: ['ye_zhang','sha_qi','po_yun'],
+  ye_zhang: ['fu_yuan','tian_yun'],
   mei_mao: ['chou_lou'],
   chou_lou: ['mei_mao'],
   wu_xing: ['can_ji','ti_ruo'],
@@ -593,6 +627,9 @@ const TALENT_CONFLICTS = {
   ji_bing: ['jian_kang'],
   bai_bing: ['jian_kang'],
   sha_qi: ['gui_ren','fu_yuan'],
+  tian_yun: ['po_yun','ye_zhang'],
+  po_yun: ['tian_yun','fu_yuan','zhuan_yun'],
+  zhuan_yun: ['po_yun'],
 };
 
 // === ATTRIBUTE TOOLTIP DESCRIPTIONS ===
@@ -634,12 +671,17 @@ const KARMA_EVENTS = [
     karmaReq:{abs:40},choices:[
     {text:'寻求平衡',effect:{comprehension:15,cultivation:10,karma:0},log:'因果相抵，你领悟了善恶一体的道理'},
     {text:'偏向一端',effect:{cultivation:15,sanity:-10},log:'你选择了极端，力量更强但也更危险'}]},
+  // Qiyun-enhanced karma event
+  {text:'你遇到一位<span class="npc">命理大师</span>，他一见你便说："施主气运非凡，但因果纠缠。"',
+    karmaReq:{abs:20},choices:[
+    {text:'请他化解',effect:{karma:10,qiyun:10,wealth:-15},log:'大师做法之后，你感觉身轻了不少'},
+    {text:'自己的命自己扛',effect:{comprehension:5,constitution:3},log:'不假他人之手，也是一种修行'}]},
 ];
 
 // === TRAVEL EVENTS (triggered when traveling) ===
 const TRAVEL_EVENTS = [
   {text:'游历途中，你在<span class="loc">山间小路</span>遇到一伙<span class="danger-text">山贼</span>拦路。',choices:[
-    {text:'出手击退',effect:{cultivation:5,constitution:3,karma:5},log:'你教训了山贼，路人纷纷道谢',req:{constitution:25}},
+    {text:'出手击退',effect:{cultivation:5,constitution:3,karma:5},log:'你教训了山贼，路人纷纷道谢',combat:35},
     {text:'绕路而行',effect:{wealth:-5},log:'多走了半天路，但安全抵达'},
     {text:'以言语退敌',effect:{connections:5,comprehension:2},log:'三言两语说得山贼放行',req:{connections:15}}]},
   {text:'途经一座<span class="loc">破败古庙</span>，庙里传来诵经之声。',choices:[

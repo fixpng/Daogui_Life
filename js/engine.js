@@ -135,7 +135,10 @@ function startGame() {
   showPanel('born');
   document.getElementById('born-location').textContent = gameState.location.name;
   var genderText = gameState.gender === 'male' ? '男子' : '女子';
-  document.getElementById('born-desc').textContent = gameState.location.desc + '　·　' + genderText;
+  document.getElementById('born-desc').innerHTML =
+    '<span style="color:var(--gold)">' + genderText + '</span> · ' +
+    gameState.location.desc + ' · 气运: ' +
+    (gameState.qiyun > 0 ? '+' + gameState.qiyun : gameState.qiyun);
 }
 
 function confirmBorn() {
@@ -146,6 +149,15 @@ function confirmBorn() {
   addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+'）');
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
+
+  // Explicitly set year/era/location/gender display
+  document.getElementById('era-name').textContent = getEraName();
+  document.getElementById('year-display').textContent =
+    '大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年';
+  document.getElementById('current-location').textContent = gameState.location.name;
+  document.getElementById('total-runs').textContent = gameState.totalRuns;
+  var genderEl = document.getElementById('gender');
+  if(genderEl) genderEl.textContent = genderName;
 
   // Check 天崩开局: all 3 talents are bad/cursed
   var allBad = gameState.talents.every(function(t){ return t.type === 'bad'; });
@@ -228,7 +240,16 @@ function getEraName() {
 // === NEXT YEAR ===
 function nextYear() {
   if(!gameState.alive) return;
-  if(waitingForChoice) return;
+  if(waitingForChoice) {
+    // In auto mode, if stuck waiting, force resolve
+    if(autoMode && window._currentChoices && window._currentChoices.length > 0) {
+      var autoChoices = window._currentChoices.filter(function(c){ return checkChoiceReq(c).met; });
+      if(!autoChoices.length) autoChoices = window._currentChoices;
+      var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
+      applyChoice(c);
+    }
+    return;
+  }
   gameState.age++; gameState.year++;
 
   // Cultivation gain (comprehension affects cultivation speed)
@@ -269,6 +290,10 @@ function nextYear() {
   // New talent yearly effects
   if(gameState.talents.find(function(t){return t.id==='ye_zhang';}) && Math.random()<0.10) { gameState.cultivation += 3; }
   if(gameState.talents.find(function(t){return t.id==='ti_ruo';}) && Math.random()<0.08) { gameState.comprehension += 2; }
+  // Qiyun-focused talent effects
+  if(gameState.talents.find(function(t){return t.id==='tian_yun';}) && Math.random()<0.15) { gameState.qiyun += 2; gameState.wealth += 3; }
+  if(gameState.talents.find(function(t){return t.id==='zhuan_yun';}) && Math.random()<0.12) { gameState.qiyun += 1; gameState.constitution += 1; }
+  if(gameState.talents.find(function(t){return t.id==='po_yun';}) && Math.random()<0.10) { gameState.qiyun -= 2; gameState.cultivation += 3; }
 
   // Constitution natural drift (age affects constitution)
   if(gameState.age > 50) gameState.constitution -= 1;
@@ -390,7 +415,7 @@ function nextYear() {
   }
 
   // Trigger event or quiet year
-  if(Math.random() < 0.72) {
+  if(Math.random() < 0.72 && eventPool.length > 0) {
     var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
     showEvent(ev);
   } else {
@@ -485,6 +510,8 @@ function quietYear() {
 // Check if a choice's requirements are met
 function checkChoiceReq(c) {
   if(!c.req) return {met:true, reason:''};
+  // Combat choices are always available (difficulty resolved on pick)
+  if(c.combat && !c.req) return {met:true, reason:''};
   var req = c.req;
   var reasons = [];
   if(req.cultivation !== undefined && gameState.cultivation < req.cultivation) reasons.push('需修为'+getRealmName(req.cultivation)+'以上');
@@ -563,6 +590,47 @@ function handleChoice(idx) {
 function applyChoice(c) {
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
   var oldFaction = gameState.faction;
+
+  // === COMBAT RESOLUTION ===
+  // If the choice has a combat difficulty, resolve based on player power
+  if(c.combat) {
+    var power = gameState.cultivation + Math.floor(gameState.constitution / 2);
+    var diff = c.combat;
+    if(power >= diff * 3) {
+      // Dominate
+      addLog('你以碾压之势击败了对手，毫发无损！');
+      gameState.cultivation += 3;
+      gameState.qiyun += 5;
+      gameState.connections += 5;
+    } else if(power >= diff) {
+      // Normal win - use default effects
+    } else if(power < Math.floor(diff / 2)) {
+      // Severely outmatched - risk death
+      gameState.constitution -= 15;
+      if(isXinsu) gameState.sanity = Math.max(0, gameState.sanity - 10);
+      addLog('<span class="danger-text">你实力悬殊，被打得奄奄一息！</span>');
+      if(gameState.constitution <= 0) {
+        gameOver('你实力太弱，在战斗中被<span class="danger-text">击杀</span>了。');
+        return;
+      }
+      // Apply reduced effects (no positive cultivation/connection gain)
+      if(c.effect.wealth) gameState.wealth += c.effect.wealth;
+      if(c.effect.karma) gameState.karma = Math.max(-100,Math.min(100,gameState.karma+c.effect.karma));
+      addLog(c.log.replace(/打跑了|击退了|打退了|教训了/g, '勉强逃过一劫，'));
+      document.getElementById('choices').innerHTML = '';
+      document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
+      waitingForChoice = false;
+      document.getElementById('btn-next').disabled = false;
+      updateDisplay();
+      var delay = SPEED_DELAYS[speed] || 3000;
+      if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+      return;
+    } else {
+      // Weak but not hopeless - take extra damage
+      gameState.constitution -= 8;
+      addLog('<span class="danger-text">你险胜，但伤得不轻。</span>');
+    }
+  }
 
   if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
   if(c.effect.cultivation) gameState.cultivation += c.effect.cultivation;
@@ -662,6 +730,7 @@ function applyChoice(c) {
 
 // === DISPLAY ===
 function updateDisplay() {
+  if(!gameState.location) return; // safety check
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
   document.getElementById('age').textContent = gameState.age;
   var sv = document.getElementById('sanity');
@@ -805,8 +874,20 @@ function toggleAuto() {
   var btn = document.getElementById('btn-auto');
   btn.classList.toggle('active', autoMode);
   btn.textContent = autoMode ? '停止自动' : '自动轮回';
-  if(autoMode && gameState.alive) nextYear();
-  else clearTimeout(autoTimer);
+  if(autoMode && gameState.alive) {
+    // If waiting for a choice, auto-resolve it first
+    if(waitingForChoice && window._currentChoices && window._currentChoices.length > 0) {
+      var autoChoices = window._currentChoices.filter(function(c){ return checkChoiceReq(c).met; });
+      if(!autoChoices.length) autoChoices = window._currentChoices;
+      var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
+      applyChoice(c);
+    } else {
+      waitingForChoice = false;
+      nextYear();
+    }
+  } else {
+    clearTimeout(autoTimer);
+  }
 }
 
 function setSpeedFromSlider(val) {
