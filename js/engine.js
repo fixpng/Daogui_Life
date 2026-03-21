@@ -1025,7 +1025,9 @@ function setSpeed(s) {
 }
 
 // === GAME OVER ===
+var lastDeathReason = ''; // 保存死因
 function gameOver(reason) {
+  lastDeathReason = reason; // 保存死因
   gameState.alive = false;
   autoMode = false;
   waitingForChoice = false;
@@ -1112,8 +1114,11 @@ function gameOver(reason) {
   var genderName = gameState.gender === 'male' ? '男' : '女';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
+  // 解析死因
+  var deathReasonText = lastDeathReason || reason;
   document.getElementById('ending-text').innerHTML =
     '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span></p>' +
+    '<p>死因: <span style="color:var(--danger)">'+deathReasonText+'</span></p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +
     '<p>势力: <span style="color:var(--gold)">'+factionName+(rankName?' · '+rankName:'')+'</span></p>' +
