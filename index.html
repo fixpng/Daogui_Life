@@ -95,9 +95,7 @@
 
     <!-- Controls -->
     <div class="control-bar">
-      <button class="btn" onclick="nextYear()" id="btn-next">度过一年</button>
-      <button class="btn btn-secondary" onclick="openTravel()" id="btn-travel">游历</button>
-      <button class="btn btn-auto" onclick="toggleAuto()" id="btn-auto">自动轮回</button>
+      <button class="btn btn-auto active" onclick="toggleAuto()" id="btn-auto">⏸ 暂停</button>
     </div>
     <div class="control-bar" style="justify-content:center;gap:20px;">
       <span style="color:var(--text-dim);font-size:0.85em;">速度:</span>
@@ -131,15 +129,6 @@
     <div class="achieve-grid" id="achieve-display"></div>
   </div>
 
-  <!-- TRAVEL MODAL -->
-  <div class="modal-overlay" id="travel-modal">
-    <div class="modal-content">
-      <div class="panel-title"><span class="icon">行</span> 游历天下</div>
-      <p style="color:var(--text-dim);font-size:0.85em;margin-bottom:14px;">选择前往之地（需花费金银）</p>
-      <div id="travel-options"></div>
-      <button class="btn btn-secondary" onclick="closeTravel()" style="margin-top:14px;">留在原地</button>
-    </div>
-  </div>
 </div>
 
 <footer style="text-align:center;padding:24px 0 16px;color:#666;font-size:0.8em;">

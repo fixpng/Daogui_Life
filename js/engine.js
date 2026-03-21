@@ -168,6 +168,15 @@ function confirmBorn() {
 
   // Initialize audio state when game starts
   updateAudioState();
+
+  // Auto-start: game runs automatically from birth
+  autoMode = true;
+  var btn = document.getElementById('btn-auto');
+  btn.classList.add('active');
+  btn.textContent = '⏸ 暂停';
+  var delay = SPEED_DELAYS[speed] || 3000;
+  clearTimeout(autoTimer);
+  autoTimer = setTimeout(nextYear, delay);
 }
 
 // === TOOLTIPS ===
@@ -261,16 +270,7 @@ function getMaxAge() {
 // === NEXT YEAR ===
 function nextYear() {
   if(!gameState.alive) return;
-  if(waitingForChoice) {
-    // In auto mode, if stuck waiting, force resolve
-    if(autoMode && window._currentChoices && window._currentChoices.length > 0) {
-      var autoChoices = window._currentChoices.filter(function(c){ return checkChoiceReq(c).met; });
-      if(!autoChoices.length) autoChoices = window._currentChoices;
-      var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
-      applyChoice(c);
-    }
-    return;
-  }
+  if(waitingForChoice) return;
   // 150岁后年岁跨度随机增大，修为越高跨度越大
   var ageStep = 1;
   if(gameState.age >= 150) {
@@ -568,6 +568,18 @@ function nextYear() {
       }
       if(ls.check && !gameState.talents.find(function(t){return t.id===ls.check;})) return;
       eventPool.push(ls);
+    });
+  }
+
+  // Add travel/journey events (random encounters while moving between places)
+  if(typeof TRAVEL_EVENTS !== 'undefined' && gameState.age >= 12) {
+    TRAVEL_EVENTS.forEach(function(te){
+      if(te.locReq && !gameState.visitedLocations.includes(te.locReq)) return;
+      if(te.trigger) {
+        if(te.trigger.minAge && gameState.age < te.trigger.minAge) return;
+        if(te.trigger.cultivation && gameState.cultivation < te.trigger.cultivation) return;
+      }
+      eventPool.push(te);
     });
   }
 
@@ -882,14 +894,8 @@ function showEvent(event) {
   // Play event sound
   if(typeof DaoguiAudio !== 'undefined') DaoguiAudio.playEventSound();
 
-  if(autoMode) {
-    // Auto mode: pick random choice from those with met requirements
-    var autoChoices = validChoices.filter(function(c){ return checkChoiceReq(c).met; });
-    if(!autoChoices.length) autoChoices = validChoices; // fallback if all locked
-    var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
-    applyChoice(c);
-    return;
-  }
+  // Pause auto-advance and show choices to player
+  clearTimeout(autoTimer);
   document.getElementById('event-text').innerHTML = '<strong>【第'+gameState.age+'年】</strong> '+event.text;
   document.getElementById('choices').innerHTML = validChoices.map(function(c,i){
     var reqResult = checkChoiceReq(c);
@@ -902,7 +908,6 @@ function showEvent(event) {
   // Store choices for handler
   window._currentChoices = validChoices;
   waitingForChoice = true;
-  document.getElementById('btn-next').disabled = true;
 }
 
 function handleChoice(idx) {
@@ -946,7 +951,6 @@ function applyChoice(c) {
       document.getElementById('choices').innerHTML = '';
       document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
       waitingForChoice = false;
-      document.getElementById('btn-next').disabled = false;
       updateDisplay();
       var delay = SPEED_DELAYS[speed] || 3000;
       if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
@@ -1042,12 +1046,20 @@ function applyChoice(c) {
   if(c.visit && !gameState.visitedLocations.includes(c.visit)) {
     gameState.visitedLocations.push(c.visit);
   }
+  if(c.relocate) {
+    var newLoc = LOCATIONS.find(function(l){return l.id===c.relocate;});
+    if(newLoc) {
+      gameState.location = newLoc;
+      if(!gameState.visitedLocations.includes(c.relocate)) gameState.visitedLocations.push(c.relocate);
+      document.getElementById('current-location').textContent = newLoc.name;
+      addLog('你辗转来到了<span class="loc">'+newLoc.name+'</span>。');
+    }
+  }
   if(c.achieve) unlockAchieve(c.achieve);
   addLog(c.log);
   document.getElementById('choices').innerHTML = '';
   document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
   waitingForChoice = false;
-  document.getElementById('btn-next').disabled = false;
 
   // Check stat-based achievements
   if(gameState.cultivation>=60) unlockAchieve('reach_jindan');
@@ -1168,71 +1180,14 @@ function applySanityEffects() {
   }
 }
 
-// === TRAVEL ===
-function openTravel() {
-  if(gameState.age < 12) { addLog('你还太小，不能独自远行。'); return; }
-  var modal = document.getElementById('travel-modal');
-  var opts = document.getElementById('travel-options');
-  var cost = 10 + Math.floor(gameState.age/10)*5;
-  opts.innerHTML = LOCATIONS.filter(function(l){return l.id!==gameState.location.id;}).map(function(l){
-    return '<div class="location-option" onclick="travelTo(\''+l.id+'\','+cost+')">' +
-      '<div class="loc-name">'+l.name+' <span style="color:var(--text-dim);font-size:0.8em;">（花费'+cost+'金银）</span></div>' +
-      '<div class="loc-desc">'+l.desc+' · 危险度: '+l.danger+'</div>' +
-    '</div>';
-  }).join('');
-  modal.classList.add('active');
-}
-
-function travelTo(locId, cost) {
-  if(gameState.wealth < cost) { addLog('金银不足，无法远行。'); closeTravel(); return; }
-  gameState.wealth -= cost;
-  gameState.location = LOCATIONS.find(function(l){return l.id===locId;});
-  if(!gameState.visitedLocations.includes(locId)) gameState.visitedLocations.push(locId);
-  if(gameState.visitedLocations.length>=5) unlockAchieve('traveler');
-  addLog('你启程前往<span class="loc">'+gameState.location.name+'</span>。');
-
-  // Trigger travel event
-  if(typeof TRAVEL_EVENTS !== 'undefined' && Math.random() < 0.65) {
-    var travelPool = TRAVEL_EVENTS.filter(function(te){
-      if(te.locReq && te.locReq !== locId) return false;
-      if(te.trigger) {
-        if(te.trigger.minAge && gameState.age < te.trigger.minAge) return false;
-        if(te.trigger.cultivation && gameState.cultivation < te.trigger.cultivation) return false;
-      }
-      return true;
-    });
-    if(travelPool.length > 0) {
-      var te = travelPool[Math.floor(Math.random()*travelPool.length)];
-      showEvent(te);
-      updateDisplay();
-      closeTravel();
-      return;
-    }
-  }
-
-  updateDisplay();
-  closeTravel();
-}
-
-function closeTravel() {
-  document.getElementById('travel-modal').classList.remove('active');
-}
-
-// === AUTO & SPEED ===
+// === PAUSE / RESUME ===
 function toggleAuto() {
   autoMode = !autoMode;
   var btn = document.getElementById('btn-auto');
   btn.classList.toggle('active', autoMode);
-  btn.textContent = autoMode ? '停止自动' : '自动轮回';
+  btn.textContent = autoMode ? '⏸ 暂停' : '▶ 继续';
   if(autoMode && gameState.alive) {
-    // If waiting for a choice, auto-resolve it first
-    if(waitingForChoice && window._currentChoices && window._currentChoices.length > 0) {
-      var autoChoices = window._currentChoices.filter(function(c){ return checkChoiceReq(c).met; });
-      if(!autoChoices.length) autoChoices = window._currentChoices;
-      var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
-      applyChoice(c);
-    } else {
-      waitingForChoice = false;
+    if(!waitingForChoice) {
       nextYear();
     }
   } else {
@@ -1430,7 +1385,7 @@ function restart() {
   clearTimeout(autoTimer);
   document.body.style.filter = '';
   document.getElementById('btn-auto').classList.remove('active');
-  document.getElementById('btn-auto').textContent = '自动轮回';
+  document.getElementById('btn-auto').textContent = '▶ 继续';
 
   // Store last life's talents for carry-over
   gameState.lastLifeTalents = gameState.talents.slice();
@@ -1499,7 +1454,7 @@ function restartAuto() {
   // Note: totalRuns already incremented in gameOver(), don't double-count
   autoMode = true;
   document.getElementById('btn-auto').classList.add('active');
-  document.getElementById('btn-auto').textContent = '停止自动';
+  document.getElementById('btn-auto').textContent = '⏸ 暂停';
   showPanel('setup');
   initTalents();
   // Auto-select 3 random talents and start
@@ -1526,8 +1481,4 @@ function showPanel(id) {
 // === INIT ===
 document.addEventListener('DOMContentLoaded', function(){
   initTalents();
-  // Close travel modal on backdrop click
-  document.getElementById('travel-modal').addEventListener('click', function(e){
-    if(e.target === e.currentTarget) closeTravel();
-  });
 });

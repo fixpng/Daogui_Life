@@ -1126,18 +1126,18 @@ const CANONICAL_EVENTS = [
     {text:'不关心朝政',effect:{},log:'天高皇帝远，和你没关系'}]},
   {text:'大梁皇城发生<span class="danger-text">剧变</span>！传闻有人在皇宫召唤了<span class="mys">斗姥</span>，天空出现两片太极鱼状的大海。整个上京城的人都看到了。',
     trigger:{minAge:12,yearMin:10,yearMax:18},mandatory:true,choices:[
-    {text:'朝皇城方向赶去',effect:{cultivation:25,sanity:-20,comprehension:15,constitution:-5},log:'你在远处看到了令人永生难忘的景象——一个混沌扭曲的存在降临了！'},
+    {text:'朝皇城方向赶去',effect:{cultivation:25,sanity:-20,comprehension:15,constitution:-5},log:'你在远处看到了令人永生难忘的景象——一个混沌扭曲的存在降临了！',relocate:'shang_jing'},
     {text:'跪地祈祷',effect:{sanity:-10,qiyun:5},log:'那一刻，所有人都感受到了神明的恐怖'},
-    {text:'趁乱逃出上京',effect:{wealth:-20,sanity:-5},log:'你拼命跑出了上京城，身后是无尽的混乱'}]},
+    {text:'趁乱逃出上京',effect:{wealth:-20,sanity:-5},log:'你拼命跑出了上京城，身后是无尽的混乱',relocate:'wai_jiao'}]},
   {text:'<span class="npc">诸葛渊</span>在上京之战中<span class="danger-text">油尽灯枯</span>，为救苍生一人抵挡司命。修士圈中无人不知此事。',
     trigger:{minAge:15,yearMin:12,yearMax:20},choices:[
-    {text:'前往杏岛祭拜',effect:{comprehension:15,cultivation:10,qiyun:10},log:'杏岛上已有无数修士前来悼念，诸葛渊之名将永载史册'},
+    {text:'前往杏岛祭拜',effect:{comprehension:15,cultivation:10,qiyun:10},log:'杏岛上已有无数修士前来悼念，诸葛渊之名将永载史册',relocate:'xing_dao'},
     {text:'继承其道意',effect:{cultivation:25,comprehension:20,sanity:-10},log:'你在冥想中似乎触碰到了诸葛渊留在天地间的残余道意'},
     {text:'默哀',effect:{sanity:-5,karma:3},log:'又一位大能陨落了，这世道...'}]},
   {text:'<span class="npc">高智坚</span>——据说是大齐皇族后裔——竟然登基成了<span class="fac">大梁皇帝</span>！朝野震动。',
     trigger:{minAge:12,yearMin:13,yearMax:20},choices:[
     {text:'关注局势变化',effect:{comprehension:5,connections:5},log:'新皇登基，天下格局将变'},
-    {text:'上京投效新朝',effect:{connections:15,wealth:20},log:'新朝初建，正是用人之际'},
+    {text:'上京投效新朝',effect:{connections:15,wealth:20},log:'新朝初建，正是用人之际',relocate:'shang_jing'},
     {text:'观望不动',effect:{},log:'皇帝换谁都一样，日子照过'}]},
 
   // --- 卷3 时期: 龙脉纷争 / 李火旺成为司命 (year 15 ~ 25) ---
@@ -1159,8 +1159,8 @@ const CANONICAL_EVENTS = [
   // --- 卷4 时期: 法教入侵 / 补白玉京 (year 20 ~ 35) ---
   {text:'<span class="fac">法教</span>大军从大齐涌入，<span class="danger-text">四齐沦陷</span>！法教的十二大巫以活人祭祀召唤<span class="npc">于儿神</span>，所过之处寸草不生。',
     trigger:{minAge:15,yearMin:20,yearMax:32},mandatory:true,choices:[
-    {text:'参加抵抗军',effect:{cultivation:15,connections:20,constitution:-5,karma:10,qiyun:5},log:'你加入了各门派联合的抵抗力量，与法教殊死搏斗',combat:70,achieve:'resist_fajiao'},
-    {text:'护送难民撤离',effect:{karma:20,connections:15,wealth:-10},log:'你帮助大量四齐难民逃往大梁'},
+    {text:'参加抵抗军',effect:{cultivation:15,connections:20,constitution:-5,karma:10,qiyun:5},log:'你加入了各门派联合的抵抗力量，与法教殊死搏斗',combat:70,achieve:'resist_fajiao',relocate:'si_qi'},
+    {text:'护送难民撤离',effect:{karma:20,connections:15,wealth:-10},log:'你帮助大量四齐难民逃往大梁',relocate:'da_liang'},
     {text:'逃难',effect:{wealth:-15,sanity:-5},log:'法教的恐怖你无力抵挡'}]},
   {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>召集各国监天司共同对抗法教，一场<span class="danger-text">旷世大战</span>即将打响。',
     trigger:{minAge:18,yearMin:22,yearMax:30,cultivation:30},choices:[

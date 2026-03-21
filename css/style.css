@@ -616,29 +616,6 @@ body::after {
   max-height: 80vh;
   overflow-y: auto;
 }
-.location-option {
-  padding: 12px 16px;
-  margin: 6px 0;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.location-option:hover {
-  border-color: var(--crimson);
-  background: rgba(139,0,0,0.1);
-}
-.location-option .loc-name {
-  color: var(--gold);
-  font-weight: 700;
-  font-size: 1em;
-}
-.location-option .loc-desc {
-  color: var(--text-dim);
-  font-size: 0.82em;
-  margin-top: 3px;
-}
 
 /* === YEAR DISPLAY === */
 .year-bar {
