@@ -369,6 +369,52 @@ body::after {
 .tag-bad { background: rgba(139,0,0,0.4); color: #cc6666; border: 1px solid rgba(139,0,0,0.5); }
 .tag-special { background: rgba(106,58,106,0.4); color: #ba8aba; border: 1px solid rgba(106,58,106,0.5); }
 
+/* === RARITY TIERS === */
+.rarity-common .talent-name { color: #8a8a8a; }
+.rarity-common { border-color: rgba(100,100,100,0.3); }
+.rarity-common .talent-tag { background: rgba(100,100,100,0.3); color: #aaa; border: 1px solid rgba(100,100,100,0.4); }
+
+.rarity-uncommon .talent-name { color: #5aaa5a; }
+.rarity-uncommon { border-color: rgba(90,170,90,0.3); }
+.rarity-uncommon .talent-tag { background: rgba(90,170,90,0.15); color: #6cc06c; border: 1px solid rgba(90,170,90,0.4); }
+
+.rarity-rare .talent-name { color: #5a8acc; }
+.rarity-rare { border-color: rgba(90,138,204,0.3); }
+.rarity-rare .talent-tag { background: rgba(90,138,204,0.15); color: #6a9adc; border: 1px solid rgba(90,138,204,0.4); }
+
+.rarity-epic .talent-name { color: #b06acc; }
+.rarity-epic { border-color: rgba(176,106,204,0.35); }
+.rarity-epic .talent-tag { background: rgba(176,106,204,0.15); color: #c07ae0; border: 1px solid rgba(176,106,204,0.4); }
+.rarity-epic.selected { border-color: #b06acc; box-shadow: 0 0 15px rgba(176,106,204,0.2); }
+
+.rarity-legendary .talent-name { color: var(--gold); text-shadow: 0 0 8px rgba(197,165,90,0.3); }
+.rarity-legendary { border-color: rgba(197,165,90,0.4); background: rgba(197,165,90,0.04); }
+.rarity-legendary .talent-tag { background: rgba(197,165,90,0.2); color: var(--gold); border: 1px solid rgba(197,165,90,0.5); }
+.rarity-legendary.selected { border-color: var(--gold); box-shadow: 0 0 20px rgba(197,165,90,0.25); }
+@keyframes legendaryShimmer {
+  0%, 100% { border-color: rgba(197,165,90,0.4); }
+  50% { border-color: rgba(197,165,90,0.7); }
+}
+.rarity-legendary { animation: legendaryShimmer 3s ease-in-out infinite; }
+
+.rarity-cursed .talent-name { color: #cc4444; }
+.rarity-cursed { border-color: rgba(204,68,68,0.3); }
+.rarity-cursed .talent-tag { background: rgba(204,68,68,0.15); color: #dd5555; border: 1px solid rgba(204,68,68,0.4); }
+
+/* === REFRESH BUTTON === */
+.btn-refresh {
+  background: linear-gradient(180deg, rgba(90,138,204,0.3), rgba(60,100,160,0.3));
+  border-color: rgba(90,138,204,0.4);
+  margin-bottom: 12px;
+}
+.btn-refresh:hover {
+  background: linear-gradient(180deg, rgba(90,138,204,0.5), rgba(60,100,160,0.5));
+  border-color: rgba(90,138,204,0.6);
+}
+
+/* === SANITY SECTION HIDDEN === */
+.sanity-section.sanity-hidden { display: none; }
+
 /* === EVENT & LOG === */
 .event-area {
   min-height: 80px;
@@ -640,6 +686,7 @@ body::after {
   <div id="setup" class="panel">
     <div class="panel-title"><span class="icon">命</span> 天命抽取</div>
     <p style="color:var(--text-dim);margin-bottom:16px;font-size:0.9em;">命运如丝，从十道天命中择三而行</p>
+    <button class="btn btn-refresh" onclick="refreshTalents()">刷新天赋</button>
     <div class="talent-grid" id="talent-options"></div>
     <div style="text-align:center;margin:14px 0;color:var(--text-dim);font-size:0.9em;">
       已择: <span id="selected-count" style="color:var(--gold);">0</span> / 3
@@ -673,9 +720,11 @@ body::after {
         <div class="stat-box"><div class="stat-label">修为</div><div class="stat-value" id="cultivation">凡人</div></div>
         <div class="stat-box"><div class="stat-label">金银</div><div class="stat-value" id="wealth">10</div></div>
       </div>
+      <div class="sanity-section" id="sanity-section">
       <div class="sanity-bar-wrap">
         <div class="sanity-bar-bg"><div class="sanity-bar-fill" id="sanity-bar" style="width:100%"></div></div>
         <div class="sanity-label"><span>神志</span><span id="sanity-pct">100%</span></div>
+      </div>
       </div>
       <div class="detail-grid">
         <div class="detail-row"><span class="detail-label">境界</span><span class="detail-value" id="realm">锻体</span></div>
@@ -788,37 +837,37 @@ body::after {
 // === GAME DATA ===
 const TALENTS = {
   special: [
-    {id:'xinsu',name:'心素',desc:'先天一炁，可感知两个世界的边界',effect:{sanity:30,cultivation:5},type:'special'},
-    {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30},type:'special'},
-    {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10},type:'special'},
-    {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15},type:'special'},
-    {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20},type:'special'},
+    {id:'xinsu',name:'心素',desc:'先天一炁，可感知两个世界的边界',effect:{sanity:30,cultivation:5},type:'special',rarity:'legendary'},
+    {id:'jie_dan',name:'金丹种子',desc:'天生金丹资质，修炼事半功倍',effect:{cultivation:30},type:'special',rarity:'legendary'},
+    {id:'bai_ci',name:'白瓷',desc:'天生特殊体质，不惧邪祟侵蚀',effect:{sanity:20,cultivation:10},type:'special',rarity:'legendary'},
+    {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15},type:'special',rarity:'epic'},
+    {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20},type:'special',rarity:'epic'},
   ],
   good: [
-    {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10},type:'good'},
-    {id:'fu_gui',name:'富贵',desc:'出身富足，家有余财',effect:{wealth:50},type:'good'},
-    {id:'ji_xing',name:'吉星',desc:'运气极好，逢凶化吉',effect:{luck:30},type:'good'},
-    {id:'jian_kang',name:'健康',desc:'体魄强健，百病不侵',effect:{sanity:10},type:'good'},
-    {id:'shou_xing',name:'寿星',desc:'天生长寿之相',effect:{lifespan:15},type:'good'},
-    {id:'mei_mao',name:'美貌',desc:'生得一副好皮囊',effect:{connections:10},type:'good'},
-    {id:'kou_cai',name:'口才',desc:'能言善辩，左右逢源',effect:{connections:15},type:'good'},
-    {id:'zhi_hui',name:'聪慧',desc:'头脑灵光，过目不忘',effect:{cultivation:5,connections:5},type:'good'},
-    {id:'wu_xing',name:'武星',desc:'筋骨奇佳，天生习武之才',effect:{cultivation:8},type:'good'},
-    {id:'gui_ren',name:'贵人',desc:'命中有贵人相助',effect:{connections:20},type:'good'},
+    {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10},type:'good',rarity:'rare'},
+    {id:'fu_gui',name:'富贵',desc:'出身富足，家有余财',effect:{wealth:50},type:'good',rarity:'rare'},
+    {id:'ji_xing',name:'吉星',desc:'运气极好，逢凶化吉',effect:{luck:30},type:'good',rarity:'rare'},
+    {id:'jian_kang',name:'健康',desc:'体魄强健，百病不侵',effect:{sanity:10},type:'good',rarity:'uncommon'},
+    {id:'shou_xing',name:'寿星',desc:'天生长寿之相',effect:{lifespan:15},type:'good',rarity:'rare'},
+    {id:'mei_mao',name:'美貌',desc:'生得一副好皮囊',effect:{connections:10},type:'good',rarity:'uncommon'},
+    {id:'kou_cai',name:'口才',desc:'能言善辩，左右逢源',effect:{connections:15},type:'good',rarity:'uncommon'},
+    {id:'zhi_hui',name:'聪慧',desc:'头脑灵光，过目不忘',effect:{cultivation:5,connections:5},type:'good',rarity:'uncommon'},
+    {id:'wu_xing',name:'武星',desc:'筋骨奇佳，天生习武之才',effect:{cultivation:8},type:'good',rarity:'uncommon'},
+    {id:'gui_ren',name:'贵人',desc:'命中有贵人相助',effect:{connections:20},type:'good',rarity:'rare'},
   ],
   bad: [
-    {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20},type:'bad'},
-    {id:'pin_kun',name:'贫困',desc:'出身贫寒，衣食无着',effect:{wealth:-30},type:'bad'},
-    {id:'can_ji',name:'残疾',desc:'身有残缺，行动不便',effect:{sanity:-15,connections:-10},type:'bad'},
-    {id:'wu_qin',name:'孤儿',desc:'无父无母，孤苦伶仃',effect:{connections:-20},type:'bad'},
-    {id:'zai_min',name:'灾民',desc:'出身战乱之地',effect:{wealth:-20,sanity:-10},type:'bad'},
-    {id:'yu_ben',name:'愚钝',desc:'资质鲁钝，修道无望',effect:{cultivation:-10},type:'bad'},
-    {id:'e_meng',name:'噩梦',desc:'夜夜噩梦缠身',effect:{sanity:-15},type:'bad'},
-    {id:'du_zhai',name:'赌债',desc:'家中欠了巨额赌债',effect:{wealth:-50},type:'bad'},
-    {id:'chou_lou',name:'丑陋',desc:'面容丑陋，人见人避',effect:{connections:-15},type:'bad'},
-    {id:'bai_bing',name:'百病',desc:'先天不足，诸疾缠身',effect:{sanity:-25},type:'bad'},
-    {id:'sha_qi',name:'煞气',desc:'命带煞气，亲近之人皆遭厄运',effect:{connections:-10,sanity:-5},type:'bad'},
-    {id:'mo_ying',name:'魔影',desc:'总感觉背后有东西跟着',effect:{sanity:-20},type:'bad'},
+    {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20},type:'bad',rarity:'common'},
+    {id:'pin_kun',name:'贫困',desc:'出身贫寒，衣食无着',effect:{wealth:-30},type:'bad',rarity:'common'},
+    {id:'can_ji',name:'残疾',desc:'身有残缺，行动不便',effect:{sanity:-15,connections:-10},type:'bad',rarity:'cursed'},
+    {id:'wu_qin',name:'孤儿',desc:'无父无母，孤苦伶仃',effect:{connections:-20},type:'bad',rarity:'common'},
+    {id:'zai_min',name:'灾民',desc:'出身战乱之地',effect:{wealth:-20,sanity:-10},type:'bad',rarity:'cursed'},
+    {id:'yu_ben',name:'愚钝',desc:'资质鲁钝，修道无望',effect:{cultivation:-10},type:'bad',rarity:'common'},
+    {id:'e_meng',name:'噩梦',desc:'夜夜噩梦缠身',effect:{sanity:-15},type:'bad',rarity:'common'},
+    {id:'du_zhai',name:'赌债',desc:'家中欠了巨额赌债',effect:{wealth:-50},type:'bad',rarity:'cursed'},
+    {id:'chou_lou',name:'丑陋',desc:'面容丑陋，人见人避',effect:{connections:-15},type:'bad',rarity:'common'},
+    {id:'bai_bing',name:'百病',desc:'先天不足，诸疾缠身',effect:{sanity:-25},type:'bad',rarity:'cursed'},
+    {id:'sha_qi',name:'煞气',desc:'命带煞气，亲近之人皆遭厄运',effect:{connections:-10,sanity:-5},type:'bad',rarity:'common'},
+    {id:'mo_ying',name:'魔影',desc:'总感觉背后有东西跟着',effect:{sanity:-20},type:'bad',rarity:'cursed'},
   ]
 };
 
@@ -1068,17 +1117,26 @@ function drawTalents() {
   return pool.slice(0,10).sort(()=>Math.random()-0.5);
 }
 
+const RARITY_NAMES = {
+  common: '凡品', uncommon: '良品', rare: '珍品', epic: '仙品', legendary: '天命', cursed: '厄运'
+};
+
 function initTalents() {
   availableTalents = drawTalents();
   gameState.talents = [];
   const grid = document.getElementById('talent-options');
   grid.innerHTML = availableTalents.map((t,i)=>`
-    <div class="talent-card" onclick="selectTalent(${i})" id="talent-${i}">
+    <div class="talent-card rarity-${t.rarity}" onclick="selectTalent(${i})" id="talent-${i}">
       <div class="talent-name">${t.name}</div>
       <div class="talent-desc">${t.desc}</div>
-      <span class="talent-tag tag-${t.type}">${t.type==='good'?'福运':t.type==='bad'?'厄运':'天命'}</span>
+      <span class="talent-tag">${RARITY_NAMES[t.rarity]||'凡品'}</span>
     </div>`).join('');
   updateSelectCount();
+}
+
+function refreshTalents() {
+  gameState.talents = [];
+  initTalents();
 }
 
 function selectTalent(i) {
@@ -1177,15 +1235,18 @@ function nextYear() {
     if(fb.cultivation) cultGain += Math.floor(fb.cultivation/3);
     if(fb.wealth) gameState.wealth += Math.floor(fb.wealth/4);
     if(fb.connections) gameState.connections += Math.floor(fb.connections/4);
-    if(fb.sanity) gameState.sanity += fb.sanity;
+    if(fb.sanity && gameState.talents.find(t=>t.id==='xinsu')) gameState.sanity += fb.sanity;
   }
   gameState.cultivation += cultGain;
 
-  // Sanity drift
-  let sanityDrift = Math.floor(Math.random()*6) - 3;
-  if(gameState.talents.find(t=>t.id==='e_meng')) sanityDrift -= 2;
-  if(gameState.talents.find(t=>t.id==='mo_ying')) sanityDrift -= 1;
-  gameState.sanity = Math.max(0, Math.min(120, gameState.sanity + sanityDrift));
+  // Sanity drift - ONLY for xinsu talent holders
+  const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
+  if(isXinsu) {
+    let sanityDrift = Math.floor(Math.random()*6) - 3;
+    if(gameState.talents.find(t=>t.id==='e_meng')) sanityDrift -= 2;
+    if(gameState.talents.find(t=>t.id==='mo_ying')) sanityDrift -= 1;
+    gameState.sanity = Math.max(0, Math.min(120, gameState.sanity + sanityDrift));
+  }
 
   // Pick event
   let eventPool;
@@ -1219,7 +1280,7 @@ function nextYear() {
   }
 
   // Death checks
-  if(gameState.sanity <= 0) { unlockAchieve('mad'); gameOver('你彻底分不清<span class="mys">现实与幻觉</span>，在无尽的噩梦中彻底迷失了。'); return; }
+  if(isXinsu && gameState.sanity <= 0) { unlockAchieve('mad'); gameOver('你彻底分不清<span class="mys">现实与幻觉</span>，在无尽的噩梦中彻底迷失了。'); return; }
   const maxAge = gameState.talents.find(t=>t.id==='shou_xing') ? 95 : 82;
   if(gameState.age >= maxAge) {
     if(gameState.age>=80) unlockAchieve('old');
@@ -1237,14 +1298,30 @@ function nextYear() {
 
 function quietYear() {
   const a = gameState.age;
-  if(gameState.sanity < 30 && a >= 10) {
+  const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
+  if(isXinsu && gameState.sanity < 30 && a >= 10) {
     addLog(`第${a}年：你看到了<span class="mys">两个世界的裂缝</span>...那些不存在的东西越来越真实。`);
     gameState.cultivation += 3;
-  } else if(gameState.location.danger > 50 && Math.random() < 0.25) {
+  } else if(gameState.location.danger > 50 && Math.random() < 0.25 && a >= 8) {
     addLog(`第${a}年：在<span class="loc">${gameState.location.name}</span>遭遇危险，险些丧命。`);
-    gameState.sanity -= 12;
-  } else if(a < 10) {
-    const msgs = ['慢慢长大...','学会了走路','在田野里奔跑','帮家里放牛','和小伙伴捉迷藏'];
+    if(isXinsu) gameState.sanity -= 12;
+  } else if(a <= 1) {
+    const msgs = ['呱呱坠地，哭声响亮','在襁褓中安睡，偶尔睁开眼看看这个世界'];
+    addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
+  } else if(a <= 3) {
+    const msgs = ['学会了走路，摇摇晃晃像只小鸭子','开始牙牙学语，叫出了第一声"娘"','在院子里爬来爬去，对什么都好奇'];
+    addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
+  } else if(a <= 5) {
+    const msgs = ['跟着邻家小孩在泥地里打滚','蹲在门口看蚂蚁搬家，一看就是半天','缠着大人讲故事，听到鬼怪的部分既害怕又着迷','学会了数数，能从一数到一百了'];
+    addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
+  } else if(a <= 9) {
+    const msgs = ['和小伙伴捉迷藏，躲在草垛里睡着了','帮家里喂鸡，被大公鸡追得满院子跑','偷偷跑去河边摸鱼，被母亲揪着耳朵拎回来','开始在私塾念书，先生夸你记性好','跟着父亲去田里，学会了简单的农活'];
+    addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
+  } else if(a <= 14) {
+    const msgs = ['帮家里放牛，在山坡上看云','去镇上跑腿买东西，对集市上的杂耍看得入迷','和同龄人比赛爬树，你总是最快的','开始懂事了，知道帮父母分担家务','在私塾里和同窗争论，先生罚你们抄书'];
+    addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
+  } else if(a <= 19) {
+    const msgs = ['开始思考人生的方向','对远方的世界充满了好奇','在田间劳作，感到一丝对未来的迷茫','听老人们讲起修仙的传说，心中若有所动','有时候会独自坐在山头，看日落很久'];
     addLog(`第${a}年：${msgs[Math.floor(Math.random()*msgs.length)]}`);
   } else {
     const msgs = ['平淡的一年','日子不好不坏','又一年过去了','波澜不惊','日复一日'];
@@ -1276,7 +1353,8 @@ function handleChoice(idx) {
 }
 
 function applyChoice(c) {
-  if(c.effect.sanity) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
+  const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
+  if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
   if(c.effect.cultivation) gameState.cultivation += c.effect.cultivation;
   if(c.effect.wealth) gameState.wealth += c.effect.wealth;
   if(c.effect.connections) gameState.connections += c.effect.connections;
@@ -1308,10 +1386,18 @@ function applyChoice(c) {
 
 // === DISPLAY ===
 function updateDisplay() {
+  const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
   document.getElementById('age').textContent = gameState.age;
   const sv = document.getElementById('sanity');
-  sv.textContent = gameState.sanity;
-  sv.className = 'stat-value' + (gameState.sanity<30?' danger':gameState.sanity<60?' low':'');
+  if(isXinsu) {
+    sv.textContent = gameState.sanity;
+    sv.className = 'stat-value' + (gameState.sanity<30?' danger':gameState.sanity<60?' low':'');
+    document.getElementById('sanity-section').classList.remove('sanity-hidden');
+  } else {
+    sv.textContent = '稳固';
+    sv.className = 'stat-value';
+    document.getElementById('sanity-section').classList.add('sanity-hidden');
+  }
   document.getElementById('cultivation').textContent = getRealmName(gameState.cultivation);
   document.getElementById('wealth').textContent = gameState.wealth;
   document.getElementById('faction').textContent = FACTIONS[gameState.faction]?.name || '无';
@@ -1347,6 +1433,8 @@ function addLog(text, type) {
 
 // === SANITY EFFECTS ===
 function applySanityEffects() {
+  const isXinsu = gameState.talents.find(t=>t.id==='xinsu');
+  if(!isXinsu) { document.body.style.filter = ''; return; }
   const container = document.querySelector('.container');
   if(gameState.sanity < 20) {
     container.classList.add('glitch-text');
@@ -1432,7 +1520,7 @@ function gameOver(reason) {
   let ending = reason;
   if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
   else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
-  else if(gameState.sanity<=0 && gameState.cultivation>=100) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
+  else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(t=>t.id==='xinsu')) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
 
   showPanel('ending');
   document.getElementById('ending-text').innerHTML = `
