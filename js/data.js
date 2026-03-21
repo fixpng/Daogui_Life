@@ -7,6 +7,11 @@ const TALENTS = {
     {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15,comprehension:20},type:'special',rarity:'epic',hint:'修为+15 悟性+20 神志-10'},
     {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20,qiyun:-10,karma:-5},type:'special',rarity:'epic',hint:'修为+20 气运-10 因果-5 神志-15'},
     {id:'gu_ren',name:'古人',desc:'你并非此世之人，出生于数百乃至上千年前的远古时代',effect:{cultivation:15,connections:-15,comprehension:10},type:'special',rarity:'legendary',hint:'修为+15 悟性+10 人脉-15 出生年份为远古时代'},
+    // === NEW: 道诡异仙特色天赋 ===
+    {id:'long_mai',name:'龙脉之体',desc:'天生与龙脉相合，可吸收龙脉之力修炼',effect:{cultivation:25,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 可感应龙脉'},
+    {id:'si_ming',name:'司命之种',desc:'身负成为司命的潜质，感知天道之力',effect:{cultivation:20,comprehension:20,qiyun:15},type:'special',rarity:'legendary',hint:'修为+20 悟性+20 气运+15 风险与机遇并存'},
+    {id:'yang_tian',name:'阳男',desc:'先天纯阳之体，修炼阳刚功法进境极快',effect:{cultivation:20,constitution:15,sanity:10},type:'special',rarity:'epic',hint:'修为+20 体魄+15 神志+10'},
+    {id:'yin_nv',name:'阴女',desc:'先天纯阴之体，修炼阴柔功法进境极快',effect:{cultivation:20,comprehension:10,sanity:15},type:'special',rarity:'epic',hint:'修为+20 悟性+10 神志+15'},
   ],
   good: [
     {id:'dao_xian',name:'道缘',desc:'天资聪颖，修炼速度极快',effect:{cultivation:10,comprehension:10},type:'good',rarity:'rare',hint:'修为+10 悟性+10 每年额外修炼加成'},
@@ -59,6 +64,15 @@ const LOCATIONS = [
   {id:'shang_jing',name:'上京城',desc:'大梁国都，天子脚下，龙气汇聚',danger:15,wealth:90},
   {id:'si_qi',name:'四齐',desc:'大齐故地，法教入侵后满目疮痍',danger:55,wealth:20},
   {id:'an_ci',name:'安慈庵',desc:'静心师太曾在此驱邪济世',danger:25,wealth:10},
+  // === NEW LOCATIONS ===
+  {id:'zheng_de_si',name:'正德寺',desc:'佛门圣地，但传闻做着什么勾当',danger:45,wealth:35},
+  {id:'kun_lun',name:'昆仑',desc:'传说中的万山之祖，上古秘境所在',danger:60,wealth:40},
+  {id:'baiyu_jing',name:'白玉京',desc:'倒悬于天空的神之城，天道汇聚之地',danger:80,wealth:0},
+  {id:'tian_chen',name:'天陈',desc:'神秘古国，左丘咏的领地',danger:70,wealth:50},
+  {id:'xu_kong',name:'虚空',desc:'两个世界之间的夹缝，心素可见',danger:90,wealth:0},
+  {id:'bei_jiang',name:'北疆',desc:'苦寒之地，异族出没',danger:55,wealth:25},
+  {id:'hu_shan',name:'狐山',desc:'狐妖聚居之地，迷惑心智',danger:50,wealth:20},
+  {id:'long_min',name:'龙眠泽',desc:'龙脉汇聚之所，灵气充沛',danger:40,wealth:30},
 ];
 
 const FACTIONS = {
@@ -105,14 +119,27 @@ const ITEMS = [
   {id:'tian_shu',name:'天书残页',desc:'记载天机的残卷',effect:{cultivation:25}},
   {id:'hei_tai_sui',name:'黑太岁',desc:'食之可见两界，但代价极大',effect:{cultivation:40,sanity:-40}},
   {id:'bai_yu_pei',name:'白玉佩',desc:'温润通灵，安神定魄',effect:{sanity:25}},
-  {id:'hong_lian',name:'红莲业火种',desc:'白莲教至宝',effect:{cultivation:20,sanity:-10}},
-  // === NEW ITEMS ===
   {id:'yin_yang_jing',name:'阴阳镜',desc:'可映照气运业力',effect:{comprehension:15,qiyun:10}},
   {id:'po_jie_zhu',name:'破戒珠',desc:'佛门叛逆之物，蕴含极端力量',effect:{cultivation:25,qiyun:-20}},
   {id:'tian_ji_pan',name:'天机盘',desc:'可推演天命走向',effect:{comprehension:20}},
   {id:'long_hu_dan',name:'龙虎丹',desc:'淬炼体魄的灵丹',effect:{constitution:25,cultivation:10}},
   {id:'nuo_mian',name:'傩面',desc:'大傩仪式所用面具，戴上后人格会变',effect:{cultivation:30,sanity:-20,qiyun:-15}},
   {id:'dan_yang_jian',name:'丹阳遗剑',desc:'丹阳子遗物，剑身有裂痕',effect:{cultivation:20,comprehension:10}},
+  // === NEW: 道诡异仙特色法宝 ===
+  {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',effect:{cultivation:40,sanity:-30,qiyun:-10}},
+  {id:'da_qian_lu',name:'大千录',desc:'袄景教传承法器，记载献祭之术',effect:{cultivation:35,sanity:-20,constitution:-15}},
+  {id:'hong_lian_ye_huo',name:'红莲业火',desc:'白莲教至高神通，可烧灼因果',effect:{cultivation:30,karma:15,sanity:-15}},
+  {id:'tian_shu_shi_ban',name:'天书石板',desc:'丹阳子所藏，记载天书内容',effect:{cultivation:50,sanity:-25}},
+  {id:'qi_dao_gu',name:'七道骨',desc:'巴虺信徒遗骨，可召唤巴虺之力',effect:{cultivation:35,sanity:-25,qiyun:-15}},
+  {id:'pan_chi_long_jing',name:'蟠螭龙晶',desc:'龙脉精华，蕴含秩序天道',effect:{cultivation:45,sanity:-10,constitution:10}},
+  {id:'ji_zai_ling',name:'季灾令',desc:'季灾的信物，掌管迷惘',effect:{cultivation:50,sanity:20,qiyun:15}},
+  {id:'xu_kong_zhu',name:'虚空珠',desc:'两界夹缝之物，心素可用',effect:{sanity:40,cultivation:20}},
+  {id:'bai_ling_miao_shen_xiang',name:'白灵淼神像',desc:'无生老母心蟠的雕像',effect:{cultivation:25,sanity:20,karma:10}},
+  {id:'bing_shu_can_ye',name:'兵书残页',desc:'兵家传承，以血修炼',effect:{cultivation:25,constitution:20,karma:-10}},
+  {id:'qi_xing_tong_qian_jian',name:'七星铜钱剑',desc:'罗教至宝，一百八十四枚古钱',effect:{cultivation:30,comprehension:15}},
+  {id:'zhao_gu_zhi_yin',name:'招魂引',desc:'可召唤亡魂，与鬼脉相合',effect:{cultivation:20,sanity:-15,connections:10}},
+  {id:'tian_gou_yan_lei',name:'天狗眼泪',desc:'天狗食日时掉落，可短暂看清天道',effect:{cultivation:25,comprehension:25}},
+  {id:'dan_yang_yan_mu',name:'丹阳子遗物',desc:'包含天书石板和遗剑的传承',effect:{cultivation:60,sanity:-20}},
 ];
 
 const ACHIEVEMENTS = [
@@ -726,7 +753,7 @@ const STAT_TOOLTIPS = {
   comprehension: '悟性：对道的理解程度(0-100)。每30点悟性提升1点年修炼速度。影响高级事件触发。',
   qiyun: '气运：气运值(-100~100)。正值为善运，负值为厄运。极端值触发气运事件，影响结局。',
   karma: '因果：因果值(-100~100)。善行增因果，恶行减因果。极端值触发因果事件。影响门派准入和特殊结局。',
-  constitution: '体魄：身体强度(0-100)。高修为可延缓衰老。降至0则肉身崩溃而死。部分门派入门有体魄要求。',
+  constitution: '体魄：身体强度(0-100)。每10点体魄增加5年寿命。高修为可延缓衰老。降至0则肉身崩溃而死。部分门派入门有体魄要求。',
   faction: '当前所属势力及门内等级。修为提升可晋升门内等级，获得更多资源和地位。只能加入一个门派，叛出有严重代价。脱离门派后成为散修。',
 };
 

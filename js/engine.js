@@ -239,8 +239,11 @@ function getEraName() {
 
 // === LIFESPAN BY CULTIVATION ===
 function getMaxAge() {
-  var base = 82;
-  if(gameState.talents.find(function(t){return t.id==='shou_xing';})) base = 95;
+  var base = 70;
+  if(gameState.talents.find(function(t){return t.id==='shou_xing';})) base = 90;
+  // 体魄影响：每10点体魄增加5年寿命
+  var constitutionBonus = Math.floor(gameState.constitution / 10) * 5;
+  base += constitutionBonus;
   var c = gameState.cultivation;
   if(c>=400) return 1200;
   if(c>=300) return 800;
@@ -249,8 +252,8 @@ function getMaxAge() {
   if(c>=100) return 200;
   if(c>=60) return 150;
   if(c>=30) return 120;
-  if(c>=10) return 100;
-  if(c>=3) return Math.max(base, 90);
+  if(c>=10) return Math.max(base, 85);
+  if(c>=3) return Math.max(base, 80);
   return base;
 }
 
@@ -269,11 +272,19 @@ function nextYear() {
   }
   gameState.age++; gameState.year++;
 
-  // Cultivation gain (comprehension affects cultivation speed)
-  var compBonus = Math.floor(gameState.comprehension / 30); // 0-3 bonus from comprehension
-  var cultGain = 1 + Math.floor(Math.random()*2) + compBonus;
-  if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 3;
-  if(gameState.talents.find(function(t){return t.id==='jie_dan';}) && gameState.cultivation<60) cultGain += 2;
+  // Cultivation gain - 大幅降低概率和幅度
+  // 只有约30%概率能获得修为提升（普通人没有机缘难以突破）
+  var compBonus = Math.floor(gameState.comprehension / 50); // 悟性影响减小，最多+2
+  var cultGain = 0;
+  var hasCultivationChance = Math.random() < 0.30; // 只有30%概率获得修为
+  
+  if (hasCultivationChance) {
+    // 即使有机会，基础提升也只有0-1点
+    cultGain = Math.floor(Math.random() * 2) + compBonus;
+    // 有天赋加成
+    if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 2;
+    if(gameState.talents.find(function(t){return t.id==='jie_dan';}) && gameState.cultivation<60) cultGain += 1;
+  }
   if(gameState.faction!=='none' && FACTIONS[gameState.faction]) {
     var fb = FACTIONS[gameState.faction].bonus;
     if(fb.cultivation) cultGain += Math.floor(fb.cultivation/3);
@@ -498,7 +509,16 @@ function nextYear() {
   }
 
   // Trigger event or quiet year
-  if(Math.random() < 0.72 && eventPool.length > 0) {
+  // 凡人阶段(cultivation < 10)事件触发概率大幅降低 - 修仙之路艰难
+  var eventChance = 0.72;
+  if(gameState.cultivation < 10) {
+    eventChance = 0.25; // 凡人只有25%概率触发事件
+  } else if(gameState.cultivation < 30) {
+    eventChance = 0.45; // 锻体-练气阶段降低
+  } else if(gameState.cultivation < 60) {
+    eventChance = 0.60; // 筑基阶段适中
+  }
+  if(Math.random() < eventChance && eventPool.length > 0) {
     var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
     showEvent(ev);
   } else {
