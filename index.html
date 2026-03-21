@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>道诡人生 - Daogui Life</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #c41e3a; text-align: center; margin-bottom: 30px; font-size: 2.5em; }
+        .panel {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .stat { text-align: center; padding: 10px; background: #333; border-radius: 8px; }
+        .stat-label { color: #888; font-size: 0.9em; }
+        .stat-value { color: #c41e3a; font-size: 1.5em; font-weight: bold; }
+        button {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button:hover { background: #a01830; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        .log { 
+            height: 300px; 
+            overflow-y: auto; 
+            background: #111; 
+            padding: 15px; 
+            border-radius: 8px;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+        .log-entry { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
+        .log-year { color: #888; font-size: 0.85em; }
+        .log-content { color: #e0e0e0; }
+        .choice-btn {
+            background: #333;
+            margin: 5px 0;
+            text-align: left;
+            padding: 10px 15px;
+        }
+        .choice-btn:hover { background: #444; }
+        .hidden { display: none; }
+        .talent { color: #ffd700; }
+        .location { color: #87ceeb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚔️ 道诡人生</h1>
+        
+        <!-- 开局选择 -->
+        <div id="setup" class="panel">
+            <h2>🌟 开始你的轮回</h2>
+            <p style="color:#888;margin:15px 0;">选择你的出身天赋</p>
+            <div id="talent-options"></div>
+            <br>
+            <button onclick="startGame()">开始轮回</button>
+        </div>
+        
+        <!-- 游戏界面 -->
+        <div id="game" class="hidden">
+            <div class="panel">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">年岁</div>
+                        <div class="stat-value" id="age">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">神志</div>
+                        <div class="stat-value" id="sanity">100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">修为</div>
+                        <div class="stat-value" id="cultivation">凡人</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div id="event-text" style="min-height:100px;margin-bottom:15px;">
+                    等待事件触发...
+                </div>
+                <div id="choices"></div>
+            </div>
+            
+            <div class="panel">
+                <h3>📜 人生轨迹</h3>
+                <div class="log" id="log"></div>
+            </div>
+            
+            <button onclick="nextYear()">🕐 度过一年</button>
+        </div>
+        
+        <!-- 结局 -->
+        <div id="ending" class="panel hidden">
+            <h2>🎭 人生终结</h2>
+            <div id="ending-text" style="margin:20px 0;font-size:1.2em;"></div>
+            <button onclick="location.reload()">🔄 重新开始</button>
+        </div>
+    </div>
+
+    <script>
+        // 天赋列表
+        const TALENTS = [
+            { id: 'xinsu', name: '心素', desc: '能看到两个世界的真相', sanity: 30, special: 'can_see_truth' },
+            { id: 'xinzhuo', name: '心浊', desc: '分不清现实与幻觉', sanity: 20, special: 'confused' },
+            { id: 'zuo_wang', name: '坐忘道', desc: '擅长欺骗与幻术', sanity: 60, special: 'deceiver' },
+            { id: 'putong', name: '普通人', desc: '平凡的一生', sanity: 100, special: 'none' },
+            { id: 'xiunu', name: '修奴', desc: '被驱使的底层修士', sanity: 70, special: 'slave' },
+            { id: 'biaoshi', name: '镖师', desc: '走南闯北，见多识广', sanity: 80, special: 'traveler' }
+        ];
+        
+        // 地点
+        const LOCATIONS = [
+            { id: 'qingqiu', name: '青丘', desc: '狐族圣地' },
+            { id: 'daliang', name: '大梁', desc: '繁华人间' },
+            { id: 'nanjiang', name: '南疆', desc: '神秘之地' },
+            { id: 'danu', name: '大傩', desc: '诡异根源' }
+        ];
+        
+        // 修为境界
+        const REALMS = ['凡人', '练气', '筑基', '金丹', '元婴', '化神', '大乘', '大傩'];
+        
+        // 游戏状态
+        let gameState = {
+            talent: null,
+            location: null,
+            age: 0,
+            sanity: 100,
+            cultivation: 0,
+            wealth: 50,
+            connections: 10,
+            lifeLog: [],
+            alive: true
+        };
+        
+        // 初始化天赋选择
+        function initTalentSelect() {
+            const container = document.getElementById('talent-options');
+            container.innerHTML = TALENTS.map(t => `
+                <button class="choice-btn" onclick="selectTalent('${t.id}')" id="talent-${t.id}">
+                    <span class="talent">${t.name}</span> - ${t.desc}
+                </button>
+            `).join('');
+        }
+        
+        function selectTalent(id) {
+            gameState.talent = TALENTS.find(t => t.id === id);
+            gameState.sanity = gameState.talent.sanity;
+            
+            // 禁用其他按钮
+            TALENTS.forEach(t => {
+                document.getElementById(`talent-${t.id}`).disabled = true;
+            });
+            
+            // 随机选择地点
+            const loc = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
+            gameState.location = loc;
+            
+            addLog(`你出生于${loc.name}，是一名${gameState.talent.name}。${gameState.talent.desc}`);
+        }
+        
+        function startGame() {
+            if (!gameState.talent) {
+                alert('请先选择天赋！');
+                return;
+            }
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            updateDisplay();
+        }
+        
+        // 随机事件
+        const EVENTS = [
+            { text: '你在街头遇到一个奇怪的道士，他盯着你看了很久...', choices: [
+                { text: '上前搭话', effect: { sanity: -5, connections: 5 } },
+                { text: '转身离开', effect: { sanity: 0 } }
+            ]},
+            { text: '夜里你听到有人在耳边低语...', choices: [
+                { text: '仔细聆听', effect: { sanity: -10, cultivation: 1 } },
+                { text: '捂住耳朵', effect: { sanity: 5 } }
+            ]},
+            { text: '遇到坐忘道在行骗...', choices: [
+                { text: '揭穿他们', effect: { sanity: 5, connections: -5 } },
+                { text: '加入他们', effect: { sanity: -10, wealth: 20 } }
+            ]},
+            { text: '发现自己在两个地方同时出现...', choices: [
+                { text: '这是我的心素能力', effect: { cultivation: 2 } },
+                { text: '我一定是疯了', effect: { sanity: -15 } }
+            ]}
+        ];
+        
+        function nextYear() {
+            gameState.age++;
+            
+            // 随机事件
+            if (Math.random() < 0.7) {
+                const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+                showEvent(event);
+            } else {
+                // 平淡一年
+                const sanityChange = Math.floor(Math.random() * 10) - 5;
+                gameState.sanity = Math.max(0, Math.min(100, gameState.sanity + sanityChange));
+                
+                if (gameState.sanity < 30) {
+                    addLog(`第${gameState.age}年：你看到了一些不该看到的东西...`);
+                    gameState.cultivation++;
+                } else {
+                    addLog(`第${gameState.age}年：平淡的一年过去了。`);
+                }
+            }
+            
+            // 检查存活
+            if (gameState.sanity <= 0) {
+                gameOver('你彻底分不清现实与幻觉，疯掉了。');
+                return;
+            }
+            if (gameState.age >= 80) {
+                gameOver('你安详地离开了人世。');
+                return;
+            }
+            
+            updateDisplay();
+        }
+        
+        function showEvent(event) {
+            document.getElementById('event-text').innerHTML = `<strong>第${gameState.age}年：</strong>${event.text}`;
+            
+            const choicesHtml = event.choices.map((c, i) => 
+                `<button class="choice-btn" onclick="makeChoice(${JSON.stringify(c.effect).replace(/"/g, '&quot;')})">${c.text}</button>`
+            ).join('');
+            document.getElementById('choices').innerHTML = choicesHtml;
+        }
+        
+        function makeChoice(effect) {
+            if (effect.sanity) gameState.sanity = Math.max(0, Math.min(100, gameState.sanity + effect.sanity));
+            if (effect.cultivation) gameState.cultivation = Math.min(REALMS.length - 1, gameState.cultivation + effect.cultivation);
+            if (effect.wealth) gameState.wealth = Math.max(0, gameState.wealth + effect.wealth);
+            if (effect.connections) gameState.connections = Math.max(0, gameState.connections + effect.connections);
+            
+            document.getElementById('choices').innerHTML = '';
+            document.getElementById('event-text').textContent = '等待下一年的故事...';
+            
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            document.getElementById('age').textContent = gameState.age;
+            document.getElementById('sanity').textContent = gameState.sanity;
+            document.getElementById('cultivation').textContent = REALMS[Math.min(gameState.cultivation, REALMS.length - 1)];
+        }
+        
+        function addLog(text) {
+            const log = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-year">年岁: ${gameState.age}</span><br><span class="log-content">${text}</span>`;
+            log.insertBefore(entry, log.firstChild);
+        }
+        
+        function gameOver(reason) {
+            gameState.alive = false;
+            document.getElementById('game').classList.add('hidden');
+            document.getElementById('ending').classList.remove('hidden');
+            
+            let ending = reason;
+            if (gameState.cultivation >= REALMS.length - 1) {
+                ending = '你成为了大傩！超越了凡人的境界，看到了世界的最终真相。';
+            } else if (gameState.sanity < 30) {
+                ending = '你看到了太多真相，成为了他人眼中的"疯子"，却获得了真正的智慧。';
+            }
+            
+            document.getElementById('ending-text').innerHTML = `
+                <p>享年: ${gameState.age}岁</p>
+                <p>境界: ${REALMS[Math.min(gameState.cultivation, REALMS.length - 1)]}</p>
+                <p style="margin-top:20px;color:#c41e3a;">${ending}</p>
+            `;
+        }
+        
+        // 初始化
+        initTalentSelect();
+    </script>
+</body>
+</html>
