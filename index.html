@@ -8,272 +8,259 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #1a1a1a;
+            background: #0d0d0d;
             color: #e0e0e0;
             min-height: 100vh;
             padding: 20px;
+            background-image: radial-gradient(ellipse at top, #1a1a2e 0%, #0d0d0d 100%);
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { color: #c41e3a; text-align: center; margin-bottom: 30px; font-size: 2.5em; }
-        .panel {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #444;
-        }
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .stat { text-align: center; padding: 10px; background: #333; border-radius: 8px; }
-        .stat-label { color: #888; font-size: 0.9em; }
-        .stat-value { color: #c41e3a; font-size: 1.5em; font-weight: bold; }
-        button {
-            background: #c41e3a;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s;
-        }
-        button:hover { background: #a01830; }
-        button:disabled { background: #555; cursor: not-allowed; }
-        .log { 
-            height: 300px; 
-            overflow-y: auto; 
-            background: #111; 
-            padding: 15px; 
-            border-radius: 8px;
-            font-family: monospace;
-            line-height: 1.6;
-        }
-        .log-entry { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .log-year { color: #888; font-size: 0.85em; }
-        .log-content { color: #e0e0e0; }
-        .choice-btn {
-            background: #333;
-            margin: 5px 0;
-            text-align: left;
-            padding: 10px 15px;
-        }
-        .choice-btn:hover { background: #444; }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #ff4757; text-align: center; margin-bottom: 30px; font-size: 2.8em; text-shadow: 0 0 20px rgba(255,71,87,0.5); letter-spacing: 5px; }
+        h2 { color: #ffa502; margin-bottom: 15px; }
+        h3 { color: #7bed9f; margin-bottom: 10px; }
+        .panel { background: linear-gradient(145deg, #1e1e2e, #16162a); border-radius: 15px; padding: 25px; margin-bottom: 20px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .stat { text-align: center; padding: 15px; background: #252540; border-radius: 10px; border: 1px solid #3a3a5a; }
+        .stat-label { color: #888; font-size: 0.85em; margin-bottom: 5px; }
+        .stat-value { color: #ff6b81; font-size: 1.4em; font-weight: bold; }
+        button { background: linear-gradient(145deg, #ff4757, #c41e3a); color: white; border: none; padding: 14px 30px; font-size: 1.1em; border-radius: 10px; cursor: pointer; width: 100%; transition: all 0.3s; box-shadow: 0 5px 15px rgba(255,71,87,0.3); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,71,87,0.5); }
+        button:disabled { background: #444; cursor: not-allowed; transform: none; box-shadow: none; }
+        .log { height: 350px; overflow-y: auto; background: #0a0a15; padding: 20px; border-radius: 10px; font-family: "Consolas", monospace; line-height: 1.8; border: 1px solid #2a2a3a; }
+        .log-entry { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #222; }
+        .log-year { color: #666; font-size: 0.8em; }
+        .log-content { color: #ccc; margin-top: 5px; }
+        .choice-btn { background: linear-gradient(145deg, #2a2a4a, #1e1e3a); margin: 8px 0; text-align: left; padding: 14px 18px; border: 1px solid #3a3a6a; }
+        .choice-btn:hover { background: linear-gradient(145deg, #3a3a6a, #2a2a5a); }
         .hidden { display: none; }
-        .talent { color: #ffd700; }
-        .location { color: #87ceeb; }
+        .talent { color: #ffd700; font-weight: bold; }
+        .location { color: #87ceeb; font-weight: bold; }
+        .faction { color: #ff6b81; font-weight: bold; }
+        .npc { color: #a29bfe; }
+        .special { color: #fd79a8; }
+        .detail-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 15px; }
+        .detail-stat { display: flex; justify-content: space-between; padding: 10px; background: #1a1a2e; border-radius: 8px; }
+        .detail-stat-label { color: #888; }
+        .detail-stat-value { color: #fff; font-weight: bold; }
+        .talent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 15px 0; }
+        .talent-card { background: #1a1a2e; border: 2px solid #333; border-radius: 10px; padding: 15px; cursor: pointer; transition: all 0.3s; }
+        .talent-card:hover { border-color: #ff4757; transform: scale(1.02); }
+        .talent-card.selected { border-color: #7bed9f; background: #1a2e1e; }
+        .talent-name { color: #ffd700; font-size: 1.1em; font-weight: bold; }
+        .talent-desc { color: #888; font-size: 0.85em; margin-top: 5px; }
+        .talent-bonus { color: #7bed9f; font-size: 0.8em; margin-top: 8px; }
+        .year-display { text-align: center; font-size: 1.2em; color: #666; margin-bottom: 15px; padding: 10px; background: #1a1a2e; border-radius: 8px; }
+        .year-display span { color: #ffa502; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>⚔️ 道诡人生</h1>
-        
-        <!-- 开局选择 -->
         <div id="setup" class="panel">
-            <h2>🌟 开始你的轮回</h2>
-            <p style="color:#888;margin:15px 0;">选择你的出身天赋</p>
-            <div id="talent-options"></div>
+            <h2>🌟 轮回转世</h2>
+            <p style="color:#888;margin-bottom:20px;">选择你的出身与天赋，决定你在这诡异世界的命运</p>
+            <h3>📍 出身地点</h3>
+            <div class="talent-grid" id="location-options"></div>
+            <h3>✨ 天赋选择</h3>
+            <div class="talent-grid" id="talent-options"></div>
             <br>
-            <button onclick="startGame()">开始轮回</button>
+            <button onclick="startGame()">🚀 开始轮回</button>
         </div>
-        
-        <!-- 游戏界面 -->
         <div id="game" class="hidden">
+            <div class="year-display">当前年份: <span id="year-display">大梁年间</span> · <span id="era-name">未知的年代</span></div>
             <div class="panel">
                 <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">年岁</div>
-                        <div class="stat-value" id="age">0</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">神志</div>
-                        <div class="stat-value" id="sanity">100</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">修为</div>
-                        <div class="stat-value" id="cultivation">凡人</div>
-                    </div>
+                    <div class="stat"><div class="stat-label">年岁</div><div class="stat-value" id="age">0</div></div>
+                    <div class="stat"><div class="stat-label">神志</div><div class="stat-value" id="sanity">100</div></div>
+                    <div class="stat"><div class="stat-label">修为</div><div class="stat-value" id="cultivation">锻体</div></div>
+                    <div class="stat"><div class="stat-label">金银</div><div class="stat-value" id="wealth">50</div></div>
+                </div>
+                <div class="detail-stats">
+                    <div class="detail-stat"><span class="detail-stat-label">所属势力</span><span class="detail-stat-value" id="faction">无</span></div>
+                    <div class="detail-stat"><span class="detail-stat-label">人脉</span><span class="detail-stat-value" id="connections">10</span></div>
+                    <div class="detail-stat"><span class="detail-stat-label">境界</span><span class="detail-stat-value" id="realm">锻体</span></div>
+                    <div class="detail-stat"><span class="detail-stat-label">所在地</span><span class="detail-stat-value" id="current-location">-</span></div>
                 </div>
             </div>
-            
             <div class="panel">
-                <div id="event-text" style="min-height:100px;margin-bottom:15px;">
-                    等待事件触发...
-                </div>
+                <div id="event-text" style="min-height:80px;margin-bottom:15px;font-size:1.1em;line-height:1.6;">等待事件触发...</div>
                 <div id="choices"></div>
             </div>
-            
             <div class="panel">
                 <h3>📜 人生轨迹</h3>
                 <div class="log" id="log"></div>
             </div>
-            
             <button onclick="nextYear()">🕐 度过一年</button>
         </div>
-        
-        <!-- 结局 -->
         <div id="ending" class="panel hidden">
             <h2>🎭 人生终结</h2>
-            <div id="ending-text" style="margin:20px 0;font-size:1.2em;"></div>
+            <div id="ending-text" style="margin:20px 0;font-size:1.1em;line-height:1.8;"></div>
             <button onclick="location.reload()">🔄 重新开始</button>
         </div>
     </div>
-
     <script>
-        // 天赋列表
-        const TALENTS = [
-            { id: 'xinsu', name: '心素', desc: '能看到两个世界的真相', sanity: 30, special: 'can_see_truth' },
-            { id: 'xinzhuo', name: '心浊', desc: '分不清现实与幻觉', sanity: 20, special: 'confused' },
-            { id: 'zuo_wang', name: '坐忘道', desc: '擅长欺骗与幻术', sanity: 60, special: 'deceiver' },
-            { id: 'putong', name: '普通人', desc: '平凡的一生', sanity: 100, special: 'none' },
-            { id: 'xiunu', name: '修奴', desc: '被驱使的底层修士', sanity: 70, special: 'slave' },
-            { id: 'biaoshi', name: '镖师', desc: '走南闯北，见多识广', sanity: 80, special: 'traveler' }
-        ];
-        
-        // 地点
+        const FACTIONS = { none: { name: '无', color: '#888' }, zuowangdao: { name: '坐忘道', color: '#ff6b81' }, jiantiansi: { name: '监天司', color: '#7bed9f' }, aojingjiao: { name: '袄景教', color: '#fd79a8' }, baiilianjiao: { name: '白莲教', color: '#fff' }, fajiao: { name: '法教', color: '#a55eea' }, qingjiuren: { name: '青丘', color: '#ffa502' } };
         const LOCATIONS = [
-            { id: 'qingqiu', name: '青丘', desc: '狐族圣地' },
-            { id: 'daliang', name: '大梁', desc: '繁华人间' },
-            { id: 'nanjiang', name: '南疆', desc: '神秘之地' },
-            { id: 'danu', name: '大傩', desc: '诡异根源' }
+            { id: 'qingfeng', name: '清风观', desc: '丹阳子道观，药引子们被拘禁之处', faction: 'none', danger: 90 },
+            { id: 'qingqiu', name: '青丘', desc: '狐族圣地，盛产黑太岁', faction: 'qingjiuren', danger: 40 },
+            { id: 'daliang', name: '大梁', desc: '繁华人间，朝廷所在', faction: 'jiantiansi', danger: 20 },
+            { id: 'siliang', name: '四齐', desc: '曾被法教灭国，现为废墟', faction: 'fajiao', danger: 80 },
+            { id: 'nanjiang', name: '南疆', desc: '神秘之地，蛊毒盛行', faction: 'none', danger: 60 },
+            { id: 'zhengdesi', name: '正德寺', desc: '表面佛门，实则暗藏血腥', faction: 'none', danger: 85 },
+            { id: 'ancian', name: '安慈庵', desc: '尼姑庵，静心师太所在', faction: 'baiilianjiao', danger: 30 },
+            { id: 'daijiang', name: '大傩', desc: '诡异根源，恐怖之地', faction: 'none', danger: 100 }
+        ];
+        const TALENTS = [
+            { id: 'xinsu', name: '心素', desc: '先天一炁，可无中生有。能看见两个世界的真相', sanity: 25, wealth: 0, connections: 5, special: 'true_sight', faction: 'none', bonus: '修为获取+50%' },
+            { id: 'xinzhuo', name: '心浊', desc: '隐天藏地，分不清现实与幻觉', sanity: 15, wealth: 0, connections: 3, special: 'confused', faction: 'none', bonus: '敌人难以发现' },
+            { id: 'zuowang', name: '坐忘道', desc: '骗子组织，擅长幻术与欺骗', sanity: 60, wealth: 30, connections: 20, special: 'deceiver', faction: 'zuowangdao', bonus: '欺骗成功率+30%' },
+            { id: 'putong', name: '普通人', desc: '平凡的一生，不卷入修仙界纷争', sanity: 100, wealth: 20, connections: 10, special: 'none', faction: 'none', bonus: '寿命+10年' },
+            { id: 'xiunu', name: '修奴', desc: '被修仙者驱使的底层修士', sanity: 50, wealth: 5, connections: 5, special: 'slave', faction: 'none', bonus: '修炼速度快' },
+            { id: 'biaoshi', name: '镖师', desc: '走南闯北，见多识广', sanity: 75, wealth: 50, connections: 25, special: 'traveler', faction: 'none', bonus: '行走各地更安全' },
+            { id: 'jiandian', name: '监天司', desc: '朝廷命官，专门对付坐忘道', sanity: 80, wealth: 40, connections: 30, special: 'hunter', faction: 'jiantiansi', bonus: '对坐忘道伤害+50%' },
+            { id: 'aoshi', name: '袄景教', desc: '修炼肉体，以战斗为信条', sanity: 70, wealth: 20, connections: 15, special: 'fighter', faction: 'aojingjiao', bonus: '战斗力+30%' },
+            { id: 'xianjia', name: '仙家奴', desc: '被仙家控制的信徒', sanity: 40, wealth: 10, connections: 8, special: 'vessel', faction: 'baiilianjiao', bonus: '仙家庇佑' },
+            { id: 'heitaizui', name: '黑太岁', desc: '通人性，可修炼的诡异生物', sanity: 10, wealth: 0, connections: 2, special: 'monster', faction: 'none', bonus: '无需金银即可存活' }
+        ];
+        const REALMS = [{ name: '锻体', req: 0 }, { name: '练气', req: 10 }, { name: '筑基', req: 30 }, { name: '金丹', req: 60 }, { name: '元婴', req: 100 }, { name: '化神', req: 150 }, { name: '大乘', req: 200 }, { name: '大傩', req: 300 }];
+        
+        const COMMON_EVENTS = [
+            { text: '你在街头遇到一个<span class="npc">奇怪的道士</span>，他盯着你看了很久...', choices: [{ text: '上前搭话', effect: { sanity: -5, connections: 5 }, log: '你与道士交谈，他似乎知道些什么...' }, { text: '转身离开', effect: { sanity: 0 }, log: '你快速离开，不想惹是生非' }] },
+            { text: '夜里你听到有人在耳边<span class="mystery">低语</span>，那是另一个世界的声音...', choices: [{ text: '仔细聆听', effect: { cultivation: 5, sanity: -10 }, log: '你听到了天道的秘密！修为精进' }, { text: '捂住耳朵', effect: { sanity: 5 }, log: '你选择了逃避，假装什么都没听到' }] },
+            { text: '遇到<span class="faction">坐忘道</span>在集市上行骗...', choices: [{ text: '揭穿他们', effect: { sanity: 10, connections: 10, wealth: -10 }, log: '你揭露了骗术，百姓对你感激不尽' }, { text: '加入他们', effect: { sanity: -15, wealth: 30 }, log: '你加入了坐忘道，学到了幻术' }, { text: '暗中观察', effect: { sanity: -5, connections: 5 }, log: '你记住了他们的手法' }] },
+            { text: '发现自己在<span class="mystery">两个地方同时出现</span>...', choices: [{ text: '这是我的心素能力！', effect: { cultivation: 10 }, log: '你掌握了心素的真正力量！' }, { text: '我一定是疯了', effect: { sanity: -20 }, log: '你无法接受这个事实' }] },
+            { text: '一位<span class="npc">白化女子</span>请求你帮忙...', choices: [{ text: '帮助她', effect: { connections: 15, wealth: -10 }, log: '她叫白灵淼，感谢你的帮助' }, { text: '袖手旁观', effect: { connections: -5 }, log: '你转身离开' }] },
+            { text: '发现有人在<span class="danger">生吃黑太岁</span>...', choices: [{ text: '跟着吃', effect: { sanity: -30, cultivation: 20 }, log: '你看到了两个世界的真相！' }, { text: '坚决不吃', effect: { sanity: 5 }, log: '你保持理性' }] },
+            { text: '遇到<span class="faction">监天司</span>正在<span class="danger">捉拿邪教</span>...', choices: [{ text: '出手相助', effect: { connections: 20, wealth: 20 }, log: '监天司对你印象深刻' }, { text: '快速逃离', effect: { connections: -10 }, log: '你不想卷入官府事务' }] },
+            { text: '在<span class="location">深山</span>中发现一处<span class="mystery">古迹</span>...', choices: [{ text: '进入探索', effect: { cultivation: 15, wealth: 20, sanity: -10 }, log: '你获得了古籍和财宝，但看到了不该看的' }, { text: '离开', effect: { sanity: 5 }, log: '你选择不去冒险' }] },
+            { text: '一位<span class="npc">商人</span>向你推销奇怪的<span class="special">丹药</span>...', choices: [{ text: '买下服用', effect: { cultivation: 10, sanity: -15 }, log: '修为提升了，但副作用明显' }, { text: '拒绝', effect: { sanity: 5 }, log: '你保持了谨慎' }] },
+            { text: '夜里，<span class="npc">一群唱戏的</span>路过...', choices: [{ text: '请他们唱一段', effect: { connections: 5, wealth: -5 }, log: '他们唱的是冥戏，诡异至极' }, { text: '借机行事', effect: { wealth: 10 }, requires: 'deceiver', log: '你趁乱捞了一笔' }] }
         ];
         
-        // 修为境界
-        const REALMS = ['凡人', '练气', '筑基', '金丹', '元婴', '化神', '大乘', '大傩'];
+        const SPECIAL_EVENTS = [
+            { text: '你遇到了一个<span class="npc">奇怪的少年</span>，他一会儿说自己是<span class="npc">李火旺</span>，一会儿又说是<span class="npc">红中老大</span>...', trigger: { minAge: 15 }, choices: [{ text: '帮助他', effect: { connections: 30, cultivation: 10 }, log: '你帮助了李火旺，他对你感激不尽' }, { text: '攻击他', effect: { connections: -20, cultivation: 5 }, requires: 'hunter', log: '你攻击了李火旺' }, { text: '袖手旁观', effect: { sanity: -10 }, log: '你看着他发疯' }] },
+            { text: '一位<span class="npc">瞎眼道士</span>说你有<span class="special">仙缘</span>...', trigger: { minAge: 10 }, choices: [{ text: '接受传承', effect: { cultivation: 25, connections: 15 }, log: '你获得了神秘传承！' }, { text: '拒绝', effect: { sanity: 5 }, log: '你拒绝了这个机会' }] },
+            { text: '你听说<span class="npc">诸葛渊</span>在<span class="location">杏岛</span>出现...', trigger: { minAge: 20, cultivation: 50 }, choices: [{ text: '前往拜访', effect: { connections: 40, cultivation: 20 }, log: '你见到了心蟠诸葛渊，他告诉你很多秘密' }, { text: '不感兴趣', effect: { connections: -10 }, log: '你错失了机缘' }] }
+        ];
         
-        // 游戏状态
-        let gameState = {
-            talent: null,
-            location: null,
-            age: 0,
-            sanity: 100,
-            cultivation: 0,
-            wealth: 50,
-            connections: 10,
-            lifeLog: [],
-            alive: true
-        };
+        let gameState = { location: null, talent: null, age: 0, year: 0, sanity: 100, cultivation: 0, wealth: 50, connections: 10, alive: true };
         
-        // 初始化天赋选择
+        function initLocationSelect() {
+            document.getElementById('location-options').innerHTML = LOCATIONS.map(l => `<div class="talent-card" onclick="selectLocation('${l.id}')" id="loc-${l.id}"><div class="talent-name">${l.name}</div><div class="talent-desc">${l.desc}</div></div>`).join('');
+        }
+        
+        function selectLocation(id) {
+            document.querySelectorAll('#location-options .talent-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('loc-' + id).classList.add('selected');
+            gameState.location = LOCATIONS.find(l => l.id === id);
+        }
+        
         function initTalentSelect() {
-            const container = document.getElementById('talent-options');
-            container.innerHTML = TALENTS.map(t => `
-                <button class="choice-btn" onclick="selectTalent('${t.id}')" id="talent-${t.id}">
-                    <span class="talent">${t.name}</span> - ${t.desc}
-                </button>
-            `).join('');
+            document.getElementById('talent-options').innerHTML = TALENTS.map(t => `<div class="talent-card" onclick="selectTalent('${t.id}')" id="talent-${t.id}"><div class="talent-name">${t.name}</div><div class="talent-desc">${t.desc}</div><div class="talent-bonus">${t.bonus}</div></div>`).join('');
         }
         
         function selectTalent(id) {
+            document.querySelectorAll('#talent-options .talent-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('talent-' + id).classList.add('selected');
             gameState.talent = TALENTS.find(t => t.id === id);
-            gameState.sanity = gameState.talent.sanity;
-            
-            // 禁用其他按钮
-            TALENTS.forEach(t => {
-                document.getElementById(`talent-${t.id}`).disabled = true;
-            });
-            
-            // 随机选择地点
-            const loc = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
-            gameState.location = loc;
-            
-            addLog(`你出生于${loc.name}，是一名${gameState.talent.name}。${gameState.talent.desc}`);
         }
         
         function startGame() {
-            if (!gameState.talent) {
-                alert('请先选择天赋！');
-                return;
-            }
+            if (!gameState.location || !gameState.talent) { alert('请先选择地点和天赋！'); return; }
+            gameState.sanity = gameState.talent.sanity;
+            gameState.wealth = gameState.talent.wealth;
+            gameState.connections = gameState.talent.connections;
+            gameState.age = 0;
+            gameState.cultivation = 0;
+            gameState.alive = true;
+            gameState.year = Math.floor(Math.random() * 30) - 20;
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('game').classList.remove('hidden');
+            addLog('你出生于<span class="location">' + gameState.location.name + '</span>，是一名<span class="talent">' + gameState.talent.name + '</span>。' + gameState.talent.desc, 'choice');
             updateDisplay();
         }
         
-        // 随机事件
-        const EVENTS = [
-            { text: '你在街头遇到一个奇怪的道士，他盯着你看了很久...', choices: [
-                { text: '上前搭话', effect: { sanity: -5, connections: 5 } },
-                { text: '转身离开', effect: { sanity: 0 } }
-            ]},
-            { text: '夜里你听到有人在耳边低语...', choices: [
-                { text: '仔细聆听', effect: { sanity: -10, cultivation: 1 } },
-                { text: '捂住耳朵', effect: { sanity: 5 } }
-            ]},
-            { text: '遇到坐忘道在行骗...', choices: [
-                { text: '揭穿他们', effect: { sanity: 5, connections: -5 } },
-                { text: '加入他们', effect: { sanity: -10, wealth: 20 } }
-            ]},
-            { text: '发现自己在两个地方同时出现...', choices: [
-                { text: '这是我的心素能力', effect: { cultivation: 2 } },
-                { text: '我一定是疯了', effect: { sanity: -15 } }
-            ]}
-        ];
+        function getEraName() {
+            const y = gameState.year;
+            if (y < -10) return '丹阳子统治时期';
+            if (y < 0) return '清风观覆灭后';
+            if (y < 5) return '李火旺成长';
+            if (y < 15) return '坐忘道动乱';
+            if (y < 25) return '法教入侵';
+            return '白玉京之战';
+        }
         
         function nextYear() {
             gameState.age++;
+            gameState.year++;
+            let cultGain = 2;
+            if (gameState.talent.special === 'true_sight') cultGain *= 1.5;
+            if (gameState.talent.special === 'slave') cultGain *= 1.3;
+            if (gameState.location.id === 'daijiang') cultGain *= 2;
+            gameState.cultivation += cultGain;
+            gameState.sanity = Math.max(0, Math.min(100, gameState.sanity + Math.floor(Math.random() * 6) - 3));
             
-            // 随机事件
+            let eventPool = [...COMMON_EVENTS];
+            SPECIAL_EVENTS.forEach(se => { if (!se.trigger || se.trigger.minAge <= gameState.age) eventPool.push(se); });
+            
             if (Math.random() < 0.7) {
-                const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
-                showEvent(event);
+                showEvent(eventPool[Math.floor(Math.random() * eventPool.length)]);
             } else {
-                // 平淡一年
-                const sanityChange = Math.floor(Math.random() * 10) - 5;
-                gameState.sanity = Math.max(0, Math.min(100, gameState.sanity + sanityChange));
-                
-                if (gameState.sanity < 30) {
-                    addLog(`第${gameState.age}年：你看到了一些不该看到的东西...`);
-                    gameState.cultivation++;
-                } else {
-                    addLog(`第${gameState.age}年：平淡的一年过去了。`);
-                }
+                if (gameState.sanity < 30) { addLog('第' + gameState.age + '年：你看到了<span class="mystery">两个世界的真相</span>...', 'mystery'); gameState.cultivation += 3; }
+                else if (gameState.location.danger > 70 && Math.random() < 0.3) { addLog('第' + gameState.age + '年：在<span class="location">' + gameState.location.name + '</span>，你差点丢掉性命...', 'danger'); gameState.sanity -= 10; }
+                else { addLog('第' + gameState.age + '年：平淡的一年过去了。', 'choice'); }
             }
             
-            // 检查存活
-            if (gameState.sanity <= 0) {
-                gameOver('你彻底分不清现实与幻觉，疯掉了。');
-                return;
-            }
-            if (gameState.age >= 80) {
-                gameOver('你安详地离开了人世。');
-                return;
-            }
-            
+            if (gameState.sanity <= 0) { gameOver('你彻底分不清<span class="mystery">现实与幻觉</span>，疯掉了。'); return; }
+            if (gameState.age >= 85) { gameOver('你<span class="choice">安详地离开了人世</span>。'); return; }
+            if (gameState.wealth <= -50) { gameOver('你因<span class="danger">贫困交加</span>而死。'); return; }
             updateDisplay();
         }
         
         function showEvent(event) {
-            document.getElementById('event-text').innerHTML = `<strong>第${gameState.age}年：</strong>${event.text}`;
-            
-            const choicesHtml = event.choices.map((c, i) => 
-                `<button class="choice-btn" onclick="makeChoice(${JSON.stringify(c.effect).replace(/"/g, '&quot;')})">${c.text}</button>`
-            ).join('');
-            document.getElementById('choices').innerHTML = choicesHtml;
+            document.getElementById('event-text').innerHTML = '<strong>【第' + gameState.age + '年】</strong> ' + event.text;
+            document.getElementById('choices').innerHTML = event.choices.map(c => { if (c.requires && gameState.talent.special !== c.requires) return ''; return '<button class="choice-btn" onclick="makeChoice(' + JSON.stringify(c.effect).replace(/"/g, '&quot;') + ', ' + JSON.stringify(c.log).replace(/"/g, '&quot;') + ')">' + c.text + '</button>'; }).join('');
         }
         
-        function makeChoice(effect) {
+        function makeChoice(effect, logText) {
             if (effect.sanity) gameState.sanity = Math.max(0, Math.min(100, gameState.sanity + effect.sanity));
-            if (effect.cultivation) gameState.cultivation = Math.min(REALMS.length - 1, gameState.cultivation + effect.cultivation);
-            if (effect.wealth) gameState.wealth = Math.max(0, gameState.wealth + effect.wealth);
-            if (effect.connections) gameState.connections = Math.max(0, gameState.connections + effect.connections);
-            
+            if (effect.cultivation) gameState.cultivation += effect.cultivation;
+            if (effect.wealth) gameState.wealth += effect.wealth;
+            if (effect.connections) gameState.connections += effect.connections;
+            addLog(logText, 'choice');
             document.getElementById('choices').innerHTML = '';
             document.getElementById('event-text').textContent = '等待下一年的故事...';
-            
             updateDisplay();
         }
         
         function updateDisplay() {
+            let realm = REALMS.find(r => gameState.cultivation < r.req) || REALMS[REALMS.length - 1];
+            let realmName = REALMS.indexOf(realm) > 0 ? REALMS[REALMS.indexOf(realm) - 1].name : '锻体';
+            if (gameState.cultivation >= 300) realmName = '大傩';
+            else if (gameState.cultivation >= 200) realmName = '大乘';
+            else if (gameState.cultivation >= 150) realmName = '化神';
+            else if (gameState.cultivation >= 100) realmName = '元婴';
+            else if (gameState.cultivation >= 60) realmName = '金丹';
+            else if (gameState.cultivation >= 30) realmName = '筑基';
+            else if (gameState.cultivation >= 10) realmName = '练气';
+            else realmName = '锻体';
+            
             document.getElementById('age').textContent = gameState.age;
             document.getElementById('sanity').textContent = gameState.sanity;
-            document.getElementById('cultivation').textContent = REALMS[Math.min(gameState.cultivation, REALMS.length - 1)];
+            document.getElementById('cultivation').textContent = realmName;
+            document.getElementById('wealth').textContent = gameState.wealth;
+            document.getElementById('faction').textContent = FACTIONS[gameState.talent.faction].name;
+            document.getElementById('connections').textContent = gameState.connections;
+            document.getElementById('realm').textContent = realmName;
+            document.getElementById('current-location').textContent = gameState.location.name;
+            document.getElementById('era-name').textContent = getEraName();
         }
         
-        function addLog(text) {
+        function addLog(text, type) {
             const log = document.getElementById('log');
             const entry = document.createElement('div');
             entry.className = 'log-entry';
-            entry.innerHTML = `<span class="log-year">年岁: ${gameState.age}</span><br><span class="log-content">${text}</span>`;
+            entry.innerHTML = '<span class="log-year">年岁: ' + gameState.age + '</span><br><span class="log-content ' + type + '">' + text + '</span>';
             log.insertBefore(entry, log.firstChild);
         }
         
@@ -281,22 +268,14 @@
             gameState.alive = false;
             document.getElementById('game').classList.add('hidden');
             document.getElementById('ending').classList.remove('hidden');
-            
+            let realm = gameState.cultivation >= 300 ? '大傩' : gameState.cultivation >= 200 ? '大乘' : '化神' : '元婴' : '金丹' : '筑基' : '练气' : '锻体';
             let ending = reason;
-            if (gameState.cultivation >= REALMS.length - 1) {
-                ending = '你成为了大傩！超越了凡人的境界，看到了世界的最终真相。';
-            } else if (gameState.sanity < 30) {
-                ending = '你看到了太多真相，成为了他人眼中的"疯子"，却获得了真正的智慧。';
-            }
-            
-            document.getElementById('ending-text').innerHTML = `
-                <p>享年: ${gameState.age}岁</p>
-                <p>境界: ${REALMS[Math.min(gameState.cultivation, REALMS.length - 1)]}</p>
-                <p style="margin-top:20px;color:#c41e3a;">${ending}</p>
-            `;
+            if (gameState.cultivation >= 300) ending = '你成为了<span class="special">大傩</span>！超越了凡人的境界，看到了世界的最终真相！';
+            else if (gameState.sanity < 20) ending = '你看到了太多真相，成为了他人眼中的"疯子"，却获得了真正的智慧。';
+            document.getElementById('ending-text').innerHTML = '<p>享年: ' + gameState.age + '岁</p><p>境界: ' + realm + '</p><p>金银: ' + gameState.wealth + '</p><p style="margin-top:20px;color:#ff4757;">' + ending + '</p>';
         }
         
-        // 初始化
+        initLocationSelect();
         initTalentSelect();
     </script>
 </body>
