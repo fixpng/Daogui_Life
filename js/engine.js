@@ -3,11 +3,16 @@ var gameState = {
   talents:[], location:null, age:0, year:0,
   sanity:100, baseSanity:100, cultivation:0,
   wealth:10, connections:0, faction:'none',
+  comprehension:10, karma:0, qiyun:0, constitution:50,
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
-  eventHistory: new Set()
+  eventHistory: new Set(),
+  dualCultWarned:false,
+  lastLifeTalents:[]
 };
-var autoMode = false, speed = 2, autoTimer = null, availableTalents = [];
+var autoMode = false, speed = 1, autoTimer = null, availableTalents = [];
+var SPEED_DELAYS = {1:3000, 2:1500, 3:1000, 4:500, 5:250};
+var keptTalent = null; // talent kept from previous life
 var waitingForChoice = false;
 var achievements = JSON.parse(localStorage.getItem('dg_achievements')||'{}');
 
@@ -51,6 +56,17 @@ function selectTalent(i) {
     card.classList.remove('selected');
     gameState.talents = gameState.talents.filter(function(x){return x.id!==t.id;});
   } else if (gameState.talents.length<3) {
+    // Check conflicts
+    if(typeof TALENT_CONFLICTS !== 'undefined' && TALENT_CONFLICTS[t.id]) {
+      var conflicts = TALENT_CONFLICTS[t.id];
+      var conflicting = gameState.talents.find(function(sel){
+        return conflicts.indexOf(sel.id) !== -1;
+      });
+      if(conflicting) {
+        showConflictWarning(t.name, conflicting.name);
+        return;
+      }
+    }
     card.classList.add('selected');
     gameState.talents.push(t);
   }
@@ -59,6 +75,14 @@ function selectTalent(i) {
     else if (!c.classList.contains('selected')) c.classList.remove('disabled');
   });
   updateSelectCount();
+}
+
+function showConflictWarning(name1, name2) {
+  var el = document.getElementById('conflict-popup');
+  if(!el) return;
+  el.querySelector('.conflict-msg').innerHTML = '「<span style="color:var(--gold)">' + name1 + '</span>」与「<span style="color:var(--gold)">' + name2 + '</span>」相克，不可同时选择！';
+  el.classList.add('active');
+  setTimeout(function(){ el.classList.remove('active'); }, 2500);
 }
 
 function updateSelectCount() {
@@ -70,15 +94,26 @@ function updateSelectCount() {
 function startGame() {
   gameState.baseSanity = 100; gameState.wealth = 10; gameState.connections = 0;
   gameState.cultivation = 0; gameState.age = 0; gameState.alive = true;
+  gameState.comprehension = 10; gameState.karma = 0; gameState.qiyun = 0; gameState.constitution = 50;
   gameState.items = []; gameState.faction = 'none';
   gameState.visitedLocations = []; gameState.factionHistory = [];
-  gameState.eventHistory = new Set();
+  gameState.eventHistory = new Set(); gameState.dualCultWarned = false;
+
+  // If a talent was kept from previous life, add it
+  if(keptTalent && !gameState.talents.find(function(t){return t.id===keptTalent.id;})) {
+    gameState.talents.unshift(keptTalent);
+    if(gameState.totalRuns > 0) unlockAchieve('rebirth_talent');
+  }
 
   gameState.talents.forEach(function(t){
     if(t.effect.sanity) gameState.baseSanity += t.effect.sanity;
     if(t.effect.wealth) gameState.wealth += t.effect.wealth;
     if(t.effect.connections) gameState.connections += t.effect.connections;
     if(t.effect.cultivation) gameState.cultivation += t.effect.cultivation;
+    if(t.effect.comprehension) gameState.comprehension += t.effect.comprehension;
+    if(t.effect.karma) gameState.karma += t.effect.karma;
+    if(t.effect.qiyun) gameState.qiyun += t.effect.qiyun;
+    if(t.effect.constitution) gameState.constitution += t.effect.constitution;
   });
   gameState.sanity = gameState.baseSanity;
   gameState.location = LOCATIONS[Math.floor(Math.random()*LOCATIONS.length)];
@@ -105,10 +140,53 @@ function confirmBorn() {
   addLog('出生于<span class="loc">'+gameState.location.name+'</span>');
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
+
+  // Check 天崩开局: all 3 talents are bad/cursed
+  var allBad = gameState.talents.every(function(t){ return t.type === 'bad'; });
+  if(allBad) unlockAchieve('tianbeng');
+
+  initTooltips();
   updateDisplay();
-  
+
   // Initialize audio state when game starts
   updateAudioState();
+}
+
+// === TOOLTIPS ===
+function initTooltips() {
+  if(typeof STAT_TOOLTIPS === 'undefined') return;
+  var mappings = [
+    {sel:'#age', key:'age'}, {sel:'#sanity', key:'sanity'}, {sel:'#cultivation', key:'cultivation'},
+    {sel:'#wealth', key:'wealth'}, {sel:'#connections', key:'connections'},
+    {sel:'#comprehension', key:'comprehension'}, {sel:'#karma', key:'karma'}, {sel:'#qiyun', key:'qiyun'},
+    {sel:'#constitution', key:'constitution'}, {sel:'#faction', key:'faction'}
+  ];
+  mappings.forEach(function(m){
+    var el = document.querySelector(m.sel);
+    if(!el || !STAT_TOOLTIPS[m.key]) return;
+    // Apply tooltip to parent stat-box or detail-row
+    var parent = el.closest('.stat-box') || el.closest('.detail-row');
+    if(parent) {
+      parent.classList.add('has-tooltip');
+      parent.setAttribute('data-tip', STAT_TOOLTIPS[m.key]);
+      parent.addEventListener('click', function(e){
+        showStatTooltip(e, STAT_TOOLTIPS[m.key]);
+      });
+    }
+  });
+}
+
+function showStatTooltip(e, text) {
+  var tip = document.getElementById('stat-tooltip');
+  if(!tip) return;
+  tip.textContent = text;
+  tip.classList.add('active');
+  // Position near click
+  var rect = e.currentTarget.getBoundingClientRect();
+  tip.style.top = (rect.bottom + 8) + 'px';
+  tip.style.left = Math.min(rect.left, window.innerWidth - 280) + 'px';
+  clearTimeout(window._tipTimer);
+  window._tipTimer = setTimeout(function(){ tip.classList.remove('active'); }, 3000);
 }
 
 // === REALM & ERA ===
@@ -147,8 +225,9 @@ function nextYear() {
   if(waitingForChoice) return;
   gameState.age++; gameState.year++;
 
-  // Cultivation gain
-  var cultGain = 1 + Math.floor(Math.random()*2);
+  // Cultivation gain (comprehension affects cultivation speed)
+  var compBonus = Math.floor(gameState.comprehension / 30); // 0-3 bonus from comprehension
+  var cultGain = 1 + Math.floor(Math.random()*2) + compBonus;
   if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 3;
   if(gameState.talents.find(function(t){return t.id==='jie_dan';}) && gameState.cultivation<60) cultGain += 2;
   if(gameState.faction!=='none' && FACTIONS[gameState.faction]) {
@@ -157,6 +236,10 @@ function nextYear() {
     if(fb.wealth) gameState.wealth += Math.floor(fb.wealth/4);
     if(fb.connections) gameState.connections += Math.floor(fb.connections/4);
     if(fb.sanity && gameState.talents.find(function(t){return t.id==='xinsu';})) gameState.sanity += fb.sanity;
+    if(fb.comprehension) gameState.comprehension += fb.comprehension;
+    if(fb.qiyun) gameState.qiyun += fb.qiyun;
+    if(fb.karma) gameState.karma += fb.karma;
+    if(fb.constitution) gameState.constitution += fb.constitution;
   }
 
   // Ancient person cultivation bonus
@@ -177,6 +260,34 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='can_ji';}) && Math.random()<0.1) { gameState.cultivation += 3; }
   if(gameState.talents.find(function(t){return t.id==='zai_min';}) && Math.random()<0.1) { gameState.cultivation += 2; gameState.connections += 1; }
   if(gameState.talents.find(function(t){return t.id==='bai_bing';}) && Math.random()<0.08) { gameState.cultivation += 3; }
+  // New talent yearly effects
+  if(gameState.talents.find(function(t){return t.id==='ye_zhang';}) && Math.random()<0.10) { gameState.cultivation += 3; }
+  if(gameState.talents.find(function(t){return t.id==='ti_ruo';}) && Math.random()<0.08) { gameState.comprehension += 2; }
+
+  // Constitution natural drift (age affects constitution)
+  if(gameState.age > 50) gameState.constitution -= 1;
+  if(gameState.age > 70) gameState.constitution -= 1;
+  // Comprehension slow growth from experience
+  if(gameState.age > 10 && Math.random() < 0.15) gameState.comprehension += 1;
+  // Qiyun slowly returns toward 0 (natural balance)
+  if(gameState.qiyun > 5 && Math.random() < 0.05) gameState.qiyun -= 1;
+  if(gameState.qiyun < -5 && Math.random() < 0.05) gameState.qiyun += 1;
+  // Karma slowly returns toward 0
+  if(gameState.karma > 5 && Math.random() < 0.03) gameState.karma -= 1;
+  if(gameState.karma < -5 && Math.random() < 0.03) gameState.karma += 1;
+  // Clamp values
+  gameState.comprehension = Math.max(0, Math.min(100, gameState.comprehension));
+  gameState.karma = Math.max(-100, Math.min(100, gameState.karma));
+  gameState.qiyun = Math.max(-100, Math.min(100, gameState.qiyun));
+  gameState.constitution = Math.max(0, Math.min(100, gameState.constitution));
+
+  // Dual cultivation risk: if factionHistory > 1 and currently in a faction, risk events
+  var dualCultRisk = gameState.factionHistory.length > 1 && gameState.faction !== 'none';
+  if(dualCultRisk && Math.random() < 0.15) {
+    // 15% chance per year of dual cultivation side effects
+    gameState.constitution -= 2;
+    gameState.sanity = Math.max(0, gameState.sanity - 3);
+  }
 
   // Sanity drift - ONLY for xinsu talent holders
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
@@ -195,11 +306,21 @@ function nextYear() {
 
   // Add special events
   SPECIAL_EVENTS.forEach(function(se){
-    if(!se.trigger) return;
-    if(gameState.age >= se.trigger.minAge && gameState.age <= (se.trigger.maxAge||999)) {
+    if(!se.trigger) { eventPool.push(se); return; }
+    if(gameState.age >= (se.trigger.minAge||0) && gameState.age <= (se.trigger.maxAge||999)) {
       if(!se.trigger.cultivation || gameState.cultivation >= se.trigger.cultivation) {
-        if(!se.check || gameState.talents.find(function(t){return t.id===se.check;})) {
-          eventPool.push(se);
+        if(!se.trigger.constitution || gameState.constitution >= se.trigger.constitution) {
+          // Check year constraints for timeline-bound events
+          if(se.trigger.yearMin !== undefined && gameState.year < se.trigger.yearMin) return;
+          if(se.trigger.yearMax !== undefined && gameState.year > se.trigger.yearMax) return;
+          if(!se.check || gameState.talents.find(function(t){return t.id===se.check;})) {
+            // Check qiyun requirements
+            if(se.qiyunCheck) {
+              if(se.qiyunCheck.max !== undefined && gameState.qiyun > se.qiyunCheck.max) return;
+              if(se.qiyunCheck.min !== undefined && gameState.qiyun < se.qiyunCheck.min) return;
+            }
+            eventPool.push(se);
+          }
         }
       }
     }
@@ -222,6 +343,33 @@ function nextYear() {
     eventPool.push.apply(eventPool, FACTION_EVENTS[gameState.faction]);
   }
 
+  // Add karma events
+  if(typeof KARMA_EVENTS !== 'undefined') {
+    KARMA_EVENTS.forEach(function(ke){
+      if(!ke.karmaReq) { eventPool.push(ke); return; }
+      if(ke.karmaReq.min !== undefined && gameState.karma < ke.karmaReq.min) return;
+      if(ke.karmaReq.max !== undefined && gameState.karma > ke.karmaReq.max) return;
+      if(ke.karmaReq.abs !== undefined && Math.abs(gameState.karma) < ke.karmaReq.abs) return;
+      eventPool.push(ke);
+    });
+  }
+
+  // Add qiyun events
+  if(typeof QIYUN_EVENTS !== 'undefined') {
+    QIYUN_EVENTS.forEach(function(ke){
+      if(!ke.qiyunReq) { eventPool.push(ke); return; }
+      if(ke.qiyunReq.min !== undefined && gameState.qiyun < ke.qiyunReq.min) return;
+      if(ke.qiyunReq.max !== undefined && gameState.qiyun > ke.qiyunReq.max) return;
+      if(ke.qiyunReq.abs !== undefined && Math.abs(gameState.qiyun) < ke.qiyunReq.abs) return;
+      eventPool.push(ke);
+    });
+  }
+
+  // Add dual cultivation events (if player has betrayed a faction)
+  if(typeof DUAL_CULTIVATION_EVENTS !== 'undefined' && gameState.factionHistory.length > 1 && gameState.faction !== 'none') {
+    eventPool.push.apply(eventPool, DUAL_CULTIVATION_EVENTS);
+  }
+
   // Trigger event or quiet year
   if(Math.random() < 0.72) {
     var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
@@ -232,6 +380,7 @@ function nextYear() {
 
   // Death checks
   if(isXinsu && gameState.sanity <= 0) { unlockAchieve('mad'); gameOver('你彻底分不清<span class="mys">现实与幻觉</span>，在无尽的噩梦中彻底迷失了。'); return; }
+  if(gameState.constitution <= 0) { unlockAchieve('body_break'); gameOver('你的<span class="danger-text">肉身崩溃</span>，经脉尽断，再也无法支撑下去。'); return; }
   var maxAge = gameState.talents.find(function(t){return t.id==='shou_xing';}) ? 95 : 82;
   if(gameState.age >= maxAge) {
     if(gameState.age>=80) unlockAchieve('old');
@@ -248,9 +397,9 @@ function nextYear() {
   updateAudioState();
 
   updateDisplay();
-  // x1 = 2秒, x2 = 1秒, x10 = 0.2秒
-  var delay = 2000 / speed;
-  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, delay);
+  // x1=3s, x2=1.5s, x3=1s, x4=0.5s, x5=0.25s
+  var delay = SPEED_DELAYS[speed] || 3000;
+  if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
 }
 
 // === AUDIO STATE UPDATE ===
@@ -310,6 +459,42 @@ function quietYear() {
 }
 
 // === SHOW EVENT ===
+// Check if a choice's requirements are met
+function checkChoiceReq(c) {
+  if(!c.req) return {met:true, reason:''};
+  var req = c.req;
+  var reasons = [];
+  if(req.cultivation !== undefined && gameState.cultivation < req.cultivation) reasons.push('需修为'+getRealmName(req.cultivation)+'以上');
+  if(req.wealth !== undefined && gameState.wealth < req.wealth) reasons.push('需金银'+req.wealth+'以上');
+  if(req.connections !== undefined && gameState.connections < req.connections) reasons.push('需人脉'+req.connections+'以上');
+  if(req.comprehension !== undefined && gameState.comprehension < req.comprehension) reasons.push('需悟性'+req.comprehension+'以上');
+  if(req.constitution !== undefined && gameState.constitution < req.constitution) reasons.push('需体魄'+req.constitution+'以上');
+  if(req.qiyun_min !== undefined && gameState.qiyun < req.qiyun_min) reasons.push('需气运'+req.qiyun_min+'以上');
+  if(req.qiyun_max !== undefined && gameState.qiyun > req.qiyun_max) reasons.push('需气运'+req.qiyun_max+'以下');
+  if(req.karma_min !== undefined && gameState.karma < req.karma_min) reasons.push('需因果'+req.karma_min+'以上');
+  if(req.karma_max !== undefined && gameState.karma > req.karma_max) reasons.push('需因果'+req.karma_max+'以下');
+  if(req.sanity_max !== undefined && gameState.sanity > req.sanity_max) reasons.push('需神志'+req.sanity_max+'以下');
+  if(req.sanity_min !== undefined && gameState.sanity < req.sanity_min) reasons.push('需神志'+req.sanity_min+'以上');
+  if(req.faction && gameState.faction !== req.faction) {
+    var fName = (FACTIONS[req.faction] && FACTIONS[req.faction].name) || req.faction;
+    reasons.push('需属于'+fName);
+  }
+  if(req.no_faction && gameState.faction !== 'none') reasons.push('需无门派');
+  if(req.item) {
+    var hasItem = gameState.items.find(function(it){return it.id===req.item;});
+    if(!hasItem) {
+      var itemData = ITEMS.find(function(it){return it.id===req.item;});
+      reasons.push('需持有'+(itemData?itemData.name:req.item));
+    }
+  }
+  if(req.talent) {
+    var hasTalent = gameState.talents.find(function(t){return t.id===req.talent;});
+    if(!hasTalent) reasons.push('需天赋');
+  }
+  if(req.age_min !== undefined && gameState.age < req.age_min) reasons.push('需年岁'+req.age_min+'以上');
+  return {met: reasons.length===0, reason: reasons.join('；')};
+}
+
 function showEvent(event) {
   var validChoices = event.choices.filter(function(c){return !c.check || gameState.talents.find(function(t){return t.id===c.check;});});
   if(!validChoices.length) { quietYear(); return; }
@@ -318,14 +503,21 @@ function showEvent(event) {
   if(typeof DaoguiAudio !== 'undefined') DaoguiAudio.playEventSound();
 
   if(autoMode) {
-    // Auto mode: pick random choice
-    var c = validChoices[Math.floor(Math.random()*validChoices.length)];
+    // Auto mode: pick random choice from those with met requirements
+    var autoChoices = validChoices.filter(function(c){ return checkChoiceReq(c).met; });
+    if(!autoChoices.length) autoChoices = validChoices; // fallback if all locked
+    var c = autoChoices[Math.floor(Math.random()*autoChoices.length)];
     applyChoice(c);
     return;
   }
   document.getElementById('event-text').innerHTML = '<strong>【第'+gameState.age+'年】</strong> '+event.text;
   document.getElementById('choices').innerHTML = validChoices.map(function(c,i){
-    return '<button class="choice-btn" onclick="handleChoice('+i+')" data-idx="'+i+'">'+c.text+'</button>';
+    var reqResult = checkChoiceReq(c);
+    if(reqResult.met) {
+      return '<button class="choice-btn" onclick="handleChoice('+i+')" data-idx="'+i+'">'+c.text+'</button>';
+    } else {
+      return '<button class="choice-btn locked" data-idx="'+i+'">'+c.text+'<span class="choice-req">'+reqResult.reason+'</span></button>';
+    }
   }).join('');
   // Store choices for handler
   window._currentChoices = validChoices;
@@ -344,18 +536,63 @@ function handleChoice(idx) {
 function applyChoice(c) {
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
   var oldFaction = gameState.faction;
-  
+
   if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
   if(c.effect.cultivation) gameState.cultivation += c.effect.cultivation;
   if(c.effect.wealth) gameState.wealth += c.effect.wealth;
   if(c.effect.connections) gameState.connections += c.effect.connections;
-  if(c.effect.faction) {
+  if(c.effect.comprehension) gameState.comprehension = Math.max(0,Math.min(100,gameState.comprehension+c.effect.comprehension));
+  if(c.effect.qiyun) gameState.qiyun = Math.max(-100,Math.min(100,gameState.qiyun+c.effect.qiyun));
+  if(c.effect.karma) gameState.karma = Math.max(-100,Math.min(100,gameState.karma+c.effect.karma));
+  if(c.effect.constitution) gameState.constitution = Math.max(0,Math.min(100,gameState.constitution+c.effect.constitution));
+
+  // === FACTION JOIN LOGIC (one faction only, betrayal mechanics) ===
+  if(c.factionJoin) {
+    var targetFaction = c.factionJoin;
+    var factionData = FACTIONS[targetFaction];
+    // Check requirements
+    var canJoin = true;
+    var rejectReason = '';
+    if(factionData && factionData.requirement) {
+      var req = factionData.requirement;
+      if(req.cultivation && gameState.cultivation < req.cultivation) { canJoin = false; rejectReason = '修为不足'; }
+      if(req.connections && gameState.connections < req.connections) { canJoin = false; rejectReason = '人脉不足'; }
+      if(req.constitution && gameState.constitution < req.constitution) { canJoin = false; rejectReason = '体魄不足'; }
+      if(req.wealth_max !== undefined && gameState.wealth > req.wealth_max) { canJoin = false; rejectReason = '家资太厚，非贫苦之人'; }
+      if(req.karma_max !== undefined && gameState.karma > req.karma_max) { canJoin = false; rejectReason = '因果太重，不适合此道'; }
+    }
+    if(canJoin) {
+      // If already in a faction, trigger betrayal
+      if(gameState.faction !== 'none') {
+        var oldName = FACTIONS[gameState.faction] ? FACTIONS[gameState.faction].name : '旧门派';
+        addLog('<span class="danger-text">你叛出了' + oldName + '！</span>这将带来严重的后果...');
+        gameState.connections -= 15;
+        gameState.karma -= 15;
+        gameState.qiyun -= 5;
+        if(isXinsu) gameState.sanity = Math.max(0, gameState.sanity - 10);
+        gameState.constitution -= 5;
+        unlockAchieve('betrayer');
+      }
+      gameState.faction = targetFaction;
+      if(!gameState.factionHistory.includes(targetFaction)) gameState.factionHistory.push(targetFaction);
+      if(gameState.factionHistory.length >= 3) unlockAchieve('faction_all');
+      var newName = factionData ? factionData.name : targetFaction;
+      addLog('你加入了<span class="fac">' + newName + '</span>！');
+      // Trigger faction change music
+      if(oldFaction !== targetFaction && typeof DaoguiAudio !== 'undefined') {
+        DaoguiAudio.onFactionChange(targetFaction);
+      }
+    } else {
+      addLog('入门被拒：<span class="danger-text">' + rejectReason + '</span>（' + (factionData ? factionData.requireDesc : '') + '）');
+    }
+  }
+
+  // Direct faction set (for leaving faction via event choices)
+  if(c.effect.faction !== undefined && !c.factionJoin) {
     var newFaction = c.effect.faction;
     gameState.faction = newFaction;
-    if(!gameState.factionHistory.includes(newFaction)) gameState.factionHistory.push(newFaction);
+    if(newFaction !== 'none' && !gameState.factionHistory.includes(newFaction)) gameState.factionHistory.push(newFaction);
     if(gameState.factionHistory.length>=3) unlockAchieve('faction_all');
-    
-    // Trigger faction change music
     if(oldFaction !== newFaction && typeof DaoguiAudio !== 'undefined') {
       DaoguiAudio.onFactionChange(newFaction);
     }
@@ -378,10 +615,17 @@ function applyChoice(c) {
   if(gameState.cultivation>=60) unlockAchieve('reach_jindan');
   if(gameState.cultivation>=300) unlockAchieve('reach_danuo');
   if(gameState.wealth>=200) unlockAchieve('rich');
+  if(gameState.qiyun>=80) unlockAchieve('good_qiyun');
+  if(gameState.qiyun<=-80) unlockAchieve('evil_qiyun');
+  if(gameState.karma>=80) unlockAchieve('good_karma');
+  if(gameState.karma<=-80) unlockAchieve('evil_karma');
+  if(gameState.constitution>=90) unlockAchieve('iron_body');
+  if(gameState.comprehension>=80) unlockAchieve('epiphany');
+  if(gameState.factionHistory.length > 1 && gameState.age >= 50) unlockAchieve('dual_cult_survive');
 
   updateDisplay();
-  var delay = 2000 / speed;
-  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, delay);
+  var delay = SPEED_DELAYS[speed] || 3000;
+  if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
 }
 
 // === DISPLAY ===
@@ -402,7 +646,26 @@ function updateDisplay() {
   document.getElementById('wealth').textContent = gameState.wealth;
   document.getElementById('faction').textContent = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
   document.getElementById('connections').textContent = gameState.connections;
-  document.getElementById('realm').textContent = getRealmName(gameState.cultivation);
+  // New attributes
+  var compEl = document.getElementById('comprehension');
+  if(compEl) compEl.textContent = gameState.comprehension;
+  var qiyunEl = document.getElementById('qiyun');
+  if(qiyunEl) {
+    var qiyunText = gameState.qiyun > 30 ? '旺' : gameState.qiyun < -30 ? '衰' : '平';
+    qiyunEl.textContent = gameState.qiyun + ' (' + qiyunText + ')';
+    qiyunEl.className = 'detail-value' + (gameState.qiyun < -30 ? ' danger' : gameState.qiyun > 30 ? ' good-karma' : '');
+  }
+  var karmaEl = document.getElementById('karma');
+  if(karmaEl) {
+    var karmaText = gameState.karma > 30 ? '善' : gameState.karma < -30 ? '恶' : '中';
+    karmaEl.textContent = gameState.karma + ' (' + karmaText + ')';
+    karmaEl.className = 'detail-value' + (gameState.karma < -30 ? ' danger' : gameState.karma > 30 ? ' good-karma' : '');
+  }
+  var constEl = document.getElementById('constitution');
+  if(constEl) {
+    constEl.textContent = gameState.constitution;
+    constEl.className = 'detail-value' + (gameState.constitution < 20 ? ' danger' : gameState.constitution < 35 ? ' low' : '');
+  }
   document.getElementById('current-location').textContent = gameState.location.name;
   document.getElementById('era-name').textContent = getEraName();
   document.getElementById('total-runs').textContent = gameState.totalRuns;
@@ -473,6 +736,26 @@ function travelTo(locId, cost) {
   if(!gameState.visitedLocations.includes(locId)) gameState.visitedLocations.push(locId);
   if(gameState.visitedLocations.length>=5) unlockAchieve('traveler');
   addLog('你启程前往<span class="loc">'+gameState.location.name+'</span>。');
+
+  // Trigger travel event
+  if(typeof TRAVEL_EVENTS !== 'undefined' && Math.random() < 0.65) {
+    var travelPool = TRAVEL_EVENTS.filter(function(te){
+      if(te.locReq && te.locReq !== locId) return false;
+      if(te.trigger) {
+        if(te.trigger.minAge && gameState.age < te.trigger.minAge) return false;
+        if(te.trigger.cultivation && gameState.cultivation < te.trigger.cultivation) return false;
+      }
+      return true;
+    });
+    if(travelPool.length > 0) {
+      var te = travelPool[Math.floor(Math.random()*travelPool.length)];
+      showEvent(te);
+      updateDisplay();
+      closeTravel();
+      return;
+    }
+  }
+
   updateDisplay();
   closeTravel();
 }
@@ -530,9 +813,27 @@ function gameOver(reason) {
   // Ancient person achievement
   if(gameState.talents.find(function(t){return t.id==='gu_ren';}) && gameState.cultivation>=100) unlockAchieve('ancient_master');
 
+  // New attribute achievements
+  if(gameState.qiyun>=80) unlockAchieve('good_qiyun');
+  if(gameState.qiyun<=-80) unlockAchieve('evil_qiyun');
+  if(gameState.karma>=80) unlockAchieve('good_karma');
+  if(gameState.karma<=-80) unlockAchieve('evil_karma');
+  if(gameState.constitution>=90) unlockAchieve('iron_body');
+  if(gameState.comprehension>=80) unlockAchieve('epiphany');
+  if(gameState.factionHistory.length > 1 && gameState.age >= 50) unlockAchieve('dual_cult_survive');
+  if(gameState.factionHistory.length === 1 && gameState.faction !== 'none') unlockAchieve('loyal');
+  // Karma cycle: started negative, ended positive > 50
+  if(gameState.talents.find(function(t){return t.effect.karma && t.effect.karma < -10;}) && gameState.karma > 50) unlockAchieve('karma_cycle');
+
   gameState.totalRuns++;
   localStorage.setItem('dg_runs', gameState.totalRuns);
   localStorage.setItem('dg_achievements', JSON.stringify(achievements));
+
+  // Multi-run achievements
+  if(gameState.totalRuns >= 3) unlockAchieve('runs_3');
+  if(gameState.totalRuns >= 5) unlockAchieve('runs_5');
+  if(gameState.totalRuns >= 10) unlockAchieve('runs_10');
+  if(gameState.totalRuns >= 20) unlockAchieve('runs_20');
 
   var realm = getRealmName(gameState.cultivation);
   var ending = reason;
@@ -542,12 +843,17 @@ function gameOver(reason) {
 
   showPanel('ending');
   var factionName = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
+  var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
+  var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
   document.getElementById('ending-text').innerHTML =
     '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁</p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +
     '<p>势力: <span style="color:var(--gold)">'+factionName+'</span></p>' +
+    '<p>悟性: <span style="color:var(--gold)">'+gameState.comprehension+'</span> · 因果: <span style="color:var(--gold)">'+gameState.karma+' ('+karmaDesc+')</span></p>' +
+    '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
+    (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 双修之路，九死一生</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';
   renderAchievements();
 }
@@ -557,16 +863,39 @@ function unlockAchieve(id) {
   if(!achievements[id]) {
     achievements[id] = true;
     localStorage.setItem('dg_achievements', JSON.stringify(achievements));
+    // Show popup notification
+    var achData = ACHIEVEMENTS.find(function(a){return a.id===id;});
+    if(achData) showAchievePopup(achData);
   }
+}
+
+function showAchievePopup(achData) {
+  var popup = document.getElementById('achieve-popup');
+  if(!popup) return;
+  popup.querySelector('.achieve-popup-icon').textContent = achData.icon;
+  popup.querySelector('.achieve-popup-name').textContent = achData.name;
+  popup.querySelector('.achieve-popup-desc').textContent = achData.desc;
+  popup.classList.remove('active');
+  void popup.offsetWidth; // force reflow for re-animation
+  popup.classList.add('active');
+  clearTimeout(window._achievePopupTimer);
+  window._achievePopupTimer = setTimeout(function(){ popup.classList.remove('active'); }, 3000);
 }
 
 function renderAchievements() {
   var el = document.getElementById('achieve-display');
   el.innerHTML = ACHIEVEMENTS.map(function(a){
-    return '<div class="achieve-badge '+(achievements[a.id]?'unlocked':'')+'">' +
-      '<div class="achieve-icon">'+a.icon+'</div>' +
-      '<div>'+(achievements[a.id]?a.name:'???')+'</div>' +
-    '</div>';
+    if(achievements[a.id]) {
+      return '<div class="achieve-badge unlocked" title="解锁条件：'+a.desc+'">' +
+        '<div class="achieve-icon">'+a.icon+'</div>' +
+        '<div>'+a.name+'</div>' +
+      '</div>';
+    } else {
+      return '<div class="achieve-badge">' +
+        '<div class="achieve-icon">'+a.icon+'</div>' +
+        '<div>???</div>' +
+      '</div>';
+    }
   }).join('');
 }
 
@@ -578,11 +907,71 @@ function restart() {
   document.body.style.filter = '';
   document.getElementById('btn-auto').classList.remove('active');
   document.getElementById('btn-auto').textContent = '自动轮回';
+
+  // Store last life's talents for carry-over
+  gameState.lastLifeTalents = gameState.talents.slice();
+  keptTalent = null;
+
+  // If we have last life talents, show talent carry-over screen
+  if(gameState.lastLifeTalents.length > 0 && gameState.totalRuns > 0) {
+    showTalentCarryOver();
+  } else {
+    showPanel('setup');
+    initTalents();
+  }
+}
+
+function showTalentCarryOver() {
   showPanel('setup');
+  var grid = document.getElementById('talent-options');
+  grid.innerHTML = '<div style="text-align:center;color:var(--gold);margin-bottom:16px;font-size:1.1em;">前世天赋 — 选择一个保留至来世（或跳过）</div>' +
+    gameState.lastLifeTalents.map(function(t,i){return (
+      '<div class="talent-card rarity-'+t.rarity+'" onclick="keepTalent('+i+')" id="keep-talent-'+i+'">' +
+        '<div class="talent-name">'+t.name+'</div>' +
+        '<div class="talent-desc">'+t.desc+'</div>' +
+        '<div class="talent-hint">'+(t.hint||'')+'</div>' +
+        '<span class="talent-tag">'+(RARITY_NAMES[t.rarity]||'凡品')+'</span>' +
+      '</div>');
+    }).join('') +
+    '<button class="btn btn-secondary" onclick="skipKeepTalent()" style="margin-top:14px;">不保留，全部重来</button>';
+  document.getElementById('selected-count').textContent = '0';
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-start').style.display = 'none';
+}
+
+function keepTalent(idx) {
+  keptTalent = gameState.lastLifeTalents[idx];
+  unlockAchieve('rebirth_talent');
+  // Now show normal talent selection but with max 3 selections (1 kept + 3 drawn = 4 total)
+  initTalentsWithKept();
+}
+
+function skipKeepTalent() {
+  keptTalent = null;
+  document.getElementById('btn-start').style.display = '';
   initTalents();
 }
 
+function initTalentsWithKept() {
+  availableTalents = drawTalents().filter(function(t){return t.id !== keptTalent.id;}).slice(0,10);
+  gameState.talents = [];
+  var grid = document.getElementById('talent-options');
+  grid.innerHTML = '<div style="text-align:center;color:var(--gold);margin-bottom:10px;font-size:0.95em;">保留天赋: <span style="color:var(--crimson)">'+keptTalent.name+'</span> — 再选三个</div>' +
+    availableTalents.map(function(t,i){return (
+      '<div class="talent-card rarity-'+t.rarity+'" onclick="selectTalent('+i+')" id="talent-'+i+'">' +
+        '<div class="talent-name">'+t.name+'</div>' +
+        '<div class="talent-desc">'+t.desc+'</div>' +
+        '<div class="talent-hint">'+(t.hint||'')+'</div>' +
+        '<span class="talent-tag">'+(RARITY_NAMES[t.rarity]||'凡品')+'</span>' +
+      '</div>');
+    }).join('');
+  document.getElementById('btn-start').style.display = '';
+  updateSelectCount();
+}
+
 function restartAuto() {
+  gameState.lastLifeTalents = gameState.talents.slice();
+  keptTalent = null;
   gameState.totalRuns++;
   autoMode = true;
   document.getElementById('btn-auto').classList.add('active');
