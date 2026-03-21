@@ -78,11 +78,10 @@
       <button class="btn btn-secondary" onclick="openTravel()" id="btn-travel">游历</button>
       <button class="btn btn-auto" onclick="toggleAuto()" id="btn-auto">自动轮回</button>
     </div>
-    <div class="control-bar">
-      <button class="btn-speed" onclick="setSpeed(1)" id="speed-1">1x</button>
-      <button class="btn-speed active" onclick="setSpeed(2)" id="speed-2">2x</button>
-      <button class="btn-speed" onclick="setSpeed(5)" id="speed-5">5x</button>
-      <button class="btn-speed" onclick="setSpeed(10)" id="speed-10">10x</button>
+    <div class="control-bar" style="justify-content:center;gap:20px;">
+      <span style="color:var(--text-dim);font-size:0.85em;">速度:</span>
+      <input type="range" min="1" max="10" value="2" id="speed-slider" onchange="setSpeedFromSlider(this.value)" style="width:120px;">
+      <span id="speed-label" style="color:var(--gold);min-width:30px;">2x</span>
     </div>
 
     <!-- Event -->

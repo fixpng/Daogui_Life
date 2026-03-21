@@ -248,7 +248,9 @@ function nextYear() {
   updateAudioState();
 
   updateDisplay();
-  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, 1000/speed);
+  // x1 = 2秒, x2 = 1秒, x10 = 0.2秒
+  var delay = 2000 / speed;
+  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, delay);
 }
 
 // === AUDIO STATE UPDATE ===
@@ -378,7 +380,8 @@ function applyChoice(c) {
   if(gameState.wealth>=200) unlockAchieve('rich');
 
   updateDisplay();
-  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, 1000/speed);
+  var delay = 2000 / speed;
+  if(autoMode && gameState.alive) autoTimer = setTimeout(nextYear, delay);
 }
 
 // === DISPLAY ===
@@ -488,10 +491,14 @@ function toggleAuto() {
   else clearTimeout(autoTimer);
 }
 
+function setSpeedFromSlider(val) {
+  speed = parseInt(val);
+  document.getElementById('speed-label').textContent = speed + 'x';
+}
+
+// Legacy function for compatibility
 function setSpeed(s) {
   speed = s;
-  document.querySelectorAll('.btn-speed').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('speed-'+s).classList.add('active');
 }
 
 // === GAME OVER ===
