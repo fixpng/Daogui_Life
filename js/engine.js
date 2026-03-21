@@ -272,6 +272,13 @@ function nextYear() {
   // Ancient person cultivation bonus
   if(gameState.talents.find(function(t){return t.id==='gu_ren';}) && gameState.year < -100) cultGain += 2; // 远古灵气充沛
 
+  // 散修 bonus: no faction but has experience, self-reliance
+  var isSanxiu = gameState.faction === 'none' && gameState.factionHistory.length > 0;
+  if(isSanxiu) {
+    cultGain += 1; // 散修自悟
+    if(Math.random() < 0.1) gameState.comprehension += 1; // 散修更善于独立思考
+  }
+
   gameState.cultivation += cultGain;
 
   // Bad talent hidden positive effects (small yearly bonuses)
@@ -412,6 +419,17 @@ function nextYear() {
   // Add dual cultivation events (if player has betrayed a faction)
   if(typeof DUAL_CULTIVATION_EVENTS !== 'undefined' && gameState.factionHistory.length > 1 && gameState.faction !== 'none') {
     eventPool.push.apply(eventPool, DUAL_CULTIVATION_EVENTS);
+  }
+
+  // Add 散修 events (left faction, currently unaffiliated)
+  if(typeof SANXIU_EVENTS !== 'undefined' && gameState.faction === 'none' && gameState.factionHistory.length > 0) {
+    SANXIU_EVENTS.forEach(function(se){
+      if(se.trigger) {
+        if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
+        if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
+      }
+      eventPool.push(se);
+    });
   }
 
   // Trigger event or quiet year
@@ -690,10 +708,16 @@ function applyChoice(c) {
   // Direct faction set (for leaving faction via event choices)
   if(c.effect.faction !== undefined && !c.factionJoin) {
     var newFaction = c.effect.faction;
+    var leavingFaction = gameState.faction;
     gameState.faction = newFaction;
     if(newFaction !== 'none' && !gameState.factionHistory.includes(newFaction)) gameState.factionHistory.push(newFaction);
     if(gameState.factionHistory.length>=3) unlockAchieve('faction_all');
-    if(oldFaction !== newFaction && typeof DaoguiAudio !== 'undefined') {
+    // If leaving a faction to become 散修
+    if(newFaction === 'none' && leavingFaction !== 'none' && gameState.factionHistory.length > 0) {
+      addLog('你脱离了门派，成为了<span class="fac">散修</span>——从此天高地阔，孤身一人。');
+      unlockAchieve('sanxiu_path');
+    }
+    if(leavingFaction !== newFaction && typeof DaoguiAudio !== 'undefined') {
       DaoguiAudio.onFactionChange(newFaction);
     }
   }
@@ -745,7 +769,14 @@ function updateDisplay() {
   }
   document.getElementById('cultivation').textContent = getRealmName(gameState.cultivation);
   document.getElementById('wealth').textContent = gameState.wealth;
-  document.getElementById('faction').textContent = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
+  // Faction display
+  var factionDisplay = '无';
+  if(gameState.faction !== 'none' && FACTIONS[gameState.faction]) {
+    factionDisplay = FACTIONS[gameState.faction].name;
+  } else if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
+    factionDisplay = '散修';
+  }
+  document.getElementById('faction').textContent = factionDisplay;
   document.getElementById('connections').textContent = gameState.connections;
   // Gender display
   var genderEl = document.getElementById('gender');
@@ -938,6 +969,12 @@ function gameOver(reason) {
   if(gameState.comprehension>=80) unlockAchieve('epiphany');
   if(gameState.factionHistory.length > 1 && gameState.age >= 50) unlockAchieve('dual_cult_survive');
   if(gameState.factionHistory.length === 1 && gameState.faction !== 'none') unlockAchieve('loyal');
+  // 散修 achievements
+  if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
+    unlockAchieve('sanxiu_path');
+    if(gameState.cultivation >= 100) unlockAchieve('sanxiu_master');
+    if(gameState.factionHistory.length >= 3) unlockAchieve('sanxiu_all');
+  }
   // Karma cycle: started negative, ended positive > 50
   if(gameState.talents.find(function(t){return t.effect.karma && t.effect.karma < -10;}) && gameState.karma > 50) unlockAchieve('karma_cycle');
 
@@ -955,10 +992,16 @@ function gameOver(reason) {
   var ending = reason;
   if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
   else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
+  else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
   else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
 
   showPanel('ending');
-  var factionName = (FACTIONS[gameState.faction] && FACTIONS[gameState.faction].name) || '无';
+  var factionName = '无';
+  if(gameState.faction !== 'none' && FACTIONS[gameState.faction]) {
+    factionName = FACTIONS[gameState.faction].name;
+  } else if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
+    factionName = '散修';
+  }
   var genderName = gameState.gender === 'male' ? '男' : '女';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
@@ -971,6 +1014,7 @@ function gameOver(reason) {
     '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
     (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 双修之路，九死一生</p>' : '') +
+    (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';
   renderAchievements();
 }

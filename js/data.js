@@ -136,6 +136,10 @@ const ACHIEVEMENTS = [
   {id:'runs_10',name:'十世修行',desc:'完成10次轮回',icon:'♾'},
   {id:'runs_20',name:'永恒轮回',desc:'完成20次轮回',icon:'🌀'},
   {id:'rebirth_talent',name:'重启人生',desc:'重生时保留了前世天赋',icon:'🌅'},
+  // === 散修 ACHIEVEMENTS ===
+  {id:'sanxiu_path',name:'散修之路',desc:'脱离门派成为散修',icon:'🌾'},
+  {id:'sanxiu_master',name:'独步天下',desc:'以散修之身达到元婴境界',icon:'🏔'},
+  {id:'sanxiu_all',name:'百家皆弃',desc:'散修且曾加入过3个以上门派',icon:'🍃'},
 ];
 
 // === EVENTS ===
@@ -316,6 +320,10 @@ const ADULT_EVENTS = [
     {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'aojing'}},
     {text:'默默听完',effect:{comprehension:5},log:'有时候忍耐比冲动更需要勇气'},
     {text:'喝完酒走人',effect:{sanity:3},log:'和自己无关的事不必在意'}]},
+  {text:'你对门派的<span class="mys">种种规矩</span>越来越感到束缚，心中萌生了离去之意。',choices:[
+    {text:'脱离门派，成为散修',effect:{faction:'none',connections:-15,cultivation:5,comprehension:10},log:'你递上辞别书，从此天高海阔'},
+    {text:'留下来',effect:{connections:5},log:'有所归属也不是坏事'},
+    {text:'找掌门谈谈',effect:{connections:3,comprehension:3},log:'掌门说了一番话，你暂时打消了念头'}]},
   // === COMBAT SCALING EVENTS ===
   {text:'一伙<span class="danger-text">江湖悍匪</span>在大路上设了路障，手持利刃凶神恶煞。',choices:[
     {text:'正面突破',effect:{cultivation:8,constitution:5,qiyun:5},log:'你杀出一条血路！',combat:50},
@@ -606,6 +614,53 @@ const DUAL_CULTIVATION_EVENTS = [
     {text:'将一方驱逐',effect:{cultivation:-15,sanity:10},log:'你彻底与一种道诀别了'}]},
 ];
 
+// === 散修 EVENTS (triggered when player is unaffiliated but has faction history) ===
+const SANXIU_EVENTS = [
+  {text:'你在山间独自修炼，没有门规束缚，反而悟出了<span class="mys">一丝独特的道意</span>。',choices:[
+    {text:'深入参悟',effect:{cultivation:15,comprehension:10},log:'散修之道，在于自由'},
+    {text:'记录下来',effect:{comprehension:8,wealth:5},log:'你将心得写成手札，或许日后能卖个好价钱'}]},
+  {text:'一个<span class="npc">旧日同门</span>在街上认出了你，他的眼神复杂。',choices:[
+    {text:'叙旧',effect:{connections:10,sanity:-5},log:'你们聊了一夜，他说门里的人还记得你'},
+    {text:'假装不认识',effect:{connections:-5,sanity:3},log:'他叹了口气走了，你装作若无其事'},
+    {text:'请他喝酒',effect:{connections:15,wealth:-10,qiyun:3},log:'酒过三巡，他偷偷告诉你门里的秘辛'}]},
+  {text:'江湖上有人传言你是<span class="danger-text">叛徒散修</span>，不少人对你虎视眈眈。',choices:[
+    {text:'用实力说话',effect:{cultivation:10,connections:5,constitution:3},log:'你当众展示修为，质疑的声音小了一些',combat:45},
+    {text:'隐姓埋名',effect:{connections:-10,sanity:5},log:'你换了个身份，在新的地方重新开始'},
+    {text:'无所谓',effect:{comprehension:5},log:'清者自清，不必在意闲言碎语'}]},
+  {text:'你遇到一群<span class="npc">同为散修</span>的修士，他们提议结成<span class="fac">散修联盟</span>。',
+    trigger:{minAge:20},choices:[
+    {text:'加入联盟',effect:{connections:20,cultivation:5,wealth:10},log:'散修之间互通有无，你得到了不少帮助'},
+    {text:'婉拒',effect:{comprehension:5},log:'你习惯了独行，不愿再受任何约束'},
+    {text:'暗中观察',effect:{connections:5,comprehension:3},log:'你没有表态，但记住了几个有实力的人'}]},
+  {text:'你在集市上看到旧门派的<span class="itm">秘传功法</span>被人当废纸卖。',choices:[
+    {text:'买下来',effect:{wealth:-15,cultivation:20,comprehension:8},log:'虽然叛出了门派，但这功法你再熟悉不过'},
+    {text:'通知旧门派',effect:{connections:10,karma:10,qiyun:5},log:'旧门派的人对你态度好了一些'},
+    {text:'不管闲事',effect:{},log:'已经不是你的门派了'}]},
+  {text:'一位<span class="npc">年迈散修</span>临死前拉住你说："散修的路，走到最后的都是强者。"',
+    trigger:{minAge:25},choices:[
+    {text:'接受他的遗物',effect:{cultivation:15,comprehension:10,wealth:10},log:'老散修将毕生收藏留给了你'},
+    {text:'为他安葬',effect:{karma:10,qiyun:8},log:'你在路边为他立了一座坟'}]},
+  {text:'你发现自己离开门派后，修炼速度反而<span class="mys">变快了</span>——没有门规的限制，天地万物皆可为师。',
+    trigger:{cultivation:30},choices:[
+    {text:'博采众长',effect:{cultivation:20,comprehension:15},log:'你开始融合从各门派学到的东西，创出自己的道'},
+    {text:'返璞归真',effect:{cultivation:10,sanity:10,constitution:5},log:'你放下了所有门派的痕迹，从头修自己的道'}]},
+  {text:'有门派想<span class="npc">招揽你</span>回去，开出了优厚的条件。',
+    trigger:{minAge:20,cultivation:40},choices:[
+    {text:'考虑一下',effect:{connections:10,wealth:20},log:'你没有答应，但拿了他们的好处'},
+    {text:'断然拒绝',effect:{connections:-5,comprehension:8,qiyun:5},log:'散修之路，不回头'},
+    {text:'漫天要价',effect:{wealth:40,connections:-10,karma:-5},log:'你狠狠敲了他们一笔'}]},
+  {text:'你在野外遭遇了<span class="danger-text">一群门派弟子</span>围堵，他们说散修不配在此修炼。',
+    trigger:{minAge:18},choices:[
+    {text:'以一敌多',effect:{cultivation:12,constitution:5,connections:-5},log:'你打得他们落花流水！',combat:50},
+    {text:'据理力争',effect:{connections:5,comprehension:5},log:'你说得他们哑口无言'},
+    {text:'另寻他处',effect:{sanity:-3},log:'好汉不吃眼前亏'}]},
+  {text:'你在<span class="loc">鬼市</span>遇到一位<span class="npc">神秘散修</span>，他号称掌握了<span class="mys">融合百家之法</span>。',
+    trigger:{minAge:25,cultivation:50},choices:[
+    {text:'请教融合之法',effect:{cultivation:25,comprehension:15,sanity:-10},log:'那方法极为凶险，但你隐约看到了一条全新的道路'},
+    {text:'交流心得',effect:{cultivation:10,comprehension:10,connections:10},log:'你们互相印证，都有所收获'},
+    {text:'不信他',effect:{sanity:5},log:'江湖骗子太多，还是靠自己'}]},
+];
+
 // === TALENT CONFLICTS (bidirectional) ===
 const TALENT_CONFLICTS = {
   jian_kang: ['ti_ruo','ji_bing','bai_bing'],
@@ -643,7 +698,7 @@ const STAT_TOOLTIPS = {
   qiyun: '气运：气运值(-100~100)。正值为善运，负值为厄运。极端值触发气运事件，影响结局。',
   karma: '因果：因果值(-100~100)。善行增因果，恶行减因果。极端值触发因果事件。影响门派准入和特殊结局。',
   constitution: '体魄：身体强度(0-100)。50岁后每年自然衰退。降至0则肉身崩溃而死。部分门派入门有体魄要求。',
-  faction: '当前所属势力。只能加入一个门派，叛出有严重代价。双修会导致功法冲突风险。',
+  faction: '当前所属势力。只能加入一个门派，叛出有严重代价。脱离门派后成为散修，散修无门派加成但自由度高，有独特机遇。',
 };
 
 // === KARMA EVENTS (triggered by karma thresholds) ===
