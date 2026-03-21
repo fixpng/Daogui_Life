@@ -270,16 +270,16 @@ const ACHIEVEMENTS = [
 // === EVENTS ===
 const CHILDHOOD_EVENTS = [
   {text:'你在村口玩耍，<span class="npc">王大娘</span>给了你一块饴糖。',choices:[
-    {text:'吃掉',effect:{sanity:5},log:'糖很甜，这是童年为数不多的甜'},{text:'留给父母',effect:{connections:5,qiyun:3,karma:3},log:'父母夸你孝顺'}]},
+    {text:'吃掉',effect:{sanity:5},log:'糖很甜，这是童年为数不多的甜'},{text:'留着慢慢吃',effect:{connections:3,qiyun:3},log:'你学会了珍惜'}]},
   {text:'你突然<span class="danger-text">发起高烧</span>，烧得神志不清。',choices:[
     {text:'找郎中',effect:{wealth:-10},log:'药到病除'},{text:'硬扛过去',effect:{sanity:-10,constitution:-3},log:'落下了病根'}]},
   {text:'<span class="npc">村里的孩子们</span>围着你，推搡嘲弄。',choices:[
     {text:'告诉长辈',effect:{connections:5},log:'大人出面教训了他们'},{text:'默默忍受',effect:{sanity:-5,comprehension:2},log:'从此变得沉默寡言'}]},
   {text:'深夜，你看到窗外有一道<span class="mys">模糊的人影</span>站在月光里。',choices:[
     {text:'蒙上被子',effect:{sanity:-5},log:'一夜未眠'},{text:'走出去看',effect:{sanity:-10,cultivation:3,comprehension:3},log:'什么都没有...真的什么都没有吗？'}]},
-  {text:'<span class="npc">父亲</span>带你去镇上赶集，你看到一个<span class="npc">算命先生</span>。',choices:[
+  {text:'<span class="npc">父亲</span>带你去镇上赶集，你看到一个<span class="npc">算命先生</span>。',noTalent:'wu_qin',choices:[
     {text:'让他算一卦',effect:{cultivation:3,wealth:-5,comprehension:2},log:'他说你命格奇特'},{text:'不信这个',effect:{sanity:3},log:'理性是最好的护盾'}]},
-  {text:'你帮<span class="npc">母亲</span>在田里干活，累得满头大汗。',choices:[
+  {text:'你帮<span class="npc">母亲</span>在田里干活，累得满头大汗。',noTalent:'wu_qin',choices:[
     {text:'坚持干完',effect:{connections:5,cultivation:2,constitution:2},log:'母亲很欣慰'},{text:'偷懒跑去玩',effect:{connections:-3},log:'被父亲训斥了一顿'}]},
   {text:'村里来了一队<span class="fac">道士</span>，在祠堂里做法事。',choices:[
     {text:'偷偷观看',effect:{cultivation:5,comprehension:3},log:'那些符箓和咒语深深印入脑海'},{text:'害怕跑开',effect:{sanity:3},log:'离那些怪事远一点'}]},
@@ -287,17 +287,27 @@ const CHILDHOOD_EVENTS = [
     {text:'假装没听到',effect:{sanity:-3},log:'那声音在梦里反复出现'},{text:'和小伙伴去探险',effect:{sanity:-8,cultivation:5,constitution:2},log:'在山洞里发现了奇怪的符文'}]},
   {text:'你<span class="danger-text">饿了好几天</span>，肚子咕咕叫。',choices:[
     {text:'忍着',effect:{sanity:-5,constitution:-2},log:'饥饿让人坚强'},{text:'去镇上讨饭',effect:{connections:-5,wealth:5,qiyun:-2},log:'学会了低头'}]},
-  {text:'过年了，<span class="npc">父母</span>给你做了新衣裳。',choices:[
+  {text:'过年了，<span class="npc">父母</span>给你做了新衣裳。',noTalent:'wu_qin',choices:[
     {text:'开心地穿上',effect:{sanity:10,qiyun:2},log:'这是最快乐的一天'},{text:'想着村外的世界',effect:{cultivation:2,comprehension:2},log:'你心里藏着远方'}]},
   {text:'你在河边洗衣服，看到水中倒映的<span class="mys">不是自己的脸</span>。',choices:[
     {text:'揉揉眼睛再看',effect:{sanity:-8},log:'再看时一切正常...大概是错觉'},{text:'告诉大人',effect:{connections:-3,sanity:3},log:'没人相信你'}]},
   {text:'一只<span class="mys">黑猫</span>每天跟着你，村里人说它不吉利。',choices:[
     {text:'收养它',effect:{connections:-5,sanity:5,qiyun:5},log:'它成了你唯一的伙伴'},{text:'赶走它',effect:{sanity:-3,qiyun:-3},log:'它临走前回头看了你一眼'}]},
+  // === 孤儿专属童年事件 ===
+  {text:'你又饿了一整天。<span class="npc">收留你的老人</span>也揭不开锅了，你决定自己想办法。',check:'wu_qin',choices:[
+    {text:'去翻别人家的垃圾',effect:{wealth:3,connections:-3,sanity:-3},log:'你找到了半块馒头，狼吞虎咽'},
+    {text:'去河边抓鱼',effect:{constitution:3,cultivation:2},log:'你抓到了两条小鱼，勉强填了肚子'}]},
+  {text:'其他孩子欺负你："<span class="danger-text">没爹没娘的野种！</span>"为首的胖子把你推倒在泥地里。',check:'wu_qin',choices:[
+    {text:'咬牙站起来',effect:{constitution:3,sanity:-5,qiyun:3},log:'你擦掉血，一言不发地走了——总有一天你会强大到没人敢欺负'},
+    {text:'反击',effect:{connections:-5,constitution:2,cultivation:2},log:'你被打了一顿，但胖子的鼻子也流血了'}]},
+  {text:'下雨了，你没有地方住。一座<span class="loc">破庙</span>成了你今晚的栖身之所。',check:'wu_qin',choices:[
+    {text:'在佛像下蜷缩入睡',effect:{sanity:-5,cultivation:3},log:'你梦到了一些奇怪的画面——金光、莲花、还有一座倒悬的城'},
+    {text:'生一堆火取暖',effect:{sanity:3,constitution:2},log:'火光照亮了破庙，你觉得不那么害怕了'}]},
   // === 清风观相关：被丹阳子拐走 ===
-  {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，说要收<span class="mys">有仙缘的孩子</span>去<span class="loc">清风观</span>修行。你的父母半信半疑。',
+  {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，说要收<span class="mys">有仙缘的孩子</span>去<span class="loc">清风观</span>修行。',
     choices:[
     {text:'跟着道长走',effect:{cultivation:8,sanity:-15,constitution:-5},log:'你被带到了清风观，那里有很多和你一样的孩子...但你逐渐发现他们都是"药引子"',visit:'qing_feng'},
-    {text:'父母拒绝了',effect:{sanity:3,qiyun:5},log:'父亲说不认识的人不能跟着走，你留了下来'}]},
+    {text:'没有跟去',effect:{sanity:3,qiyun:5},log:'你留了下来'}]},
   // === 出生地相关童年事件 ===
   {text:'<span class="loc">赵家村</span>的老人们说，村后那口<span class="mys">古井</span>里住着一位井仙，每逢旱季会显灵。今年大旱，全村人跪在井边。',
     locReq:'zhao_cun',choices:[
@@ -1704,7 +1714,7 @@ const LOCAL_STORIES = [
     locReq:'zhao_cun',trigger:{minAge:14},choices:[
     {text:'坚决不开门',effect:{sanity:-8,comprehension:5},log:'叫门声持续了一整夜，天亮后门口只有一排不属于人类的脚印'},
     {text:'隔着门问它是谁',effect:{sanity:-12,comprehension:8},log:'声音顿了一下，然后用你自己的声音说了一句："我就是你啊。"'},
-    {text:'从窗户偷看',effect:{sanity:-15,cultivation:5,comprehension:5},log:'你看到门外站着一个<span class="danger-text">没有脸的人形</span>——它用你母亲的声音在喊你的名字'}]},
+    {text:'从窗户偷看',effect:{sanity:-15,cultivation:5,comprehension:5},log:'你看到门外站着一个<span class="danger-text">没有脸的人形</span>——它用你熟悉的声音在喊你的名字'}]},
 
   // --- 鲁城 邪祟 ---
   {text:'<span class="loc">鲁城</span>西巷新开了一家包子铺，生意兴隆。但有人注意到——自从这家铺子开张后，<span class="danger-text">城里失踪的人越来越多</span>了。',

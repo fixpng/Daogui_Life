@@ -275,15 +275,21 @@ body::after {
 .btn-secondary:hover {
   background: linear-gradient(180deg, rgba(139,0,0,0.5), rgba(107,0,0,0.5));
 }
-.btn-auto {
-  background: linear-gradient(180deg, #2a4a2a, #1a3a1a);
-  border-color: rgba(74,122,58,0.4);
+.btn-auto, .btn-pause {
+  background: rgba(30,30,30,0.8);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 0.85em;
+  padding: 6px 14px;
+  min-width: 70px;
+  flex: 0 0 auto;
 }
-.btn-auto:hover { background: linear-gradient(180deg, #3a5a3a, #2a4a2a); }
-.btn-auto.active {
-  background: linear-gradient(180deg, var(--crimson), var(--deep-crimson));
-  border-color: var(--gold-dim);
-  animation: autoPulse 2s ease-in-out infinite;
+.btn-auto:hover, .btn-pause:hover { background: rgba(50,50,50,0.8); border-color: var(--gold-dim); color: var(--text); }
+.btn-auto.active, .btn-pause.active {
+  background: rgba(40,20,20,0.8);
+  border-color: rgba(139,0,0,0.5);
+  color: var(--crimson);
+  animation: none;
 }
 @keyframes autoPulse {
   0%, 100% { box-shadow: 0 0 10px rgba(139,0,0,0.3); }
@@ -313,6 +319,63 @@ body::after {
   flex-wrap: wrap;
 }
 .control-bar .btn { flex: 1; min-width: 100px; }
+
+/* Playback bar: pause + speed on one line */
+.playback-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: nowrap;
+}
+.playback-bar .btn { flex: 0 0 auto; min-width: auto; }
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  background: rgba(20,15,10,0.6);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 5px 12px;
+}
+.speed-control input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  background: linear-gradient(90deg, var(--border), rgba(139,0,0,0.4));
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.speed-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--crimson);
+  border: 2px solid var(--gold-dim);
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(139,0,0,0.4);
+}
+.speed-control input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--crimson);
+  border: 2px solid var(--gold-dim);
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(139,0,0,0.4);
+}
+.speed-control #speed-label {
+  color: var(--gold-dim);
+  font-size: 0.82em;
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+}
 
 /* === TALENT GRID === */
 .talent-grid {

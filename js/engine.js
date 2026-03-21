@@ -120,7 +120,10 @@ function startGame() {
     if(t.effect.constitution) gameState.constitution += t.effect.constitution;
   });
   gameState.sanity = gameState.baseSanity;
-  gameState.location = LOCATIONS[Math.floor(Math.random()*LOCATIONS.length)];
+  // Filter out locations that can't be birthplaces
+  var invalidBirths = ['baiyu_jing','xu_kong','gui_shi','tian_chen','qing_feng','an_ci','zheng_de_si','long_min'];
+  var birthLocations = LOCATIONS.filter(function(l){ return invalidBirths.indexOf(l.id) === -1; });
+  gameState.location = birthLocations[Math.floor(Math.random()*birthLocations.length)];
   gameState.wealth += Math.floor(gameState.location.wealth/2);
 
   // Year assignment: ancient person or normal
@@ -449,6 +452,8 @@ function nextYear() {
   eventPool = eventPool.filter(function(ev){
     if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
     if(ev.locReq && !gameState.visitedLocations.includes(ev.locReq)) return false;
+    if(ev.noTalent && gameState.talents.find(function(t){return t.id===ev.noTalent;})) return false;
+    if(ev.check && !gameState.talents.find(function(t){return t.id===ev.check;})) return false;
     if(ev.trigger) {
       if(ev.trigger.minAge && gameState.age < ev.trigger.minAge) return false;
       if(ev.trigger.maxAge && gameState.age > ev.trigger.maxAge) return false;
@@ -851,21 +856,34 @@ function quietYear() {
     var msgs = ['呱呱坠地，哭声响亮','在襁褓中安睡，偶尔睁开眼看看这个世界'];
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 3) {
-    var msgs = ['学会了走路，摇摇晃晃像只小鸭子','开始牙牙学语，叫出了第一声"娘"','在院子里爬来爬去，对什么都好奇'];
+    var msgs = ['学会了走路，摇摇晃晃像只小鸭子','开始牙牙学语','在院子里爬来爬去，对什么都好奇'];
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 5) {
     var msgs = ['跟着邻家小孩在泥地里打滚','蹲在门口看蚂蚁搬家，一看就是半天','缠着大人讲故事，听到鬼怪的部分既害怕又着迷','学会了数数，能从一数到一百了'];
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 9) {
-    var msgs = ['和小伙伴捉迷藏，躲在草垛里睡着了','帮家里喂鸡，被大公鸡追得满院子跑','偷偷跑去河边摸鱼，被母亲揪着耳朵拎回来','开始在私塾念书，先生夸你记性好','跟着父亲去田里，学会了简单的农活'];
+    var isOrphan = gameState.talents.find(function(t){return t.id==='wu_qin';});
+    var msgs = ['和小伙伴捉迷藏，躲在草垛里睡着了','被大公鸡追得满院子跑','偷偷跑去河边摸鱼','开始在私塾念书，先生夸你记性好'];
+    if(!isOrphan) msgs.push('跟着父亲去田里，学会了简单的农活','被母亲揪着耳朵拎回来');
+    else msgs.push('一个人蹲在墙角发呆，看着别人家的炊烟','又饿了一天，只好去河边摸鱼果腹');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 14) {
-    var msgs = ['帮家里放牛，在山坡上看云','去镇上跑腿买东西，对集市上的杂耍看得入迷','和同龄人比赛爬树，你总是最快的','开始懂事了，知道帮父母分担家务','在私塾里和同窗争论，先生罚你们抄书'];
+    var isOrphan = gameState.talents.find(function(t){return t.id==='wu_qin';});
+    var msgs = ['去镇上跑腿买东西，对集市上的杂耍看得入迷','和同龄人比赛爬树，你总是最快的','在私塾里和同窗争论，先生罚你们抄书'];
+    if(!isOrphan) msgs.push('帮家里放牛，在山坡上看云','开始懂事了，知道帮父母分担家务');
+    else msgs.push('靠打零工勉强度日，比同龄人更早学会了察言观色','独自在山坡上看云，想着自己的未来');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else if(a <= 19) {
-    var msgs = ['开始思考人生的方向','对远方的世界充满了好奇','在田间劳作，感到一丝对未来的迷茫','听老人们讲起修仙的传说，心中若有所动','有时候会独自坐在山头，看日落很久'];
-    if(gameState.gender === 'female') msgs.push('母亲开始教你女红，但你心思不在这上面','镇上的姑娘们叽叽喳喳讨论嫁人的事，你却想着远方');
-    if(gameState.gender === 'male') msgs.push('父亲开始让你独自去镇上办事，你觉得自己长大了','和同龄少年比试武艺，你总是不服输');
+    var isOrphan = gameState.talents.find(function(t){return t.id==='wu_qin';});
+    var msgs = ['开始思考人生的方向','对远方的世界充满了好奇','听老人们讲起修仙的传说，心中若有所动','有时候会独自坐在山头，看日落很久'];
+    if(!isOrphan) {
+      if(gameState.gender === 'female') msgs.push('母亲开始教你女红，但你心思不在这上面');
+      if(gameState.gender === 'male') msgs.push('父亲开始让你独自去镇上办事，你觉得自己长大了');
+    } else {
+      msgs.push('无依无靠反而让你比别人更自由——你开始远行');
+      msgs.push('你比同龄人更早地成熟了，眼神里多了一些沧桑');
+    }
+    msgs.push('和同龄少年比试武艺，你总是不服输','镇上的年轻人在讨论未来，你却想着远方');
     addLog('第'+a+'年：'+msgs[Math.floor(Math.random()*msgs.length)]);
   } else {
     var step = gameState.lastAgeStep || 1;
