@@ -418,6 +418,10 @@ function nextYear() {
   gameState.qiyun = Math.max(-100, Math.min(100, gameState.qiyun));
   gameState.constitution = Math.max(0, Math.min(100, gameState.constitution));
 
+  // Track bingjia blood_warrior achievement
+  if(gameState.faction === 'bingjia' && gameState.constitution < 10) gameState._bingjiaLowConst = true;
+  if(gameState._bingjiaLowConst && gameState.constitution >= 50) unlockAchieve('blood_warrior');
+
   // Dual cultivation risk: if factionHistory > 1 and currently in a faction, risk events
   var dualCultRisk = gameState.factionHistory.length > 1 && gameState.faction !== 'none';
   if(dualCultRisk && Math.random() < 0.15) {
@@ -942,8 +946,10 @@ function applyChoice(c) {
       if(req.cultivation && gameState.cultivation < req.cultivation) { canJoin = false; rejectReason = '修为不足'; }
       if(req.connections && gameState.connections < req.connections) { canJoin = false; rejectReason = '人脉不足'; }
       if(req.constitution && gameState.constitution < req.constitution) { canJoin = false; rejectReason = '体魄不足'; }
+      if(req.comprehension && gameState.comprehension < req.comprehension) { canJoin = false; rejectReason = '悟性不足'; }
       if(req.wealth_max !== undefined && gameState.wealth > req.wealth_max) { canJoin = false; rejectReason = '家资太厚，非贫苦之人'; }
       if(req.karma_max !== undefined && gameState.karma > req.karma_max) { canJoin = false; rejectReason = '因果太重，不适合此道'; }
+      if(req.karma_min !== undefined && gameState.karma < req.karma_min) { canJoin = false; rejectReason = '恶行太多，佛门不收'; }
     }
     if(canJoin) {
       // If already in a faction, trigger betrayal
@@ -1259,6 +1265,14 @@ function gameOver(reason) {
   if(gameState.faction !== 'none' && FACTIONS[gameState.faction] && FACTIONS[gameState.faction].ranks) {
     if((gameState.factionRank || 0) >= FACTIONS[gameState.faction].ranks.length - 1) unlockAchieve('rank_max');
   }
+  // New faction-specific achievements
+  if(gameState.faction === 'luo_jiao' && FACTIONS.luo_jiao && (gameState.factionRank || 0) >= FACTIONS.luo_jiao.ranks.length - 1) unlockAchieve('luo_master');
+  if(gameState.faction === 'nanjiang' && FACTIONS.nanjiang && (gameState.factionRank || 0) >= FACTIONS.nanjiang.ranks.length - 1) unlockAchieve('gu_king');
+  if(gameState.faction === 'bingjia' && FACTIONS.bingjia && (gameState.factionRank || 0) >= FACTIONS.bingjia.ranks.length - 1) unlockAchieve('bingjia_marshal');
+  if(gameState.faction === 'fomen' && FACTIONS.fomen && (gameState.factionRank || 0) >= FACTIONS.fomen.ranks.length - 1) unlockAchieve('fomen_abbot');
+  if(gameState.factionHistory.length >= 5) unlockAchieve('all_factions');
+  if(gameState.faction === 'nanjiang' && gameState.constitution >= 60) unlockAchieve('gu_master_survive');
+  if(gameState.faction === 'fomen' && gameState.karma <= -30) unlockAchieve('buddha_evil');
 
   gameState.totalRuns++;
   localStorage.setItem('dg_runs', gameState.totalRuns);

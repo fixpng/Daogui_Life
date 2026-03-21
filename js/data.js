@@ -136,6 +136,26 @@ const FACTIONS = {
     ranks:['祭品','小巫','大巫','十二大巫','大祭司'],
     rankReqs:[0,35,60,120,250],
     rankAgeReqs:[0,0,20,30,40]},
+  luo_jiao: {name:'罗教', bonus:{cultivation:4,comprehension:5,karma:3}, desc:'以七星铜钱剑为至宝，修行平和内敛。罗教传人精通阵法与驱邪。创始人罗祖以一百八十四枚铜钱编成七星铜钱剑。',
+    requirement:{comprehension:20}, requireDesc:'需悟性20以上',
+    ranks:['居士','道人','真人','掌教'],
+    rankReqs:[0,20,50,100],
+    rankAgeReqs:[0,0,20,30]},
+  nanjiang: {name:'南疆巫族', bonus:{cultivation:6,constitution:3,sanity:-4,karma:-3}, desc:'南疆蛊师一脉，以蛊虫驱使和毒术闻名。南疆地处瘴气之中，巫族世代与毒虫为伴，修行路子与中原截然不同。',
+    requirement:{constitution:25}, requireDesc:'需体魄25以上',
+    ranks:['蛊童','蛊师','大蛊师','巫王'],
+    rankReqs:[0,20,55,120],
+    rankAgeReqs:[0,0,18,30]},
+  bingjia: {name:'兵家', bonus:{cultivation:7,constitution:5,karma:-5,sanity:-3}, desc:'以血修炼的古老传承，兵书为核心法器。修炼者以自身鲜血涂抹兵书获得力量：煞气冲击、扩大体型、血肉不灭则肉身不死。极为暴烈。',
+    requirement:{constitution:35,cultivation:15}, requireDesc:'需体魄35以上且修为锻体以上',
+    ranks:['卒','校','将','元帅'],
+    rankReqs:[0,25,60,150],
+    rankAgeReqs:[0,0,20,35]},
+  fomen: {name:'佛门', bonus:{cultivation:5,karma:5,sanity:3,connections:3}, desc:'正德寺为代表的佛门势力。表面慈悲为怀，内部暗藏诡计。心慧方丈曾以女婴制作"花瓶娃"。修行金刚不坏之法，但代价是放弃七情六欲。',
+    requirement:{karma_min:-10}, requireDesc:'需因果不低于-10（恶人不可入佛门）',
+    ranks:['沙弥','比丘','首座','方丈'],
+    rankReqs:[0,15,45,100],
+    rankAgeReqs:[0,0,16,30]},
 };
 
 const ITEMS = [
@@ -169,6 +189,17 @@ const ITEMS = [
   {id:'zhao_gu_zhi_yin',name:'招魂引',desc:'可召唤亡魂，与鬼脉相合',effect:{cultivation:20,sanity:-15,connections:10}},
   {id:'tian_gou_yan_lei',name:'天狗眼泪',desc:'天狗食日时掉落，可短暂看清天道',effect:{cultivation:25,comprehension:25}},
   {id:'dan_yang_yan_mu',name:'丹阳子遗物',desc:'包含天书石板和遗剑的传承',effect:{cultivation:60,sanity:-20}},
+  // === 新增门派法宝 ===
+  {id:'gu_chong_ping',name:'蛊虫瓶',desc:'南疆蛊师炼制的蛊虫容器，内藏万蛊之王',effect:{cultivation:25,constitution:10,sanity:-15}},
+  {id:'bing_shu',name:'兵书',desc:'兵家至宝，以血为墨方可修炼',effect:{cultivation:35,constitution:15,karma:-15}},
+  {id:'jin_gang_zhu',name:'金刚珠',desc:'佛门至宝，蕴含金刚不坏之力',effect:{cultivation:20,constitution:15,sanity:10}},
+  {id:'luo_pan',name:'罗盘',desc:'罗教传人的寻龙点穴之器',effect:{comprehension:20,cultivation:15,qiyun:5}},
+  {id:'she_dao',name:'赊刀',desc:'监天司赊刀人的佩刀，可斩邪祟',effect:{cultivation:20,sanity:10,connections:5}},
+  {id:'hua_ping_wa',name:'花瓶娃',desc:'正德寺以女婴炼成的邪物，阴气极重',effect:{cultivation:30,sanity:-30,karma:-25}},
+  {id:'wan_du_fan',name:'万毒幡',desc:'南疆巫王的法器，可释放万种毒虫',effect:{cultivation:30,constitution:-10,sanity:-15}},
+  {id:'tong_ling',name:'铜铃',desc:'李火旺的铜铃，轻摇时能安定心神',effect:{sanity:30,cultivation:10}},
+  {id:'zuo_wang_lun',name:'坐忘论',desc:'坐忘道的核心功法秘籍',effect:{cultivation:30,comprehension:15,sanity:-20}},
+  {id:'ci_bei_zhu',name:'慈悲珠',desc:'无生老母慈悲天道的结晶',effect:{karma:20,sanity:15,cultivation:15}},
 ];
 
 const ACHIEVEMENTS = [
@@ -225,6 +256,15 @@ const ACHIEVEMENTS = [
   {id:'rank_max',name:'位极人臣',desc:'在门派中达到最高等级',icon:'👑'},
   {id:'long_life',name:'老而不死',desc:'修为延寿活过150岁',icon:'🐢'},
   {id:'century',name:'百岁人瑞',desc:'活过100岁',icon:'🎂'},
+  // === 新门派成就 ===
+  {id:'luo_master',name:'罗教真传',desc:'在罗教中达到掌教',icon:'🪙'},
+  {id:'gu_king',name:'万蛊之王',desc:'在南疆巫族中达到巫王',icon:'🐛'},
+  {id:'bingjia_marshal',name:'兵家元帅',desc:'在兵家中达到元帅',icon:'🩸'},
+  {id:'fomen_abbot',name:'佛门方丈',desc:'在佛门中达到方丈',icon:'🪷'},
+  {id:'all_factions',name:'百家通',desc:'一生中加入过5个不同门派',icon:'🌐'},
+  {id:'gu_master_survive',name:'百毒不侵',desc:'在南疆巫族修行且体魄不低于60',icon:'🧪'},
+  {id:'blood_warrior',name:'血战不死',desc:'兵家修行者体魄降至10以下后恢复至50以上',icon:'🩹'},
+  {id:'buddha_evil',name:'佛心魔念',desc:'佛门弟子因果降至-30以下',icon:'😈'},
 ];
 
 // === EVENTS ===
@@ -427,6 +467,23 @@ const ADULT_EVENTS = [
     {text:'奋力杀敌',effect:{cultivation:15,connections:10,constitution:5,wealth:15},log:'你在混战中立了大功！',combat:70},
     {text:'保护平民撤退',effect:{karma:15,qiyun:10,connections:10},log:'你救了不少人，百姓感恩戴德'},
     {text:'趁乱逃走',effect:{sanity:-5,karma:-3},log:'战场不是你该来的地方'}]},
+  // === 新门派加入事件 ===
+  {text:'一位<span class="fac">罗教</span>居士在路边摆摊看风水，你上前攀谈。他见你悟性不凡，问你是否愿意拜入<span class="fac">罗教</span>修习阵法与驱邪之术。',choices:[
+    {text:'拜入罗教',effect:{comprehension:15,cultivation:10,connections:10},log:'你成为罗教居士，开始修习平和内敛的罗教之法',factionJoin:'luo_jiao'},
+    {text:'请教一二后离去',effect:{comprehension:8},log:'你学到了一些基础的风水知识'},
+    {text:'不感兴趣',effect:{},log:'看风水这种事太玄了'}]},
+  {text:'你深入<span class="loc">南疆</span>时遭遇瘴气侵体，被一位<span class="fac">南疆巫族</span>的蛊师所救。他说你的体魄很适合修习<span class="mys">蛊术</span>。',choices:[
+    {text:'拜入南疆巫族',effect:{cultivation:15,constitution:5,sanity:-10},log:'你成为蛊童，开始学习与毒虫共处',factionJoin:'nanjiang'},
+    {text:'道谢后离去',effect:{connections:5},log:'南疆的修行路子太诡异了'},
+    {text:'请他教你几手蛊术',effect:{cultivation:8,comprehension:5,sanity:-5},log:'他教了你最基础的驱虫之法'}]},
+  {text:'你在战场废墟中捡到了一页<span class="itm">兵书残页</span>，上面的文字被血浸染。一个<span class="fac">兵家</span>传人出现在你身后："你拿了不该拿的东西。不过…你有兵家的资质。"',choices:[
+    {text:'拜入兵家',effect:{cultivation:15,constitution:5,karma:-5,sanity:-5},log:'你以鲜血在兵书上写下自己的名字，成为兵家之卒',factionJoin:'bingjia'},
+    {text:'交还兵书残页',effect:{connections:5,karma:5},log:'那人点了点头，消失在了战场烟尘中'},
+    {text:'拒绝并保留残页',effect:{cultivation:10,qiyun:-5},log:'你留下了残页，但那人的眼神让你不安'}]},
+  {text:'<span class="loc">正德寺</span>的僧人在路边施粥济民。一位<span class="npc">老僧</span>看到你便说："施主有佛缘，可愿入我<span class="fac">佛门</span>修行？"',choices:[
+    {text:'剃度出家',effect:{cultivation:10,karma:5,sanity:5,connections:5},log:'你在正德寺剃度为沙弥，开始了清修之路',factionJoin:'fomen'},
+    {text:'带发修行',effect:{cultivation:5,comprehension:5},log:'你在寺中修行数日，受益匪浅但未正式出家'},
+    {text:'不入佛门',effect:{},log:'你双手合十谢过老僧'}]},
 ];
 
 const SPECIAL_EVENTS = [
@@ -503,6 +560,37 @@ const SPECIAL_EVENTS = [
     {text:'以身镇压异变',effect:{cultivation:50,constitution:-15,sanity:-20,qiyun:25},log:'你燃烧修为稳住了一方天地！',req:{cultivation:150,constitution:30}},
     {text:'趁机修炼',effect:{cultivation:35,qiyun:-10},log:'乱世中你吸收了大量游离灵气'},
     {text:'保全自身',effect:{sanity:-5},log:'天地异变不是你能管的'}]},
+  // === 新增特殊事件 ===
+  {text:'你在一处偏僻的驿站中遇到了<span class="npc">杨娜</span>——另一位<span class="mys">心素</span>持有者。她正在用一种你看不懂的方式在两个世界之间穿梭。她看到你的一瞬间愣住了："你…也能看到？"',
+    trigger:{minAge:18,maxAge:50,yearMin:5,yearMax:30},choices:[
+    {text:'"我能看到两个世界"',effect:{sanity:-20,cultivation:20,comprehension:15,connections:15},log:'杨娜深深地看着你："我们是同类。但我不会像李火旺那样迷失。"她教了你一种在两界中保持清醒的方法'},
+    {text:'"你是谁？"',effect:{comprehension:10,connections:10},log:'杨娜淡淡一笑："一个清醒的疯子。"她转身消失在虚空中'},
+    {text:'假装看不到她',effect:{sanity:-5},log:'杨娜嗤笑一声："胆小鬼。"说完便消失了'}],check:'xinsu'},
+  {text:'你在一间废弃的老屋中发现了一个<span class="itm">暗格</span>——里面藏着一把<span class="itm">赊刀</span>和大量<span class="fac">监天司</span>的秘密档案。这是某位<span class="npc">赊刀人</span>的藏身处。',
+    trigger:{minAge:16,yearMin:0,yearMax:25},choices:[
+    {text:'仔细翻阅档案',effect:{comprehension:15,cultivation:10,connections:10,sanity:-10},log:'档案中记载着各地邪祟的详细信息和应对之法——其中一些邪祟就在你附近'},
+    {text:'只取赊刀',effect:{cultivation:15,sanity:5},log:'赊刀入手冰凉，刀身上隐约有符文流转',item:'she_dao'},
+    {text:'原封不动离开',effect:{qiyun:5,karma:5},log:'这些东西不该被外人触碰'}]},
+  {text:'夜间你在荒野中看到数十人围成一圈，面戴<span class="itm">傩面</span>，进行着一场<span class="mys">大傩仪式</span>。他们的舞步诡异而庄严，空气中弥漫着烧纸的气味。',
+    trigger:{minAge:20,cultivation:40},choices:[
+    {text:'戴上傩面加入',effect:{cultivation:30,sanity:-25,comprehension:15,qiyun:-10},log:'你戴上面具的瞬间感到人格在分裂——但在疯狂的边缘，你窥见了大傩的力量'},
+    {text:'在暗处观察',effect:{comprehension:10,sanity:-15,cultivation:10},log:'你看到他们的舞步似乎在改变着什么——空间在扭曲，时间在流逝'},
+    {text:'大声喝止',effect:{sanity:-10,connections:-5,constitution:-3},log:'所有傩面同时转向你——那一刻你感到了死亡的注视'}]},
+  {text:'天地间忽然传来一声巨响，你眼前出现了<span class="npc">季灾</span>的幻象——那个曾经是<span class="npc">李火旺</span>的存在。他对你说了一句话："<span class="mys">迷惘即是清醒，清醒即是迷惘。</span>"',
+    trigger:{minAge:25,cultivation:80,yearMin:20,yearMax:45},choices:[
+    {text:'尝试参悟这句话',effect:{cultivation:40,comprehension:25,sanity:-20},log:'你在迷惘与清醒之间反复横跳——最终，你似乎理解了一点点：道，不是确定的答案'},
+    {text:'向季灾行礼',effect:{cultivation:20,sanity:10,qiyun:10},log:'季灾的幻象缓缓消散，但那句话将永远印在你心中'},
+    {text:'恐惧退缩',effect:{sanity:-10},log:'直面司命的压迫感让你双腿发软'}]},
+  {text:'大地震颤，<span class="loc">龙眠泽</span>方向传来龙吟之声——一条<span class="mys">龙脉</span>正在苏醒！龙气冲天而起，方圆百里的修士都感受到了那股秩序之力。',
+    trigger:{minAge:20,cultivation:60,yearMin:15,yearMax:30},choices:[
+    {text:'前往龙眠泽吸收龙气',effect:{cultivation:35,constitution:10,comprehension:10,sanity:-10},log:'龙气入体，你感到自身的秩序在被重塑——这股力量远超你的想象！',req:{constitution:30}},
+    {text:'远远感应龙脉',effect:{cultivation:15,comprehension:10},log:'你在远处感应到了龙脉的脉动，虽然微弱，但足以让你受益匪浅'},
+    {text:'避开龙脉苏醒区域',effect:{sanity:5},log:'龙脉苏醒必引来各方势力争夺，你不想被卷入'}]},
+  {text:'你在路上遇到一位<span class="npc">赊刀人</span>，他递给你一把刀说："此刀赊你，等<span class="mys">天下大乱</span>时来收。"说罢飘然而去。',
+    trigger:{minAge:15,maxAge:40,yearMin:0,yearMax:20},choices:[
+    {text:'接下赊刀',effect:{cultivation:10,qiyun:10,connections:5,sanity:-5},log:'你拿着这把来路不明的刀，心中既忐忑又好奇——天下大乱…是什么时候？',item:'she_dao'},
+    {text:'追问他是何人',effect:{comprehension:8,connections:5},log:'他头也不回地说了三个字："监天司。"'},
+    {text:'拒绝接刀',effect:{sanity:5},log:'无功不受禄，何况是一把来历不明的刀'}]},
 ];
 
 // Faction-specific events
@@ -595,6 +683,70 @@ const FACTION_EVENTS = {
     {text:'法教内部有人试图<span class="danger-text">召唤异界存在</span>，仪式失控。',choices:[
       {text:'协助稳定仪式',effect:{cultivation:30,sanity:-30,comprehension:15,qiyun:-20},log:'那个"东西"看了你一眼...你的灵魂都在颤抖'},
       {text:'趁机破坏仪式',effect:{faction:'none',qiyun:20,sanity:-15,connections:-25},log:'你阻止了一场浩劫，但法教将你视为死敌'}]},
+  ],
+  luo_jiao: [
+    {text:'<span class="fac">罗教</span>长老命你持<span class="itm">七星铜钱剑</span>前往<span class="loc">阴气汇聚之地</span>驱邪。一百八十四枚铜钱叮当作响，邪祟无处遁形。',choices:[
+      {text:'以铜钱剑镇压邪祟',effect:{cultivation:20,sanity:-10,comprehension:8,karma:10},log:'七星铜钱剑大放光芒，邪祟被尽数驱散'},
+      {text:'先布阵再驱邪',effect:{cultivation:15,comprehension:12,sanity:-5},log:'你以罗教阵法困住邪祟，再以铜钱剑逐一斩灭，稳扎稳打'}]},
+    {text:'<span class="fac">罗教</span>与<span class="fac">坐忘道</span>就"道"的本质产生了激烈争论。坐忘道认为"忘却即为道"，而罗教主张"平和守正方为道"。两派弟子剑拔弩张。',choices:[
+      {text:'挺身辩论',effect:{comprehension:15,connections:10,cultivation:5},log:'你引经据典、据理力争，令坐忘道弟子一时语塞'},
+      {text:'建议各退一步',effect:{connections:15,qiyun:5,karma:5},log:'你调和两派矛盾，暂时化解了冲突'},
+      {text:'冷眼旁观',effect:{comprehension:5},log:'门派之争由来已久，你不愿趟这浑水'}]},
+    {text:'你在翻阅古籍时发现了<span class="npc">罗祖</span>留下的一处<span class="loc">秘境入口</span>的线索。传闻秘境中藏有罗祖毕生参悟的<span class="mys">大阵心得</span>。',choices:[
+      {text:'独自前往探索',effect:{cultivation:25,comprehension:15,sanity:-12,constitution:-5},log:'你在秘境中找到了罗祖的阵法手稿，修为与悟性大增！'},
+      {text:'禀告长老共同前往',effect:{connections:15,cultivation:10,comprehension:8},log:'长老带你进入秘境，你在其中收获颇丰，且安全返回'},
+      {text:'封存线索',effect:{karma:5,qiyun:3},log:'时机未到，你将线索妥善保存'}]},
+  ],
+  nanjiang: [
+    {text:'<span class="fac">南疆巫族</span>的长老带你深入<span class="loc">毒沼</span>，让你亲手培育一只新的<span class="itm">蛊虫</span>。百虫争食之中，最强者方可存活。',choices:[
+      {text:'精心培育蛊虫',effect:{cultivation:20,constitution:5,sanity:-10,comprehension:8},log:'你的蛊虫在争斗中脱颖而出，与你心神相连'},
+      {text:'以自身血液喂养',effect:{cultivation:25,constitution:-8,sanity:-15},log:'你以鲜血培育的蛊虫异常凶猛，但你也付出了代价'}]},
+    {text:'你培育的<span class="danger-text">蛊虫突然暴走</span>，疯狂地啃噬你的经脉！这是蛊虫反噬之兆——若不能压制，你将被万蛊吞噬。',choices:[
+      {text:'以巫术强行压制',effect:{cultivation:15,constitution:-10,sanity:-15},log:'你拼尽全力压制了蛊虫，但身体遭受了严重损伤'},
+      {text:'与蛊虫沟通共鸣',effect:{cultivation:20,comprehension:10,sanity:-8},log:'你以心神与蛊虫对话，它终于安静下来——你们之间的契约更深了',req:{comprehension:25}},
+      {text:'放弃这只蛊虫',effect:{cultivation:-10,constitution:5,sanity:5},log:'你忍痛放弃了蛊虫，重新来过'}]},
+    {text:'<span class="fac">南疆巫族</span>长老告诉你，深入<span class="loc">瘴气腹地</span>有一株<span class="itm">千年毒莲</span>，是炼制至上蛊毒的关键材料。但瘴气中潜伏着无数凶险。',choices:[
+      {text:'只身深入瘴气',effect:{cultivation:25,constitution:-10,sanity:-12,comprehension:10},log:'你在瘴气中九死一生，终于找到了千年毒莲！',req:{constitution:30}},
+      {text:'组队前往',effect:{cultivation:15,connections:10,constitution:-5},log:'队友们帮你分担了不少风险，但收获也要分享'},
+      {text:'放弃这次机会',effect:{sanity:5},log:'你不愿拿命去赌'}]},
+    {text:'<span class="fac">南疆巫族</span>内部发生<span class="danger-text">权力争斗</span>——两位大蛊师为了巫王之位各不相让，各自驱使蛊虫大军对峙。',choices:[
+      {text:'支持你的师父',effect:{connections:15,cultivation:10,qiyun:-5,constitution:-3},log:'你在斗争中站队成功，但另一方的人对你恨之入骨'},
+      {text:'趁乱夺权',effect:{cultivation:20,connections:-20,sanity:-10,qiyun:-10},log:'你利用双方混战之际展示了压倒性的蛊术，众人惊惧'},
+      {text:'远离争斗',effect:{connections:-5,sanity:5},log:'你暂时离开部族，等风波平息后再回来'}]},
+  ],
+  bingjia: [
+    {text:'你修炼<span class="fac">兵家</span>之法日久，体内煞气积累到了<span class="danger-text">临界点</span>。血管暴突如蚯蚓，皮肤泛红如烧铁，随时可能爆发。',choices:[
+      {text:'以血涂抹兵书突破',effect:{cultivation:30,constitution:-10,sanity:-15,karma:-10},log:'你割破手掌，将鲜血涂满兵书——煞气冲击之下，你的体型膨胀了一倍！'},
+      {text:'静心调息压制',effect:{cultivation:10,constitution:5,comprehension:8},log:'你勉强压制了煞气，但知道这不是长久之计'}]},
+    {text:'<span class="itm">兵书</span>在你入睡时自行翻开，书页上的文字化为<span class="danger-text">血色光芒</span>——兵书在索要更多的血！你感到一股强大的意志在催促你献血。',choices:[
+      {text:'割腕献血',effect:{cultivation:25,constitution:-15,sanity:-10,karma:-8},log:'兵书贪婪地吸收你的鲜血，新的一页浮现出强大的兵法'},
+      {text:'以他人之血代替',effect:{cultivation:20,karma:-25,connections:-10,qiyun:-15},log:'你猎杀了一头猛兽，以兽血喂养兵书...但兵书似乎更渴望人血'},
+      {text:'强行封印兵书',effect:{cultivation:-15,sanity:10,constitution:5},log:'你将兵书封入石匣，暂时摆脱了它的控制'}]},
+    {text:'一群<span class="danger-text">山匪</span>袭击了附近的村庄。你感到体内煞气翻涌——<span class="fac">兵家</span>的战斗本能被激活了。',choices:[
+      {text:'释放煞气冲击！',effect:{cultivation:20,constitution:8,sanity:-15,karma:5,connections:15},log:'你的体型暴涨三倍，煞气化为实质性的冲击波！山匪被吓得魂飞魄散！',combat:80},
+      {text:'以常规武力击退',effect:{cultivation:10,constitution:3,connections:10},log:'你没有动用兵家秘法，以纯粹的武力打退了山匪',combat:50},
+      {text:'不参与',effect:{karma:-5,connections:-5},log:'你压制住战斗冲动，眼睁睁看着村庄被劫掠'}]},
+    {text:'你在修炼兵书时发现了一个<span class="danger-text">可怕的秘密</span>——兵家之法以血为引，每次修炼都在消耗你的<span class="mys">寿命</span>。煞气越强，寿命流逝越快。',choices:[
+      {text:'继续修炼不惧生死',effect:{cultivation:30,constitution:-10,sanity:-5,comprehension:10},log:'知道了又如何？力量才是一切！你疯狂地将血涂满兵书'},
+      {text:'寻找不消耗寿命的修炼法',effect:{comprehension:15,cultivation:5,sanity:-5},log:'你开始研究如何用其他方式驱动兵书，但收效甚微'},
+      {text:'放弃兵家之法',effect:{faction:'none',cultivation:-20,constitution:10,sanity:10},log:'你将兵书封存，脱离了兵家——活着比什么都重要'}]},
+  ],
+  fomen: [
+    {text:'你在<span class="fac">佛门</span>修行中偶然发现了<span class="npc">心慧方丈</span>的密室——里面排列着数十个<span class="itm">花瓶娃</span>，皆是以女婴炼成的<span class="danger-text">邪物</span>！',choices:[
+      {text:'当面质问心慧方丈',effect:{connections:-20,sanity:-15,comprehension:10,karma:10},log:'方丈冷笑道："慈悲有时需要牺牲。"你对佛门的信仰产生了动摇'},
+      {text:'暗中收集证据',effect:{sanity:-10,comprehension:8,connections:5},log:'你将证据藏好，等待时机揭露真相'},
+      {text:'装作没看到',effect:{sanity:-20,karma:-10},log:'你闭上眼睛走出密室，但那些瓷器般的面孔将永远萦绕在你的噩梦中'}]},
+    {text:'你在佛前打坐七日七夜，忽然感到<span class="mys">金光乍现</span>——<span class="itm">金刚不坏之法</span>有了突破的迹象！但同时你感到七情六欲正在被抹去。',choices:[
+      {text:'继续突破',effect:{cultivation:25,sanity:10,constitution:10,connections:-10},log:'金刚不坏之法大成！你的肉身如金铸铁浇，但你已感受不到喜怒哀乐'},
+      {text:'适可而止',effect:{cultivation:15,comprehension:8,sanity:5},log:'你在金刚之法与人性之间找到了一个平衡点'}]},
+    {text:'<span class="fac">佛门</span>住持召集弟子，要求所有人<span class="danger-text">断绝七情六欲</span>——以"无情方可无敌"为由，要求你斩断与尘世的一切联系。',choices:[
+      {text:'斩断尘缘',effect:{cultivation:20,sanity:5,connections:-25,karma:5},log:'你将所有俗世之物焚烧殆尽，从此六根清净'},
+      {text:'拒绝',effect:{connections:5,cultivation:-5,karma:3},log:'你说佛也有慈悲心，慈悲本身就是一种情感。住持沉默了'},
+      {text:'假意应承',effect:{connections:-5,sanity:-5,comprehension:5},log:'你表面断了尘缘，心中依然记挂着尘世'}]},
+    {text:'寺中数位弟子联名揭发<span class="npc">心慧方丈</span>的<span class="danger-text">种种恶行</span>——花瓶娃、私吞香火钱、逼迫女尼。一场<span class="fac">佛门</span>内部的丑闻即将爆发。',choices:[
+      {text:'站在揭发者一方',effect:{karma:15,connections:10,cultivation:5,qiyun:5},log:'你加入了揭发的行列，心慧方丈终于被逐出正德寺'},
+      {text:'为心慧方丈辩护',effect:{karma:-15,connections:-10,cultivation:10},log:'你出于某种原因为方丈说话，真相被压了下去'},
+      {text:'独善其身',effect:{comprehension:5,sanity:-5},log:'佛门的水太深，你选择不介入'}]},
   ],
 };
 
@@ -1002,6 +1154,48 @@ const CANONICAL_EVENTS = [
     trigger:{minAge:15,yearMin:0,yearMax:20},choices:[
     {text:'请教罗教修行',effect:{cultivation:15,comprehension:10,connections:10},log:'罗教的修行平和内敛，与其他教派截然不同'},
     {text:'收集铜钱仿制',effect:{cultivation:5,wealth:-10},log:'仿制品不及真品万一，但聊胜于无'}]},
+
+  // --- 杨娜相关 (year 5 ~ 30) ---
+  {text:'你听闻有一位名叫<span class="npc">杨娜</span>的女子，据说她和<span class="npc">李火旺</span>一样拥有<span class="mys">心素</span>——能同时存在于两个世界。但她与李火旺截然不同，她更加冷静、理性，甚至试图利用双界之力谋取权势。',
+    trigger:{minAge:18,yearMin:5,yearMax:30,cultivation:30},choices:[
+    {text:'设法接触杨娜',effect:{connections:20,comprehension:15,sanity:-10},log:'你见到了杨娜——她目光锐利如刀，与李火旺的迷茫截然不同。她说："两个世界都是真的，问题是你选择哪一个。"'},
+    {text:'打听她的情报',effect:{comprehension:10,connections:5},log:'据说杨娜曾试图与李火旺合作，但两人最终理念不合而分道扬镳'},
+    {text:'不去招惹心素持有者',effect:{sanity:5},log:'心素持有者是最危险的存在之一'}]},
+
+  // --- 齐衡与监天司 (year 10 ~ 25) ---
+  {text:'<span class="fac">监天司</span>的<span class="npc">齐衡</span>——一位冷面铁腕的监察使——正在大梁各地巡视。他以严苛闻名，凡是被他盯上的邪修无一幸免。',
+    trigger:{minAge:15,yearMin:10,yearMax:25},choices:[
+    {text:'主动拜访齐衡',effect:{connections:15,qiyun:5,comprehension:5},log:'齐衡审视了你半晌，说："你身上没有邪气。好自为之。"'},
+    {text:'避其锋芒',effect:{sanity:3},log:'齐衡的名声太大，你不想被他注意到'},
+    {text:'举报身边的邪修',effect:{connections:10,karma:5,wealth:10},log:'你提供了有价值的线索，齐衡记下了你的名字'}]},
+
+  // --- 缩阳事件详情 (year 5 ~ 15) ---
+  {text:'<span class="fac">坐忘道</span>策划的<span class="danger-text">缩阳事件</span>波及数县——百姓恐慌地声称自己的阳具在缩小消失，妇女则声称乳房在消失。实际上这是坐忘道<span class="npc">骰子</span>制造的大规模<span class="mys">集体癔症</span>，为的是收割恐惧之力。',
+    trigger:{minAge:12,yearMin:5,yearMax:15},choices:[
+    {text:'深入调查真相',effect:{comprehension:15,sanity:-15,cultivation:10},log:'你发现所谓缩阳不过是心理暗示——但坐忘道已从恐惧中攫取了大量力量'},
+    {text:'安抚百姓',effect:{connections:15,karma:10,qiyun:5},log:'你在街头宣讲真相，但没几个人相信你'},
+    {text:'趁乱发财',effect:{wealth:30,karma:-10},log:'你卖了一堆假的"壮阳丹"，赚了不少黑心钱'}]},
+
+  // --- 死亡消失后的混乱 (year 25 ~ 35) ---
+  {text:'<span class="danger-text">死亡消失</span>的日子里，世界陷入了前所未有的混乱——被砍成两半的人还在爬行，被火烧成焦炭的人还在嚎叫。有人将此视为天堂，有人将此视为<span class="danger-text">地狱</span>。',
+    trigger:{minAge:15,yearMin:25,yearMax:35},choices:[
+    {text:'利用不死研究修炼极限',effect:{cultivation:25,constitution:-10,sanity:-20,comprehension:10},log:'你在不死之身上进行了各种修炼尝试——痛苦却不会死，你获得了常人无法获得的经验'},
+    {text:'救助那些"死不了"的受苦者',effect:{karma:15,connections:15,sanity:-10},log:'你将那些生不如死的人聚集起来，尽力减轻他们的痛苦'},
+    {text:'自闭不出',effect:{sanity:-15},log:'窗外传来的永无休止的惨叫声让你快要疯了'}]},
+
+  // --- 坐忘道骰子的阴谋 (year 8 ~ 20) ---
+  {text:'你得到可靠消息：<span class="fac">坐忘道</span>的<span class="npc">骰子</span>正在暗中布一个巨大的局——他要让<span class="mys">整个大梁朝廷</span>陷入疯狂。骰子已经渗透了朝中数位重臣。',
+    trigger:{minAge:18,yearMin:8,yearMax:20,cultivation:40},choices:[
+    {text:'向监天司告密',effect:{connections:15,qiyun:10,karma:10,sanity:-5},log:'监天司对此高度重视，但骰子的手段实在太高明——清除间谍如同大海捞针'},
+    {text:'暗中追踪骰子',effect:{cultivation:15,sanity:-20,comprehension:10,qiyun:-10},log:'你几次接近了骰子的真身，但每次都被他以匪夷所思的方式逃脱——这个人…不，这个东西太可怕了'},
+    {text:'不去碰骰子',effect:{sanity:5},log:'骰子是坐忘道最危险的人物，你不想成为他的玩物'}]},
+
+  // --- 于儿神降临的恐怖 (year 22 ~ 32) ---
+  {text:'<span class="fac">法教</span>十二大巫齐聚，以万人血祭召唤<span class="npc">于儿神</span>降临！天空撕裂，一只<span class="danger-text">巨大的不可名状之物</span>从裂缝中探出——那是超越凡人理解的存在。所到之处，生灵化为齑粉。',
+    trigger:{minAge:18,yearMin:22,yearMax:32,cultivation:50},choices:[
+    {text:'拼死抵抗',effect:{cultivation:25,constitution:-15,sanity:-25,qiyun:15,karma:15},log:'你加入了对抗于儿神的战斗——虽然你的力量微不足道，但每一份力量都不可或缺',combat:95},
+    {text:'尝试理解于儿神',effect:{comprehension:20,sanity:-30,cultivation:15},log:'你在恐惧中保持了一丝清明——于儿神不是邪恶，它只是…另一种存在的法则'},
+    {text:'逃离战场',effect:{sanity:-15,qiyun:-5},log:'你拼命逃跑，身后是毁天灭地的战斗余波'}]},
 ];
 
 // === RANK EVENTS (triggered by faction rank) ===
@@ -1074,6 +1268,63 @@ const RANK_EVENTS = {
       rankReq:3,choices:[
       {text:'接受龙脉力量',effect:{cultivation:40,constitution:10,sanity:-20,karma:-25},log:'龙脉的力量让你脱胎换骨，但你能感觉到这力量中蕴含着无数生命的哀嚎'},
       {text:'叛出法教投奔大梁',effect:{faction:'none',connections:20,karma:25,qiyun:15},log:'你将法教的全部计划交给了监天司，成为了叛逃者'}]},
+  ],
+  luo_jiao: [
+    {text:'你晋升为<span class="fac">罗教</span>道人，长老将一枚<span class="itm">罗盘</span>郑重交到你手中——此乃罗教传人寻龙点穴的至宝。',
+      rankReq:1,choices:[
+      {text:'恭敬接受',effect:{comprehension:15,cultivation:10,qiyun:5},log:'罗盘入手的一刻，你感到天地间的气脉在罗盘上清晰浮现',item:'luo_pan'},
+      {text:'请求更多指导',effect:{comprehension:10,cultivation:5,connections:10},log:'长老额外传你一套入门阵法'}]},
+    {text:'你被选为<span class="fac">罗教</span>真人，获准修习<span class="itm">七星铜钱剑</span>的阵法精髓——以一百八十四枚铜钱布成<span class="mys">七星阵</span>，可困天锁地。',
+      rankReq:2,choices:[
+      {text:'全力修习七星阵',effect:{cultivation:25,comprehension:20,sanity:-8},log:'你初步掌握了七星阵法，铜钱剑在你手中已能化阵驱邪'},
+      {text:'同时研究其他阵法',effect:{cultivation:15,comprehension:15,connections:-5},log:'你博采众长，将七星阵与其他阵法融会贯通'}]},
+    {text:'罗教上下共推你为<span class="fac">掌教</span>！你获准进入<span class="loc">罗祖秘境</span>——那里藏着罗教开宗立派的全部秘密。',
+      rankReq:3,choices:[
+      {text:'踏入罗祖秘境',effect:{cultivation:40,comprehension:25,sanity:-15,qiyun:10},log:'秘境中，罗祖的残影向你展示了铜钱剑的终极形态——不仅可驱邪，更可化天地为阵！'},
+      {text:'先稳固教务再入秘境',effect:{connections:20,cultivation:15,comprehension:10},log:'你先理清教务、安抚人心，待一切稳定后从容入秘境'}]},
+  ],
+  nanjiang: [
+    {text:'你完成了<span class="fac">南疆巫族</span>的<span class="mys">蛊虫结契仪式</span>——一只幼蛊钻入你的血肉与你融为一体。从此你是蛊师。',
+      rankReq:1,choices:[
+      {text:'欣然接受',effect:{cultivation:15,constitution:-5,sanity:-8,comprehension:5},log:'蛊虫在你体内安顿下来，你能感知它的饥饿与躁动'},
+      {text:'以意志驯化蛊虫',effect:{cultivation:10,constitution:3,comprehension:10},log:'你以精神力驯化了蛊虫，它对你更加恭顺',req:{comprehension:20}}]},
+    {text:'<span class="fac">南疆巫族</span>的晋级考验——你必须只身进入<span class="loc">毒沼深处</span>，在万毒之中存活三日三夜，方可成为<span class="danger-text">大蛊师</span>。',
+      rankReq:2,choices:[
+      {text:'踏入毒沼',effect:{cultivation:30,constitution:-10,sanity:-15,comprehension:10},log:'三日三夜，你在毒沼中与各种毒物搏命。出来时你已脱胎换骨！',req:{constitution:25}},
+      {text:'做好万全准备再去',effect:{cultivation:20,constitution:-5,sanity:-8,wealth:-15},log:'你携带了大量解毒之物，虽然安全了些，但长老们对你的勇气有些失望'}]},
+    {text:'成为<span class="fac">巫王</span>的最终考验——<span class="danger-text">万蛊噬体</span>！你必须让上万只蛊虫同时钻入体内，以意志统御万蛊。成则为王，败则化为蛊粮。',
+      rankReq:3,choices:[
+      {text:'接受万蛊噬体',effect:{cultivation:50,constitution:-15,sanity:-25,comprehension:15},log:'万蛊入体的那一刻痛苦无比——但你的意志如铁，统御了所有蛊虫！你是新的巫王！',req:{constitution:30}},
+      {text:'以蛊术另辟蹊径',effect:{cultivation:35,comprehension:20,sanity:-15,connections:-10},log:'你创造了一种新的蛊术，以巧代力统御了万蛊。虽然被老派人非议，但结果无人能反驳'}]},
+  ],
+  bingjia: [
+    {text:'你在<span class="fac">兵家</span>中以<span class="danger-text">血誓</span>涂抹兵书，正式成为校尉。兵书上出现了新的一页——记载着<span class="mys">煞气冲击</span>的修炼之法。',
+      rankReq:1,choices:[
+      {text:'以鲜血发誓效忠',effect:{cultivation:20,constitution:-8,sanity:-10,karma:-5},log:'你割破手掌涂满兵书，煞气灌入全身——你感到力量暴增！'},
+      {text:'只割一指',effect:{cultivation:12,constitution:-3,sanity:-5},log:'你只献出少量鲜血，兵书上的字迹若隐若现'}]},
+    {text:'<span class="fac">兵家</span>上级命你率领一支<span class="danger-text">血卒</span>小队执行任务——所有人都是以血修炼的战士，杀意冲天。',
+      rankReq:2,choices:[
+      {text:'率队出征',effect:{cultivation:25,connections:15,constitution:-5,karma:-10,qiyun:-5},log:'你率领血卒横扫敌阵，煞气弥漫战场！敌人闻风丧胆',combat:85},
+      {text:'以谋略代替蛮力',effect:{cultivation:15,comprehension:10,connections:10},log:'你以兵法运筹帷幄，减少了不必要的伤亡'}]},
+    {text:'<span class="fac">兵家</span>至高传承——<span class="danger-text">兵书融合</span>！你需要将兵书彻底融入肉身，从此血肉即兵书、兵书即血肉。但失败者将永远失去人性。',
+      rankReq:3,choices:[
+      {text:'与兵书融合',effect:{cultivation:50,constitution:15,sanity:-30,karma:-15,qiyun:-10},log:'你将兵书按在胸口，文字如活物般钻入皮肤！剧痛之后，你感到自己的血液中流淌着兵法——血肉不灭，则你不死！',item:'bing_shu'},
+      {text:'拒绝融合保留人性',effect:{cultivation:20,comprehension:15,sanity:10},log:'你选择了人性而非极致的力量。兵家前辈摇头叹息，但你问心无愧'}]},
+  ],
+  fomen: [
+    {text:'你剃度受戒成为<span class="fac">佛门</span>比丘，住持将一颗<span class="itm">金刚珠</span>赐予你——此珠蕴含<span class="mys">金刚不坏</span>之力的种子。',
+      rankReq:1,choices:[
+      {text:'双手接过金刚珠',effect:{cultivation:15,constitution:10,sanity:8},log:'金刚珠入手温润，你感到一股祥和之力涌入体内',item:'jin_gang_zhu'},
+      {text:'请住持开示',effect:{cultivation:10,comprehension:10,connections:5},log:'住持说："珠在手中不如珠在心中。"你若有所悟'}]},
+    {text:'你在寺中地位渐高，无意间发现了正德寺的<span class="danger-text">黑暗秘密</span>——地窖中存放着数十具被抽取精气的尸体，皆是无人认领的流浪者。',
+      rankReq:2,choices:[
+      {text:'向外界揭露',effect:{connections:15,karma:15,cultivation:-5,qiyun:5},log:'你将真相公之于众，正德寺名声扫地，但佛法长存'},
+      {text:'在寺内发起清洗',effect:{connections:-10,karma:10,cultivation:10,sanity:-10},log:'你联合正义僧侣清除了寺中败类'},
+      {text:'暂时隐忍',effect:{comprehension:8,sanity:-15},log:'你将秘密藏在心中，等待更好的时机'}]},
+    {text:'你即将成为<span class="fac">佛门</span>方丈——但接任仪式上，你必须面对<span class="mys">佛门至高心法</span>的考验：直面自己的一切执念，放下或被吞噬。',
+      rankReq:3,choices:[
+      {text:'直面执念',effect:{cultivation:40,sanity:15,comprehension:20,connections:-5},log:'你在心法考验中看到了自己的一切——善与恶、爱与恨、生与死。你放下了大部分执念，成为了新的方丈'},
+      {text:'以慈悲心化解',effect:{cultivation:30,karma:15,sanity:10,comprehension:10},log:'你以慈悲之心包容了所有执念，走出了一条属于自己的佛道'}]},
   ],
 };
 
