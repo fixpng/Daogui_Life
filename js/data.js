@@ -293,6 +293,52 @@ const CHILDHOOD_EVENTS = [
     {text:'揉揉眼睛再看',effect:{sanity:-8},log:'再看时一切正常...大概是错觉'},{text:'告诉大人',effect:{connections:-3,sanity:3},log:'没人相信你'}]},
   {text:'一只<span class="mys">黑猫</span>每天跟着你，村里人说它不吉利。',choices:[
     {text:'收养它',effect:{connections:-5,sanity:5,qiyun:5},log:'它成了你唯一的伙伴'},{text:'赶走它',effect:{sanity:-3,qiyun:-3},log:'它临走前回头看了你一眼'}]},
+  // === 清风观相关：被丹阳子拐走 ===
+  {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，说要收<span class="mys">有仙缘的孩子</span>去<span class="loc">清风观</span>修行。你的父母半信半疑。',
+    choices:[
+    {text:'跟着道长走',effect:{cultivation:8,sanity:-15,constitution:-5},log:'你被带到了清风观，那里有很多和你一样的孩子...但你逐渐发现他们都是"药引子"',visit:'qing_feng'},
+    {text:'父母拒绝了',effect:{sanity:3,qiyun:5},log:'父亲说不认识的人不能跟着走，你留了下来'}]},
+  // === 出生地相关童年事件 ===
+  {text:'<span class="loc">赵家村</span>的老人们说，村后那口<span class="mys">古井</span>里住着一位井仙，每逢旱季会显灵。今年大旱，全村人跪在井边。',
+    locReq:'zhao_cun',choices:[
+    {text:'跟着跪',effect:{sanity:-3,connections:5,karma:3},log:'井水果然涌了出来——是巧合还是…'},
+    {text:'偷偷往井里扔石子',effect:{sanity:-8,cultivation:3,qiyun:-5},log:'你隐约听到井底传来一声叹息'}]},
+  {text:'<span class="loc">李家村</span>与世隔绝，村里人说山外面住着<span class="danger-text">吃人的妖怪</span>。但你发现一条没人走过的<span class="mys">山间小路</span>。',
+    locReq:'li_cun',choices:[
+    {text:'沿着小路走',effect:{cultivation:5,comprehension:3,sanity:-5},log:'你在山的另一边看到了一片从未见过的世界'},
+    {text:'听大人的话别去',effect:{sanity:3,connections:3},log:'大人的话总是有道理的——大概吧'}]},
+  {text:'<span class="loc">鲁城</span>的集市上来了一个卖<span class="itm">奇怪泥人</span>的外乡人。那泥人的眼珠会动。',
+    locReq:'lu_cheng',choices:[
+    {text:'买一个',effect:{wealth:-5,cultivation:3,sanity:-5},log:'泥人到了晚上自己碎了，里面有一张写满字的纸条'},
+    {text:'告诉捕快',effect:{connections:5,karma:3},log:'捕快来时摊主已不见踪影'}]},
+  {text:'<span class="loc">阳城</span>知府大人发榜要征集<span class="mys">异闻录</span>——谁知道鬼怪之事可以拿赏钱。城里一时间人人争说怪事。',
+    locReq:'yang_cheng',choices:[
+    {text:'把你看到的怪事讲出来',effect:{wealth:10,connections:5,sanity:-3},log:'知府的师爷格外注意了你...'},
+    {text:'别掺和官府的事',effect:{sanity:3},log:'民不与官斗'}]},
+  {text:'在<span class="loc">大梁城</span>长大的你见过不少达官贵人。今天街上封了路——据说是<span class="fac">监天司</span>在抓邪修。',
+    locReq:'da_liang',choices:[
+    {text:'爬上屋顶偷看',effect:{cultivation:5,comprehension:3,sanity:-5},log:'你看到穿黑袍的人挥手间就把一栋房子拆了——那就是修士的力量'},
+    {text:'躲在家里',effect:{sanity:3,wealth:2},log:'天子脚下也不太平'}]},
+  {text:'<span class="loc">玉清山</span>的雾气里偶尔能听到<span class="mys">钟声</span>，但山上并没有寺庙。你从小听着这钟声长大。',
+    locReq:'shan_qu',choices:[
+    {text:'循着钟声去找',effect:{cultivation:8,comprehension:5,sanity:-10},log:'你在山腰发现了一个长满青苔的石洞，里面有一口裂了的铜钟'},
+    {text:'当作风声',effect:{sanity:3},log:'习惯了就不觉得奇怪了'}]},
+  {text:'<span class="loc">边境</span>又起了烽烟。你从记事起就在逃难，这已经是第三次了。',
+    locReq:'bian_jing',choices:[
+    {text:'偷一把刀防身',effect:{constitution:3,cultivation:3,karma:-3},log:'乱世中没有武器就没有安全感'},
+    {text:'跟着大人跑',effect:{connections:3,sanity:-5},log:'你学会了在混乱中生存'}]},
+  {text:'<span class="loc">南疆</span>的蛊婆给你戴上了一根红绳，说能<span class="mys">辟邪</span>。你发现戴上后确实不做噩梦了。',
+    locReq:'nan_jiang',choices:[
+    {text:'一直戴着',effect:{sanity:8,cultivation:3},log:'红绳温温的，像有生命一样'},
+    {text:'好奇拆开看里面',effect:{sanity:-10,comprehension:5,cultivation:5},log:'绳子里面缠着一只已经干瘪的小虫...蛊虫'}]},
+  {text:'<span class="loc">上京城</span>的孩子们都在传：皇宫底下藏着一条<span class="mys">龙</span>，每到夜里能听见龙吟。',
+    locReq:'shang_jing',choices:[
+    {text:'半夜溜去皇宫墙根听',effect:{cultivation:5,sanity:-8,comprehension:5},log:'你……确实听到了什么。低沉的、如雷鸣般的呼吸声'},
+    {text:'鬼扯的吧',effect:{sanity:3},log:'小孩子的话不能信'}]},
+  {text:'你在<span class="loc">四齐</span>长大，这里到处都是废弃的庙宇和残破的旗帜。老人们说以前这里是一个强大的国家。',
+    locReq:'si_qi',choices:[
+    {text:'去废庙里探索',effect:{cultivation:5,comprehension:3,sanity:-8},log:'你在佛像后面找到了一本发霉的经书'},
+    {text:'帮大人种地',effect:{constitution:3,connections:3},log:'四齐虽破，还是得活下去'}]},
   // === NEW CHILDHOOD EVENTS ===
   {text:'你在井边打水，看到井底似乎有<span class="mys">一双眼睛</span>在盯着你。',choices:[
     {text:'大声呼喊',effect:{connections:3,sanity:-3},log:'大人赶来时什么都没有'},{text:'回盯那双眼睛',effect:{sanity:-8,comprehension:5,cultivation:3},log:'那双眼睛眨了一下就消失了'}]},
@@ -1041,12 +1087,16 @@ const TRAVEL_EVENTS = [
 const CANONICAL_EVENTS = [
   // --- 卷1 时期: 清风观覆灭 / 丹阳子 (year -10 ~ 5) ---
   {text:'你听闻<span class="loc">清风观</span>有一位<span class="npc">丹阳子</span>道长，据说拥有一块刻满经文的<span class="itm">天书石板</span>，四处收集"药引子"炼仙丹。',
-    trigger:{minAge:12,yearMin:-15,yearMax:2},choices:[
-    {text:'前去打探',effect:{cultivation:10,sanity:-10,comprehension:5},log:'你远远看到了清风观，里面传出孩童的哭声...'},
-    {text:'避而远之',effect:{sanity:5,qiyun:3},log:'那地方不干净，离远点好'}]},
-  {text:'清风观突然发生<span class="danger-text">大爆炸</span>，方圆数里都能看到冲天火光。传闻是弟子反杀了<span class="npc">丹阳子</span>。',
-    trigger:{minAge:10,yearMin:-2,yearMax:3},mandatory:true,choices:[
-    {text:'前去查看废墟',effect:{cultivation:15,sanity:-12,comprehension:8},log:'废墟中有残留的灵气波动，你隐约感知到了一场惊天之战的余波',item:'dan_yang_jian'},
+    trigger:{minAge:12,yearMin:-15,yearMax:2},locReq:'qing_feng',choices:[
+    {text:'你就是那些药引子之一',effect:{cultivation:10,sanity:-15,comprehension:5},log:'你亲眼见过丹阳子的真面目——那不是修仙，是炼人...'},
+    {text:'回忆在清风观的日子',effect:{sanity:-10,cultivation:8,comprehension:3},log:'你还记得那些孩子的脸...有些再也没见过'}]},
+  {text:'清风观突然发生<span class="danger-text">大爆炸</span>！你曾在那里待过——冲天火光中，传闻是弟子反杀了<span class="npc">丹阳子</span>。',
+    trigger:{minAge:10,yearMin:-2,yearMax:3},locReq:'qing_feng',choices:[
+    {text:'冲回清风观寻找幸存者',effect:{cultivation:15,sanity:-15,comprehension:8,karma:5},log:'废墟中你找到了几个还活着的孩子——和你一样的"药引子"',item:'dan_yang_jian'},
+    {text:'庆幸自己已经逃出来了',effect:{sanity:5,qiyun:5},log:'那个地狱终于毁了'}]},
+  {text:'远处传来一声巨响，天边亮起火光——有人说是<span class="loc">清风观</span>出了事，弟子反杀了<span class="npc">丹阳子</span>。',
+    trigger:{minAge:10,yearMin:-2,yearMax:3},choices:[
+    {text:'前去查看废墟',effect:{cultivation:15,sanity:-12,comprehension:8},log:'废墟中有残留的灵气波动，你隐约感知到了一场惊天之战的余波'},
     {text:'听人议论',effect:{comprehension:5},log:'茶馆里众说纷纭——有人说丹阳子死了，有人说他还活着'}]},
   {text:'你在路上遇到一群从<span class="loc">清风观</span>逃出来的孩子，为首的少年神情坚毅却时常恍惚。',
     trigger:{minAge:10,yearMin:-1,yearMax:5},choices:[
@@ -1216,6 +1266,103 @@ const CANONICAL_EVENTS = [
     {text:'尝试理解于儿神',effect:{comprehension:20,sanity:-30,cultivation:15},log:'你在恐惧中保持了一丝清明——于儿神不是邪恶，它只是…另一种存在的法则'},
     {text:'逃离战场',effect:{sanity:-15,qiyun:-5},log:'你拼命逃跑，身后是毁天灭地的战斗余波'}]},
 ];
+
+// === LOCAL STORIES (birthplace/location-specific events) ===
+const LOCAL_STORIES = [
+  // --- 赵家村 ---
+  {text:'<span class="loc">赵家村</span>的赵老太爷去世了，下葬那天，棺材里传出<span class="mys">敲击声</span>。全村人吓得不敢动。',
+    locReq:'zhao_cun',trigger:{minAge:12},choices:[
+    {text:'开棺验看',effect:{cultivation:5,sanity:-12,comprehension:5},log:'棺材里是空的——尸体不见了'},
+    {text:'请道士来',effect:{connections:5,wealth:-10},log:'道士说这叫"走尸"，不是好兆头'}]},
+  {text:'村后的<span class="mys">荒坟</span>最近总有人看到青色的火焰。<span class="loc">赵家村</span>的猎户说那是磷火，但老人们说那是鬼火。',
+    locReq:'zhao_cun',trigger:{minAge:15},choices:[
+    {text:'夜探荒坟',effect:{cultivation:8,sanity:-10,comprehension:5},log:'你在坟堆里发现了一块刻着符文的玉佩'},
+    {text:'别去招惹',effect:{sanity:3},log:'死人的地方活人别去'}]},
+
+  // --- 鲁城 ---
+  {text:'<span class="loc">鲁城</span>的<span class="npc">张屠户</span>杀猪时在猪肚子里切出了一块<span class="itm">玉印</span>，上面刻着"<span class="mys">敕令</span>"二字。消息传遍全城。',
+    locReq:'lu_cheng',trigger:{minAge:12},choices:[
+    {text:'设法买下玉印',effect:{wealth:-20,cultivation:10,qiyun:5},log:'玉印入手时微微发热，似有灵性'},
+    {text:'只是看热闹',effect:{comprehension:3},log:'猪肚里出玉印，世间无奇不有'}]},
+  {text:'<span class="loc">鲁城</span>东门的<span class="npc">赊刀人</span>出现了——他留下一把菜刀不收钱，只说"等某件事发生了再来收钱"。',
+    locReq:'lu_cheng',trigger:{minAge:15},choices:[
+    {text:'追问赊刀人来历',effect:{connections:10,comprehension:8,sanity:-5},log:'赊刀人说他是监天司的，然后就消失了'},
+    {text:'收下刀',effect:{wealth:5,qiyun:3},log:'这把刀异常锋利，而且永远不生锈'}]},
+
+  // --- 阳城 ---
+  {text:'<span class="loc">阳城</span>的城隍庙今夜大开庙门——这不是庙会，而是真的有<span class="mys">什么东西</span>从庙里走了出来。满城犬吠不止。',
+    locReq:'yang_cheng',trigger:{minAge:15},choices:[
+    {text:'前去查看',effect:{cultivation:10,sanity:-15,comprehension:8},log:'你看到一个穿官服的透明人影走过长街，所过之处寒气逼人'},
+    {text:'关紧门窗',effect:{sanity:-5},log:'第二天早上，城里多了三具无名尸体'}]},
+
+  // --- 大梁城/上京城 ---
+  {text:'<span class="loc">上京城</span>的花灯节，有人在灯谜上写了一句诡异的话："<span class="mys">白玉京中五城十二楼，仙人抚我顶</span>"。没人猜得出谜底。',
+    locReq:'shang_jing',trigger:{minAge:12},choices:[
+    {text:'思考这句话的含义',effect:{comprehension:10,cultivation:5,sanity:-5},log:'白玉京...你隐约觉得这不只是诗句'},
+    {text:'不管了吃糖葫芦',effect:{sanity:5},log:'花灯节还是糖葫芦最好'}]},
+  {text:'<span class="loc">上京城</span>地下排水渠出了怪事——工人说里面有一条<span class="danger-text">巨大的蛇</span>在游动。官府派人去查，下去的人都疯了。',
+    locReq:'shang_jing',trigger:{minAge:18,cultivation:20},choices:[
+    {text:'自己下去探查',effect:{cultivation:15,sanity:-20,comprehension:10},log:'那不是蛇——是龙脉的一部分。你触碰到了秩序之力'},
+    {text:'不去送死',effect:{sanity:3},log:'让官府的人处理吧'}]},
+
+  // --- 玉清山 ---
+  {text:'<span class="loc">玉清山</span>深处有一个被藤蔓遮蔽的<span class="mys">石门</span>，上面刻着"<span class="itm">非人莫入</span>"四个字。最近石门上的封印出现了裂纹。',
+    locReq:'shan_qu',trigger:{minAge:15,cultivation:10},choices:[
+    {text:'推开石门',effect:{cultivation:20,sanity:-18,comprehension:10},log:'门后是一个巨大的地下空间，墙壁上画满了上古修士飞升的壁画'},
+    {text:'重新封印',effect:{karma:10,cultivation:5},log:'你用石头堵住裂纹——有些东西不该被打开'}]},
+
+  // --- 边境 ---
+  {text:'<span class="loc">边境</span>的老兵们说，每到月圆之夜，战场上死去的士兵会<span class="mys">站起来</span>重演生前的战斗。今晚就是月圆。',
+    locReq:'bian_jing',trigger:{minAge:15},choices:[
+    {text:'去战场观看',effect:{cultivation:10,sanity:-15,constitution:3},log:'你看到了——成百上千的鬼魂在月光下厮杀，刀光剑影却毫无声息'},
+    {text:'老兵的故事听听就好',effect:{sanity:3},log:'但你半夜确实听到了远处隐隐的喊杀声'}]},
+
+  // --- 南疆 ---
+  {text:'<span class="loc">南疆</span>的<span class="npc">蛊母</span>在选徒弟——她要找一个"<span class="mys">命硬</span>"的人，继承南疆巫族最恐怖的<span class="itm">七杀蛊</span>。',
+    locReq:'nan_jiang',trigger:{minAge:15,cultivation:10},choices:[
+    {text:'毛遂自荐',effect:{cultivation:20,sanity:-15,constitution:-5,karma:-8},log:'蛊母审视你半晌，将一只黑色的虫子放入你的掌心——痛入骨髓'},
+    {text:'这种东西碰不得',effect:{sanity:5},log:'蛊术害人害己，你不想沾染'}]},
+  {text:'<span class="loc">南疆</span>的密林里发现了一具<span class="mys">石化的巨人</span>。当地巫师说那是上古时代被封印的<span class="npc">蛮神</span>。',
+    locReq:'nan_jiang',trigger:{minAge:18},choices:[
+    {text:'研究石化巨人',effect:{comprehension:12,cultivation:8,sanity:-10},log:'巨人的眼睛里似乎还有一丝意识...'},
+    {text:'不敢靠近',effect:{sanity:-3},log:'封印之物不该被打扰'}]},
+
+  // --- 四齐 ---
+  {text:'<span class="loc">四齐</span>废城的地下发现了<span class="fac">法教</span>留下的<span class="mys">祭坛</span>，上面还残留着干涸的血迹和散落的骨头。',
+    locReq:'si_qi',trigger:{minAge:15},choices:[
+    {text:'检查祭坛',effect:{cultivation:10,sanity:-15,comprehension:8},log:'祭坛的构造精妙到令人恐惧——这是专门用来召唤于儿神的'},
+    {text:'把祭坛毁掉',effect:{karma:10,constitution:-3},log:'你花了半天砸毁了祭坛，愿此地不再有人受害'}]},
+  {text:'你在<span class="loc">四齐</span>遇到一个自称是<span class="npc">大齐皇室后裔</span>的老人，他偷偷给你看了一块<span class="itm">龙纹玉佩</span>。',
+    locReq:'si_qi',trigger:{minAge:12},choices:[
+    {text:'听老人讲述大齐往事',effect:{comprehension:10,connections:5},log:'他说大齐曾经比大梁还强盛，是法教毁了一切'},
+    {text:'告诉他别张扬',effect:{karma:5,connections:3},log:'乱世之中，皇室血脉是祸不是福'}]},
+
+  // --- 杏岛 ---
+  {text:'<span class="loc">杏岛</span>上的老修士在讲述<span class="npc">诸葛渊</span>的故事——他是如何以一人之力对抗司命的。岛上所有修士都肃然起敬。',
+    locReq:'xing_dao',trigger:{minAge:15,cultivation:20},choices:[
+    {text:'在诸葛渊修炼过的地方冥想',effect:{cultivation:15,comprehension:12,sanity:-5},log:'你隐约感受到了诸葛渊留下的道意残片'},
+    {text:'请教老修士修行之法',effect:{cultivation:8,connections:10},log:'老修士传你几个实用的小法术'}]},
+
+  // --- 清风观遗址 ---
+  {text:'你重访<span class="loc">清风观遗址</span>，废墟中的灵气还没有完全散尽。夜里你看到了丹阳子残留的<span class="mys">执念</span>——一个透明的道士在废墟中走来走去，反复念叨着"仙丹...快成了..."。',
+    locReq:'qing_feng',trigger:{minAge:18,cultivation:15},choices:[
+    {text:'尝试渡化这道执念',effect:{karma:15,cultivation:10,sanity:-10},log:'执念在你的安抚下逐渐消散，你感到一阵轻松'},
+    {text:'从执念中偷学功法',effect:{cultivation:20,sanity:-15,karma:-10},log:'丹阳子虽然疯了，功法却是真的厉害'}]},
+
+  // --- 正德寺 ---
+  {text:'<span class="loc">正德寺</span>的地下室被人发现了。里面有数十个<span class="danger-text">陶瓷花瓶</span>，每个花瓶里…都有一具婴儿的残骸。当地人大骂心慧方丈禽兽不如。',
+    locReq:'zheng_de_si',trigger:{minAge:12},choices:[
+    {text:'帮忙安葬这些婴儿',effect:{karma:15,sanity:-15,qiyun:5},log:'你一边挖坑一边流泪——这世间怎会有这种事'},
+    {text:'找心慧方丈算账',effect:{cultivation:5,connections:10,karma:10,sanity:-10},log:'心慧早已逃遁，寺中只剩几个不知情的小沙弥'},
+    {text:'不敢看',effect:{sanity:-8},log:'你转身就走，脑海中却挥之不去那些花瓶的样子'}]},
+
+  // --- 安慈庵 ---
+  {text:'<span class="loc">安慈庵</span>虽然师太已故，但庵中的<span class="itm">驱邪符</span>依然灵验。附近村民遇到怪事都来这里取符。',
+    locReq:'an_ci',trigger:{minAge:12},choices:[
+    {text:'学习画符',effect:{cultivation:10,comprehension:5},log:'你照着师太留下的符箓样子练习，居然有几张真的亮了'},
+    {text:'取一张符防身',effect:{qiyun:5,sanity:3},log:'贴在门上后确实安心了不少'}]},
+];
+
 
 // === RANK EVENTS (triggered by faction rank) ===
 const RANK_EVENTS = {

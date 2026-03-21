@@ -448,6 +448,7 @@ function nextYear() {
   // Filter out gender-mismatched events and check trigger conditions on base events
   eventPool = eventPool.filter(function(ev){
     if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
+    if(ev.locReq && !gameState.visitedLocations.includes(ev.locReq)) return false;
     if(ev.trigger) {
       if(ev.trigger.minAge && gameState.age < ev.trigger.minAge) return false;
       if(ev.trigger.maxAge && gameState.age > ev.trigger.maxAge) return false;
@@ -548,7 +549,25 @@ function nextYear() {
         if(ce.trigger.faction && gameState.faction !== ce.trigger.faction) return;
       }
       if(ce.check && !gameState.talents.find(function(t){return t.id===ce.check;})) return;
+      if(ce.locReq && !gameState.visitedLocations.includes(ce.locReq)) return;
       eventPool.push(ce);
+    });
+  }
+
+  // Add local stories (birthplace/location-specific events)
+  if(typeof LOCAL_STORIES !== 'undefined') {
+    LOCAL_STORIES.forEach(function(ls){
+      if(ls.locReq && !gameState.visitedLocations.includes(ls.locReq)) return;
+      if(ls.genderReq && ls.genderReq !== gameState.gender) return;
+      if(ls.trigger) {
+        if(ls.trigger.minAge !== undefined && gameState.age < ls.trigger.minAge) return;
+        if(ls.trigger.maxAge !== undefined && gameState.age > ls.trigger.maxAge) return;
+        if(ls.trigger.cultivation !== undefined && gameState.cultivation < ls.trigger.cultivation) return;
+        if(ls.trigger.yearMin !== undefined && gameState.year < ls.trigger.yearMin) return;
+        if(ls.trigger.yearMax !== undefined && gameState.year > ls.trigger.yearMax) return;
+      }
+      if(ls.check && !gameState.talents.find(function(t){return t.id===ls.check;})) return;
+      eventPool.push(ls);
     });
   }
 
@@ -1019,6 +1038,9 @@ function applyChoice(c) {
       gameState.items.push(Object.assign({}, itemData));
       if(gameState.items.length>=5) unlockAchieve('collector');
     }
+  }
+  if(c.visit && !gameState.visitedLocations.includes(c.visit)) {
+    gameState.visitedLocations.push(c.visit);
   }
   if(c.achieve) unlockAchieve(c.achieve);
   addLog(c.log);
