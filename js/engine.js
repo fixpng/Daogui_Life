@@ -4,7 +4,7 @@ var gameState = {
   sanity:100, baseSanity:100, cultivation:0,
   wealth:10, connections:0, faction:'none',
   comprehension:10, karma:0, qiyun:0, constitution:50,
-  gender:'male',
+  gender:'male', factionRank:0,
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
@@ -96,7 +96,7 @@ function startGame() {
   gameState.baseSanity = 100; gameState.wealth = 10; gameState.connections = 0;
   gameState.cultivation = 0; gameState.age = 0; gameState.alive = true;
   gameState.comprehension = 10; gameState.karma = 0; gameState.qiyun = 0; gameState.constitution = 50;
-  gameState.items = []; gameState.faction = 'none';
+  gameState.items = []; gameState.faction = 'none'; gameState.factionRank = 0;
   gameState.visitedLocations = []; gameState.factionHistory = [];
   gameState.eventHistory = new Set(); gameState.dualCultWarned = false;
 
@@ -237,6 +237,23 @@ function getEraName() {
   return '末法时代';
 }
 
+// === LIFESPAN BY CULTIVATION ===
+function getMaxAge() {
+  var base = 82;
+  if(gameState.talents.find(function(t){return t.id==='shou_xing';})) base = 95;
+  var c = gameState.cultivation;
+  if(c>=400) return 1200;
+  if(c>=300) return 800;
+  if(c>=200) return 500;
+  if(c>=150) return 300;
+  if(c>=100) return 200;
+  if(c>=60) return 150;
+  if(c>=30) return 120;
+  if(c>=10) return 100;
+  if(c>=3) return Math.max(base, 90);
+  return base;
+}
+
 // === NEXT YEAR ===
 function nextYear() {
   if(!gameState.alive) return;
@@ -272,6 +289,24 @@ function nextYear() {
   // Ancient person cultivation bonus
   if(gameState.talents.find(function(t){return t.id==='gu_ren';}) && gameState.year < -100) cultGain += 2; // 远古灵气充沛
 
+  // Faction rank progression
+  if(gameState.faction !== 'none' && FACTIONS[gameState.faction] && FACTIONS[gameState.faction].rankReqs) {
+    var fData = FACTIONS[gameState.faction];
+    var curRank = gameState.factionRank || 0;
+    if(curRank < fData.rankReqs.length - 1) {
+      var nextReq = fData.rankReqs[curRank + 1];
+      if(gameState.cultivation >= nextReq && gameState.age >= (fData.rankAgeReqs ? fData.rankAgeReqs[curRank+1] || 0 : 0)) {
+        gameState.factionRank = curRank + 1;
+        var newRankName = fData.ranks[gameState.factionRank];
+        addLog('你在<span class="fac">' + fData.name + '</span>中晋升为<span class="itm">' + newRankName + '</span>！');
+        // Rank-up bonus
+        gameState.connections += 5;
+        gameState.cultivation += 3;
+        gameState.qiyun += 2;
+      }
+    }
+  }
+
   // 散修 bonus: no faction but has experience, self-reliance
   var isSanxiu = gameState.faction === 'none' && gameState.factionHistory.length > 0;
   if(isSanxiu) {
@@ -302,9 +337,10 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='zhuan_yun';}) && Math.random()<0.12) { gameState.qiyun += 1; gameState.constitution += 1; }
   if(gameState.talents.find(function(t){return t.id==='po_yun';}) && Math.random()<0.10) { gameState.qiyun -= 2; gameState.cultivation += 3; }
 
-  // Constitution natural drift (age affects constitution)
-  if(gameState.age > 50) gameState.constitution -= 1;
-  if(gameState.age > 70) gameState.constitution -= 1;
+  // Constitution natural drift (age affects constitution, cultivation slows aging)
+  var agingReduction = Math.floor(gameState.cultivation / 50); // high cultivation slows aging
+  if(gameState.age > 50 + agingReduction * 10) gameState.constitution -= 1;
+  if(gameState.age > 70 + agingReduction * 15) gameState.constitution -= 1;
   // Comprehension slow growth from experience
   if(gameState.age > 10 && Math.random() < 0.15) gameState.comprehension += 1;
   // Qiyun slowly returns toward 0 (natural balance)
@@ -432,6 +468,35 @@ function nextYear() {
     });
   }
 
+  // Add canonical events (major novel events by timeline)
+  if(typeof CANONICAL_EVENTS !== 'undefined') {
+    CANONICAL_EVENTS.forEach(function(ce){
+      if(ce.genderReq && ce.genderReq !== gameState.gender) return;
+      if(ce.trigger) {
+        if(ce.trigger.minAge !== undefined && gameState.age < ce.trigger.minAge) return;
+        if(ce.trigger.maxAge !== undefined && gameState.age > ce.trigger.maxAge) return;
+        if(ce.trigger.cultivation !== undefined && gameState.cultivation < ce.trigger.cultivation) return;
+        if(ce.trigger.yearMin !== undefined && gameState.year < ce.trigger.yearMin) return;
+        if(ce.trigger.yearMax !== undefined && gameState.year > ce.trigger.yearMax) return;
+        if(ce.trigger.faction && gameState.faction !== ce.trigger.faction) return;
+      }
+      if(ce.check && !gameState.talents.find(function(t){return t.id===ce.check;})) return;
+      eventPool.push(ce);
+    });
+  }
+
+  // Add rank-up events
+  if(typeof RANK_EVENTS !== 'undefined' && gameState.faction !== 'none' && RANK_EVENTS[gameState.faction]) {
+    RANK_EVENTS[gameState.faction].forEach(function(re){
+      if(re.rankReq !== undefined && (gameState.factionRank || 0) < re.rankReq) return;
+      if(re.trigger) {
+        if(re.trigger.minAge && gameState.age < re.trigger.minAge) return;
+        if(re.trigger.cultivation && gameState.cultivation < re.trigger.cultivation) return;
+      }
+      eventPool.push(re);
+    });
+  }
+
   // Trigger event or quiet year
   if(Math.random() < 0.72 && eventPool.length > 0) {
     var ev = eventPool[Math.floor(Math.random()*eventPool.length)];
@@ -443,7 +508,7 @@ function nextYear() {
   // Death checks
   if(isXinsu && gameState.sanity <= 0) { unlockAchieve('mad'); gameOver('你彻底分不清<span class="mys">现实与幻觉</span>，在无尽的噩梦中彻底迷失了。'); return; }
   if(gameState.constitution <= 0) { unlockAchieve('body_break'); gameOver('你的<span class="danger-text">肉身崩溃</span>，经脉尽断，再也无法支撑下去。'); return; }
-  var maxAge = gameState.talents.find(function(t){return t.id==='shou_xing';}) ? 95 : 82;
+  var maxAge = getMaxAge();
   if(gameState.age >= maxAge) {
     if(gameState.age>=80) unlockAchieve('old');
     if(gameState.cultivation<10) unlockAchieve('peaceful');
@@ -691,6 +756,7 @@ function applyChoice(c) {
         unlockAchieve('betrayer');
       }
       gameState.faction = targetFaction;
+      gameState.factionRank = 0;
       if(!gameState.factionHistory.includes(targetFaction)) gameState.factionHistory.push(targetFaction);
       if(gameState.factionHistory.length >= 3) unlockAchieve('faction_all');
       var newName = factionData ? factionData.name : targetFaction;
@@ -773,6 +839,11 @@ function updateDisplay() {
   var factionDisplay = '无';
   if(gameState.faction !== 'none' && FACTIONS[gameState.faction]) {
     factionDisplay = FACTIONS[gameState.faction].name;
+    // Show rank if available
+    if(FACTIONS[gameState.faction].ranks) {
+      var ri = Math.min(gameState.factionRank || 0, FACTIONS[gameState.faction].ranks.length - 1);
+      factionDisplay += ' · ' + FACTIONS[gameState.faction].ranks[ri];
+    }
   } else if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
     factionDisplay = '散修';
   }
@@ -977,6 +1048,13 @@ function gameOver(reason) {
   }
   // Karma cycle: started negative, ended positive > 50
   if(gameState.talents.find(function(t){return t.effect.karma && t.effect.karma < -10;}) && gameState.karma > 50) unlockAchieve('karma_cycle');
+  // Long life and century achievements
+  if(gameState.age >= 100) unlockAchieve('century');
+  if(gameState.age >= 150) unlockAchieve('long_life');
+  // Max rank achievement
+  if(gameState.faction !== 'none' && FACTIONS[gameState.faction] && FACTIONS[gameState.faction].ranks) {
+    if((gameState.factionRank || 0) >= FACTIONS[gameState.faction].ranks.length - 1) unlockAchieve('rank_max');
+  }
 
   gameState.totalRuns++;
   localStorage.setItem('dg_runs', gameState.totalRuns);
@@ -989,19 +1067,26 @@ function gameOver(reason) {
   if(gameState.totalRuns >= 20) unlockAchieve('runs_20');
 
   var realm = getRealmName(gameState.cultivation);
-  var ending = reason;
-  if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
-  else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
-  else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
-  else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
-
-  showPanel('ending');
   var factionName = '无';
   if(gameState.faction !== 'none' && FACTIONS[gameState.faction]) {
     factionName = FACTIONS[gameState.faction].name;
   } else if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
     factionName = '散修';
   }
+  var rankName = '';
+  if(gameState.faction !== 'none' && FACTIONS[gameState.faction] && FACTIONS[gameState.faction].ranks) {
+    var ri = Math.min(gameState.factionRank || 0, FACTIONS[gameState.faction].ranks.length - 1);
+    rankName = FACTIONS[gameState.faction].ranks[ri];
+  }
+
+  var ending = reason;
+  if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
+  else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
+  else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
+  else if(gameState.cultivation>=200 && rankName) ending = '你以<span class="itm">' + factionName + '·' + rankName + '</span>之身达到大乘境界，名震天下！';
+  else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
+
+  showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
@@ -1009,7 +1094,7 @@ function gameOver(reason) {
     '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span></p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +
-    '<p>势力: <span style="color:var(--gold)">'+factionName+'</span></p>' +
+    '<p>势力: <span style="color:var(--gold)">'+factionName+(rankName?' · '+rankName:'')+'</span></p>' +
     '<p>悟性: <span style="color:var(--gold)">'+gameState.comprehension+'</span> · 因果: <span style="color:var(--gold)">'+gameState.karma+' ('+karmaDesc+')</span></p>' +
     '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
