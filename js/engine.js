@@ -1317,6 +1317,14 @@ function gameOver(reason) {
     (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 双修之路，九死一生</p>' : '') +
     (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';
+
+  // Copy life log to ending panel
+  var endingLog = document.getElementById('ending-log');
+  var gameLog = document.getElementById('log');
+  if(endingLog && gameLog) {
+    endingLog.innerHTML = gameLog.innerHTML;
+  }
+
   renderAchievements();
 }
 
