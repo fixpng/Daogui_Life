@@ -291,9 +291,10 @@ function getMaxAge() {
 function nextYear() {
   if(!gameState.alive) return;
   if(waitingForChoice) return;
-  // 150岁后年岁跨度随机增大，修为越高跨度越大
+  // 90岁后年岁跨度随机增大，修为越高跨度越大
+  // 但有重大事件的年头不会被跳过（先试算事件池）
   var ageStep = 1;
-  if(gameState.age >= 150) {
+  if(gameState.age >= 90) {
     var cultLevel = gameState.cultivation;
     if(cultLevel >= 400) ageStep = Math.floor(Math.random() * 30) + 10; // 造化: 10-39年
     else if(cultLevel >= 300) ageStep = Math.floor(Math.random() * 20) + 5; // 大傩: 5-24年
@@ -302,6 +303,52 @@ function nextYear() {
     else if(cultLevel >= 100) ageStep = Math.floor(Math.random() * 7) + 2; // 元婴: 2-8年
     else if(cultLevel >= 60) ageStep = Math.floor(Math.random() * 5) + 1; // 金丹: 1-5年
     else ageStep = Math.floor(Math.random() * 3) + 1; // 其他: 1-3年
+    // 如果跨度>1，检查中间是否有重大事件（CANONICAL_EVENTS/RANK_EVENTS/XINPAN_EVENTS）
+    // 若有则缩减到该事件年龄
+    if(ageStep > 1) {
+      var nextAge = gameState.age + ageStep;
+      var nextYear = gameState.year + ageStep;
+      var hasImportant = false;
+      for(var step=1; step<ageStep; step++) {
+        var testAge = gameState.age + step;
+        var testYear = gameState.year + step;
+        // 检查CANONICAL_EVENTS
+        if(typeof CANONICAL_EVENTS !== 'undefined') {
+          hasImportant = CANONICAL_EVENTS.some(function(ce){
+            if(ce.trigger) {
+              if(ce.trigger.minAge !== undefined && ce.trigger.maxAge !== undefined) {
+                if(testAge >= ce.trigger.minAge && testAge <= ce.trigger.maxAge) return true;
+              }
+              if(ce.trigger.yearMin !== undefined && ce.trigger.yearMax !== undefined) {
+                if(testYear >= ce.trigger.yearMin && testYear <= ce.trigger.yearMax) return true;
+              }
+            }
+            return false;
+          });
+        }
+        // 检查XINPAN_EVENTS
+        if(!hasImportant && typeof XINPAN_EVENTS !== 'undefined' && gameState.xinpan) {
+          hasImportant = XINPAN_EVENTS.some(function(xe){
+            if(xe.xinpanReq && xe.xinpanReq !== gameState.xinpan) return false;
+            if(xe.trigger && xe.trigger.minAge !== undefined) {
+              if(testAge >= xe.trigger.minAge && testAge <= (xe.trigger.maxAge||999)) return true;
+            }
+            return false;
+          });
+        }
+        // 检查CULTIVATION_TIER_EVENTS（突破事件）
+        if(!hasImportant && typeof CULTIVATION_TIER_EVENTS !== 'undefined') {
+          hasImportant = CULTIVATION_TIER_EVENTS.some(function(ce){
+            if(ce.cultReq && gameState.cultivation >= ce.cultReq.min && gameState.cultivation <= ce.cultReq.max) return true;
+            return false;
+          });
+        }
+        if(hasImportant) {
+          ageStep = step;
+          break;
+        }
+      }
+    }
   }
   gameState.age += ageStep; gameState.year += ageStep;
   gameState.lastAgeStep = ageStep;
@@ -510,6 +557,13 @@ function nextYear() {
   if(gameState.age < 10) eventPool = [].concat(CHILDHOOD_EVENTS);
   else if(gameState.age < 18) eventPool = [].concat(CHILDHOOD_EVENTS.slice(-4), TEENAGE_EVENTS);
   else eventPool = [].concat(ADULT_EVENTS);
+
+  // Filter out events that require a faction when player has none
+  eventPool = eventPool.filter(function(ev){
+    if(ev.factionReq === true && gameState.faction === 'none') return false;
+    if(ev.factionReq && ev.factionReq !== true && gameState.faction !== ev.factionReq) return false;
+    return true;
+  });
 
   // Filter out faction join events for factions already in factionHistory
   // and reduce faction join event probability by 70%

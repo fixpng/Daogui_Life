@@ -480,15 +480,14 @@ const ADULT_EVENTS = [
     {text:'与他结伴同行',effect:{connections:15,qiyun:3},log:'他是个有趣的旅伴，一路上你们聊得很开心'},
     {text:'保持距离',effect:{comprehension:3},log:'独行侠不需要同伴'},
     {text:'识破居心',effect:{comprehension:5,connections:-3},log:'他别有用心，你看穿了他的伎俩',req:{comprehension:20}}]},
-  {text:'<span class="fac">门派</span>举办比武大会，冠军可获丰厚奖赏。',choices:[
+  {text:'<span class="fac">门派</span>举办比武大会，冠军可获丰厚奖赏。',factionReq:true,choices:[
     {text:'报名参加',effect:{cultivation:10,connections:15,constitution:3,wealth:20},log:'你在比武中大放异彩！',req:{cultivation:20}},
     {text:'台下观战',effect:{comprehension:5,connections:5},log:'看别人打架也能学到不少'}]},
-  {text:'你在酒楼饮酒时，隔壁桌有人议论<span class="npc">你的师门</span>是非。',choices:[
-    {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'zuowang'}},
-    {text:'拍案而起',effect:{connections:-10,cultivation:5,karma:-3},log:'你打了一架，维护了师门名声',req:{faction:'aojing'}},
-    {text:'默默听完',effect:{comprehension:5},log:'有时候忍耐比冲动更需要勇气'},
+  {text:'你在酒楼饮酒时，隔壁桌有人在议论<span class="fac">修真界</span>的各种秘闻。',choices:[
+    {text:'凑过去仔细听',effect:{comprehension:8,connections:3},log:'你听到了一些有趣的消息，对修真界有了更多了解'},
+    {text:'加入讨论',effect:{connections:10,comprehension:3},log:'你参与了讨论，结交了几个志同道合的朋友'},
     {text:'喝完酒走人',effect:{sanity:3},log:'和自己无关的事不必在意'}]},
-  {text:'你对门派的<span class="mys">种种规矩</span>越来越感到束缚，心中萌生了离去之意。',choices:[
+  {text:'你对门派的<span class="mys">种种规矩</span>越来越感到束缚，心中萌生了离去之意。',factionReq:true,choices:[
     {text:'脱离门派，成为散修',effect:{faction:'none',connections:-15,cultivation:5,comprehension:10},log:'你递上辞别书，从此天高海阔'},
     {text:'留下来',effect:{connections:5},log:'有所归属也不是坏事'},
     {text:'找掌门谈谈',effect:{connections:3,comprehension:3},log:'掌门说了一番话，你暂时打消了念头'}]},
@@ -1773,6 +1772,94 @@ const CANONICAL_EVENTS = [
     {text:'与她并肩作战',effect:{connections:15,cultivation:10,comprehension:5},log:'左千户的实力远超你的想象——她继承了父亲的部分天道之力',combat:75},
     {text:'问她关于天陈的事',effect:{comprehension:12,connections:8,sanity:-5},log:'她沉默了很久，最后只说了一句："天陈已经不存在了。"'},
     {text:'保持同僚关系',effect:{connections:5},log:'她不太与人交谈，但你能感受到她心中的重担'}]},
+
+  // --- 岁岁（李岁/黑太岁） (year 8 ~ 40+) ---
+  {text:'你在<span class="loc">赵家村</span>附近遇到一个奇怪的小女孩——她自称<span class="npc">岁岁</span>，皮肤黝黑，眼神灵动却透着诡异。她叫<span class="npc">李火旺</span>"爹"，叫<span class="npc">白灵淼</span>"大娘"。',
+    trigger:{minAge:12,yearMin:5,yearMax:15},choices:[
+    {text:'和岁岁聊天',effect:{connections:10,sanity:-8,comprehension:8},log:'岁岁虽然看着像小孩，但说话老气横秋。她说她本体是黑太岁，是李火旺从青丘地下洞穴找来压制幻觉的'},
+    {text:'给她买糖吃',effect:{connections:5,karma:5,wealth:-3},log:'岁岁高兴地接过糖，然后身体突然变成一团黑色的黏稠物质又变回来——你被吓了一跳'},
+    {text:'保持距离',effect:{sanity:3},log:'那个小女孩身上有一种说不清的气息——不像人类'}]},
+  {text:'<span class="npc">岁岁</span>的真实身份在修士圈中传开了——她是<span class="mys">黑太岁</span>，能在两界间自由穿梭。据说她长期寄生在<span class="npc">李火旺</span>体内学习人类的一切，如今已是一个极为特殊的存在。',
+    trigger:{minAge:18,yearMin:10,yearMax:25},choices:[
+    {text:'请教岁岁关于两界的事',effect:{comprehension:15,sanity:-12,cultivation:10},log:'岁岁歪着头想了想说："两个世界嘛，我爹在两边都活着，但两边的他不一样。"这句话让你思考了很久'},
+    {text:'研究黑太岁的特性',effect:{comprehension:10,cultivation:8},log:'黑太岁能吞噬万物、变化形态，同时拥有极强的适应力。岁岁是目前已知最特殊的一只'},
+    {text:'不去招惹',effect:{},log:'黑太岁可不是善茬'}]},
+  {text:'<span class="npc">岁岁</span>在<span class="npc">季灾</span>成道后留在了人间，成为了<span class="fac">监天司</span>的特殊成员，同时也是<span class="fac">白莲教</span>的少主。她以黑太岁之身守护着两界的秩序——在某种意义上，她继承了父亲的意志。',
+    trigger:{minAge:20,yearMin:38,yearMax:50},choices:[
+    {text:'拜访岁岁',effect:{connections:15,cultivation:15,comprehension:10},log:'岁岁已经不再是那个古灵精怪的小女孩了，她目光深邃，身上同时有着监天司的肃穆和白莲教的慈悲'},
+    {text:'请求她的帮助',effect:{cultivation:20,connections:10,qiyun:10},log:'岁岁看了你一眼说："我爹以前也帮过很多人。"随后给了你一些指点'},
+    {text:'远远致敬',effect:{karma:5,qiyun:3},log:'季灾之女，黑太岁化身——她的存在本身就是一个奇迹'}]},
+
+  // --- 诸葛渊补充 (year 0 ~ 15) ---
+  {text:'<span class="npc">诸葛渊</span>路过你所在的城镇——这位修真界的传奇人物，据说修为通天，为人正直。他身边跟着一个叫<span class="npc">苏北</span>的年轻人。诸葛渊正在用一种奇怪的<span class="mys">文言文</span>写着什么。',
+    trigger:{minAge:12,yearMin:0,yearMax:15},choices:[
+    {text:'上前请教修行',effect:{cultivation:15,comprehension:15,connections:10},log:'诸葛渊看了你一眼，用文言文写了一段话递给你——那些文字竟然蕴含着修行的真意'},
+    {text:'远远观察',effect:{comprehension:8,cultivation:5},log:'你注意到诸葛渊写的文言文没有沾染任何司命的因果——这是一种极罕见的纯净力量'},
+    {text:'不打扰前辈',effect:{karma:3},log:'高人自有高人的事，你不便打扰'}]},
+  {text:'你得知<span class="npc">诸葛渊</span>正在为即将到来的大战做准备——他预感到了白玉京的危机。作为修真界最受敬仰的人物，他开始秘密联络各方势力。',
+    trigger:{minAge:15,yearMin:8,yearMax:16,cultivation:30},choices:[
+    {text:'加入诸葛渊的联盟',effect:{connections:20,cultivation:15,qiyun:10,comprehension:8},log:'你成为了诸葛渊麾下的一员——他的号召力让各方修士放下成见，联合起来'},
+    {text:'提供情报支援',effect:{connections:10,wealth:10,karma:5},log:'你将自己所知的消息传递给诸葛渊，他郑重地记下了'},
+    {text:'自己准备',effect:{cultivation:8,constitution:5},log:'大战将至，你需要提升自己的实力'}]},
+
+  // --- 骰子补充 (year 5 ~ 20) ---
+  {text:'你在<span class="loc">上京城</span>的一家赌坊里看到一个奇怪的人——他自称<span class="npc">骰子</span>，手中不停地摇着一个骰盅。每一次骰子落定，赌坊里就有人大喜或大悲。你直觉这不是普通的赌博。',
+    trigger:{minAge:15,yearMin:5,yearMax:18},choices:[
+    {text:'和骰子赌一局',effect:{wealth:30,sanity:-15,qiyun:-10},log:'你赢了——但你总觉得他是故意让你赢的。骰子笑了笑说："记住，你欠我一个人情。"'},
+    {text:'观察骰子的手法',effect:{comprehension:15,sanity:-10},log:'你发现骰子的每一次掷骰都在操纵现实——这不是赌技，这是坐忘道的术法'},
+    {text:'立刻离开',effect:{sanity:5},log:'直觉告诉你这个人极其危险——他看你的眼神像在看一颗棋子'}]},
+  {text:'<span class="npc">骰子</span>的真面目逐渐暴露——他不是人，而是<span class="fac">坐忘道</span>以<span class="mys">谎言天道</span>之力创造出的一个<span class="danger-text">概念体</span>。他能化身为任何人，操纵任何人的命运。<span class="fac">监天司</span>已将他列为头号通缉。',
+    trigger:{minAge:18,yearMin:10,yearMax:22,cultivation:40},choices:[
+    {text:'协助监天司追捕骰子',effect:{connections:15,cultivation:10,sanity:-15,qiyun:5},log:'追踪骰子的过程如同与影子搏斗——他可以是街边卖菜的老翁，可以是你身旁的同伴，甚至可以是你自己'},
+    {text:'收集骰子的情报',effect:{comprehension:12,connections:8,sanity:-8},log:'你发现骰子的最终目标是以皇帝身份号令兵家消灭监天司'},
+    {text:'远离此事',effect:{sanity:3},log:'骰子能变成任何人——你连信任谁都做不到'}]},
+
+  // --- 闻人诡（心浊） (year 0 ~ 25) ---
+  {text:'你听说有一个叫<span class="npc">闻人诡</span>的奇人——此人是<span class="mys">心浊</span>，能把东西或人藏进另一个空间，但代价是不断遗忘。据说他连自己的性别都快忘了。',
+    trigger:{minAge:15,yearMin:0,yearMax:25},choices:[
+    {text:'寻找闻人诡',effect:{comprehension:12,sanity:-10,cultivation:8},log:'你找到了闻人诡——或者说闻人诡找到了你。他看着你的眼睛说："你叫什么来着？"你才刚说过自己的名字'},
+    {text:'研究心浊的特性',effect:{comprehension:15,cultivation:5},log:'心浊的业障影响最深的不是别人而是自己——遗忘是心浊的宿命。闻人诡的头发可以强化法器，因此也被各方觊觎'},
+    {text:'不去找麻烦',effect:{},log:'心浊听起来比心素还可怕——连自我都会遗忘'}]},
+  {text:'<span class="npc">闻人诡</span>再次出现在你附近——但他似乎完全不记得你了。他的空间之力越来越强，但遗忘也越来越严重。他身上散发着一种令人心悸的<span class="mys">空间波动</span>。',
+    trigger:{minAge:20,yearMin:10,yearMax:30,cultivation:30},choices:[
+    {text:'试着帮他恢复记忆',effect:{connections:10,sanity:-10,comprehension:10,karma:5},log:'你用各种方法提醒他过去的事——他偶尔会露出一丝恍惚的表情，但很快又忘了'},
+    {text:'请他展示空间之力',effect:{cultivation:15,comprehension:12,sanity:-8},log:'闻人诡随手一挥，你面前的一块巨石就消失了——被他"藏"进了另一个空间。但他说他也不记得藏了什么了'},
+    {text:'只是远远看着',effect:{comprehension:5},log:'遗忘的天道...是三清掌管的力量吗？'}]},
+
+  // --- 孙夫子 (year 0 ~ 20) ---
+  {text:'一位名叫<span class="npc">孙夫子</span>的教书先生在乡间办私塾。他看起来平凡无奇，但你注意到他偶尔会用一种古怪的目光看向天空——仿佛能看到常人看不到的东西。',
+    trigger:{minAge:10,yearMin:0,yearMax:20},choices:[
+    {text:'拜他为师',effect:{comprehension:15,connections:10,cultivation:5},log:'孙夫子教你读书识字，但偶尔会说一些意味深长的话——"这世道啊，表面的东西都是假的"'},
+    {text:'送孩子去他的私塾',effect:{connections:5,karma:5,wealth:-5},log:'孙夫子的私塾很受欢迎，据说他教出来的学生都特别机敏'},
+    {text:'只是路过',effect:{},log:'一个教书先生而已'}]},
+
+  // --- 柏雅（大齐守将/修士） (year 15 ~ 30) ---
+  {text:'在法教入侵<span class="loc">四齐</span>的战争中，一位名叫<span class="npc">柏雅</span>的大齐将领以死守城——他麾下的将士全部战死，但法教的大军被迟滞了整整三天。这三天救了数万难民的命。',
+    trigger:{minAge:15,yearMin:20,yearMax:30},choices:[
+    {text:'前往祭拜柏雅',effect:{karma:10,qiyun:8,comprehension:5,connections:5},log:'柏雅的坟前已有无数人来过——一个凡人以血肉之躯抵挡了邪神的军队，这份意志令人敬畏'},
+    {text:'继承柏雅的意志参军',effect:{cultivation:10,constitution:5,connections:15,karma:8},log:'你加入了抵抗法教的队伍，柏雅的名字成为了所有士兵的信仰'},
+    {text:'默默铭记',effect:{karma:5,comprehension:3},log:'这世上有些人注定要被记住'}]},
+
+  // --- 监天司·苗通 (year 5 ~ 18) ---
+  {text:'<span class="fac">监天司</span>的<span class="npc">苗通</span>——一个看起来笑眯眯的中年胖子——突然造访此地。别看他表面和善，据说他手上沾了不少邪修的血。',
+    trigger:{minAge:15,yearMin:5,yearMax:18},choices:[
+    {text:'与苗通交谈',effect:{connections:10,comprehension:5,sanity:-3},log:'苗通笑呵呵地问了你很多问题——你后来才意识到他在盘查你是否有邪修嫌疑'},
+    {text:'请苗通帮忙处理邪祟',effect:{connections:8,karma:5,qiyun:5},log:'苗通三下五除二就解决了困扰此地多年的邪祟——监天司的实力果然不凡'},
+    {text:'躲着他',effect:{sanity:3},log:'监天司的人来从来不是好事'}]},
+
+  // --- 监天司·玄牝补充 (year 15 ~ 35) ---
+  {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>的真实身份被揭露——她不是人类，而是<span class="mys">蟠螭</span>一族的龙人。她体内流淌着龙脉之血，能化身六爪金龙。这个秘密让整个监天司震动。',
+    trigger:{minAge:18,yearMin:15,yearMax:30,cultivation:40},choices:[
+    {text:'去见玄牝',effect:{connections:15,cultivation:10,comprehension:10,sanity:-5},log:'玄牝的龙威令人窒息——她虽是龙人，但为守护大梁已经付出了太多'},
+    {text:'研究龙人血脉',effect:{comprehension:15,cultivation:8},log:'龙人是蟠螭司命的后裔，体内的龙脉之血赋予了他们秩序天道的力量碎片'},
+    {text:'无所谓',effect:{},log:'人也好龙也好，能守护天下就是好人'}]},
+
+  // --- 大千录（袄景教传承法器） (year 10 ~ 25) ---
+  {text:'你无意中接触到了<span class="fac">袄景教</span>的传承法器<span class="itm">大千录</span>——这部古书记载了袄景教所有的登阶功法。书页上的文字在你触碰时跳动如活物。',
+    trigger:{minAge:18,yearMin:10,yearMax:25,cultivation:25},choices:[
+    {text:'翻阅大千录',effect:{cultivation:20,comprehension:15,sanity:-15,karma:-5},log:'大千录中的功法极其残忍——但确实蕴含着通往痛苦天道的路径。你理解了为什么袄景教徒甘愿自残'},
+    {text:'交给监天司',effect:{connections:15,karma:10,qiyun:5},log:'监天司对你的义举大加赞赏——大千录落入邪修手中后果不堪设想'},
+    {text:'原封不动放回去',effect:{sanity:5},log:'有些东西不该被翻开'}]},
 ];
 
 // === LOCAL STORIES (birthplace/location-specific events) ===
