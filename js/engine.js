@@ -218,7 +218,7 @@ function confirmBorn() {
       console.warn('watchdog: game stuck detected, resuming');
       scheduleNext();
     }
-  }, 5000);
+  }, 3000);
 }
 
 // === TOOLTIPS ===
@@ -328,6 +328,7 @@ function getMaxAge() {
 function nextYear() {
   if(!gameState.alive) return;
   if(waitingForChoice) return;
+  try {
   // 90岁后年岁跨度随机增大，修为越高跨度越大
   // 但有重大事件的年头不会被跳过（先试算事件池）
   var ageStep = 1;
@@ -1257,6 +1258,11 @@ function nextYear() {
 
   updateDisplay();
   scheduleNext();
+  } catch(e) {
+    console.error('nextYear error:', e);
+    // 保证游戏不会卡住
+    scheduleNext();
+  }
 }
 
 // === AUDIO STATE UPDATE ===
@@ -1815,7 +1821,9 @@ function toggleAuto() {
   btn.classList.toggle('active', autoMode);
   btn.textContent = autoMode ? '⏸ 暂停' : '▶ 继续';
   if(autoMode && gameState.alive) {
-    scheduleNext();
+    if(!waitingForChoice) {
+      nextYear(); // 立即推进一步，后续由 scheduleNext 接管
+    }
   } else {
     if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   }
