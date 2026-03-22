@@ -394,8 +394,7 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='dan_yang_chuan';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.comprehension += 1; }
   if(gameState.talents.find(function(t){return t.id==='she_dao_ren';}) && Math.random()<0.10) { gameState.connections += 2; }
   if(gameState.talents.find(function(t){return t.id==='nuo_wu_ti';}) && Math.random()<0.08) { gameState.cultivation += 2; gameState.sanity = Math.min(120, gameState.sanity + 1); }
-  if(gameState.talents.find(function(t){return t.id==='shuang_sheng';}) && Math.random()<0.10) { gameState.comprehension += 2; gameState.sanity = Math.max(0, gameState.sanity - 2); }
-  if(gameState.talents.find(function(t){return t.id==='ba_xu_xue_mai';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.constitution += 1; }
+  if(gameState.talents.find(function(t){return t.id==='kuang_lu';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.constitution += 1; }
   if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.15) { gameState.cultivation += 2; }
   if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.12) { gameState.constitution += 1; }
 

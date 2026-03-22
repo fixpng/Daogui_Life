@@ -22,11 +22,8 @@ const TALENTS = {
     {id:'hong_yan',name:'火眼',desc:'修炼火功法门事半功倍，与红莲业火有缘',effect:{cultivation:20,constitution:10},type:'special',rarity:'epic',hint:'修为+20 体魄+10 火系功法威力倍增'},
     {id:'dan_yang_chuan',name:'丹阳传承',desc:'身负丹阳子残留道意，与天书有天然联系',effect:{cultivation:20,comprehension:15,sanity:-5},type:'special',rarity:'legendary',hint:'修为+20 悟性+15 神志-5 与丹阳子传承相关事件概率提升'},
     {id:'she_dao_ren',name:'赊刀人血统',desc:'监天司赊刀人后裔，天生能感知邪祟',effect:{cultivation:15,connections:15,comprehension:10},type:'special',rarity:'epic',hint:'修为+15 人脉+15 悟性+10 监天司好感度提升'},
-    {id:'wu_sheng_xin_pan',name:'无生老母心蟠',desc:'你是无生老母的心蟠之一，天生拥有慈悲之力',effect:{cultivation:25,sanity:15,karma:20,connections:10},type:'special',rarity:'legendary',hint:'修为+25 神志+15 因果+20 人脉+10 白莲教视你为圣物'},
-    {id:'ba_xu_xue_mai',name:'巴虺血脉',desc:'体内流淌着远古巴虺的血液，以痛苦喂养力量',effect:{cultivation:20,constitution:20,sanity:-15,karma:-10},type:'special',rarity:'epic',hint:'修为+20 体魄+20 神志-15 因果-10 袄景教视你为圣体'},
     {id:'fu_sheng_tian_yin',name:'福生天印',desc:'被福生天污染的胎记，天生与腐朽之力相连',effect:{cultivation:25,sanity:-25,qiyun:-15,comprehension:10},type:'special',rarity:'legendary',hint:'修为+25 悟性+10 神志-25 气运-15 能感知福生天的气息'},
     {id:'nuo_wu_ti',name:'傩巫体',desc:'天生可以承载傩面的力量，大傩仪式中人格不会崩溃',effect:{cultivation:15,sanity:10,constitution:10,comprehension:10},type:'special',rarity:'epic',hint:'修为+15 神志+10 体魄+10 悟性+10 傩面对你无副作用'},
-    {id:'shuang_sheng',name:'双生',desc:'你有一个看不见的"双生体"，ta存在于另一个世界',effect:{cultivation:15,sanity:-20,comprehension:15,qiyun:5},type:'special',rarity:'epic',hint:'修为+15 悟性+15 气运+5 神志-20 偶尔能听见另一个自己的声音'},
     {id:'tian_dao_qi_zi',name:'天道弃子',desc:'被天道遗忘的存在，不受天道规则约束但也无法得到庇护',effect:{cultivation:10,qiyun:-20,karma:0,constitution:15,comprehension:15},type:'special',rarity:'legendary',hint:'修为+10 体魄+15 悟性+15 气运-20 天道对你无感'},
   ],
   good: [
