@@ -291,10 +291,30 @@ const CHILDHOOD_EVENTS = [
     {text:'在佛像下蜷缩入睡',effect:{sanity:-5,cultivation:3},log:'你梦到了一些奇怪的画面——金光、莲花、还有一座倒悬的城'},
     {text:'生一堆火取暖',effect:{sanity:3,constitution:2},log:'火光照亮了破庙，你觉得不那么害怕了'}]},
   // === 清风观相关：被丹阳子拐走 ===
-  {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，说要收<span class="mys">有仙缘的孩子</span>去<span class="loc">清风观</span>修行。',
+  {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，带着几个衣衫褴褛的小孩。他笑眯眯地看着你说："<span class="mys">这孩子有仙缘</span>，不如跟贫道去<span class="loc">清风观</span>修行，包吃包住。"你的父母犹豫不决。',
     choices:[
-    {text:'跟着道长走',effect:{cultivation:8,sanity:-15,constitution:-5},log:'你被带到了清风观，那里有很多和你一样的孩子...但你逐渐发现他们都是"药引子"',visit:'qing_feng'},
-    {text:'没有跟去',effect:{sanity:3,qiyun:5},log:'你留了下来'}]},
+    {text:'跟着道长走',effect:{cultivation:5,sanity:-10,constitution:-5},log:'你被带进了清风观。那里有很多和你一样大的孩子……你们每天被喂各种苦涩的药汤，丹阳子说这是"筑基"。但有几个孩子喝完药后就再也没出来过。',visit:'qing_feng'},
+    {text:'大哭大闹不肯去',effect:{sanity:3,qiyun:5},log:'你死死抱住娘亲的腿，丹阳子叹了口气走了。后来你听说村里有几个小孩跟他走了，再也没回来。'},
+    {text:'被父母送去',effect:{cultivation:3,sanity:-8,constitution:-3,karma:-5},log:'你的父母收了丹阳子给的十两银子，把你送上了山。你回头看他们的背影，心中五味杂陈。',visit:'qing_feng'}]},
+  // === 清风观后续：药引子生涯 ===
+  {text:'在<span class="loc">清风观</span>里，你和其他孩子每天都要喝丹阳子配的<span class="danger-text">丹药</span>。有个比你大的孩子悄悄告诉你："<span class="danger-text">我们不是弟子，是药引子。</span>"他说上个月那个叫小六的孩子被"炼"了。',
+    locReq:'qing_feng',choices:[
+    {text:'想办法逃跑',effect:{constitution:-8,sanity:-5,qiyun:8},log:'你趁夜翻墙，但清风观四周都是阵法。你被抓了回来，丹阳子罚你禁食三天。'},
+    {text:'乖乖听话等机会',effect:{sanity:-12,cultivation:5,comprehension:3},log:'你假装顺从，暗中观察清风观的布局。你发现后山有一条被荒草掩盖的小路…'},
+    {text:'偷偷藏药不喝',effect:{sanity:5,constitution:-3},log:'你把药吐在袖子里。虽然饿得头晕，但至少那些怪药没进你身体。'}]},
+  // === 清风观后续：火子哥来了 ===
+  {text:'清风观来了一个新的孩子——一个<span class="npc">眼神很倔的少年</span>，大家叫他<span class="npc">火子哥</span>。他和别的孩子不一样，总是盯着空气发呆，然后突然说一些莫名其妙的话，比如"<span class="mys">这不是真的</span>""<span class="mys">我在精神病院</span>"。',
+    locReq:'qing_feng',choices:[
+    {text:'和火子哥交朋友',effect:{connections:15,sanity:-8,comprehension:5},log:'火子哥会在夜里给大家讲"另一个世界"的事。他说那边的人管你们的经历叫"幻觉"，而他在那边被绑在床上打针。你不知该信谁。'},
+    {text:'觉得他疯了',effect:{sanity:5},log:'你避开那个总说胡话的少年。但有时你半夜醒来，会看到他坐在窗边，身上散发着微弱的光…'},
+    {text:'暗中观察他',effect:{comprehension:8,sanity:-5},log:'你发现火子哥的话虽然听着疯，但他是清风观里唯一一个不怕丹阳子的人。'}]},
+  // === 清风观后续：逃离 ===
+  {text:'一天深夜，<span class="loc">清风观</span>突然<span class="danger-text">天崩地裂</span>！火子哥不知从哪弄来了<span class="npc">丹阳子</span>的宝剑，在大殿里和丹阳子打了起来。丹药炉翻倒，整座观都在燃烧。火子哥朝你们喊："<span class="npc">快跑！！</span>"',
+    locReq:'qing_feng',choices:[
+    {text:'跟着火子哥一起跑',effect:{constitution:-10,sanity:-15,cultivation:10,connections:20,qiyun:10,karma:5},log:'你们在火光中拼命奔跑。有人摔倒了，火子哥回去背起他继续跑。你们终于逃出了清风观——身后的道观化为一片火海。火子哥清点人数：活下来的只有一半。'},
+    {text:'趁乱从后山小路跑',effect:{constitution:-5,sanity:-8,qiyun:5},log:'你没有跟火子哥走，而是选了之前发现的后山小路。你一个人跑了整整一夜，天亮时已经完全不知道自己在哪。至少你还活着。'},
+    {text:'回去救更多人',effect:{constitution:-20,sanity:-20,cultivation:8,karma:15,connections:10},log:'你冲回熊熊燃烧的清风观救人。你拉出了三个被困的孩子，但自己也被火焰灼伤了。火子哥最后把你拽了出来："傻子！你不要命了！"'},
+    {text:'吓得躲在角落不敢动',effect:{sanity:-25,constitution:-20},log:'你蜷缩在墙角瑟瑟发抖。火焰烧到了身边，是另一个孩子拽着你跑出来的。你被烧伤得很重，但活了下来。你看到丹阳子的尸体倒在废墟里——他终于死了。'}]},
   // === 出生地相关童年事件 ===
   {text:'<span class="loc">赵家村</span>的老人们说，村后那口<span class="mys">古井</span>里住着一位井仙，每逢旱季会显灵。今年大旱，全村人跪在井边。',
     locReq:'zhao_cun',choices:[
@@ -2640,4 +2660,127 @@ const XINPAN_EVENTS = [
     {text:'全力压制失控的力量',effect:{cultivation:-10,sanity:-15,constitution:-10,karma:10},log:'你拼尽全力才压制住了失控的力量——但你知道，下一次可能压不住了'},
     {text:'顺应失控，让力量自然宣泄',effect:{cultivation:30,sanity:-20,karma:-15,connections:-10},log:'力量宣泄后你变得更强了——但周围的惨状让你良心不安'},
     {text:'将失控的力量导入地脉',effect:{cultivation:15,qiyun:10,comprehension:10,constitution:-5},log:'你将多余的力量导入了地脉——那片土地将来会诞生一处灵脉'}]},
+];
+
+// ========== 天赋专属事件 ==========
+const TALENT_EVENTS = [
+  // ===== 好天赋 =====
+  {check:'dao_xian',trigger:{minAge:10},text:'你在<span class="loc">山间</span>打坐时，天地灵气突然<span class="mys">主动</span>向你汇聚。一位路过的散修惊叹："此子道缘深厚，百年难遇！"',choices:[
+    {text:'趁机修炼',effect:{cultivation:12,comprehension:8},log:'灵气灌体的感觉如沐春风，你的修为突飞猛进'},
+    {text:'询问散修如何修炼',effect:{comprehension:15,connections:5},log:'散修教了你一套呼吸吐纳之法，虽然简单，却让你受益终生'}]},
+  {check:'fu_gui',trigger:{minAge:8},text:'你家的<span class="itm">祖宅</span>翻修时，工人在地下挖出了一个铁箱——里面是祖上埋下的<span class="itm">金锭</span>和一本发黄的<span class="mys">古书</span>。',choices:[
+    {text:'把金子存起来',effect:{wealth:30,qiyun:5},log:'这笔横财让你家的日子更宽裕了'},
+    {text:'研究那本古书',effect:{cultivation:8,comprehension:10,wealth:10},log:'古书记载的是一种失传的吐纳术，虽然残缺不全，但你受益匪浅'}]},
+  {check:'ji_xing',trigger:{minAge:12},text:'你在悬崖边失足——本以为必死无疑，却<span class="mys">恰好</span>落在了一棵伸出崖壁的古松上。更离谱的是，树洞里还有一只玉瓶，里面装着三枚<span class="itm">丹药</span>。',choices:[
+    {text:'服用丹药',effect:{cultivation:10,constitution:8,qiyun:8},log:'丹药入腹，温热之气游走全身。这运气简直逆天'},
+    {text:'带回去找人鉴定',effect:{wealth:15,connections:5,qiyun:5},log:'药铺老板说这是百年灵芝丹，值不少银子'}]},
+  {check:'jian_kang',trigger:{minAge:15},text:'一场<span class="danger-text">瘟疫</span>席卷了你所在的城镇，病倒了大半的人。但你安然无恙——甚至连咳嗽都没有。',choices:[
+    {text:'照顾病人',effect:{karma:10,connections:15,constitution:3},log:'你不怕传染，尽心照料病患。活下来的人都记着你的恩'},
+    {text:'趁机外出闯荡',effect:{wealth:10,cultivation:5,qiyun:3},log:'别人卧病在床，你却精力旺盛'}]},
+  {check:'shou_xing',trigger:{minAge:50},text:'同辈人已经白发苍苍，你却<span class="mys">面色红润</span>如同壮年。有人怀疑你修炼了驻颜之术。',choices:[
+    {text:'装作自己也老了',effect:{connections:8,comprehension:3},log:'你开始佝偻着走路，说话也故意放慢'},
+    {text:'收弟子传道',effect:{connections:15,cultivation:5,karma:5},log:'你的长寿让人觉得你道行高深，不少年轻人来拜师'}]},
+  {check:'mei_mao',trigger:{minAge:14},text:'你出落得越发好看，连城里最挑剔的媒婆都说你是"<span class="itm">百里挑一</span>"。但好看也引来了麻烦——有个<span class="danger-text">恶霸公子</span>看上了你。',choices:[
+    {text:'巧言周旋',effect:{connections:10,qiyun:3},log:'你用三寸不烂之舌把恶霸哄得团团转，化险为夷'},
+    {text:'托人牵线认识贵人',effect:{connections:20,wealth:10},log:'你的美貌引起了一位贵人的注意，有了新的靠山'}]},
+  {check:'kou_cai',trigger:{minAge:12},text:'集市上两家铺子为了地界吵得不可开交，眼看就要动手。你路过随口说了几句，竟然把两边都说服了。',choices:[
+    {text:'趁机当调停人',effect:{connections:15,wealth:8,karma:5},log:'两家掌柜都感谢你，各送了你礼物'},
+    {text:'帮弱的那方说话',effect:{karma:10,connections:5,wealth:3},log:'你为弱势一方据理力争，留下了好名声'}]},
+  {check:'zhi_hui',trigger:{minAge:10},text:'一位<span class="npc">游方术士</span>在路边摆了一道<span class="mys">字谜</span>，说谁解出来就收谁做徒弟。围了一圈人都猜不出。你看了一眼就有了答案。',choices:[
+    {text:'说出答案',effect:{comprehension:12,cultivation:8,connections:5},log:'术士大喜，教了你几手看风水的本事'},
+    {text:'不说出来，自己记下',effect:{comprehension:15},log:'你把字谜的思路记在心里，日后触类旁通'}]},
+  {check:'wu_xing',trigger:{minAge:10},text:'你无师自通地打出了一套拳法——招式粗糙但气势凌厉。一个经过的<span class="npc">镖师</span>看呆了。',choices:[
+    {text:'拜镖师为师',effect:{constitution:10,cultivation:8,connections:5},log:'镖师教了你三年基本功，筋骨更加强健'},
+    {text:'自己练',effect:{cultivation:10,constitution:5,comprehension:5},log:'你按自己的理解不断改良那套拳法'}]},
+  {check:'gui_ren',trigger:{minAge:15},text:'你在路边帮一个摔倒的<span class="npc">老者</span>捡东西。老者起身后从袖中取出一块<span class="itm">玉牌</span>："日后有难，持此牌去<span class="loc">鲁城</span>找李掌柜。"',choices:[
+    {text:'收下玉牌',effect:{qiyun:10,connections:15},log:'你不知道那老者是谁，但这块玉牌温润异常'},
+    {text:'追上去问清楚',effect:{connections:10,comprehension:5,qiyun:5},log:'老者笑而不答，只说"缘分到了自会明白"'}]},
+  {check:'xian_gu',trigger:{minAge:12},text:'你的骨骼在月光下竟然<span class="mys">微微发光</span>。一个路过的修士跪了下来："天生道体！前辈请受晚辈一拜！"',choices:[
+    {text:'表示你不是什么前辈',effect:{connections:5,sanity:5,cultivation:5},log:'修士不信，非要拜你为师'},
+    {text:'让修士教你修炼之法',effect:{cultivation:15,comprehension:10},log:'修士恭恭敬敬地把会的功法都教给了你'}]},
+  {check:'fu_yuan',trigger:{minAge:10},text:'你梦见一个<span class="mys">金光闪闪的老者</span>对你微笑，醒来后枕头底下多了一枚<span class="itm">古铜钱</span>。',choices:[
+    {text:'随身携带铜钱',effect:{qiyun:12,karma:5,wealth:5},log:'自从带上铜钱后，你做什么事都格外顺利'},
+    {text:'去找人解读文字',effect:{comprehension:10,cultivation:5,karma:8},log:'老先生说这是"积善令"，只有前世大善之人才配得上'}]},
+  {check:'tian_yun',trigger:{minAge:15},text:'你随手买的一张<span class="itm">彩头</span>中了头彩。用银子请朋友吃饭时，又在饭馆捡到了一个<span class="itm">储物袋</span>。',choices:[
+    {text:'物归原主',effect:{karma:15,connections:10,qiyun:5},log:'失主感激涕零，送了你不少好东西'},
+    {text:'据为己有',effect:{wealth:25,qiyun:-5,karma:-10},log:'储物袋里有不少好东西，但你心里隐隐不安'}]},
+  {check:'zhuan_yun',trigger:{minAge:18},text:'连续遭遇三件倒霉事后，你发现水沟里泡出了<span class="itm">灵石</span>，追你的狗叼来了<span class="itm">灵草</span>，偷钱的小偷被抓你还得了赏银。',choices:[
+    {text:'感叹自己的运气',effect:{qiyun:10,wealth:10,cultivation:5},log:'别人都说你是"倒霉到头就是运"的命格'},
+    {text:'把灵石灵草卖了',effect:{wealth:20,qiyun:3},log:'灵石和灵草换了不少银子'}]},
+  {check:'ling_gen',trigger:{minAge:10},text:'你第一次接触修炼功法时，体内的<span class="mys">灵根</span>自发共振——天地灵气如溪水般汇入经脉。',choices:[
+    {text:'加倍修炼',effect:{cultivation:15,comprehension:8},log:'灵根让修炼事半功倍，很快超过了同期修士'},
+    {text:'稳扎稳打',effect:{cultivation:8,constitution:5,sanity:5},log:'你没有贪多，基础打得极牢'}]},
+  {check:'shan_min',trigger:{minAge:12},text:'你在路边发现一只受伤的<span class="npc">白鹤</span>，翅膀折了，奄奄一息。',choices:[
+    {text:'带回去养伤',effect:{karma:12,qiyun:8,connections:3},log:'白鹤治好后绕着你飞了三圈才离去。后来你梦到白鹤化为人形向你道谢'},
+    {text:'请郎中来治',effect:{karma:8,wealth:-5,connections:5},log:'郎中说你心善，给你打了个折'}]},
+  {check:'tie_gu',trigger:{minAge:12},text:'一块从山上滚落的巨石砸中了你——旁人以为你死了。但你从石头下面爬出来，只是擦破了点皮。',choices:[
+    {text:'用石头锤炼身体',effect:{constitution:12,cultivation:5},log:'铁骨之名不是白叫的'},
+    {text:'装作很疼的样子',effect:{connections:5,sanity:3},log:'你不想太引人注目'}]},
+  {check:'duo_mou',trigger:{minAge:14},text:'一伙<span class="danger-text">山贼</span>占据要道，官兵久攻不下。你看了地形，提了个计策……',choices:[
+    {text:'献计断贼水源',effect:{connections:20,wealth:10,karma:5,comprehension:5},log:'山贼三天后投降。县令亲自设宴感谢你'},
+    {text:'渔翁得利',effect:{wealth:20,comprehension:8,karma:-5},log:'你两边传话，趁乱捞了不少好处'}]},
+  {check:'jing_shang',trigger:{minAge:14},text:'你发现邻村的<span class="itm">药材</span>在城里能卖三倍价格，而城里的<span class="itm">布匹</span>在村里也是稀罕物。',choices:[
+    {text:'开始做买卖',effect:{wealth:25,connections:10},log:'你很快赚到了第一桶金'},
+    {text:'拉人合伙做大',effect:{wealth:15,connections:20,comprehension:3},log:'生意越做越大'}]},
+  {check:'yi_xin',trigger:{minAge:10},text:'邻居家孩子发高烧，郎中束手无策。你不知为何随手采了几种草药熬汤——孩子喝下去竟然<span class="mys">退烧了</span>。',choices:[
+    {text:'跟郎中学医',effect:{comprehension:10,constitution:5,connections:8,karma:5},log:'郎中惊叹你的药理天赋，收你为徒'},
+    {text:'继续自己摸索',effect:{comprehension:12,cultivation:5},log:'你凭直觉配药的能力越来越强'}]},
+  // ===== 坏天赋 =====
+  {check:'ji_bing',trigger:{minAge:12},text:'你又一次病倒了——咳血不止，郎中说你<span class="danger-text">命不久矣</span>。但在昏迷中你看到了一片<span class="mys">奇异的光芒</span>。',choices:[
+    {text:'追寻那道光',effect:{cultivation:10,sanity:-8,comprehension:8},log:'你在梦中修炼了不知多久——醒来后病竟好了大半'},
+    {text:'拼命求活',effect:{constitution:5,sanity:-5,karma:3},log:'你咬着牙挺了过来。意志更坚韧了一分'}]},
+  {check:'pin_kun',trigger:{minAge:10},text:'你饿了三天——在垃圾堆里翻到了一本被人丢弃的<span class="mys">残破功法</span>。',choices:[
+    {text:'如获至宝地研读',effect:{cultivation:8,comprehension:10},log:'功法残缺不全，但精神食粮比面包更珍贵'},
+    {text:'拿去卖钱买吃的',effect:{wealth:8,constitution:3},log:'功法卖了几文钱，够吃两天了'}]},
+  {check:'can_ji',trigger:{minAge:10},text:'一个老瞎子在你身边坐下："<span class="mys">身残心不残</span>，你的心比那些健全人清明得多。来，我教你用心去感知这个世界。"',choices:[
+    {text:'跟老瞎子学',effect:{comprehension:15,cultivation:8,sanity:5},log:'身体的残缺反而让你其他感官更加敏锐'},
+    {text:'婉拒',effect:{sanity:5,karma:3},log:'你谢过老瞎子。也许你还没准备好'}]},
+  {check:'zai_min',trigger:{minAge:8},text:'又一次逃难——这次是洪水。你背着仅有的包裹，前面路断了，后面水在涨。',choices:[
+    {text:'拼命游过去',effect:{constitution:5,cultivation:3,sanity:-8},log:'你差点淹死，但爬上了对岸。第三次死里逃生'},
+    {text:'爬上树等救援',effect:{sanity:-5,connections:5},log:'你在树上等了两天两夜，一支官军救了你'}]},
+  {check:'yu_ben',trigger:{minAge:12},text:'其他人功法一遍就会，你练了一百遍还是一团糟。但有天你搬柴时突然顿悟——原来精髓不在招式，在<span class="mys">呼吸</span>。',choices:[
+    {text:'按自己理解重新修炼',effect:{cultivation:10,comprehension:10},log:'方法笨拙但扎实。师傅说："倒也...不是不行"'},
+    {text:'继续死磕原版',effect:{cultivation:5,constitution:5},log:'又练了几百遍，终于像模像样了'}]},
+  {check:'e_meng',trigger:{minAge:10},text:'今晚噩梦格外清晰——<span class="loc">倒悬的城市</span>里，一个身影递给你一卷<span class="mys">竹简</span>。你醒来后竟记得每个字。',choices:[
+    {text:'按竹简上说的修炼',effect:{cultivation:12,comprehension:8,sanity:-10},log:'竹简记载借梦修炼之法。噩梦或许也是机缘'},
+    {text:'告诉别人你的梦',effect:{connections:5,sanity:-5},log:'没人信你'}]},
+  {check:'du_zhai',trigger:{minAge:12},text:'追债的人又来了——这次要<span class="danger-text">拿人抵债</span>。你被堵在了巷子里。',choices:[
+    {text:'拼死反抗',effect:{constitution:-8,cultivation:5,connections:5},log:'你打伤了一个追债的，他们暂时不敢来了'},
+    {text:'开口谈判',effect:{connections:8,wealth:-10,comprehension:3},log:'你硬着头皮说服他们再宽限一月'}]},
+  {check:'chou_lou',trigger:{minAge:14},text:'你又被当面嘲笑了。酒楼客人指着你大笑："长成这样也敢出门？"',choices:[
+    {text:'默默离开',effect:{sanity:-5,comprehension:5,cultivation:3},log:'丑就丑吧，丑人也能修道'},
+    {text:'回怼："相由心生，你心更丑"',effect:{connections:3,karma:3,sanity:3},log:'那人被怼得哑口无言。旁边有人鼓掌'}]},
+  {check:'bai_bing',trigger:{minAge:8},text:'你同时得了三种病——郎中开了药，但药互相冲突。你凭本能改了一味……竟然<span class="mys">痊愈了</span>。',choices:[
+    {text:'研究药理',effect:{comprehension:12,constitution:3,cultivation:3},log:'百病缠身反而让你对药理有了超乎常人的直觉'},
+    {text:'只是碰巧',effect:{constitution:5,sanity:3},log:'你把这当成运气。但郎中看你的眼神变了'}]},
+  {check:'sha_qi',trigger:{minAge:12},text:'你身边又出事了——和你说句话的路人出门就摔断了腿。人们开始远远避开你。',choices:[
+    {text:'独自修炼煞气',effect:{cultivation:10,sanity:-8,connections:-5},log:'煞气并非全是坏事——邪物不敢靠近你'},
+    {text:'寻找化解之法',effect:{comprehension:8,karma:5,connections:3},log:'一个不怕煞气的老道士说煞气可以引导，不必消除'}]},
+  {check:'mo_ying',trigger:{minAge:10},text:'你终于<span class="mys">看清了</span>那个一直跟着你的影子——它长着你的脸，但笑容是扭曲的。它开口了："<span class="danger-text">你我本是一体。</span>"',choices:[
+    {text:'和魔影对话',effect:{cultivation:10,comprehension:10,sanity:-15},log:'魔影说它是你的"另一面"。你问它想要什么，它说："我想活。"'},
+    {text:'试图驱逐魔影',effect:{constitution:-5,sanity:-8,cultivation:5},log:'驱邪咒暂时有效——但它很快又出现了。它不是鬼，是你自己的一部分'}]},
+  {check:'ye_zhang',trigger:{minAge:15},text:'古庙中佛像的眼珠转向了你。一个声音："<span class="danger-text">前世造业者，今生必偿。</span>你前世害了三十七条人命。"',choices:[
+    {text:'跪下忏悔',effect:{karma:15,sanity:-10,cultivation:5},log:'你跪了一天一夜。起身时感觉轻了——业障消减了一分'},
+    {text:'反问："我凭什么替前世还债？"',effect:{comprehension:10,karma:-5,cultivation:8},log:'佛像沉默了。你第一次思考因果的本质'}]},
+  {check:'ti_ruo',trigger:{minAge:10},text:'你<span class="danger-text">又</span>被一阵风吹倒了——不是修辞，是真的。但你在摔倒瞬间感受到了风中的<span class="mys">灵气流动</span>。',choices:[
+    {text:'研究风中的灵气',effect:{comprehension:12,cultivation:8},log:'体弱得被风吹倒，但也因此比谁都更能感知风的变化'},
+    {text:'想办法强身健体',effect:{constitution:8,cultivation:3},log:'每天跑步锻炼——虽然跑不远就喘，但比以前好了'}]},
+  {check:'po_yun',trigger:{minAge:12},text:'出门踩钉子，买东西被骗，回家房子漏了。但修屋顶时在瓦片缝隙里发现了前任房客藏的一个<span class="itm">玉佩</span>。',choices:[
+    {text:'留着玉佩',effect:{qiyun:8,cultivation:5,wealth:5},log:'玉佩上刻着一个"逆"字。也许你就是要逆运而行'},
+    {text:'卖掉换钱',effect:{wealth:15,qiyun:3},log:'玉佩卖了不少钱'}]},
+  {check:'tian_sha',trigger:{minAge:15},text:'你的第三个朋友也出事了——骑马时马突然发疯。你开始信了：命犯<span class="danger-text">天煞</span>，不能靠近任何人。',choices:[
+    {text:'远离人群独自修炼',effect:{cultivation:12,comprehension:8,connections:-10},log:'你搬到山上独居。孤独是你的宿命'},
+    {text:'寻找破煞之法',effect:{connections:5,comprehension:10,karma:3},log:'算命先生说只有"至阳之物"才能破煞'}]},
+  {check:'shi_yi',trigger:{minAge:10},text:'你做了不像梦的梦——梦里你是<span class="mys">另一个人</span>，在一座辉煌的宫殿里走动。醒来后只记得一个字："<span class="mys">归</span>"。',choices:[
+    {text:'尝试回忆更多',effect:{comprehension:12,sanity:-10,cultivation:5},log:'断断续续想起了些画面——剑、光、一扇巨大的门'},
+    {text:'不管它，过好这辈子',effect:{sanity:5,constitution:3},log:'前世的事留给前世吧'}]},
+  {check:'gui_ying',trigger:{minAge:8},text:'附在你身上的<span class="danger-text">鬼魂</span>今晚格外躁动——它低语："<span class="mys">让我出来……我只想看看月亮……</span>"',choices:[
+    {text:'允许它借用你的眼睛',effect:{sanity:-12,cultivation:8,comprehension:5},log:'鬼魂看了月亮后安静了。它低声说了句"谢谢"'},
+    {text:'用力压制它',effect:{sanity:-5,constitution:-3,cultivation:5},log:'你用意志力把鬼魂压了回去。它发出了悲鸣'}]},
+  {check:'fan_gu',trigger:{minAge:14},text:'师傅让你跟大家一起练功，你偏不。你觉得他们的功法<span class="danger-text">全是垃圾</span>。师傅气得要赶你走。',choices:[
+    {text:'走就走',effect:{cultivation:8,comprehension:10,connections:-10},log:'你离开师门，一个人摸索出了一条野路子'},
+    {text:'表面服软暗中改造',effect:{comprehension:8,cultivation:5,connections:3},log:'暗中把功法改了一遍，结果居然比原版好用'}]},
+  {check:'duan_ming',trigger:{minAge:18},text:'一个<span class="npc">相士</span>拉住你："施主面有<span class="danger-text">死气</span>，恐怕不过而立之年。"',choices:[
+    {text:'问有无破解之法',effect:{comprehension:8,cultivation:5,wealth:-10},log:'相士说唯有修真可延寿，卖了你一本入门功法'},
+    {text:'既然命短就活得精彩',effect:{qiyun:10,cultivation:5,karma:3,sanity:5},log:'不怕死的人反而活得比谁都洒脱'}]},
 ];

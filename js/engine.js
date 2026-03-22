@@ -199,6 +199,16 @@ function confirmBorn() {
   var delay = SPEED_DELAYS[speed] || 3000;
   clearTimeout(autoTimer);
   autoTimer = setTimeout(nextYear, delay);
+
+  // 启动看门狗：每5秒检测是否卡住
+  clearInterval(window._watchdog);
+  window._watchdog = setInterval(function(){
+    if(autoMode && gameState.alive && !waitingForChoice && !autoTimer) {
+      console.warn('watchdog: game stuck detected, resuming');
+      var d = SPEED_DELAYS[speed] || 3000;
+      autoTimer = setTimeout(nextYear, d);
+    }
+  }, 5000);
 }
 
 // === TOOLTIPS ===
@@ -969,6 +979,20 @@ function nextYear() {
 
   // Add cultivation-tier events
   if(typeof CULTIVATION_TIER_EVENTS !== 'undefined') {
+
+  // Add talent-specific events
+  if(typeof TALENT_EVENTS !== 'undefined') {
+    TALENT_EVENTS.forEach(function(te){
+      if(te.check && !gameState.talents.find(function(t){return t.id===te.check;})) return;
+      if(te.trigger) {
+        if(te.trigger.minAge && gameState.age < te.trigger.minAge) return;
+        if(te.trigger.maxAge && gameState.age > te.trigger.maxAge) return;
+        if(te.trigger.cultivation && gameState.cultivation < te.trigger.cultivation) return;
+      }
+      eventPool.push(te);
+    });
+  }
+
     CULTIVATION_TIER_EVENTS.forEach(function(ce){
       if(ce.cultMin !== undefined && gameState.cultivation < ce.cultMin) return;
       if(ce.cultMax !== undefined && gameState.cultivation > ce.cultMax) return;
@@ -1076,7 +1100,8 @@ function nextYear() {
     quietYear();
   }
 
-  // Death checks
+  // Death checks - 仅在未等待选择时执行（避免事件显示中途被打断）
+  if(!waitingForChoice) {
   if(isXinsu && gameState.sanity <= 0) { unlockAchieve('mad'); gameOver('你彻底分不清<span class="mys">现实与幻觉</span>，在无尽的噩梦中彻底迷失了。'); return; }
   if(gameState.constitution <= 0) { unlockAchieve('body_break'); gameOver('你的<span class="danger-text">肉身崩溃</span>，经脉尽断，再也无法支撑下去。'); return; }
   var maxAge = getMaxAge();
@@ -1087,6 +1112,7 @@ function nextYear() {
   }
   if(gameState.wealth <= -80) { gameOver('你因<span class="danger-text">饥寒交迫</span>，倒毙在冰冷的街头。'); return; }
   if(gameState.age<=10 && !gameState.alive) unlockAchieve('early_death');
+  }
 
   // Sanity visual effects
   applySanityEffects();
@@ -1274,12 +1300,24 @@ function handleChoice(idx) {
   if(typeof DaoguiAudio !== 'undefined') DaoguiAudio.playChoiceSound();
 
   var c = window._currentChoices[idx];
+  if(!c) {
+    // 防止无效选项导致卡住
+    console.warn('handleChoice: invalid idx', idx);
+    waitingForChoice = false;
+    document.getElementById('choices').innerHTML = '';
+    document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
+    var delay = SPEED_DELAYS[speed] || 3000;
+    if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+    return;
+  }
   applyChoice(c);
 }
 
 function applyChoice(c) {
+  try {
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
   var oldFaction = gameState.faction;
+  if(!c.effect) c.effect = {}; // 防止effect未定义导致崩溃
 
   // === COMBAT RESOLUTION ===
   // If the choice has a combat difficulty, resolve based on player power
@@ -1461,9 +1499,17 @@ function applyChoice(c) {
   updateDisplay();
   var delay = SPEED_DELAYS[speed] || 3000;
   if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+  } catch(e) {
+    // 任何错误都不能导致游戏卡住
+    console.error('applyChoice error:', e);
+    waitingForChoice = false;
+    document.getElementById('choices').innerHTML = '';
+    document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
+    updateDisplay();
+    var delay = SPEED_DELAYS[speed] || 3000;
+    if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+  }
 }
-
-// === DISPLAY ===
 function updateDisplay() {
   if(!gameState.location) return; // safety check
   var isXinsu = gameState.talents.find(function(t){return t.id==='xinsu';});
