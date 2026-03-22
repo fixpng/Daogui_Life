@@ -9,7 +9,8 @@ var gameState = {
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
   dualCultWarned:false,
-  lastLifeTalents:[]
+  lastLifeTalents:[],
+  xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'
 };
 var autoMode = false, speed = 1, autoTimer = null, availableTalents = [];
 var SPEED_DELAYS = {1:3000, 2:1500, 3:1000, 4:500, 5:250};
@@ -118,7 +119,8 @@ function startGame() {
     factionHistory: [],  // Reset faction history for new run
     eventHistory: new Set(),
     dualCultWarned: false,
-    lastLifeTalents: gameState.lastLifeTalents || []  // Keep last life's talents for carry-over feature
+    lastLifeTalents: gameState.lastLifeTalents || [],  // Keep last life's talents for carry-over feature
+    xinpan: null // 心蟠状态重置
   };
 
   // Assign gender randomly
@@ -443,6 +445,48 @@ function nextYear() {
   // Track bingjia blood_warrior achievement
   if(gameState.faction === 'bingjia' && gameState.constitution < 10) gameState._bingjiaLowConst = true;
   if(gameState._bingjiaLowConst && gameState.constitution >= 50) unlockAchieve('blood_warrior');
+
+  // === XINPAN (心蟠) PASSIVE EFFECTS ===
+  if(gameState.xinpan) {
+    var xp = gameState.xinpan;
+    if(xp === 'jizai') {
+      // 季灾心蟠: 迷惘天道 - 修为缓增, 悟性增, 神志波动
+      if(Math.random()<0.15) gameState.cultivation += 2;
+      if(Math.random()<0.10) gameState.comprehension = Math.min(100, gameState.comprehension + 1);
+      if(isXinsu && Math.random()<0.20) gameState.sanity = Math.max(0, Math.min(120, gameState.sanity + (Math.floor(Math.random()*7) - 3)));
+    } else if(xp === 'doumo') {
+      // 斗姥心蟠: 谎言天道 - 修为增, 人脉增, 神志降, 因果不稳
+      if(Math.random()<0.12) gameState.cultivation += 2;
+      if(Math.random()<0.10) gameState.connections += 1;
+      if(isXinsu && Math.random()<0.15) gameState.sanity = Math.max(0, gameState.sanity - 1);
+      if(Math.random()<0.08) gameState.karma -= 1;
+    } else if(xp === 'baxi') {
+      // 巴虺心蟠: 痛苦天道 - 修为增, 体魄自回复, 神志降
+      if(Math.random()<0.12) gameState.cultivation += 2;
+      if(gameState.constitution < 80 && Math.random()<0.15) gameState.constitution += 1;
+      if(isXinsu && Math.random()<0.12) gameState.sanity = Math.max(0, gameState.sanity - 1);
+    } else if(xp === 'wusheng') {
+      // 无生老母心蟠: 慈悲天道 - 因果增, 人脉增, 修为缓增, 神志稳
+      if(Math.random()<0.10) gameState.cultivation += 1;
+      if(Math.random()<0.12) gameState.karma = Math.min(100, gameState.karma + 1);
+      if(Math.random()<0.10) gameState.connections += 1;
+      if(isXinsu && Math.random()<0.10) gameState.sanity = Math.min(120, gameState.sanity + 1);
+    } else if(xp === 'panchi') {
+      // 蟠螭心蟠: 秩序天道 - 气运增, 修为增, 体魄稳, 属性回归平衡
+      if(Math.random()<0.12) gameState.cultivation += 2;
+      if(Math.random()<0.10) gameState.qiyun = Math.min(100, gameState.qiyun + 1);
+      if(gameState.constitution < 70 && Math.random()<0.10) gameState.constitution += 1;
+      // 秩序之力使极端属性向中间靠拢
+      if(gameState.karma > 50 && Math.random()<0.08) gameState.karma -= 1;
+      if(gameState.karma < -50 && Math.random()<0.08) gameState.karma += 1;
+    } else if(xp === 'yuer') {
+      // 于儿心蟠: 法教至高神 - 修为大增, 因果降, 神志降, 体魄增
+      if(Math.random()<0.15) gameState.cultivation += 3;
+      if(Math.random()<0.10) gameState.karma = Math.max(-100, gameState.karma - 1);
+      if(isXinsu && Math.random()<0.15) gameState.sanity = Math.max(0, gameState.sanity - 2);
+      if(Math.random()<0.08) gameState.constitution = Math.min(100, gameState.constitution + 1);
+    }
+  }
 
   // Dual cultivation risk: if factionHistory > 1 and currently in a faction, risk events
   var dualCultRisk = gameState.factionHistory.length > 1 && gameState.faction !== 'none';
@@ -801,6 +845,23 @@ function nextYear() {
 
   // Add era-specific events (world state changes)
   if(typeof ERA_EVENTS !== 'undefined') {
+
+  // Add xinpan (心蟠) post-events - only when player has become a xinpan
+  if(typeof XINPAN_EVENTS !== 'undefined' && gameState.xinpan) {
+    XINPAN_EVENTS.forEach(function(xe){
+      if(xe.xinpanReq && xe.xinpanReq !== gameState.xinpan) return;
+      if(xe.trigger) {
+        if(xe.trigger.minAge && gameState.age < xe.trigger.minAge) return;
+        if(xe.trigger.maxAge && gameState.age > xe.trigger.maxAge) return;
+        if(xe.trigger.cultivation && gameState.cultivation < xe.trigger.cultivation) return;
+        if(xe.trigger.yearMin !== undefined && gameState.year < xe.trigger.yearMin) return;
+        if(xe.trigger.yearMax !== undefined && gameState.year > xe.trigger.yearMax) return;
+      }
+      if(xe.check && !gameState.talents.find(function(t){return t.id===xe.check;})) return;
+      eventPool.push(xe);
+    });
+  }
+
     ERA_EVENTS.forEach(function(ee){
       if(ee.trigger) {
         if(ee.trigger.minAge && gameState.age < ee.trigger.minAge) return;
@@ -1171,6 +1232,17 @@ function applyChoice(c) {
       if(gameState.items.length>=5) unlockAchieve('collector');
     }
   }
+  // === XINPAN (心蟠) ASSIGNMENT ===
+  if(c.xinpan) {
+    gameState.xinpan = c.xinpan;
+    addLog('<span class="mys">你成为了' + (
+      c.xinpan==='jizai'?'季灾':c.xinpan==='doumo'?'阴阳斗姥':c.xinpan==='baxi'?'巴虺':
+      c.xinpan==='wusheng'?'无生老母':c.xinpan==='panchi'?'蟠螭':c.xinpan==='yuer'?'于儿神':'未知司命'
+    ) + '的心蟠！天道之力与你相合。</span>');
+    // Unlock xinpan achievements
+    unlockAchieve('xinpan_' + c.xinpan);
+    unlockAchieve('xinpan_any');
+  }
   if(c.visit && !gameState.visitedLocations.includes(c.visit)) {
     gameState.visitedLocations.push(c.visit);
   }
@@ -1287,6 +1359,11 @@ function updateDisplay() {
     itemsEl.innerHTML = gameState.items.map(function(it){return '<span class="item-badge" title="'+it.desc+'">'+it.name+'</span>';}).join('');
   } else {
     itemsEl.innerHTML = '';
+  }
+  // Xinpan (心蟠) display
+  if(gameState.xinpan) {
+    var xinpanNames = {jizai:'季灾·迷惘',doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教'};
+    itemsEl.innerHTML += '<span class="item-badge" style="border-color:var(--mystery);color:var(--mystery);" title="司命的人间因缘">心蟠: '+(xinpanNames[gameState.xinpan]||'未知')+'</span>';
   }
 }
 
@@ -1409,6 +1486,17 @@ function gameOver(reason) {
   if(gameState.faction === 'nanjiang' && gameState.constitution >= 60) unlockAchieve('gu_master_survive');
   if(gameState.faction === 'fomen' && gameState.karma <= -30) unlockAchieve('buddha_evil');
 
+  // Xinpan achievements at death
+  if(gameState.xinpan) {
+    unlockAchieve('xinpan_any');
+    unlockAchieve('xinpan_' + gameState.xinpan);
+    if(gameState.cultivation >= 200) unlockAchieve('xinpan_ascend');
+    if(gameState.xinpan === 'jizai' && gameState.cultivation >= 150) unlockAchieve('xinpan_jizai_master');
+    if(gameState.xinpan === 'doumo' && gameState.connections >= 50) unlockAchieve('xinpan_doumo_master');
+    if(gameState.xinpan === 'wusheng' && gameState.karma >= 60) unlockAchieve('xinpan_wusheng_master');
+    if(gameState.xinpan === 'panchi' && gameState.qiyun >= 40 && gameState.constitution >= 60) unlockAchieve('xinpan_panchi_master');
+  }
+
   gameState.totalRuns++;
   localStorage.setItem('dg_runs', gameState.totalRuns);
   localStorage.setItem('dg_achievements', JSON.stringify(achievements));
@@ -1433,7 +1521,15 @@ function gameOver(reason) {
   }
 
   var ending = reason;
-  if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
+  // Xinpan-specific endings (highest priority among custom endings)
+  if(gameState.xinpan === 'jizai' && gameState.cultivation >= 200) ending = '你是<span class="itm">季灾的心蟠</span>——迷惘天道的人间因缘。你在清醒与迷惘之间找到了自己的道，白玉京中季灾向你投来赞许的目光。';
+  else if(gameState.xinpan === 'doumo' && gameState.cultivation >= 200) ending = '你是<span class="itm">阴阳斗姥的心蟠</span>——谎言天道在你体内燃烧。你已分不清什么是真什么是假，但你已不在意——谎言即是你的真实。';
+  else if(gameState.xinpan === 'baxi' && gameState.cultivation >= 200) ending = '你是<span class="itm">巴虺的心蟠</span>——痛苦天道贯穿全身。你以痛苦为粮、以献祭为道，肉身已化为承载痛苦天道的不朽容器。';
+  else if(gameState.xinpan === 'wusheng' && gameState.cultivation >= 200) ending = '你是<span class="itm">无生老母的心蟠</span>——慈悲天道与你同在。你以一己之身承载众生苦乐，白灵淼曾走过的路，如今由你继续。';
+  else if(gameState.xinpan === 'panchi' && gameState.cultivation >= 200) ending = '你是<span class="itm">蟠螭的心蟠</span>——秩序天道在你血脉中流淌。你化为龙脉的一部分，守护着大梁的安宁。皇朝兴衰，天道不灭。';
+  else if(gameState.xinpan === 'yuer' && gameState.cultivation >= 200) ending = '你是<span class="itm">于儿神的心蟠</span>——一个超越凡人理解的存在选中了你。你的修行已不属于任何门派，而是属于另一种法则。';
+  else if(gameState.xinpan && gameState.cultivation >= 100) ending = '你身为<span class="itm">司命的心蟠</span>，天道之力与你同在。虽未能达到极致，但你的存在已超越了普通修士——你是天道在人间的锚点。';
+  else if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
   else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
   else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
   else if(gameState.cultivation>=200 && rankName) ending = '你以<span class="itm">' + factionName + '·' + rankName + '</span>之身达到大乘境界，名震天下！';
@@ -1465,6 +1561,11 @@ function gameOver(reason) {
     '<p>悟性: <span style="color:var(--gold)">'+gameState.comprehension+'</span> · 因果: <span style="color:var(--gold)">'+gameState.karma+' ('+karmaDesc+')</span></p>' +
     '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
+    (gameState.xinpan ? '<p style="color:var(--mystery);">心蟠: ' + (
+      gameState.xinpan==='jizai'?'季灾（迷惘天道）':gameState.xinpan==='doumo'?'阴阳斗姥（谎言天道）':
+      gameState.xinpan==='baxi'?'巴虺（痛苦天道）':gameState.xinpan==='wusheng'?'无生老母（慈悲天道）':
+      gameState.xinpan==='panchi'?'蟠螭（秩序天道）':gameState.xinpan==='yuer'?'于儿神（法教天道）':'未知'
+    ) + '</p>' : '') +
     (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 双修之路，九死一生</p>' : '') +
     (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';

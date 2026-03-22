@@ -239,6 +239,19 @@ const ACHIEVEMENTS = [
   {id:'gu_master_survive',name:'百毒不侵',desc:'在南疆巫族修行且体魄不低于60',icon:'🧪'},
   {id:'blood_warrior',name:'血战不死',desc:'兵家修行者体魄降至10以下后恢复至50以上',icon:'🩹'},
   {id:'buddha_evil',name:'佛心魔念',desc:'佛门弟子因果降至-30以下',icon:'😈'},
+  // === 心蟠 ACHIEVEMENTS ===
+  {id:'xinpan_any',name:'天道因缘',desc:'成为任意司命的心蟠',icon:'🔮'},
+  {id:'xinpan_jizai',name:'迷惘之锚',desc:'成为季灾的心蟠',icon:'🌀'},
+  {id:'xinpan_doumo',name:'谎言之舌',desc:'成为阴阳斗姥的心蟠',icon:'🎭'},
+  {id:'xinpan_baxi',name:'痛苦之躯',desc:'成为巴虺的心蟠',icon:'🩸'},
+  {id:'xinpan_wusheng',name:'慈悲之心',desc:'成为无生老母的心蟠',icon:'🤍'},
+  {id:'xinpan_panchi',name:'秩序之柱',desc:'成为蟠螭的心蟠',icon:'🐉'},
+  {id:'xinpan_yuer',name:'法则之器',desc:'成为于儿神的心蟠',icon:'👁'},
+  {id:'xinpan_ascend',name:'心蟠飞升',desc:'以心蟠之身修为达大乘',icon:'⚡'},
+  {id:'xinpan_jizai_master',name:'迷惘通明',desc:'季灾心蟠且修为达化神',icon:'💫'},
+  {id:'xinpan_doumo_master',name:'谎言织网',desc:'斗姥心蟠且人脉达50',icon:'🕸'},
+  {id:'xinpan_wusheng_master',name:'大慈大悲',desc:'无生老母心蟠且因果达60',icon:'🪷'},
+  {id:'xinpan_panchi_master',name:'龙脉守护',desc:'蟠螭心蟠且气运40以上体魄60以上',icon:'🏛'},
 ];
 
 // === EVENTS ===
@@ -1751,7 +1764,7 @@ const CANONICAL_EVENTS = [
     {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
   {text:'<span class="npc">季灾</span>的目光穿越白玉京落在你身上——你是<span class="mys">心素</span>，与他同类。他选中了你作为自己在人间的<span class="mys">因缘</span>：成为迷惘司命的<span class="mys">心蟠</span>。',
     trigger:{minAge:30,yearMin:42,cultivation:100},check:'xinsu',choices:[
-    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实'},
+    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实',xinpan:'jizai'},
     {text:'拒绝，你要走自己的路',effect:{cultivation:20,sanity:15,comprehension:10,qiyun:-10},log:'季灾沉默了片刻，然后笑了："和我当年一样。"他的目光从你身上移开'}]},
 
   // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
@@ -1974,8 +1987,8 @@ const RANK_EVENTS = {
       {text:'脱离坐忘道',effect:{faction:'none',connections:-25,qiyun:10,sanity:10},log:'你毅然脱离了坐忘道，成为了散修'}]},
     {text:'<span class="npc">阴阳斗姥</span>终于选中了你——你就是她在人间的<span class="mys">因缘</span>，她的<span class="mys">心蟠</span>。斗姥的谎言之力灌入你体内，你能感知一切虚假。',
       rankReq:9,choices:[
-      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊'},
-      {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"'}]},
+      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊',xinpan:'doumo'},
+      {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"',xinpan:'doumo'}]},
   ],
   jiantian: [
     {text:'你晋升<span class="fac">监天司</span>庚旗后，获得了查阅<span class="itm">机密档案</span>的权限——里面记载着各地邪祟和坐忘道的情报。',
@@ -1990,6 +2003,11 @@ const RANK_EVENTS = {
       rankReq:4,choices:[
       {text:'亲自追查叛徒',effect:{cultivation:10,connections:-5,sanity:-10,comprehension:8},log:'你揪出了叛徒，但发现他被坐忘道洗脑多年...'},
       {text:'加强自身防护',effect:{constitution:5,sanity:5},log:'你开始更加谨慎地行事'}]},
+    {text:'你被提拔为<span class="fac">监天司</span>司丞，获准进入<span class="loc">上京城</span>地下的<span class="mys">龙脉核心</span>。在那里，你触碰到了<span class="npc">蟠螭</span>的意识——秩序天道的司命，以龙脉为躯体镇守大梁国运。蟠螭选中了你作为它在人间的<span class="mys">因缘</span>。',
+      rankReq:5,choices:[
+      {text:'接受蟠螭的因缘，成为秩序天道的心蟠',effect:{cultivation:40,qiyun:20,constitution:10,comprehension:15,sanity:-15},log:'你成为了蟠螭的心蟠！秩序天道之力流入血脉——你能感知天下龙脉走向，一切混乱在你面前无所遁形。你的存在本身就是大梁的镇国之柱',xinpan:'panchi'},
+      {text:'敬畏地婉拒',effect:{cultivation:20,qiyun:10,comprehension:10},log:'蟠螭的龙吟在你耳边回荡。它没有强求——秩序从不强迫，只是等待'},
+      {text:'接受力量但保持独立',effect:{cultivation:30,qiyun:15,constitution:5,sanity:-8},log:'你接受了蟠螭的部分力量，但没有完全交出自己。秩序天道在你体内与你的意志共存',xinpan:'panchi'}]},
   ],
   aojing: [
     {text:'你在<span class="fac">袄景教</span>中地位渐高，获准修习<span class="itm">大千录</span>上的高级神通——以献祭自身痛苦来施展强大法术。',
@@ -2002,8 +2020,8 @@ const RANK_EVENTS = {
       {text:'甘当辅佐',effect:{connections:10,cultivation:10},log:'你选择辅佐新任牯神使，在教中依然受人尊重'}]},
     {text:'你完成了三次<span class="danger-text">登阶</span>，<span class="npc">巴虺</span>终于注意到了你。它选中你作为自己在人间的<span class="mys">因缘</span>——你成为了巴虺的<span class="mys">心蟠</span>。痛苦天道之力贯穿全身。',
       rankReq:4,choices:[
-      {text:'承受痛苦接受心蟠之身',effect:{cultivation:45,constitution:15,sanity:-25,karma:-15},log:'你成为了巴虺的心蟠！痛苦即是力量——你可以使用痛苦天道之术，自愈能力大幅增强'},
-      {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意'}]},
+      {text:'承受痛苦接受心蟠之身',effect:{cultivation:45,constitution:15,sanity:-25,karma:-15},log:'你成为了巴虺的心蟠！痛苦即是力量——你可以使用痛苦天道之术，自愈能力大幅增强',xinpan:'baxi'},
+      {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意',xinpan:'baxi'}]},
   ],
   bailian: [
     {text:'作为<span class="fac">白莲教</span>堂主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲</span>的司命。',
@@ -2016,8 +2034,8 @@ const RANK_EVENTS = {
       {text:'谨慎修习',effect:{cultivation:10,karma:5},log:'你只取其精华，不至于伤了根基'}]},
     {text:'<span class="npc">无生老母</span>在虚空中降下慈悲之光，选中了你作为她在人间的<span class="mys">因缘</span>——你成为了无生老母的<span class="mys">心蟠</span>。慈悲天道与你相合。',
       rankReq:4,choices:[
-      {text:'接受慈悲天道',effect:{cultivation:35,sanity:20,karma:25,connections:15},log:'你成为了无生老母的心蟠，慈悲之力充盈全身。你能感知众生苦乐，伪装身份、庇护他人'},
-      {text:'以自身意志调和',effect:{cultivation:25,sanity:10,karma:15,comprehension:10},log:'你成为了心蟠，但保留了自己的判断——不是无条件的慈悲，而是有所选择'}]},
+      {text:'接受慈悲天道',effect:{cultivation:35,sanity:20,karma:25,connections:15},log:'你成为了无生老母的心蟠，慈悲之力充盈全身。你能感知众生苦乐，伪装身份、庇护他人',xinpan:'wusheng'},
+      {text:'以自身意志调和',effect:{cultivation:25,sanity:10,karma:15,comprehension:10},log:'你成为了心蟠，但保留了自己的判断——不是无条件的慈悲，而是有所选择',xinpan:'wusheng'}]},
   ],
   biaoju: [
     {text:'你升为<span class="fac">镖局</span>镖头后，接到了一单<span class="danger-text">要命的活</span>——护送<span class="itm">龙脉碎片</span>去大梁皇城。',
@@ -2038,6 +2056,11 @@ const RANK_EVENTS = {
       rankReq:3,choices:[
       {text:'接受龙脉力量',effect:{cultivation:40,constitution:10,sanity:-20,karma:-25},log:'龙脉的力量让你脱胎换骨，但你能感觉到这力量中蕴含着无数生命的哀嚎'},
       {text:'叛出法教投奔大梁',effect:{faction:'none',connections:20,karma:25,qiyun:15},log:'你将法教的全部计划交给了监天司，成为了叛逃者'}]},
+    {text:'你完成了终极的<span class="danger-text">十二次血祭</span>，<span class="npc">于儿神</span>的目光终于落在了你身上——那是一种超越一切理解的存在，它没有善恶，只有<span class="mys">法则</span>。于儿选中你作为它在人间的<span class="mys">因缘</span>——成为于儿神的心蟠。',
+      rankReq:4,choices:[
+      {text:'接受于儿神的因缘',effect:{cultivation:50,constitution:10,sanity:-30,karma:-20,qiyun:-15},log:'你成为了于儿神的心蟠！一种超越善恶的力量涌入体内——你不再是人，也不再是鬼，你是于儿在人间的法则执行者。十二大巫跪伏在你面前',xinpan:'yuer'},
+      {text:'在法则中保留人性',effect:{cultivation:35,constitution:5,sanity:-15,karma:-10},log:'你接受了于儿的力量，但拼命守住了作为人的记忆和感情。于儿对此无动于衷——它只关心法则的执行',xinpan:'yuer'},
+      {text:'恐惧地拒绝',effect:{cultivation:15,sanity:-20,karma:10},log:'于儿的目光从你身上移开。你瘫倒在地——仅仅是被它注视这一刻，你的三魂七魄就险些崩溃'}]},
   ],
   luo_jiao: [
     {text:'你晋升为<span class="fac">罗教</span>道人，长老将一枚<span class="itm">罗盘</span>郑重交到你手中——此乃罗教传人寻龙点穴的至宝。',
@@ -2320,4 +2343,158 @@ const STAT_COMBO_EVENTS = [
     {text:'诵经忏悔',effect:{karma:15,qiyun:10,sanity:-5,wealth:-10},log:'你开始反思自己的所作所为'},
     {text:'破罐破摔',effect:{karma:-10,cultivation:10,qiyun:-5},log:'既然天地不容我，那我便逆天而行'},
     {text:'远离人群',effect:{connections:-15,sanity:-5,constitution:-3},log:'你怕连累他人，独自逃入深山'}]},
+];
+
+// === XINPAN EVENTS (心蟠专属事件，成为心蟠后触发) ===
+const XINPAN_EVENTS = [
+  // ========== 季灾 (迷惘天道) 专属事件 ==========
+  {xinpanReq:'jizai',text:'成为<span class="npc">季灾</span>的心蟠后，你的世界开始变得<span class="mys">模糊不清</span>——你看到的人，有时候是活人，有时候是一堆蠕动的肉块。你分不清哪个才是真的。',
+    trigger:{minAge:18},choices:[
+    {text:'尝试用心素分辨真假',effect:{comprehension:15,sanity:-15,cultivation:10},log:'你试图用心素之力辨明真伪——但迷惘天道告诉你，真假本就没有区别'},
+    {text:'闭上眼睛，只相信触觉',effect:{sanity:-5,constitution:5,comprehension:8},log:'你闭上眼，世界反而清晰了一些。但你知道这不是长久之计'},
+    {text:'向季灾祈求指引',effect:{cultivation:20,sanity:-20,qiyun:5},log:'季灾的意志涌入你的脑海——你看到了无数个"真实"重叠在一起，每一个都是真的'}]},
+
+  {xinpanReq:'jizai',text:'你在梦中见到了<span class="npc">季灾</span>的过去——那是一个和你一样迷惘的凡人，曾经也分不清梦与现实。他最终选择让<span class="mys">迷惘</span>成为自己的力量，由此登临司命之位。',
+    trigger:{minAge:25,cultivation:40},choices:[
+    {text:'效仿季灾，拥抱迷惘',effect:{cultivation:30,sanity:-25,comprehension:20},log:'你不再抗拒迷惘——当你接受一切都可能是假的时候，你反而获得了操纵真假的力量'},
+    {text:'你不想重蹈他的覆辙',effect:{sanity:10,comprehension:10,cultivation:5},log:'你选择保持清醒。季灾的意志似乎在叹息，但并未强迫你'},
+    {text:'追问心素的真正本质',effect:{comprehension:25,cultivation:15,sanity:-10},log:'季灾告诉你：心素就是让假变真、让真变假的力量。而你，就是这力量的种子'}]},
+
+  {xinpanReq:'jizai',text:'你发现自己能看到<span class="mys">两个世界</span>——一个是你熟悉的修真世界，另一个是一间白色的房间，有人穿着奇怪的白衣盯着你看。迷惘天道正在你身上展现它的本质。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'尝试与白衣人交流',effect:{comprehension:20,sanity:-20,cultivation:15},log:'白衣人说："你该吃药了。"你不明白这是什么意思，但这句话让你头痛欲裂'},
+    {text:'强行关闭另一个世界的视野',effect:{cultivation:10,sanity:5,constitution:-5},log:'你用法力封印了那个世界的入口——但你隐约觉得，那边才是"真的"'},
+    {text:'同时存在于两个世界',effect:{cultivation:35,sanity:-30,comprehension:25},log:'你学会了同时感知两个世界——这让你的心素之力暴增，但神志也在崩溃的边缘'}]},
+
+  {xinpanReq:'jizai',text:'<span class="npc">季灾</span>的力量让你拥有了<span class="mys">心素</span>——你可以把虚假之物变为真实，也可以把真实之物化为虚无。但每次使用，你都更加分不清自己是谁。',
+    trigger:{minAge:35,cultivation:80},choices:[
+    {text:'用心素修真，将修为化为实质',effect:{cultivation:40,sanity:-30,comprehension:15},log:'你将虚无的力量变成了实在的修为——但你的记忆中又多了几段"不存在的过去"'},
+    {text:'用心素治疗自己的迷惘',effect:{sanity:20,cultivation:15,comprehension:10},log:'心素消除了一些幻觉，但你隐约觉得，被消除的那些才是真实的'},
+    {text:'将心素之力散布四方',effect:{cultivation:25,connections:20,qiyun:15,sanity:-15},log:'你让周围的人也开始看到"真相"——他们有的疯了，有的却因此觉醒了修行天赋'}]},
+
+  // ========== 斗姥 (谎言天道) 专属事件 ==========
+  {xinpanReq:'doumo',text:'成为<span class="npc">阴阳斗姥</span>的心蟠后，你发现自己说出的每一句话都带着<span class="mys">谎言天道</span>的力量——你说"这里很安全"，周围的危险就真的消失了。但谎言说多了，你自己也开始信了。',
+    trigger:{minAge:18},choices:[
+    {text:'利用谎言之力保护自己',effect:{cultivation:15,sanity:-10,connections:10,karma:-5},log:'你的话语成了武器和盾牌——但你再也说不出一句真话'},
+    {text:'尽量保持沉默',effect:{sanity:5,comprehension:10,cultivation:5},log:'你选择沉默。斗姥的力量在沉默中蛰伏，等待着你开口的那一刻'},
+    {text:'用谎言编织一个新身份',effect:{cultivation:20,connections:15,karma:-10,sanity:-15},log:'你给自己编造了一个完美的过去——而这个过去，正在变成真实'}]},
+
+  {xinpanReq:'doumo',text:'你在坐忘道的古籍中发现了<span class="npc">斗姥</span>心蟠的真正使命——心蟠要为斗姥<span class="mys">编织足够多的谎言</span>，直到整个世界都分不清真假。这就是斗姥从季灾手中夺取心素之力的方式。',
+    trigger:{minAge:25,cultivation:40},choices:[
+    {text:'为斗姥编织大谎',effect:{cultivation:30,karma:-20,connections:15,sanity:-15},log:'你编造了一个弥天大谎——有一座城的人相信了，而这座城也因此改变了面貌'},
+    {text:'试图用谎言对抗斗姥',effect:{cultivation:15,sanity:-25,karma:5},log:'你对斗姥撒谎说"我不是你的心蟠"——斗姥笑了，这正是她想要的'},
+    {text:'记录下所有谎言，保留真相',effect:{comprehension:20,sanity:5,cultivation:10},log:'你将每一个谎言都记录在案，这样至少你自己还知道什么是真的'}]},
+
+  {xinpanReq:'doumo',text:'<span class="npc">斗姥</span>的<span class="mys">木雕八仙</span>出现在你面前——八个栩栩如生的木偶，每一个都有不同的能力。斗姥通过它们传达旨意，要你选择一个作为随身护法。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'选择能操纵人心的木偶',effect:{connections:25,cultivation:20,karma:-15,sanity:-10},log:'木偶附在你的影子中，让你能感知并操纵他人的情绪'},
+    {text:'选择能窥探真相的木偶',effect:{comprehension:25,cultivation:20,sanity:-15},log:'木偶让你看透一切谎言——包括你自己的。这种认知让你痛苦不堪'},
+    {text:'拒绝所有木偶',effect:{cultivation:10,sanity:10,karma:5},log:'你拒绝了木雕八仙。斗姥的力量稍有削弱，但你保住了一丝自我'}]},
+
+  // ========== 巴虺 (痛苦天道) 专属事件 ==========
+  {xinpanReq:'baxi',text:'成为<span class="npc">巴虺</span>的心蟠后，痛苦成为了你<span class="mys">修炼的阶梯</span>。袄景教的<span class="danger-text">登阶</span>之法在你体内觉醒——每一次痛苦都化为修为，每一次受伤都让你更强。',
+    trigger:{minAge:18},choices:[
+    {text:'主动承受痛苦以提升修为',effect:{cultivation:20,constitution:-10,sanity:-10,comprehension:5},log:'你在痛苦中登阶——骨骼断裂重组，经脉撕裂重建，你变得更强了'},
+    {text:'学习控制痛苦而非承受',effect:{comprehension:15,cultivation:10,sanity:-5},log:'你试图驾驭痛苦而非被痛苦驾驭。巴虺的力量在你体内缓缓流转'},
+    {text:'将痛苦转移给他人',effect:{cultivation:15,karma:-20,connections:-10,sanity:-5},log:'你把自己的痛苦分给了周围的人——他们在哀嚎中倒下，而你感到前所未有的轻松'}]},
+
+  {xinpanReq:'baxi',text:'袄景教的<span class="danger-text">登阶</span>仪式正在你体内自发进行——你的皮肤下有什么东西在蠕动，骨骼在重新排列，器官在移位。巴虺在改造你的<span class="mys">躯壳</span>，让它更适合承载痛苦天道。',
+    trigger:{minAge:22,cultivation:30},choices:[
+    {text:'忍受改造，完成登阶',effect:{cultivation:30,constitution:15,sanity:-25,comprehension:10},log:'登阶完成！你的身体已经不完全是人类了——但你感受到了前所未有的力量'},
+    {text:'用修为对抗改造',effect:{cultivation:-10,constitution:5,sanity:-10},log:'你暂时压制了体内的异变，但巴虺的意志不会就此罢休'},
+    {text:'顺从巴虺的意志',effect:{cultivation:35,constitution:20,sanity:-30,karma:-10},log:'你彻底放弃了抵抗——身体在剧痛中蜕变，你已经不记得"不痛"是什么感觉了'}]},
+
+  {xinpanReq:'baxi',text:'你在极度痛苦中触碰到了<span class="npc">巴虺</span>的记忆——巴虺原本也是一个凡人，曾经承受了世间最极致的痛苦，最终<span class="mys">以痛苦为阶登临司命之位</span>。而你，正在重走它的路。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'效仿巴虺，以痛证道',effect:{cultivation:40,sanity:-30,constitution:-15,comprehension:20},log:'你理解了痛苦的本质——它不是惩罚，而是通往更高境界的道路'},
+    {text:'你不想成为第二个巴虺',effect:{sanity:10,cultivation:10,karma:10},log:'你拒绝了这条路。巴虺的记忆如潮水般退去，但痛苦仍在'},
+    {text:'吞噬巴虺的一部分记忆',effect:{cultivation:25,comprehension:15,sanity:-20,constitution:10},log:'你从巴虺的记忆中汲取了一部分力量——但也继承了它的一部分痛苦'}]},
+
+  // ========== 无生老母 (慈悲·死亡天道) 专属事件 ==========
+  {xinpanReq:'wusheng',text:'成为<span class="npc">无生老母</span>的心蟠后，你开始能<span class="mys">看见死者的灵魂</span>。白莲教的经文告诉你：无生老母同时掌管慈悲与死亡——慈悲是渡生，死亡是渡亡。',
+    trigger:{minAge:18},choices:[
+    {text:'学习渡化亡魂',effect:{cultivation:15,karma:15,sanity:-10,comprehension:10},log:'你用无生老母的力量超度亡魂。它们在消散前露出了安详的笑容'},
+    {text:'与亡魂交流获取信息',effect:{comprehension:20,connections:10,sanity:-15},log:'亡魂告诉了你许多生前的秘密——但与死者交流太多会模糊生死的界限'},
+    {text:'拒绝这份能力',effect:{sanity:5,cultivation:5,karma:5},log:'你不想看见死人。但无生老母的力量不会因为你的拒绝而消失'}]},
+
+  {xinpanReq:'wusheng',text:'白莲教尊你为<span class="itm">圣女</span>——信徒们跪在你面前，祈求你用<span class="npc">无生老母</span>的<span class="mys">慈悲之力</span>治愈他们的病痛。你的手掌散发着温暖的光芒，确实能治愈伤口。但每治愈一人，你自己的寿元就会减少。',
+    trigger:{minAge:22,cultivation:30},choices:[
+    {text:'不惜寿元救治众人',effect:{karma:25,connections:25,constitution:-15,cultivation:10},log:'你用自己的生命力治愈了数百人。百姓称你为活菩萨'},
+    {text:'只治愈少数人以保全自身',effect:{karma:10,connections:10,constitution:-5,cultivation:5},log:'你量力而行。无生老母的力量虽然无限，但你的身体是有限的'},
+    {text:'用死亡之力替代慈悲之力',effect:{cultivation:25,karma:-15,sanity:-15,constitution:5},log:'你发现死亡也是一种治愈——让痛苦的人解脱。这条路很危险，但很有效'}]},
+
+  {xinpanReq:'wusheng',text:'<span class="npc">无生老母</span>的意志越来越强烈地在你体内显现——你能感受到方圆百里内<span class="mys">每一个生命的诞生与消亡</span>。有一天，你看到了无生老母的真正面目：一个既是慈母又是死神的巨大存在。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'接受慈悲与死亡的双重使命',effect:{cultivation:35,karma:15,sanity:-20,comprehension:20},log:'你理解了——慈悲与死亡是一体两面。生是恩赐，死也是恩赐'},
+    {text:'只取慈悲，舍弃死亡',effect:{cultivation:20,karma:20,constitution:-10,sanity:5},log:'你选择只做渡生之人。但死亡天道的力量在你体内蛰伏，终会觉醒'},
+    {text:'只取死亡，舍弃慈悲',effect:{cultivation:30,karma:-25,sanity:-25,constitution:10},log:'你选择了更强大的那一面——死亡。白莲教的信徒们恐惧地看着你的转变'}]},
+
+  // ========== 蟠螭 (秩序天道) 专属事件 ==========
+  {xinpanReq:'panchi',text:'成为<span class="npc">蟠螭</span>的心蟠后，你能感知到世间万物的<span class="mys">秩序法则</span>——四季轮转、生老病死、因果报应，一切都在蟠螭的掌控之下。监天司的同僚对你敬畏有加。',
+    trigger:{minAge:18},choices:[
+    {text:'运用秩序之力维护世间平衡',effect:{cultivation:15,qiyun:15,karma:10,comprehension:10},log:'你以秩序之力纠正了一处天地失衡——龙脉归位，风调雨顺'},
+    {text:'尝试理解秩序的本质',effect:{comprehension:20,cultivation:10,sanity:-5},log:'你开始理解蟠螭的秩序——它不是善恶，而是"应当如此"'},
+    {text:'利用秩序之力为自己谋利',effect:{cultivation:10,wealth:30,qiyun:-10,karma:-10},log:'你偷偷用秩序之力影响了一些事物的走向——但蟠螭对此并不在意，秩序不等于正义'}]},
+
+  {xinpanReq:'panchi',text:'<span class="npc">蟠螭</span>引导你进入了<span class="loc">上京城</span>地下的<span class="mys">龙脉核心</span>——整个大梁的国运都系于此。你能看到无数条金色的丝线从龙脉延伸出去，连接着每一个生灵。蟠螭要你维护这些丝线的秩序。',
+    trigger:{minAge:25,cultivation:40},choices:[
+    {text:'维护龙脉秩序',effect:{cultivation:25,qiyun:20,karma:10,constitution:5},log:'你日夜守护龙脉，确保国运不绝。大梁因你而安稳了数十年'},
+    {text:'改写某些命运丝线',effect:{cultivation:20,karma:-15,qiyun:10,connections:15},log:'你悄悄改写了一些人的命运——有的人因此飞黄腾达，有的人突然暴毙'},
+    {text:'从龙脉中汲取力量',effect:{cultivation:35,constitution:10,qiyun:-20,sanity:-10},log:'你从龙脉中抽取了一丝国运用于自身修炼——大梁某处发生了不明灾祸'}]},
+
+  {xinpanReq:'panchi',text:'蟠螭向你展示了<span class="mys">秩序天道</span>的终极形态——不是控制万物，而是<span class="npc">成为秩序本身</span>。当秩序完美运转时，连司命都不需要干预，天道自行运转。',
+    trigger:{minAge:35,cultivation:80},choices:[
+    {text:'融入秩序，成为天道的一部分',effect:{cultivation:40,qiyun:25,sanity:-20,comprehension:20},log:'你的意识与天地秩序融为一体——你不再是个人，而是法则的化身'},
+    {text:'保持自我，只做秩序的守护者',effect:{cultivation:20,sanity:10,qiyun:10,comprehension:10},log:'你拒绝失去自我。蟠螭尊重了你的选择——至少暂时'},
+    {text:'质疑秩序的必要性',effect:{comprehension:25,cultivation:15,qiyun:-15,sanity:-10},log:'你问蟠螭：如果秩序本身就是错的呢？蟠螭沉默了很久'}]},
+
+  // ========== 于儿 (法教天道) 专属事件 ==========
+  {xinpanReq:'yuer',text:'成为<span class="npc">于儿神</span>的心蟠后，法教的<span class="danger-text">血祭之力</span>在你体内觉醒。你的血液变成了黑色，任何沾上你血液的生物都会陷入狂暴。法教的同道对你既崇拜又恐惧。',
+    trigger:{minAge:18},choices:[
+    {text:'用血祭之力驱使邪灵',effect:{cultivation:20,karma:-15,sanity:-10,connections:-5},log:'你以自己的黑血召唤了法教的邪灵为己所用——它们嗜血、凶残，但绝对服从'},
+    {text:'控制血液的异变',effect:{cultivation:10,constitution:10,sanity:-5,comprehension:10},log:'你学会了控制黑血的流动。至少在平时，你看起来还像个正常人'},
+    {text:'用血液标记一切敌人',effect:{cultivation:15,karma:-20,constitution:-5,sanity:-10},log:'你将黑血弹洒在敌人身上——法教的诅咒会追踪他们直到死亡'}]},
+
+  {xinpanReq:'yuer',text:'<span class="npc">于儿神</span>在你梦中显现——祂的形象不断变化，时而是神，时而是兽，时而是一团<span class="danger-text">蠕动的血肉</span>。于儿要你完成更深层的<span class="mys">血祭</span>——用十二种不同生灵的血来铸造一件法器。',
+    trigger:{minAge:25,cultivation:40},choices:[
+    {text:'完成血祭，铸造法器',effect:{cultivation:30,karma:-25,constitution:10,sanity:-20},log:'十二血祭完成！一件浑身散发血腥气的法器出现在你手中——它在渴望更多的血'},
+    {text:'只用邪灵之血代替',effect:{cultivation:20,karma:-10,sanity:-15,comprehension:10},log:'你用邪灵的血代替了活物。法器虽成，但力量减半。于儿似乎并不介意'},
+    {text:'违逆于儿的旨意',effect:{cultivation:-5,sanity:-25,constitution:-10,karma:15},log:'你拒绝了血祭。于儿的怒火化为毒咒在你体内发作——这是背叛心蟠之约的代价'}]},
+
+  {xinpanReq:'yuer',text:'你在法教的深层修炼中发现了<span class="npc">于儿神</span>的本质——祂不是传统意义上的"神"，而是由无数<span class="danger-text">血祭</span>和<span class="mys">怨念</span>凝聚而成的集合体。每一个心蟠最终都会被于儿吞噬，成为祂的一部分。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'接受被吞噬的命运',effect:{cultivation:45,sanity:-35,karma:-20,constitution:-10},log:'你放弃了抵抗——于儿的力量洪水般涌入你体内。你变得异常强大，但你的意识正在消融'},
+    {text:'以于儿之力对抗于儿',effect:{cultivation:30,sanity:-20,comprehension:20,karma:-5},log:'你从于儿体内撕裂出一部分力量为己所用——这条路极其危险，但你赌赢了这一次'},
+    {text:'寻找脱离心蟠之约的方法',effect:{comprehension:25,cultivation:10,sanity:-10,karma:10},log:'你找到了一线希望——如果能找到另一个愿意替代你的人，你就能脱离于儿的掌控'}]},
+
+  // ========== 通用心蟠事件（所有心蟠共享） ==========
+  {text:'你身为<span class="mys">心蟠</span>的事实被其他修士发现了——有人崇拜你、有人恐惧你、有人想杀你夺取司命的因缘。',
+    trigger:{minAge:22},choices:[
+    {text:'隐藏心蟠身份',effect:{sanity:-5,comprehension:5,connections:-5},log:'你学会了隐藏心蟠的气息，但时刻保持警惕让你疲惫不堪'},
+    {text:'公开心蟠身份以震慑敌人',effect:{connections:15,qiyun:10,cultivation:5,karma:-5},log:'你公开了自己的身份——有人投来敬畏的目光，也有人在暗处磨刀'},
+    {text:'寻找其他心蟠结为同盟',effect:{connections:20,comprehension:10,cultivation:10},log:'你找到了另一位心蟠。你们分享了身为司命因缘的孤独与痛苦'}]},
+
+  {text:'一位<span class="npc">修士</span>找到你，声称能用一种<span class="mys">禁术</span>切断你与司命之间的心蟠联系——代价是你将失去大部分修为。',
+    trigger:{minAge:25,cultivation:50},choices:[
+    {text:'接受禁术，摆脱司命',effect:{cultivation:-60,sanity:30,constitution:10,karma:5,comprehension:10},log:'禁术生效了——心蟠的联系断裂的瞬间，你感到从未有过的轻松。但你的修为也跌落谷底'},
+    {text:'拒绝，你已经习惯了这种力量',effect:{cultivation:15,sanity:-10,comprehension:5},log:'你拒绝了。不是因为忠诚，而是因为你已经离不开司命赐予的力量'},
+    {text:'反杀这个修士',effect:{cultivation:10,karma:-20,sanity:-10,connections:-10},log:'你怀疑这是个陷阱——你出手了。他临死前说的话让你后悔：他是真心想帮你的'}]},
+
+  {text:'天道之间的<span class="mys">冲突</span>波及到了心蟠——你感受到另一位司命的力量在试探你，它想把你从你的司命手中<span class="danger-text">夺走</span>。',
+    trigger:{minAge:28,cultivation:60},choices:[
+    {text:'坚守与当前司命的联系',effect:{cultivation:20,sanity:-15,constitution:-5,comprehension:10},log:'你拼命抵抗另一位司命的侵蚀——你的司命感受到了你的忠诚，赐予了你更多力量'},
+    {text:'在两位司命之间周旋',effect:{comprehension:20,cultivation:25,sanity:-25,karma:-10},log:'你试图同时获取两位司命的力量——这极其危险，但暂时你做到了'},
+    {text:'投向新的司命',effect:{cultivation:30,sanity:-20,karma:-15,qiyun:-10},log:'你背叛了原本的司命——新的天道之力涌入体内，但旧主的诅咒也随之而来'}]},
+
+  {text:'你在修炼中进入了一种<span class="mys">奇异的状态</span>——你看到了所有十六天道如同巨树般矗立在虚空中，而你只是其中一棵树根须上的<span class="itm">种子</span>。心蟠就是种子，司命就是巨树。',
+    trigger:{minAge:35,cultivation:80},choices:[
+    {text:'尝试生根发芽',effect:{cultivation:45,sanity:-25,comprehension:25,constitution:-10},log:'你的意识开始向着司命的方向生长——你在成为什么东西，但还不是司命'},
+    {text:'安于做一颗种子',effect:{cultivation:15,sanity:10,comprehension:10},log:'你接受了自己作为种子的命运。不是每颗种子都要长成大树'},
+    {text:'试图窥探其他天道之树',effect:{comprehension:30,cultivation:20,sanity:-30,qiyun:10},log:'你看到了其他十五棵天道之树的形态——每一棵都令人敬畏。这份见识让你的道心更加坚定'}]},
+
+  {text:'你的<span class="mys">心蟠之力</span>在某个夜晚失控了——司命的力量从你体内喷涌而出，方圆十里的生灵都受到了影响。有人因此开悟，有人因此发疯。',
+    trigger:{minAge:30,cultivation:70},choices:[
+    {text:'全力压制失控的力量',effect:{cultivation:-10,sanity:-15,constitution:-10,karma:10},log:'你拼尽全力才压制住了失控的力量——但你知道，下一次可能压不住了'},
+    {text:'顺应失控，让力量自然宣泄',effect:{cultivation:30,sanity:-20,karma:-15,connections:-10},log:'力量宣泄后你变得更强了——但周围的惨状让你良心不安'},
+    {text:'将失控的力量导入地脉',effect:{cultivation:15,qiyun:10,comprehension:10,constitution:-5},log:'你将多余的力量导入了地脉——那片土地将来会诞生一处灵脉'}]},
 ];
