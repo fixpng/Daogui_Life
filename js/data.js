@@ -647,6 +647,37 @@ const SPECIAL_EVENTS = [
     {text:'以先天一炁挣脱',effect:{cultivation:30,sanity:-25,constitution:-8},log:'你体内的先天一炁爆发，祭坛碎裂——但你失去了太多血，那些血被他们装走了',combat:70},
     {text:'等待时机',effect:{sanity:-20,comprehension:10,connections:5},log:'有人救了你——但你在祭坛上听到了巴虺的低语，那声音至今还在你耳边'},
     {text:'与他们谈判',effect:{cultivation:15,karma:-15,connections:10},log:'你用一管心素之血换取了自由和一份袄景教的功法'}]},
+  // === 心素补充：被坐忘道欺骗、逃入地府、扎堆 ===
+  {text:'<span class="fac">坐忘道</span>的一个人找到了你——他不像其他人那样要你的血肉。他笑嘻嘻地说："<span class="npc">我能治你的幻觉</span>，让你分清哪个世界是真的。"他给你看了一份<span class="itm">罔天宝诰</span>。',
+    trigger:{minAge:14,cultivation:10},check:'xinsu',choices:[
+    {text:'相信他',effect:{sanity:-25,cultivation:15,karma:-10,connections:-10},log:'你照他说的做了——诵读罔天宝诰后你短暂地"清醒"了，但代价是你不自觉地帮坐忘道做了一件你完全不记得的事。等你回过神来，身边多了几具尸体'},
+    {text:'半信半疑跟着做',effect:{sanity:-15,cultivation:8,comprehension:5},log:'你只做了一半就停下了——那份经文在你脑中种下了什么东西，你能感到它在生长'},
+    {text:'拒绝',effect:{sanity:-5,comprehension:8},log:'你见过太多骗子了。他走时笑着说："你早晚会回来找我的。"'}]},
+  {text:'你在一次<span class="mys">两界闪烁</span>中迷了路——你既没有回到那个白色房间，也没有留在这个世界。你来到了一个<span class="danger-text">满是死人</span>的地方，黑暗中无数手臂在抓你。有人叫这里"<span class="loc">地府</span>"。',
+    trigger:{minAge:18,cultivation:30},check:'xinsu',choices:[
+    {text:'拼命逃出去',effect:{sanity:-30,cultivation:20,constitution:-5,comprehension:10},log:'你不知道跑了多久——终于看到了光。回到这个世界时你浑身是伤，衣服上沾满了不知道是谁的血肉'},
+    {text:'在地府中寻找出路',effect:{sanity:-25,cultivation:25,comprehension:15},log:'你在地府中游荡了不知多久——那里的规则和两个世界都不一样。你学到了一些不应该被凡人知道的东西'},
+    {text:'向地府中的存在求助',effect:{sanity:-35,cultivation:30,karma:-15,connections:5},log:'地府中有"东西"回应了你——它把你送了回来，但代价是你欠了它一个"人情"'}]},
+  {text:'你的心素之血引来了不止一个势力的觊觎——<span class="fac">坐忘道</span>、<span class="fac">袄景教</span>、甚至<span class="fac">监天司</span>内部都有人想要你。他们同时出现在你面前，<span class="danger-text">互相争夺</span>你。',
+    trigger:{minAge:20,cultivation:40},check:'xinsu',choices:[
+    {text:'趁他们打起来逃跑',effect:{sanity:-15,constitution:5,qiyun:5},log:'他们为了争夺你打成一团——你趁机溜了。但你知道这不是最后一次'},
+    {text:'拍卖自己的一管血',effect:{wealth:80,constitution:-5,karma:-10,sanity:-10},log:'你干脆让他们竞价——心素之血最终被袄景教以天价买走。你活了下来，但感觉自己是个货物'},
+    {text:'以先天一炁吓退他们',effect:{cultivation:20,sanity:-20,connections:-15},log:'你释放了体内的先天一炁——爆发的力量让他们全部后退。但他们不会放弃的'}]},
+  {text:'你无意中把<span class="mys">幻觉修真了</span>——你昨晚梦见的一把剑，醒来时竟然出现在枕边。它是实在的，能砍东西。但你完全不记得自己什么时候"做"了它。',
+    trigger:{minAge:16},check:'xinsu',choices:[
+    {text:'把剑留下研究',effect:{cultivation:10,comprehension:10,sanity:-15},log:'这把剑确实存在，但它的材质不属于这个世界的任何东西。以假修真……你的能力在你无意识时就会发动'},
+    {text:'赶紧扔掉',effect:{sanity:-10,karma:3},log:'你把剑扔进了河里——但你害怕了。如果你梦见了一个怪物呢？它也会出现吗？'},
+    {text:'尝试主动修真其他东西',effect:{cultivation:15,sanity:-20,comprehension:8},log:'你想象了一枚金币——它出现了。你想象了一朵花——它也出现了。你想象了你死去的亲人……什么都没出现。以假修真，修不出有灵魂的东西'}]},
+  {text:'你的<span class="mys">先天一炁</span>不受控制地涌出体外——你身边的人开始看到<span class="danger-text">幻觉</span>。有人看到了死去的亲人，有人看到了不存在的怪物。整条街陷入了混乱。',
+    trigger:{minAge:22,cultivation:50},check:'xinsu',choices:[
+    {text:'拼命收回先天一炁',effect:{sanity:-20,cultivation:10,constitution:-3},log:'你花了整整一天才收回失控的力量。但已经有三个人疯了——他们看到的幻觉太过真实'},
+    {text:'利用这次机会感悟以假修真',effect:{cultivation:25,sanity:-30,comprehension:15,karma:-10},log:'你没有收回力量，而是观察它是如何影响现实的。你的领悟大增，但街上多了十几个疯子'},
+    {text:'逃离人群',effect:{sanity:-10,connections:-15},log:'你慌忙逃走——从此你不敢在人多的地方久留。你的存在本身就是一种灾难'}]},
+  {text:'<span class="fac">坐忘道</span>设了一个精心的局——他们利用你心素的弱点，让你在<span class="mys">两界之间</span>来回跳转直到神志崩溃。他们想在你最脆弱时取走你的<span class="danger-text">脊椎</span>，那是心素之体最值钱的部分。',
+    trigger:{minAge:25,cultivation:60},check:'xinsu',choices:[
+    {text:'以假修真一面墙挡住他们',effect:{cultivation:20,sanity:-25,comprehension:10},log:'你在绝望中以假修真了一面铁墙——它真的出现了，挡住了坐忘道的人。你逃了出来，但整整三天分不清自己在哪个世界'},
+    {text:'在两界跳转中找到规律',effect:{cultivation:30,sanity:-35,comprehension:20},log:'你没有崩溃——反而在不断的跳转中悟到了两界的某种规律。坐忘道的人震惊了，他们没想到你能扛住'},
+    {text:'向另一个世界的人求助',effect:{sanity:-30,connections:10,cultivation:15},log:'你对着虚空大喊——那边的"医生"听到了，他们做了什么让你稳定了下来。你不知道他们做了什么，但你还活着'}]},
   // === 心浊专属：遗忘与空间 ===
   {text:'你在睡梦中<span class="mys">遗忘</span>了什么——醒来后你发现床边多了一个你从没见过的包袱。打开一看，里面是你<span class="danger-text">完全不记得</span>的物品。',
     trigger:{minAge:8},check:'xin_zhuo',choices:[
@@ -682,6 +713,31 @@ const SPECIAL_EVENTS = [
     {text:'用一件珍贵之物锚定自我',effect:{cultivation:25,sanity:-20,comprehension:15,wealth:-50},log:'你把最珍贵的记忆绑在一件实物上——只要那件东西还在，你就不会完全遗忘自己'},
     {text:'接受心浊的命运',effect:{cultivation:50,sanity:-35,comprehension:25},log:'你放弃了抵抗——性别、年龄、名字、过去，一切都被藏进了那个空间。你变成了"纯粹的心浊"，力量暴涨，但自我几乎消失'},
     {text:'以天道之力对抗业障',effect:{cultivation:35,sanity:10,comprehension:15,karma:-10},log:'你找到了暂时的平衡——但你知道这只是延缓，心浊的遗忘终究会吞噬一切'}]},
+  // === 心浊补充：空间失控、业障扩散、被利用 ===
+  {text:'你醒来后发现自己在一个完全陌生的地方——你不记得自己是怎么到这里的。更可怕的是，你身边散落着你<span class="danger-text">不认识的物品</span>和一封写着你名字的信。信上说："你把自己的昨天藏起来了。"',
+    trigger:{minAge:10},check:'xin_zhuo',choices:[
+    {text:'读完信试图回忆',effect:{sanity:-15,comprehension:8},log:'你拼命回忆——只有碎片。你确实做了些什么，但全都被心浊的业障吞噬了'},
+    {text:'不管了继续前行',effect:{sanity:-5,constitution:3},log:'你开始习惯这种生活。每天醒来都像是新的一天——因为你确实记不清昨天'}]},
+  {text:'你的心浊之力在<span class="danger-text">梦中失控</span>了——你把自己的梦境"藏"进了现实。醒来后，你的房间里多了一棵从未见过的黑色树，树上挂满了你遗忘的<span class="mys">记忆碎片</span>。',
+    trigger:{minAge:15,cultivation:15},check:'xin_zhuo',choices:[
+    {text:'触碰记忆碎片',effect:{sanity:-20,comprehension:15,cultivation:10},log:'你看到了被遗忘的过去——有些温暖，有些恐怖。你不确定这些记忆该不该被找回来'},
+    {text:'砍掉黑树',effect:{cultivation:8,sanity:-10,constitution:-3},log:'你砍下了树——记忆碎片碎裂消散。那些过去彻底消失了。但树根还在地下，它会再长出来'},
+    {text:'把树也"藏"起来',effect:{cultivation:15,sanity:-15},log:'你用心浊之力把整棵树连同记忆都藏进了虚空。问题解决了？不，问题只是被你藏起来了'}]},
+  {text:'有人发现了你心浊的秘密——一个<span class="npc">修士</span>专门来找你，要你帮他<span class="mys">"藏"一个人</span>。他愿意付出天价。',
+    trigger:{minAge:18,cultivation:25},check:'xin_zhuo',choices:[
+    {text:'拒绝',effect:{connections:-5,sanity:5},log:'把活人藏进虚空——谁知道那人在里面会怎样？你不干这种事'},
+    {text:'收钱帮忙',effect:{wealth:60,karma:-20,cultivation:10,sanity:-15},log:'你把那个人"藏"进了虚空。对方满意地付了钱。但你夜里做了噩梦——虚空中那人在尖叫'},
+    {text:'假装答应后报官',effect:{connections:10,karma:10,sanity:-5},log:'你把事情告诉了监天司。他们抓了那个人——但你也暴露了自己是心浊的事实'}]},
+  {text:'你的心浊业障开始<span class="danger-text">影响周围的人</span>——和你接触时间长的人也开始遗忘。你最亲近的人忘记了你们共同的回忆。',
+    trigger:{minAge:20,cultivation:35},check:'xin_zhuo',choices:[
+    {text:'远离所有人',effect:{connections:-20,sanity:-15,cultivation:10},log:'你离开了所有亲近的人——你不想让他们也被遗忘吞噬。从此你独来独往'},
+    {text:'寻找控制业障的方法',effect:{comprehension:15,cultivation:8,wealth:-30},log:'你花了大量钱财求医问药——有人说三清掌管的"秘密"天道可以对抗心浊的遗忘，但三清已不存在'},
+    {text:'接受这就是心浊的宿命',effect:{cultivation:15,sanity:-10,connections:-10},log:'你开始理解闻人诡为什么总是独自一人——心浊注定孤独'}]},
+  {text:'你在极度情绪波动中把一<span class="danger-text">整片区域</span>藏进了虚空——树木、房屋、行人，一切都消失了。等你冷静下来，面前只剩一片空地。',
+    trigger:{minAge:25,cultivation:50},check:'xin_zhuo',choices:[
+    {text:'拼命把一切吐回来',effect:{sanity:-30,cultivation:15,constitution:-5},log:'你用了三天三夜才把那些东西和人从虚空中"吐"回来——大部分人还活着，但他们的记忆被清空了'},
+    {text:'封印自己的情绪',effect:{sanity:-15,connections:-20,comprehension:10},log:'你用法力在自己心上设了一道封印——从此你再也无法感受强烈的情绪。这是唯一安全的办法'},
+    {text:'研究这股力量的极限',effect:{cultivation:25,sanity:-25,comprehension:15},log:'你意识到你的空间之力远超想象——闻人诡说得对，两个心浊碰到一起能伤到司命化身'}]},
   // === 白化病专属：白莲教圣女之路与被觊觎 ===
   {text:'你从小就因为<span class="danger-text">白发红瞳</span>被村里人嘲笑和排挤——他们叫你"妖怪""不祥之人"。只有母亲说："我们家的人，生来就不一样。"',
     trigger:{minAge:6,maxAge:14},check:'bai_hua',choices:[

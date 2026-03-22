@@ -239,6 +239,23 @@ function showStatTooltip(e, text) {
 }
 
 // === REALM & ERA ===
+// 修为瓶颈函数：修为越高，从事件获得的修为越少
+function applyCultResistance(gain) {
+  if(gain <= 0) return gain; // 负值不做修改
+  var cult = gameState.cultivation;
+  var ratio = 1.0;
+  if(cult >= 200) ratio = 0.10;       // 大乘以上: 只获得10%
+  else if(cult >= 150) ratio = 0.15;   // 化神: 15%
+  else if(cult >= 100) ratio = 0.20;   // 元婴: 20%
+  else if(cult >= 60) ratio = 0.30;    // 金丹: 30%
+  else if(cult >= 30) ratio = 0.50;    // 筑基: 50%
+  else if(cult >= 10) ratio = 0.70;    // 练气: 70%
+  var result = Math.max(1, Math.round(gain * ratio));
+  // 有悟性加成：高悟性减缓瓶颈
+  if(gameState.comprehension >= 60) result = Math.max(result, Math.round(gain * ratio * 1.2));
+  return result;
+}
+
 function getRealmName(c) {
   if(c>=400) return '造化';
   if(c>=300) return '大傩';
@@ -353,23 +370,34 @@ function nextYear() {
   gameState.age += ageStep; gameState.year += ageStep;
   gameState.lastAgeStep = ageStep;
 
-  // Cultivation gain - 极低概率，模拟修仙之路极为艰难
-  // 普通人没有机缘难以突破修为，每年只有约3%概率能获得提升
+  // Cultivation gain - 修为提升极难，且有瓶颈阻碍
+  // 修为越高，自然提升概率越低（瓶颈效应）
   var compBonus = Math.floor(gameState.comprehension / 100); // 悟性影响很小，最多+1
   var cultGain = 0;
-  var hasCultivationChance = Math.random() < 0.03; // 降低到3%概率
-  
+  // 基础概率随修为递减：凡人2%, 练气1.5%, 筑基1%, 金丹0.5%, 元婴0.2%, 化神+几乎0
+  var baseCultChance = 0.02;
+  if(gameState.cultivation >= 150) baseCultChance = 0.005;
+  else if(gameState.cultivation >= 100) baseCultChance = 0.008;
+  else if(gameState.cultivation >= 60) baseCultChance = 0.01;
+  else if(gameState.cultivation >= 30) baseCultChance = 0.012;
+  else if(gameState.cultivation >= 10) baseCultChance = 0.015;
+  var hasCultivationChance = Math.random() < baseCultChance;
+
   if (hasCultivationChance) {
-    // 即使有机会，基础提升也只有0-1点（普通人很难突破瓶颈）
     cultGain = Math.floor(Math.random() * 2) + compBonus;
     // 天赋加成（但仍需要有机缘才能触发）
-    if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 2;
+    if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='xian_gu';})) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='wu_xing';})) cultGain += 1;
   }
   if(gameState.faction!=='none' && FACTIONS[gameState.faction]) {
     var fb = FACTIONS[gameState.faction].bonus;
-    if(fb.cultivation) cultGain += Math.floor(fb.cultivation/3);
+    // 门派修为加成大幅削减，且高修为时减弱
+    if(fb.cultivation) {
+      var factionCultBonus = Math.floor(fb.cultivation / 5);
+      if(gameState.cultivation >= 60) factionCultBonus = Math.max(0, factionCultBonus - 1);
+      if(Math.random() < 0.5) cultGain += factionCultBonus; // 50%概率才触发
+    }
     if(fb.wealth) gameState.wealth += Math.floor(fb.wealth/4);
     if(fb.connections) gameState.connections += Math.floor(fb.connections/4);
     if(fb.sanity && gameState.talents.find(function(t){return t.id==='xinsu';})) gameState.sanity += fb.sanity;
@@ -399,49 +427,125 @@ function nextYear() {
     }
   }
 
-  // 散修 bonus: no faction but has experience, self-reliance
+  // 散修 bonus: no faction but has experience, self-reliance (reduced)
   var isSanxiu = gameState.faction === 'none' && gameState.factionHistory.length > 0;
   if(isSanxiu) {
-    cultGain += 1; // 散修自悟
-    if(Math.random() < 0.1) gameState.comprehension += 1; // 散修更善于独立思考
+    if(Math.random() < 0.3) cultGain += 1; // 散修自悟概率降低
+    if(Math.random() < 0.05) gameState.comprehension += 1; // 散修更善于独立思考
   }
 
   gameState.cultivation += cultGain;
 
-  // Bad talent hidden positive effects (small yearly bonuses)
-  if(gameState.talents.find(function(t){return t.id==='ji_bing';}) && Math.random()<0.12) { gameState.cultivation += 2; }
-  if(gameState.talents.find(function(t){return t.id==='pin_kun';}) && Math.random()<0.1) { gameState.wealth += 5; }
-  if(gameState.talents.find(function(t){return t.id==='wu_qin';}) && gameState.age>=12) { gameState.cultivation += 1; }
-  if(gameState.talents.find(function(t){return t.id==='yu_ben';}) && Math.random()<0.15) { gameState.connections += 2; }
-  if(gameState.talents.find(function(t){return t.id==='e_meng';}) && Math.random()<0.08) { gameState.cultivation += 5; }
-  if(gameState.talents.find(function(t){return t.id==='du_zhai';}) && Math.random()<0.1) { gameState.connections += 3; }
-  if(gameState.talents.find(function(t){return t.id==='chou_lou';}) && Math.random()<0.1) { gameState.cultivation += 2; }
-  if(gameState.talents.find(function(t){return t.id==='sha_qi';}) && Math.random()<0.1) { gameState.cultivation += 3; }
-  if(gameState.talents.find(function(t){return t.id==='mo_ying';}) && Math.random()<0.08) { gameState.cultivation += 4; }
-  if(gameState.talents.find(function(t){return t.id==='can_ji';}) && Math.random()<0.1) { gameState.cultivation += 3; }
-  if(gameState.talents.find(function(t){return t.id==='zai_min';}) && Math.random()<0.1) { gameState.cultivation += 2; gameState.connections += 1; }
-  if(gameState.talents.find(function(t){return t.id==='bai_bing';}) && Math.random()<0.08) { gameState.cultivation += 3; }
+  // Bad talent hidden positive effects (small yearly bonuses - reduced)
+  if(gameState.talents.find(function(t){return t.id==='ji_bing';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='pin_kun';}) && Math.random()<0.08) { gameState.wealth += 3; }
+  if(gameState.talents.find(function(t){return t.id==='wu_qin';}) && gameState.age>=12 && Math.random()<0.3) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='yu_ben';}) && Math.random()<0.10) { gameState.connections += 1; }
+  if(gameState.talents.find(function(t){return t.id==='e_meng';}) && Math.random()<0.05) { gameState.cultivation += 2; }
+  if(gameState.talents.find(function(t){return t.id==='du_zhai';}) && Math.random()<0.08) { gameState.connections += 2; }
+  if(gameState.talents.find(function(t){return t.id==='chou_lou';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='sha_qi';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='mo_ying';}) && Math.random()<0.05) { gameState.cultivation += 2; }
+  if(gameState.talents.find(function(t){return t.id==='can_ji';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='zai_min';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='bai_bing';}) && Math.random()<0.05) { gameState.cultivation += 1; }
   // New talent yearly effects
-  if(gameState.talents.find(function(t){return t.id==='ye_zhang';}) && Math.random()<0.10) { gameState.cultivation += 3; }
-  if(gameState.talents.find(function(t){return t.id==='ti_ruo';}) && Math.random()<0.08) { gameState.comprehension += 2; }
+  if(gameState.talents.find(function(t){return t.id==='ye_zhang';}) && Math.random()<0.06) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='ti_ruo';}) && Math.random()<0.05) { gameState.comprehension += 1; }
   // Qiyun-focused talent effects
-  if(gameState.talents.find(function(t){return t.id==='tian_yun';}) && Math.random()<0.15) { gameState.qiyun += 2; gameState.wealth += 3; }
-  if(gameState.talents.find(function(t){return t.id==='zhuan_yun';}) && Math.random()<0.12) { gameState.qiyun += 1; gameState.constitution += 1; }
-  if(gameState.talents.find(function(t){return t.id==='po_yun';}) && Math.random()<0.10) { gameState.qiyun -= 2; gameState.cultivation += 3; }
-  // New novel-based talent yearly effects
-  if(gameState.talents.find(function(t){return t.id==='tian_sha';}) && Math.random()<0.08) { gameState.connections -= 2; gameState.cultivation += 3; }
-  if(gameState.talents.find(function(t){return t.id==='shi_yi';}) && Math.random()<0.06) { gameState.comprehension += 3; } // 前世记忆闪回
-  if(gameState.talents.find(function(t){return t.id==='gui_ying';}) && Math.random()<0.08) { gameState.cultivation += 4; gameState.sanity = Math.max(0, gameState.sanity - 2); }
-  if(gameState.talents.find(function(t){return t.id==='fan_gu';}) && Math.random()<0.10) { gameState.comprehension += 2; gameState.cultivation += 1; }
-  if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.05) { gameState.constitution -= 1; } // 命格短促
-  if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.15) { gameState.cultivation += 2; }
-  if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.12) { gameState.constitution += 1; }
-  // 心浊：随机遗忘（失去少量属性）但获得修为，年龄越大越严重
-  if(gameState.talents.find(function(t){return t.id==='xin_zhuo';})) {
-    if(Math.random()<0.12) { gameState.cultivation += 2; }
-    if(gameState.age > 25 && Math.random()<0.08) { gameState.connections = Math.max(0, gameState.connections - 2); } // 遗忘人际关系
-    if(gameState.age > 40 && Math.random()<0.06) { gameState.wealth = Math.max(-80, gameState.wealth - 5); } // 遗忘藏钱处
+  if(gameState.talents.find(function(t){return t.id==='tian_yun';}) && Math.random()<0.12) { gameState.qiyun += 1; gameState.wealth += 2; }
+  if(gameState.talents.find(function(t){return t.id==='zhuan_yun';}) && Math.random()<0.08) { gameState.qiyun += 1; }
+  if(gameState.talents.find(function(t){return t.id==='po_yun';}) && Math.random()<0.06) { gameState.qiyun -= 1; gameState.cultivation += 1; }
+
+  // Good talent yearly effects (影响他人和自身)
+  if(gameState.talents.find(function(t){return t.id==='fu_gui';})) {
+    if(Math.random()<0.08) gameState.wealth += 3; // 家底丰厚
+    if(Math.random()<0.05) gameState.connections += 1; // 有钱好办事
   }
+  if(gameState.talents.find(function(t){return t.id==='ji_xing';})) {
+    // 逢凶化吉——每年有概率在危难中恢复属性
+    if(gameState.constitution < 30 && Math.random()<0.10) { gameState.constitution += 3; }
+    if(gameState.sanity < 30 && Math.random()<0.08) { gameState.sanity = Math.min(120, gameState.sanity + 5); }
+  }
+  if(gameState.talents.find(function(t){return t.id==='mei_mao';})) {
+    if(Math.random()<0.06) gameState.connections += 1; // 美貌引来更多人
+    if(Math.random()<0.03) gameState.wealth += 2; // 外表优势
+  }
+  if(gameState.talents.find(function(t){return t.id==='kou_cai';})) {
+    if(Math.random()<0.08) gameState.connections += 2; // 能说会道
+    if(Math.random()<0.04) gameState.karma += 1; // 劝人行善
+  }
+  if(gameState.talents.find(function(t){return t.id==='gui_ren';})) {
+    // 贵人天命——低概率获得机缘
+    if(Math.random()<0.05) { gameState.qiyun += 2; gameState.connections += 2; }
+  }
+  if(gameState.talents.find(function(t){return t.id==='fu_yuan';})) {
+    // 福缘——善事更容易回报
+    if(gameState.karma > 10 && Math.random()<0.06) { gameState.qiyun += 1; }
+  }
+  if(gameState.talents.find(function(t){return t.id==='duo_mou';})) {
+    if(Math.random()<0.05) gameState.comprehension += 1; // 善于筹划
+  }
+  if(gameState.talents.find(function(t){return t.id==='shou_xing';})) {
+    // 长寿天命——延缓衰老
+    if(gameState.age > 60 && Math.random()<0.15) gameState.constitution = Math.min(100, gameState.constitution + 1);
+  }
+  if(gameState.talents.find(function(t){return t.id==='jian_kang';})) {
+    // 健康体魄自然维持
+    if(gameState.constitution < 60 && Math.random()<0.10) gameState.constitution += 1;
+  }
+  // New novel-based talent yearly effects
+  if(gameState.talents.find(function(t){return t.id==='tian_sha';}) && Math.random()<0.05) { gameState.connections -= 2; gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='shi_yi';}) && Math.random()<0.04) { gameState.comprehension += 2; } // 前世记忆闪回
+  if(gameState.talents.find(function(t){return t.id==='gui_ying';}) && Math.random()<0.05) { gameState.cultivation += 2; gameState.sanity = Math.max(0, gameState.sanity - 2); }
+  if(gameState.talents.find(function(t){return t.id==='fan_gu';}) && Math.random()<0.06) { gameState.comprehension += 1; }
+  if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.08) { gameState.constitution -= 1; } // 命格短促
+  if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.08) { gameState.cultivation += 1; }
+  if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.08) { gameState.constitution += 1; }
+
+  // === 心素深度影响：一生受两界裂隙折磨 ===
+  if(gameState.talents.find(function(t){return t.id==='xinsu';})) {
+    // 身体是药引——每年有概率被人盯上，失去人脉或体魄
+    if(Math.random()<0.08) { gameState.connections = Math.max(-50, gameState.connections - 2); }
+    if(gameState.age > 15 && Math.random()<0.05) { gameState.constitution = Math.max(0, gameState.constitution - 1); } // 被人取材
+    // 两界闪烁——随机神志波动，且修为越高波动越大
+    var xinsuFlicker = Math.floor(Math.random()*5) - 2;
+    if(gameState.cultivation > 60) xinsuFlicker = Math.floor(Math.random()*9) - 4;
+    if(Math.random() < 0.25) gameState.sanity = Math.max(0, Math.min(120, gameState.sanity + xinsuFlicker));
+    // 以假修真——低概率获得修为但必定掉神志
+    if(gameState.cultivation >= 30 && Math.random()<0.06) {
+      gameState.cultivation += 2;
+      gameState.sanity = Math.max(0, gameState.sanity - 3);
+    }
+    // 幻觉导致做出错误判断——低概率失去金银或人脉
+    if(Math.random()<0.06) { gameState.wealth = Math.max(-100, gameState.wealth - 3); }
+    // 先天一炁吸引邪祟
+    if(gameState.age > 20 && Math.random()<0.04) { gameState.qiyun -= 1; }
+  }
+
+  // === 心浊深度影响：遗忘吞噬一切 ===
+  if(gameState.talents.find(function(t){return t.id==='xin_zhuo';})) {
+    // 基础遗忘：每年高概率遗忘各种东西
+    if(Math.random()<0.15) { gameState.connections = Math.max(-50, gameState.connections - 2); } // 忘记朋友
+    if(gameState.age > 20 && Math.random()<0.12) { gameState.wealth = Math.max(-80, gameState.wealth - 5); } // 忘记藏钱的地方
+    if(gameState.age > 30 && Math.random()<0.10) { gameState.comprehension = Math.max(0, gameState.comprehension - 1); } // 忘记领悟的道理
+    if(gameState.age > 40 && Math.random()<0.08) { gameState.karma = Math.min(100, Math.max(-100, gameState.karma + (Math.random()<0.5?1:-1))); } // 因果混乱
+    // 空间之力被动触发——随机"藏"东西
+    if(Math.random()<0.10) {
+      var lostStat = Math.floor(Math.random()*3);
+      if(lostStat===0) gameState.wealth = Math.max(-80, gameState.wealth - 3);
+      else if(lostStat===1) gameState.connections = Math.max(-50, gameState.connections - 1);
+      else gameState.constitution = Math.max(0, gameState.constitution - 1);
+    }
+    // 空间之力带来的修为——遗忘换力量
+    if(Math.random()<0.10) { gameState.cultivation += 2; }
+    // 头发被觊觎
+    if(gameState.age > 15 && Math.random()<0.04) { gameState.connections -= 1; }
+    // 年龄越大遗忘越严重
+    if(gameState.age > 50 && Math.random()<0.15) { gameState.sanity = Math.max(0, gameState.sanity - 2); }
+  }
+
+  // 心浊：随机遗忘（已整合到上面的深度影响中）
   // 白化病：外貌引来的关注，白莲教好感，但也被觊觎
   if(gameState.talents.find(function(t){return t.id==='bai_hua';})) {
     if(Math.random()<0.08) { gameState.connections -= 1; } // 外人排斥
@@ -456,9 +560,9 @@ function nextYear() {
   if(gameState.age > 10 && Math.random() < 0.15) gameState.comprehension += 1;
 
   // === STAT INTERACTION EFFECTS ===
-  // High comprehension accelerates cultivation
-  if(gameState.comprehension >= 50 && Math.random() < 0.10) gameState.cultivation += 1;
-  if(gameState.comprehension >= 70 && Math.random() < 0.08) gameState.cultivation += 1;
+  // High comprehension accelerates cultivation (reduced)
+  if(gameState.comprehension >= 60 && Math.random() < 0.05) gameState.cultivation += 1;
+  if(gameState.comprehension >= 80 && Math.random() < 0.03) gameState.cultivation += 1;
   // Low constitution hinders cultivation
   if(gameState.constitution < 20 && Math.random() < 0.15) gameState.cultivation -= 1;
   // High karma slowly improves qiyun
@@ -1206,7 +1310,11 @@ function applyChoice(c) {
   }
 
   if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
-  if(c.effect.cultivation) gameState.cultivation += c.effect.cultivation;
+  if(c.effect.cultivation) {
+    // 事件修为奖励受瓶颈影响
+    var cultReward = c.effect.cultivation > 0 ? applyCultResistance(c.effect.cultivation) : c.effect.cultivation;
+    gameState.cultivation += cultReward;
+  }
   if(c.effect.wealth) gameState.wealth += c.effect.wealth;
   if(c.effect.connections) gameState.connections += c.effect.connections;
   if(c.effect.comprehension) gameState.comprehension = Math.max(0,Math.min(100,gameState.comprehension+c.effect.comprehension));
