@@ -79,56 +79,73 @@ const LOCATIONS = [
 
 const FACTIONS = {
   none: {name:'无', bonus:{}, desc:'', requirement:null},
-  zuowang: {name:'坐忘道', bonus:{cultivation:5,sanity:-5,comprehension:2}, desc:'信奉阴阳斗姥的邪修组织，以欺骗和玩弄为乐，成员以麻将牌为代号。修行坐忘论，利用罔天宝诰可召唤斗姥化身。',
+  // ===== 原著正统势力 =====
+  zuowang: {name:'坐忘道', bonus:{cultivation:5,sanity:-5,comprehension:2}, desc:'信奉阴阳斗姥的邪修组织，以欺骗获取力量。成员以麻将牌为代号，面容化为对应牌面。底层为万/饼/条，中层为四喜风牌（东南西北），高层为三元箭牌（红中、发财、白板），最高首领为骰子。可通过罔天宝诰召唤斗姥化身。监天司正是为对抗坐忘道而设立。',
     requirement:{cultivation:10}, requireDesc:'需修为境界达锻体以上',
-    ranks:['万子','饼子','条子','东风','南风','西风','北风','红中','白板','发财'],
-    rankReqs:[0,10,20,35,50,65,80,100,150,200],
-    rankAgeReqs:[0,0,0,0,0,0,0,0,0,0]},
-  jiantian: {name:'监天司', bonus:{wealth:10,connections:5,qiyun:3}, desc:'监察天下异事的官方机构，隶属大梁朝廷。下设癸卒至司丞六等，以神山鬼之眼为信仰。',
+    ranks:['万子','饼子','条子','东风','南风','西风','北风','红中','白板','发财','骰子'],
+    rankReqs:[0,10,20,35,50,65,80,100,150,200,300],
+    rankAgeReqs:[0,0,0,0,0,0,0,0,0,0,0]},
+  jiantian: {name:'监天司', bonus:{wealth:10,connections:5,qiyun:3}, desc:'大梁朝廷官方机构，专司监察天下异事、对抗邪修。地位超然，在超自然事务上有无限权限。等级以十天干划分，自癸至甲共十等。最高为甲等司天监（大梁为玄牝）。晋升依据阳寿丹贡献、斩邪功绩、任务完成度。',
     requirement:{connections:10}, requireDesc:'需人脉10以上',
-    ranks:['癸卒','壬卒','庚旗','百户','千户','司丞'],
-    rankReqs:[0,15,30,60,100,200],
-    rankAgeReqs:[0,0,18,22,30,40]},
-  aojing: {name:'袄景教', bonus:{cultivation:8,connections:3,qiyun:-2}, desc:'信奉巴虺与牯神的神秘宗教，以自残献祭为修炼途径。教义源自袄教与景教合一，大千录为传承法器。',
+    ranks:['癸卒','壬伍','辛什','庚旗','己监丞','戊记相','丁将','丙将','司天少监','司天监'],
+    rankReqs:[0,10,20,35,50,70,90,120,170,250],
+    rankAgeReqs:[0,0,16,18,22,26,30,35,40,50]},
+  aojing: {name:'袄景教', bonus:{cultivation:8,connections:3,qiyun:-2}, desc:'原为两支分别信奉牯神和巴虺的教派，后合并。修炼途径为苍蜣登阶——以极端自残和痛苦献祭换取巴虺赐力。等级按劫数划分，底层以器官+数字为号（如耳玖、手叁），三劫以上可获正式名号（眼见喜、身本忧等）。传承法器为大千录。',
     requirement:{cultivation:20}, requireDesc:'需修为境界达练气以上',
-    ranks:['信徒','初阶','执事','长老','大长老'],
-    rankReqs:[0,15,35,70,150],
-    rankAgeReqs:[0,0,18,25,35]},
-  bailian: {name:'白莲教', bonus:{connections:8,sanity:-3,qiyun:-3}, desc:'信奉无生老母的秘密结社，以白氏与连氏为核心。圣女为教中至尊，传承红莲业火之法。',
+    ranks:['一劫','二劫','三劫','四劫','五劫'],
+    rankReqs:[0,20,50,100,200],
+    rankAgeReqs:[0,0,18,28,40]},
+  bailian: {name:'白莲教', bonus:{connections:8,sanity:-3,qiyun:-3}, desc:'信奉无生老母的秘密结社，以白氏和连氏为核心家族。教义核心："无生老母，真空家乡。"圣女可与无生老母直接沟通，白灵淼为圣女，亦是无生老母的心蟠。二神辅佐圣女，掌八苦十情，主持仪式。',
     requirement:{wealth_max:50}, requireDesc:'金银不超过50方可入教',
-    ranks:['教众','香主','堂主','护法','长老'],
-    rankReqs:[0,10,25,50,100],
-    rankAgeReqs:[0,0,16,22,30]},
-  biaoju: {name:'镖局', bonus:{wealth:8,connections:5,constitution:2}, desc:'刀口舔血，押镖为生。江湖人的正道营生，凭武艺和信誉立足。',
+    ranks:['信众','坛主','二神','圣女'],
+    rankReqs:[0,15,50,120],
+    rankAgeReqs:[0,0,18,30]},
+  qingfeng: {name:'清风观', bonus:{cultivation:6,sanity:-6,karma:-8}, desc:'丹阳子一脉。丹阳子本名羊蛋子，不识字的邪修，以活人炼丹。外门弟子多为天残地缺，负责打杂、喂养药引。内门弟子为丹阳子亲传，参与炼药、活人祭。丹阳子被坐忘道以伪经欺骗，后短暂成为司命。',
+    requirement:{cultivation:5}, requireDesc:'需修为境界达锻体',
+    ranks:['外门弟子','内门弟子','观主'],
+    rankReqs:[0,25,80],
+    rankAgeReqs:[0,0,20]},
+  luo_jiao: {name:'罗教', bonus:{cultivation:4,comprehension:5,karma:3}, desc:'蛇骨山韩符一脉。以七星铜钱剑为至宝，修行平和内敛，精通符箓、铜钱剑术、傀儡术与土煞之法。掌教韩符识心素、擅镇邪。创始人罗祖以一百八十四枚铜钱编成七星铜钱剑。',
+    requirement:{comprehension:20}, requireDesc:'需悟性20以上',
+    ranks:['弟子','执事','长老','掌教'],
+    rankReqs:[0,20,50,100],
+    rankAgeReqs:[0,0,20,30]},
+  bingjia: {name:'兵家', bonus:{cultivation:7,constitution:5,karma:-5,sanity:-3}, desc:'大梁军武煞气体系，无固定职级，按煞气与军阵划分。修炼者以自身鲜血涂抹兵书获得力量：煞气冲击、扩大体型、铁骨不灭则肉身不死。顶级大将可布龙飞阵、风扬阵等军阵。代表人物：彭龙腾。',
+    requirement:{constitution:35,cultivation:15}, requireDesc:'需体魄35以上且修为锻体以上',
+    ranks:['兵卒','伍长','偏将','大将'],
+    rankReqs:[0,25,60,150],
+    rankAgeReqs:[0,0,20,35]},
+  fomen: {name:'正德寺', bonus:{cultivation:5,karma:5,sanity:3,connections:3}, desc:'大梁佛门正统，等级依次为沙弥、比丘、执事、住持、方丈。禅度方丈为正德寺最高，掌血肉天道。表面慈悲为怀，实为五智如来（肉欲天道司命）的影子。晋升依据禅定境界、度化功绩、镇压邪祟。',
+    requirement:{karma_min:-10}, requireDesc:'需因果不低于-10（恶人不可入佛门）',
+    ranks:['沙弥','比丘','执事','住持','方丈'],
+    rankReqs:[0,15,35,70,120],
+    rankAgeReqs:[0,0,16,25,35]},
+  guoshi: {name:'国师体系', bonus:{cultivation:6,connections:8,wealth:5,qiyun:5}, desc:'大梁术师朝堂体系。方士观星、禳灾、祈福；皇室供奉受朝廷供养，处理国级邪祟；国师为大梁术师顶点，可引雷、掌国运、沟通龙脉。代表人物：国师皇甫天罡。晋升依据术法修为、龙脉亲和、皇室信任。',
+    requirement:{cultivation:30,connections:20}, requireDesc:'需修为筑基以上且人脉20以上',
+    ranks:['方士','供奉','国师'],
+    rankReqs:[0,60,200],
+    rankAgeReqs:[0,25,40]},
+  chaoting: {name:'世俗朝廷', bonus:{wealth:12,connections:10,qiyun:2}, desc:'大梁姬氏皇权体系。自平民至皇帝，历代帝王尸身拼接成龙脉。当朝皇帝姬诵为大梁龙脉掌控者。',
+    requirement:{connections:15,wealth:30}, requireDesc:'需人脉15以上且金银30以上',
+    ranks:['小吏','县令','刺史','重臣'],
+    rankReqs:[0,20,60,150],
+    rankAgeReqs:[0,18,28,40]},
+  // ===== 游戏原创势力（非原著正统） =====
+  biaoju: {name:'镖局', bonus:{wealth:8,connections:5,constitution:2}, desc:'【游戏原创】刀口舔血，押镖为生。江湖人的正道营生，凭武艺和信誉立足。',
     requirement:{constitution:30}, requireDesc:'需体魄30以上',
     ranks:['趟子手','镖师','镖头','总镖头'],
     rankReqs:[0,15,40,80],
     rankAgeReqs:[0,0,20,30]},
-  fa_jiao: {name:'法教', bonus:{cultivation:10,sanity:-8,karma:-5,qiyun:-3}, desc:'来自大齐的异域宗教势力，信奉于儿神。以活人祭祀和十二大巫闻名，曾大举入侵大梁。',
+  fa_jiao: {name:'法教', bonus:{cultivation:10,sanity:-8,karma:-5,qiyun:-3}, desc:'【游戏原创】引入福生天外来司命（于儿神等）的危险教派，协助外来司命入侵大傩世界。以活人祭祀和十二大巫闻名。',
     requirement:{cultivation:30,karma_max:10}, requireDesc:'需修为筑基以上且因果不高于10',
     ranks:['祭品','小巫','大巫','十二大巫','大祭司'],
     rankReqs:[0,35,60,120,250],
     rankAgeReqs:[0,0,20,30,40]},
-  luo_jiao: {name:'罗教', bonus:{cultivation:4,comprehension:5,karma:3}, desc:'以七星铜钱剑为至宝，修行平和内敛。罗教传人精通阵法与驱邪。创始人罗祖以一百八十四枚铜钱编成七星铜钱剑。',
-    requirement:{comprehension:20}, requireDesc:'需悟性20以上',
-    ranks:['居士','道人','真人','掌教'],
-    rankReqs:[0,20,50,100],
-    rankAgeReqs:[0,0,20,30]},
-  nanjiang: {name:'南疆巫族', bonus:{cultivation:6,constitution:3,sanity:-4,karma:-3}, desc:'南疆蛊师一脉，以蛊虫驱使和毒术闻名。南疆地处瘴气之中，巫族世代与毒虫为伴，修行路子与中原截然不同。',
+  nanjiang: {name:'南疆巫族', bonus:{cultivation:6,constitution:3,sanity:-4,karma:-3}, desc:'【游戏原创】南疆蛊师一脉，以蛊虫驱使和毒术闻名。南疆地处瘴气之中，巫族世代与毒虫为伴，修行路子与中原截然不同。',
     requirement:{constitution:25}, requireDesc:'需体魄25以上',
     ranks:['蛊童','蛊师','大蛊师','巫王'],
     rankReqs:[0,20,55,120],
     rankAgeReqs:[0,0,18,30]},
-  bingjia: {name:'兵家', bonus:{cultivation:7,constitution:5,karma:-5,sanity:-3}, desc:'以血修炼的古老传承，兵书为核心法器。修炼者以自身鲜血涂抹兵书获得力量：煞气冲击、扩大体型、血肉不灭则肉身不死。极为暴烈。',
-    requirement:{constitution:35,cultivation:15}, requireDesc:'需体魄35以上且修为锻体以上',
-    ranks:['卒','校','将','元帅'],
-    rankReqs:[0,25,60,150],
-    rankAgeReqs:[0,0,20,35]},
-  fomen: {name:'佛门', bonus:{cultivation:5,karma:5,sanity:3,connections:3}, desc:'正德寺为代表的佛门势力。表面慈悲为怀，内部暗藏诡计。心慧方丈曾以女婴制作"花瓶娃"。修行金刚不坏之法，但代价是放弃七情六欲。',
-    requirement:{karma_min:-10}, requireDesc:'需因果不低于-10（恶人不可入佛门）',
-    ranks:['沙弥','比丘','首座','方丈'],
-    rankReqs:[0,15,45,100],
-    rankAgeReqs:[0,0,16,30]},
 };
 
 const ITEMS = [
@@ -294,8 +311,11 @@ const ACHIEVEMENTS = [
   // === 新门派成就 ===
   {id:'luo_master',name:'罗教真传',desc:'在罗教中达到掌教',icon:'🪙'},
   {id:'gu_king',name:'万蛊之王',desc:'在南疆巫族中达到巫王',icon:'🐛'},
-  {id:'bingjia_marshal',name:'兵家元帅',desc:'在兵家中达到元帅',icon:'🩸'},
-  {id:'fomen_abbot',name:'佛门方丈',desc:'在佛门中达到方丈',icon:'🪷'},
+  {id:'bingjia_marshal',name:'兵家大将',desc:'在兵家中达到大将',icon:'🩸'},
+  {id:'fomen_abbot',name:'正德方丈',desc:'在正德寺中达到方丈',icon:'🪷'},
+  {id:'qingfeng_master',name:'清风观主',desc:'在清风观中成为观主',icon:'🏔️'},
+  {id:'guoshi_top',name:'大梁国师',desc:'在国师体系中达到国师',icon:'⚡'},
+  {id:'chaoting_minister',name:'中枢重臣',desc:'在世俗朝廷中达到重臣',icon:'🏛️'},
   {id:'all_factions',name:'百家通',desc:'一生中加入过5个不同门派',icon:'🌐'},
   {id:'gu_master_survive',name:'百毒不侵',desc:'在南疆巫族修行且体魄不低于60',icon:'🧪'},
   {id:'blood_warrior',name:'血战不死',desc:'兵家修行者体魄降至10以下后恢复至50以上',icon:'🩹'},
@@ -587,8 +607,8 @@ const ADULT_EVENTS = [
     {text:'保护平民撤退',effect:{karma:15,qiyun:10,connections:10},log:'你救了不少人，百姓感恩戴德'},
     {text:'趁乱逃走',effect:{sanity:-5,karma:-3},log:'战场不是你该来的地方'}]},
   // === 新门派加入事件 ===
-  {text:'一位<span class="fac">罗教</span>居士在路边摆摊看风水，你上前攀谈。他见你悟性不凡，问你是否愿意拜入<span class="fac">罗教</span>修习阵法与驱邪之术。',choices:[
-    {text:'拜入罗教',effect:{comprehension:15,cultivation:10,connections:10},log:'你成为罗教居士，开始修习平和内敛的罗教之法',factionJoin:'luo_jiao'},
+  {text:'一位<span class="fac">罗教</span>弟子在路边摆摊看风水，你上前攀谈。他见你悟性不凡，引你去见<span class="npc">韩符掌教</span>，问你是否愿意拜入<span class="fac">罗教</span>修习符箓与驱邪之术。',choices:[
+    {text:'拜入罗教',effect:{comprehension:15,cultivation:10,connections:10},log:'你成为罗教弟子，开始修习蛇骨山一脉平和内敛的罗教之法',factionJoin:'luo_jiao'},
     {text:'请教一二后离去',effect:{comprehension:8},log:'你学到了一些基础的风水知识'},
     {text:'不感兴趣',effect:{},log:'看风水这种事太玄了'}]},
   {text:'你深入<span class="loc">南疆</span>时遭遇瘴气侵体，被一位<span class="fac">南疆巫族</span>的蛊师所救。他说你的体魄很适合修习<span class="mys">蛊术</span>。',choices:[
@@ -603,6 +623,21 @@ const ADULT_EVENTS = [
     {text:'剃度出家',effect:{cultivation:10,karma:5,sanity:5,connections:5},log:'你在正德寺剃度为沙弥，开始了清修之路',factionJoin:'fomen'},
     {text:'带发修行',effect:{cultivation:5,comprehension:5},log:'你在寺中修行数日，受益匪浅但未正式出家'},
     {text:'不入佛门',effect:{},log:'你双手合十谢过老僧'}]},
+  // === 清风观加入事件 ===
+  {text:'你在山中迷路时误入一座<span class="mys">破败道观</span>——<span class="loc">清风观</span>。一个不识字的中年男人盯着你看了许久，突然大笑："好材料！你留下吧。"他就是<span class="npc">丹阳子</span>。',trigger:{minAge:12},choices:[
+    {text:'留在清风观',effect:{cultivation:15,sanity:-10,karma:-5},log:'你成为清风观外门弟子。这里的师兄们大多有些残疾，气氛诡异...',factionJoin:'qingfeng'},
+    {text:'趁夜逃走',effect:{sanity:-5,qiyun:3},log:'你趁丹阳子不注意逃出了清风观，身后传来他的叹息声'},
+    {text:'跪拜求学',effect:{cultivation:20,sanity:-15,karma:-10,comprehension:5},log:'丹阳子对你的"诚意"很满意，亲自收你为内门弟子',factionJoin:'qingfeng'}]},
+  // === 国师体系加入事件 ===
+  {text:'你的修为和学识引起了<span class="loc">上京城</span>朝廷的注意。一封征辟文书送到你面前——朝廷要征你为<span class="fac">方士</span>，入<span class="npc">皇甫天罡</span>国师麾下效力。',trigger:{minAge:20,cultivation:30,connections:20},choices:[
+    {text:'应征入朝',effect:{wealth:20,connections:15,cultivation:10,qiyun:5},log:'你以方士身份入朝，开始了术师朝堂生涯',factionJoin:'guoshi'},
+    {text:'婉言谢绝',effect:{connections:-5,qiyun:3},log:'你无意为朝廷效命，征辟使者悻悻离去'},
+    {text:'提出条件再应征',effect:{wealth:30,connections:10},log:'你以自身价值为筹码争取到了优厚的待遇',factionJoin:'guoshi'}]},
+  // === 世俗朝廷加入事件 ===
+  {text:'你在地方上颇有名望，一位<span class="npc">朝廷巡查使</span>注意到了你。他说朝廷正缺能吏，问你是否愿意入仕为官，从小吏做起。',trigger:{minAge:18,connections:15,wealth:30},choices:[
+    {text:'入仕为官',effect:{wealth:15,connections:10,qiyun:3},log:'你穿上了官服，开始了宦海生涯',factionJoin:'chaoting'},
+    {text:'无意仕途',effect:{connections:5},log:'你志不在此，但与巡查使结下了一面之缘'},
+    {text:'请他引荐更高的职位',effect:{wealth:-20,connections:15},log:'你花了不少钱打点，直接获得了一个体面的起点',factionJoin:'chaoting'}]},
 ];
 
 const SPECIAL_EVENTS = [
@@ -886,7 +921,7 @@ const FACTION_EVENTS = {
   jiantian: [
     {text:'<span class="fac">监天司</span>派你去调查一桩<span class="mys">灵异命案</span>。',choices:[
       {text:'深入调查',effect:{cultivation:15,sanity:-15,wealth:20,comprehension:5},log:'真相令人不寒而栗'},{text:'草草了事',effect:{connections:-10},log:'上司对你很失望'}]},
-    {text:'<span class="fac">监天司</span>要提拔你为百户，但需要你处置一个无辜的人。',choices:[
+    {text:'<span class="fac">监天司</span>要提拔你为己监丞，但需要你处置一个无辜的人。',choices:[
       {text:'服从命令',effect:{connections:20,wealth:30,sanity:-15,qiyun:-20},log:'你升了官，但夜夜噩梦'},{text:'抗命不从',effect:{connections:-25,qiyun:10},log:'你被贬为最底层的小卒'}]},
     // === NEW JIANTIAN EVENTS ===
     {text:'<span class="fac">监天司</span>派你追踪一名<span class="danger-text">法教邪修</span>，线索指向南疆。',choices:[
@@ -1022,6 +1057,44 @@ const FACTION_EVENTS = {
       {text:'站在揭发者一方',effect:{karma:15,connections:10,cultivation:5,qiyun:5},log:'你加入了揭发的行列，心慧方丈终于被逐出正德寺'},
       {text:'为心慧方丈辩护',effect:{karma:-15,connections:-10,cultivation:10},log:'你出于某种原因为方丈说话，真相被压了下去'},
       {text:'独善其身',effect:{comprehension:5,sanity:-5},log:'佛门的水太深，你选择不介入'}]},
+  ],
+  qingfeng: [
+    {text:'<span class="npc">丹阳子</span>让你去山下抓一个人回来做<span class="danger-text">药引</span>。你知道这意味着什么。',choices:[
+      {text:'服从师命',effect:{karma:-20,cultivation:15,sanity:-10},log:'你带回了一个流浪汉...他的惨叫声在观中回荡了一整夜'},
+      {text:'抓回一具尸体',effect:{karma:-5,cultivation:5,comprehension:5},log:'你带回了一具刚死不久的尸体。丹阳子虽然不满，但勉强用了'},
+      {text:'放走猎物',effect:{karma:10,connections:-10,cultivation:-5},log:'你偷偷放走了那个人。丹阳子知道后暴怒，罚你禁闭一月'}]},
+    {text:'清风观的<span class="npc">师兄们</span>在背后议论——丹阳子不识字，却被<span class="fac">坐忘道</span>的人哄着读了一本<span class="danger-text">假天书</span>。这本假天书让他走上了一条诡异的道路。',choices:[
+      {text:'去问丹阳子',effect:{comprehension:10,sanity:-10,connections:-5},log:'丹阳子大怒："天书是真是假，我说了算！"但你看到他眼中一闪而过的迷惘'},
+      {text:'私下研究假天书',effect:{comprehension:15,cultivation:10,sanity:-15},log:'假天书中的内容荒谬又诡异，但偶尔能在字里行间窥见一些...不该知道的东西'},
+      {text:'不理会',effect:{sanity:5},log:'师兄们的闲话，你当没听见'}]},
+    {text:'<span class="npc">丹阳子</span>炼制出了一炉<span class="mys">黑太岁丹</span>——据说服下后可以延年益寿。但看着那丹药黑漆漆、蠕动着的样子...',choices:[
+      {text:'服下丹药',effect:{cultivation:20,constitution:10,sanity:-15,karma:-5},log:'丹药入腹如活物般乱窜！剧痛过后，你感到体内多了一股诡异但强大的力量'},
+      {text:'婉拒',effect:{connections:-5},log:'丹阳子耸耸肩，自己吞了那颗丹'}]},
+  ],
+  guoshi: [
+    {text:'朝中有人弹劾你妖言惑众，皇帝<span class="npc">姬诵</span>命你当众<span class="mys">引雷</span>以证清白。',choices:[
+      {text:'当众引雷',effect:{cultivation:15,connections:15,qiyun:5},log:'一道惊雷劈下，百官震慑！弹劾之人当场跪地求饶'},
+      {text:'以理服人',effect:{connections:5,comprehension:10},log:'你引经据典、条理分明地驳斥了弹劾，但总不如引雷来得震撼'}]},
+    {text:'<span class="loc">上京城</span>地下<span class="mys">龙脉</span>出现异动——历代帝王拼接而成的龙躯在颤抖。作为术师，你被紧急召入宫中诊断龙脉。',choices:[
+      {text:'以术法安抚龙脉',effect:{cultivation:20,connections:10,sanity:-15,constitution:-5},log:'你将自身精气注入龙脉，暂时稳住了异动。但你看到了龙脉深处那些帝王的残魂...'},
+      {text:'禀报异常后撤离',effect:{connections:5,comprehension:10},log:'你如实禀报了龙脉的状况，却不敢深入——那里的东西不是人能碰的'}]},
+    {text:'<span class="npc">皇甫天罡</span>国师交给你一项秘密任务——前往各地勘查龙脉走向，绘制<span class="itm">龙脉图</span>。此事关乎国运，不可外泄。',choices:[
+      {text:'领命出行',effect:{cultivation:15,comprehension:15,wealth:-10,connections:5},log:'你走遍大梁山川，对龙脉的理解大为精进'},
+      {text:'请求派人护卫',effect:{connections:10,wealth:-5},log:'一队监天司精锐随你出行，安全了许多但灵活性大减'}]},
+  ],
+  chaoting: [
+    {text:'地方上出现<span class="danger-text">邪教</span>作乱，百姓惊恐。作为地方官，你必须做出应对。',choices:[
+      {text:'请求监天司介入',effect:{connections:10,qiyun:5,karma:5},log:'监天司派人来处理了邪教，你因应对得当获得嘉奖'},
+      {text:'亲自带人围剿',effect:{constitution:-5,karma:5,connections:15,cultivation:5},log:'你带着衙役和乡勇围剿了邪教据点，虽然伤亡不小，但百姓感恩戴德',combat:45},
+      {text:'安抚为主',effect:{connections:5,karma:10},log:'你以安抚为主，疏散了大部分百姓，减少了伤亡'}]},
+    {text:'朝廷中两派大臣争斗激烈，你被卷入了漩涡——<span class="npc">主战派</span>要你出兵边境，<span class="npc">主和派</span>要你削减军费。',choices:[
+      {text:'站主战派',effect:{connections:10,constitution:5,karma:-5,wealth:-15},log:'你主张出兵，获得了军方的支持'},
+      {text:'站主和派',effect:{connections:10,wealth:10,karma:5},log:'你主张以和为贵，获得了文官的拥护'},
+      {text:'保持中立',effect:{connections:-5,comprehension:5},log:'两边都不讨好，但你保全了自己'}]},
+    {text:'你在任上发现了一桩<span class="danger-text">贪腐大案</span>——牵涉到多位朝中重臣。此事若捅破天，后果难料。',choices:[
+      {text:'上奏弹劾',effect:{karma:15,connections:-15,qiyun:10},log:'你冒死上奏，皇帝震怒，涉案重臣被严惩。你名声大震'},
+      {text:'暗中收集证据',effect:{comprehension:10,connections:5,karma:5},log:'你默默积攒证据，等待最合适的时机'},
+      {text:'睁一只眼闭一只眼',effect:{wealth:15,karma:-10},log:'你收下了封口费，装作什么都不知道'}]},
   ],
 };
 
@@ -1977,7 +2050,7 @@ const CANONICAL_EVENTS = [
     {text:'参加抵抗军',effect:{cultivation:15,connections:20,constitution:-5,karma:10,qiyun:5},log:'你加入了各门派联合的抵抗力量，与法教殊死搏斗',combat:70,achieve:'resist_fajiao',relocate:'si_qi'},
     {text:'护送难民撤离',effect:{karma:20,connections:15,wealth:-10},log:'你帮助大量四齐难民逃往大梁',relocate:'da_liang'},
     {text:'逃难',effect:{wealth:-15,sanity:-5},log:'法教的恐怖你无力抵挡'}]},
-  {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>召集各国监天司共同对抗法教，一场<span class="danger-text">旷世大战</span>即将打响。',
+  {text:'<span class="fac">监天司</span>司天监<span class="npc">玄牝</span>召集各国监天司共同对抗法教，一场<span class="danger-text">旷世大战</span>即将打响。',
     trigger:{minAge:18,yearMin:22,yearMax:30,cultivation:30},choices:[
     {text:'响应号召',effect:{cultivation:20,connections:25,constitution:-8,qiyun:10},log:'你在联军中作战，亲眼见证了各派高手的风采',combat:80},
     {text:'提供情报支援',effect:{connections:15,wealth:15,comprehension:5},log:'你在后方为联军提供了关键情报'},
@@ -1991,7 +2064,7 @@ const CANONICAL_EVENTS = [
     trigger:{minAge:20,yearMin:28,yearMax:36},mandatory:true,choices:[
     {text:'跪地膜拜',effect:{cultivation:15,sanity:-10,qiyun:5,karma:5},log:'无数人跪在地上叩首。没人知道那是什么，但所有人都感受到了那种超越凡人的威压'},
     {text:'冷静观察',effect:{comprehension:20,sanity:-15,cultivation:10},log:'你强忍恐惧仔细观察——那座城市的建筑不属于人间的任何风格。裂缝持续了三天三夜才消散'}]},
-  {text:'<span class="npc">玄牝</span>司丞率领一群修士冲入了天空中的裂缝——然后整个人<span class="mys">化为了一条金龙</span>！数万人亲眼目睹了这一幕。从此之后再无人见过玄牝。',
+  {text:'<span class="npc">玄牝</span>司天监率领一群修士冲入了天空中的裂缝——然后整个人<span class="mys">化为了一条金龙</span>！数万人亲眼目睹了这一幕。从此之后再无人见过玄牝。',
     trigger:{minAge:15,yearMin:28,yearMax:35},mandatory:true,choices:[
     {text:'为玄牝立碑',effect:{karma:10,connections:10},log:'不管他去了哪里，化龙的一幕已成为这一代人最刻骨铭心的记忆'},
     {text:'试图理解化龙之术',effect:{comprehension:15,cultivation:10,sanity:-10},log:'人怎么可能变成龙？这究竟是什么样的修为？你百思不得其解'}]},
@@ -2250,7 +2323,7 @@ const CANONICAL_EVENTS = [
     {text:'躲着他',effect:{sanity:3},log:'监天司的人来从来不是好事'}]},
 
   // --- 监天司·玄牝补充 (year 15 ~ 35) ---
-  {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>的真实身份被揭露——她不是普通人类，而是某种<span class="mys">龙人</span>血脉的后裔。她体内流淌着龙脉之血。这个秘密让整个监天司震动。',
+  {text:'<span class="fac">监天司</span>司天监<span class="npc">玄牝</span>的真实身份被揭露——她不是普通人类，而是某种<span class="mys">龙人</span>血脉的后裔。她体内流淌着龙脉之血。这个秘密让整个监天司震动。',
     trigger:{minAge:18,yearMin:15,yearMax:30,cultivation:40},choices:[
     {text:'去见玄牝',effect:{connections:15,cultivation:10,comprehension:10,sanity:-5},log:'玄牝的气场令人窒息——她虽然不是纯正人类，但为守护大梁已经付出了太多'},
     {text:'研究龙人血脉',effect:{comprehension:15,cultivation:8},log:'龙人的血脉极为稀有，传闻他们和大梁的龙脉有某种深层联系'},
@@ -2481,19 +2554,19 @@ const RANK_EVENTS = {
   ],
   jiantian: [
     {text:'你晋升<span class="fac">监天司</span>庚旗后，获得了查阅<span class="itm">机密档案</span>的权限——里面记载着各地邪祟和坐忘道的情报。',
-      rankReq:2,choices:[
+      rankReq:3,choices:[
       {text:'仔细研读',effect:{comprehension:15,cultivation:10,sanity:-10},log:'你对这个世界的黑暗面有了更深的了解'},
       {text:'只看自己需要的',effect:{comprehension:5,connections:5},log:'知道得太多不一定是好事'}]},
-    {text:'作为<span class="fac">监天司</span>百户，你被委以<span class="danger-text">剿灭</span>一个邪教据点的重任。',
-      rankReq:3,choices:[
+    {text:'作为<span class="fac">监天司</span>己监丞，你被委以<span class="danger-text">剿灭</span>一个邪教据点的重任。',
+      rankReq:4,choices:[
       {text:'亲自领队出击',effect:{cultivation:15,connections:15,constitution:-5,karma:5},log:'你成功铲除了邪教据点，声望大增',combat:65},
       {text:'请求增援后行动',effect:{connections:10,cultivation:5},log:'稳妥地完成了任务，上司点了点头'}]},
     {text:'<span class="fac">监天司</span>内部出现叛徒——有人暗通<span class="fac">坐忘道</span>，出卖了多名探员的身份。',
-      rankReq:4,choices:[
+      rankReq:6,choices:[
       {text:'亲自追查叛徒',effect:{cultivation:10,connections:-5,sanity:-10,comprehension:8},log:'你揪出了叛徒，但发现他被坐忘道洗脑多年...'},
       {text:'加强自身防护',effect:{constitution:5,sanity:5},log:'你开始更加谨慎地行事'}]},
-    {text:'你被提拔为<span class="fac">监天司</span>司丞，获准进入<span class="loc">上京城</span>地下的<span class="mys">龙脉核心</span>。在那里，你触碰到了<span class="npc">蟠螭</span>的意识——秩序天道的司命，以龙脉为躯体镇守大梁国运。蟠螭选中了你作为它在人间的<span class="mys">因缘</span>。',
-      rankReq:5,choices:[
+    {text:'你被提拔为<span class="fac">监天司</span>司天少监，获准进入<span class="loc">上京城</span>地下的<span class="mys">龙脉核心</span>。在那里，你触碰到了<span class="npc">蟠螭</span>的意识——秩序天道的司命，以龙脉为躯体镇守大梁国运。蟠螭选中了你作为它在人间的<span class="mys">因缘</span>。',
+      rankReq:8,choices:[
       {text:'接受蟠螭的因缘，成为秩序天道的心蟠',effect:{cultivation:40,qiyun:20,constitution:10,comprehension:15,sanity:-15},log:'你成为了蟠螭的心蟠！秩序天道之力流入血脉——你能感知天下龙脉走向，一切混乱在你面前无所遁形。你的存在本身就是大梁的镇国之柱',xinpan:'panchi'},
       {text:'敬畏地婉拒',effect:{cultivation:20,qiyun:10,comprehension:10},log:'蟠螭的龙吟在你耳边回荡。它没有强求——秩序从不强迫，只是等待'},
       {text:'接受力量但保持独立',effect:{cultivation:30,qiyun:15,constitution:5,sanity:-8},log:'你接受了蟠螭的部分力量，但没有完全交出自己。秩序天道在你体内与你的意志共存',xinpan:'panchi'}]},
@@ -2513,12 +2586,12 @@ const RANK_EVENTS = {
       {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意',xinpan:'baxi'}]},
   ],
   bailian: [
-    {text:'作为<span class="fac">白莲教</span>堂主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲</span>的司命。',
-      rankReq:2,choices:[
+    {text:'作为<span class="fac">白莲教</span>坛主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲·生长·死亡</span>的司命。',
+      rankReq:1,choices:[
       {text:'更加虔诚信仰',effect:{cultivation:20,comprehension:10,qiyun:10},log:'理解了无生老母的本质后，你的信仰更加坚定'},
       {text:'产生动摇',effect:{comprehension:15,sanity:-10,connections:-5},log:'司命...这已经超出了你对"教"的理解'}]},
-    {text:'<span class="fac">白莲教</span>护法传你<span class="itm">红莲业火</span>的高阶用法——可以烧灼因果、净化业障。',
-      rankReq:3,choices:[
+    {text:'<span class="fac">白莲教</span>二神传你<span class="itm">红莲业火</span>的高阶用法——可以烧灼因果、净化业障。你掌八苦十情，主持教中大小仪式。',
+      rankReq:2,choices:[
       {text:'全力修习',effect:{cultivation:25,karma:15,sanity:-10,constitution:-5},log:'红莲业火在你体内燃烧，你感到过去的罪孽在被洗涤'},
       {text:'谨慎修习',effect:{cultivation:10,karma:5},log:'你只取其精华，不至于伤了根基'}]},
     {text:'<span class="npc">无生老母</span>在虚空中降下慈悲之光，选中了你作为她在人间的<span class="mys">因缘</span>——你成为了无生老母的<span class="mys">心蟠</span>。慈悲天道与你相合。',
@@ -2552,11 +2625,11 @@ const RANK_EVENTS = {
       {text:'恐惧地拒绝',effect:{cultivation:15,sanity:-20,karma:10},log:'于儿的目光从你身上移开。你瘫倒在地——仅仅是被它注视这一刻，你的三魂七魄就险些崩溃'}]},
   ],
   luo_jiao: [
-    {text:'你晋升为<span class="fac">罗教</span>道人，长老将一枚<span class="itm">罗盘</span>郑重交到你手中——此乃罗教传人寻龙点穴的至宝。',
+    {text:'你晋升为<span class="fac">罗教</span>执事，长老将一枚<span class="itm">罗盘</span>郑重交到你手中——此乃罗教传人寻龙点穴的至宝。',
       rankReq:1,choices:[
       {text:'恭敬接受',effect:{comprehension:15,cultivation:10,qiyun:5},log:'罗盘入手的一刻，你感到天地间的气脉在罗盘上清晰浮现',item:'luo_pan'},
       {text:'请求更多指导',effect:{comprehension:10,cultivation:5,connections:10},log:'长老额外传你一套入门阵法'}]},
-    {text:'你被选为<span class="fac">罗教</span>真人，获准修习<span class="itm">七星铜钱剑</span>的阵法精髓——以一百八十四枚铜钱布成<span class="mys">七星阵</span>，可困天锁地。',
+    {text:'你被选为<span class="fac">罗教</span>长老，获准修习<span class="itm">七星铜钱剑</span>的阵法精髓——以一百八十四枚铜钱布成<span class="mys">七星阵</span>，可困天锁地。',
       rankReq:2,choices:[
       {text:'全力修习七星阵',effect:{cultivation:25,comprehension:20,sanity:-8},log:'你初步掌握了七星阵法，铜钱剑在你手中已能化阵驱邪'},
       {text:'同时研究其他阵法',effect:{cultivation:15,comprehension:15,connections:-5},log:'你博采众长，将七星阵与其他阵法融会贯通'}]},
@@ -2580,7 +2653,7 @@ const RANK_EVENTS = {
       {text:'以蛊术另辟蹊径',effect:{cultivation:35,comprehension:20,sanity:-15,connections:-10},log:'你创造了一种新的蛊术，以巧代力统御了万蛊。虽然被老派人非议，但结果无人能反驳'}]},
   ],
   bingjia: [
-    {text:'你在<span class="fac">兵家</span>中以<span class="danger-text">血誓</span>涂抹兵书，正式成为校尉。兵书上出现了新的一页——记载着<span class="mys">煞气冲击</span>的修炼之法。',
+    {text:'你在<span class="fac">兵家</span>中以<span class="danger-text">血誓</span>涂抹兵书，正式成为伍长。兵书上出现了新的一页——记载着<span class="mys">煞气冲击</span>的修炼之法。',
       rankReq:1,choices:[
       {text:'以鲜血发誓效忠',effect:{cultivation:20,constitution:-8,sanity:-10,karma:-5},log:'你割破手掌涂满兵书，煞气灌入全身——你感到力量暴增！'},
       {text:'只割一指',effect:{cultivation:12,constitution:-3,sanity:-5},log:'你只献出少量鲜血，兵书上的字迹若隐若现'}]},
@@ -2603,10 +2676,44 @@ const RANK_EVENTS = {
       {text:'向外界揭露',effect:{connections:15,karma:15,cultivation:-5,qiyun:5},log:'你将真相公之于众，正德寺名声扫地，但佛法长存'},
       {text:'在寺内发起清洗',effect:{connections:-10,karma:10,cultivation:10,sanity:-10},log:'你联合正义僧侣清除了寺中败类'},
       {text:'暂时隐忍',effect:{comprehension:8,sanity:-15},log:'你将秘密藏在心中，等待更好的时机'}]},
-    {text:'你即将成为<span class="fac">佛门</span>方丈——但接任仪式上，你必须面对<span class="mys">佛门至高心法</span>的考验：直面自己的一切执念，放下或被吞噬。',
-      rankReq:3,choices:[
+    {text:'你即将成为<span class="fac">正德寺</span>方丈——但接任仪式上，你必须面对<span class="mys">佛门至高心法</span>的考验：直面自己的一切执念，放下或被吞噬。',
+      rankReq:4,choices:[
       {text:'直面执念',effect:{cultivation:40,sanity:15,comprehension:20,connections:-5},log:'你在心法考验中看到了自己的一切——善与恶、爱与恨、生与死。你放下了大部分执念，成为了新的方丈'},
       {text:'以慈悲心化解',effect:{cultivation:30,karma:15,sanity:10,comprehension:10},log:'你以慈悲之心包容了所有执念，走出了一条属于自己的佛道'}]},
+  ],
+  qingfeng: [
+    {text:'<span class="npc">丹阳子</span>开始亲自教你炼丹之法——他虽不识字，却对药理有一种近乎疯狂的直觉。你被指派协助准备<span class="danger-text">药引</span>。',
+      rankReq:1,choices:[
+      {text:'用心学习',effect:{cultivation:20,comprehension:15,sanity:-10,karma:-10},log:'你看到了丹阳子炼丹的全过程——那些药引...都是活人。但丹药的确有不可思议的效力'},
+      {text:'暗中抵触',effect:{comprehension:10,sanity:-5,karma:5},log:'你学到了一些基础药理，但回避了最残忍的部分'}]},
+    {text:'<span class="npc">丹阳子</span>说要传你观主之位——但条件是你必须亲手炼制一炉<span class="danger-text">天人丹</span>。你知道这炉丹的代价是什么。',
+      rankReq:2,choices:[
+      {text:'遵从师命',effect:{cultivation:40,comprehension:20,sanity:-25,karma:-30},log:'你成为了新的清风观观主。丹阳子大笑着消失在山雾中——你不知道他去了哪里，但黑太岁留给了你'},
+      {text:'拒绝并离开',effect:{faction:'none',cultivation:15,karma:15,sanity:10},log:'你叛出了清风观。丹阳子没有追你——他只是摇了摇头，像是对一个不争气的孩子感到遗憾'}]},
+  ],
+  guoshi: [
+    {text:'你以<span class="fac">皇室供奉</span>身份处理了一桩震动朝野的邪祟事件。<span class="npc">皇甫天罡</span>国师亲自召见你，传授你引雷术的入门口诀。',
+      rankReq:1,choices:[
+      {text:'潜心修习引雷术',effect:{cultivation:25,comprehension:15,connections:10},log:'引雷术奥妙无穷，你隐约感应到了龙脉的脉动'},
+      {text:'请教龙脉之事',effect:{comprehension:20,connections:15,sanity:-5},log:'皇甫天罡沉默良久，只说了一句：龙脉非人可触，触之必有代价'}]},
+    {text:'<span class="npc">皇甫天罡</span>年事已高，要将<span class="fac">国师</span>之位传于你。接任仪式需在<span class="loc">上京城</span>太庙举行，沟通龙脉、受天子敕封。',
+      rankReq:2,choices:[
+      {text:'接任国师',effect:{cultivation:45,connections:25,wealth:30,qiyun:15,sanity:-15},log:'你在太庙中沟通龙脉——历代帝王的龙气贯入体内，你成为了大梁新的国师。从此国运与你息息相关'},
+      {text:'请辞推让',effect:{connections:15,comprehension:10,karma:5},log:'你自觉修为不足，请辞国师之位。皇甫天罡虽然失望，但对你的自知之明表示赞赏'}]},
+  ],
+  chaoting: [
+    {text:'你在任上政绩斐然，朝廷擢升你为一方<span class="fac">县令</span>。地方百姓的生死祸福，皆系于你一念之间。',
+      rankReq:1,choices:[
+      {text:'廉洁奉公',effect:{karma:15,connections:10,wealth:-10,qiyun:5},log:'你治下清平，百姓称颂'},
+      {text:'上下打点',effect:{wealth:20,connections:15,karma:-10},log:'你很快学会了官场的规矩'}]},
+    {text:'边境告急，朝廷命你出任<span class="fac">刺史</span>，统御数郡军政大权。你的治理之才引起了<span class="loc">上京城</span>的注意。',
+      rankReq:2,choices:[
+      {text:'整军备战',effect:{constitution:10,connections:15,cultivation:10,karma:5},log:'你在任上整顿军备、安抚民心，边境渐安'},
+      {text:'以和为贵',effect:{connections:20,wealth:15,karma:10},log:'你主张以通商代替征战，边民感恩戴德'}]},
+    {text:'皇帝<span class="npc">姬诵</span>召你入<span class="loc">上京城</span>，拜为<span class="fac">中枢重臣</span>。你踏入了大梁权力的核心——龙脉就在脚下，历代帝王的尸骨拼接成的龙躯守护着这个国家。',
+      rankReq:3,choices:[
+      {text:'尽忠朝廷',effect:{connections:25,wealth:25,qiyun:10,karma:10},log:'你成为姬诵最信任的大臣，参与国之大计'},
+      {text:'暗中布局',effect:{connections:20,wealth:30,karma:-15,qiyun:5},log:'你在朝堂中结党营私，渐渐掌控了大量权力'}]},
   ],
 };
 

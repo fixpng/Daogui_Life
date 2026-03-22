@@ -15,10 +15,19 @@ var gameState = {
   xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'
 };
 var autoMode = false, speed = 1, autoTimer = null, availableTalents = [];
-var SPEED_DELAYS = {1:3000, 2:1500, 3:1000, 4:500, 5:250};
+var SPEED_DELAYS = {1:3000, 2:1500, 3:750, 4:350, 5:200};
 var keptTalent = null; // talent kept from previous life
 var waitingForChoice = false;
 var achievements = JSON.parse(localStorage.getItem('dg_achievements')||'{}');
+
+// Centralized auto-advance scheduler
+function scheduleNext() {
+  if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  if(autoMode && gameState.alive && !waitingForChoice) {
+    var delay = SPEED_DELAYS[speed] || 3000;
+    autoTimer = setTimeout(function(){ autoTimer = null; nextYear(); }, delay);
+  }
+}
 
 // === TALENT DRAW ===
 function drawTalents() {
@@ -200,17 +209,14 @@ function confirmBorn() {
   var btn = document.getElementById('btn-auto');
   btn.classList.add('active');
   btn.textContent = '⏸ 暂停';
-  var delay = SPEED_DELAYS[speed] || 3000;
-  clearTimeout(autoTimer);
-  autoTimer = setTimeout(nextYear, delay);
+  scheduleNext();
 
   // 启动看门狗：每5秒检测是否卡住
   clearInterval(window._watchdog);
   window._watchdog = setInterval(function(){
     if(autoMode && gameState.alive && !waitingForChoice && !autoTimer) {
       console.warn('watchdog: game stuck detected, resuming');
-      var d = SPEED_DELAYS[speed] || 3000;
-      autoTimer = setTimeout(nextYear, d);
+      scheduleNext();
     }
   }, 5000);
 }
@@ -1250,10 +1256,7 @@ function nextYear() {
   updateAudioState();
 
   updateDisplay();
-  // x1=3s, x2=1.5s, x3=1s, x4=0.5s, x5=0.25s
-  var delay = SPEED_DELAYS[speed] || 3000;
-  // 只在非等待选择状态下重启定时器（避免事件显示后定时器空转导致卡住）
-  if(autoMode && gameState.alive && !waitingForChoice) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+  scheduleNext();
 }
 
 // === AUDIO STATE UPDATE ===
@@ -1407,7 +1410,7 @@ function showEvent(event) {
     if(c.genderReq && c.genderReq !== gameState.gender) return false;
     return true;
   });
-  if(!validChoices.length) { quietYear(); return; }
+  if(!validChoices.length) { quietYear(); scheduleNext(); return; }
 
   // 检查是否有任何选项能被点击（req满足）
   var anyClickable = validChoices.some(function(c){ return checkChoiceReq(c).met; });
@@ -1421,7 +1424,7 @@ function showEvent(event) {
   if(typeof DaoguiAudio !== 'undefined') DaoguiAudio.playEventSound();
 
   // Pause auto-advance and show choices to player
-  clearTimeout(autoTimer);
+  if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   document.getElementById('event-text').innerHTML = '<strong>【第'+gameState.age+'年】</strong> '+event.text;
   document.getElementById('choices').innerHTML = validChoices.map(function(c,i){
     var reqResult = checkChoiceReq(c);
@@ -1447,8 +1450,7 @@ function handleChoice(idx) {
     waitingForChoice = false;
     document.getElementById('choices').innerHTML = '';
     document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
-    var delay = SPEED_DELAYS[speed] || 3000;
-    if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+    scheduleNext();
     return;
   }
   applyChoice(c);
@@ -1490,8 +1492,7 @@ function applyChoice(c) {
       document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
       waitingForChoice = false;
       updateDisplay();
-      var delay = SPEED_DELAYS[speed] || 3000;
-      if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+      scheduleNext();
       return;
     } else {
       // Weak but not hopeless - take extra damage
@@ -1549,7 +1550,7 @@ function applyChoice(c) {
       if(req.comprehension && gameState.comprehension < req.comprehension) { canJoin = false; rejectReason = '悟性不足'; }
       if(req.wealth_max !== undefined && gameState.wealth > req.wealth_max) { canJoin = false; rejectReason = '家资太厚，非贫苦之人'; }
       if(req.karma_max !== undefined && gameState.karma > req.karma_max) { canJoin = false; rejectReason = '因果太重，不适合此道'; }
-      if(req.karma_min !== undefined && gameState.karma < req.karma_min) { canJoin = false; rejectReason = '恶行太多，佛门不收'; }
+      if(req.karma_min !== undefined && gameState.karma < req.karma_min) { canJoin = false; rejectReason = '恶行太多，正德寺不收'; }
     }
     if(canJoin) {
       // If already in a faction, trigger betrayal
@@ -1671,8 +1672,7 @@ function applyChoice(c) {
   if(gameState.flags.longmai_succession) unlockAchieve('longmai_hero');
 
   updateDisplay();
-  var delay = SPEED_DELAYS[speed] || 3000;
-  if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+  scheduleNext();
   } catch(e) {
     // 任何错误都不能导致游戏卡住
     console.error('applyChoice error:', e);
@@ -1680,8 +1680,7 @@ function applyChoice(c) {
     document.getElementById('choices').innerHTML = '';
     document.getElementById('event-text').innerHTML = '命运的齿轮继续转动...';
     updateDisplay();
-    var delay = SPEED_DELAYS[speed] || 3000;
-    if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+    scheduleNext();
   }
 }
 function updateDisplay() {
@@ -1816,22 +1815,27 @@ function toggleAuto() {
   btn.classList.toggle('active', autoMode);
   btn.textContent = autoMode ? '⏸ 暂停' : '▶ 继续';
   if(autoMode && gameState.alive) {
-    if(!waitingForChoice) {
-      nextYear();
-    }
+    scheduleNext();
   } else {
-    clearTimeout(autoTimer);
+    if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   }
 }
 
 function setSpeedFromSlider(val) {
   speed = parseInt(val);
   document.getElementById('speed-label').textContent = speed + 'x';
+  // Restart timer with new speed if auto-playing
+  if(autoMode && gameState.alive && !waitingForChoice) {
+    scheduleNext();
+  }
 }
 
 // Legacy function for compatibility
 function setSpeed(s) {
   speed = s;
+  if(autoMode && gameState.alive && !waitingForChoice) {
+    scheduleNext();
+  }
 }
 
 // === GAME OVER ===
@@ -1841,7 +1845,7 @@ function gameOver(reason) {
   gameState.alive = false;
   autoMode = false;
   waitingForChoice = false;
-  clearTimeout(autoTimer);
+  if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   document.body.style.filter = '';
 
   unlockAchieve('first_death');
@@ -1904,6 +1908,9 @@ function gameOver(reason) {
   if(gameState.talents.find(function(t){return t.id==='bai_hua';}) && gameState.faction==='bailian') unlockAchieve('saint');
   if(gameState.faction === 'bingjia' && FACTIONS.bingjia && (gameState.factionRank || 0) >= FACTIONS.bingjia.ranks.length - 1) unlockAchieve('bingjia_marshal');
   if(gameState.faction === 'fomen' && FACTIONS.fomen && (gameState.factionRank || 0) >= FACTIONS.fomen.ranks.length - 1) unlockAchieve('fomen_abbot');
+  if(gameState.faction === 'qingfeng' && FACTIONS.qingfeng && (gameState.factionRank || 0) >= FACTIONS.qingfeng.ranks.length - 1) unlockAchieve('qingfeng_master');
+  if(gameState.faction === 'guoshi' && FACTIONS.guoshi && (gameState.factionRank || 0) >= FACTIONS.guoshi.ranks.length - 1) unlockAchieve('guoshi_top');
+  if(gameState.faction === 'chaoting' && FACTIONS.chaoting && (gameState.factionRank || 0) >= FACTIONS.chaoting.ranks.length - 1) unlockAchieve('chaoting_minister');
   if(gameState.factionHistory.length >= 5) unlockAchieve('all_factions');
   if(gameState.faction === 'nanjiang' && gameState.constitution >= 60) unlockAchieve('gu_master_survive');
   if(gameState.faction === 'fomen' && gameState.karma <= -30) unlockAchieve('buddha_evil');
@@ -2060,7 +2067,7 @@ function renderAchievements() {
 function restart() {
   autoMode = false;
   waitingForChoice = false;
-  clearTimeout(autoTimer);
+  if(autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
   document.body.style.filter = '';
   document.getElementById('btn-auto').classList.remove('active');
   document.getElementById('btn-auto').textContent = '▶ 继续';
@@ -2146,7 +2153,7 @@ function restartAuto() {
     }
     startGame();
     confirmBorn();
-    if(autoMode) nextYear();
+    // confirmBorn() already sets autoMode and schedules via scheduleNext()
   }, 100);
 }
 
