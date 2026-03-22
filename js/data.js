@@ -190,6 +190,9 @@ const ITEMS = [
   {id:'jin_qiao_miao_jing',name:'金桥妙经',desc:'感悟可生死人肉白骨，需长期诵读',rarity:'rare',effect:{cultivation:25,comprehension:20,karma:10}},
   {id:'huo_ao_zhen_jing',name:'火袄箴经',desc:'祆景教经文，蜡油烧伤口以轻伤代重伤，施法需怜悯',rarity:'rare',effect:{cultivation:20,constitution:10,karma:-8}},
   {id:'shuangxiu_jing',name:'欢喜禅残经',desc:'五智如来双修法门残卷，记载男女交合修炼之术，散发着令人不安的金光',rarity:'rare',effect:{cultivation:20,comprehension:15,sanity:-15,karma:-10}},
+  {id:'longmai_suipian',name:'龙脉碎片',desc:'一块通体金色的鳞状碎片，触之可感受到一个庞大帝国的余韵——那是大齐的龙脉残骸',rarity:'rare',effect:{cultivation:15,comprehension:15,qiyun:8}},
+  {id:'shichen_shalou',name:'时辰沙漏',desc:'一个古旧的沙漏，沙粒永远向上流。据说来自一个永远没有黑夜的世界',rarity:'rare',effect:{comprehension:20,sanity:-10,cultivation:10}},
+  {id:'tianchen_guyu',name:'天陈古玉',desc:'一块散发着勃勃生机的墨绿古玉，上面刻着已失传千年的文字。握住它时你能听到树木生长的声音',rarity:'rare',effect:{cultivation:18,constitution:12,comprehension:10}},
 
   // ===== 史诗 (Epic) =====
   {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',rarity:'epic',effect:{cultivation:40,sanity:-30,qiyun:-10}},
@@ -206,6 +209,7 @@ const ITEMS = [
   {id:'tai_a_jian',name:'泰阿剑',desc:'上古名剑，煞气极重，斩妖除魔破大邪',rarity:'epic',effect:{cultivation:45,constitution:10,sanity:-15}},
   {id:'ren_pi_fa_qi',name:'人皮法器',desc:'以自身人皮炼制，挡灾转运，濒死可换命复活一次',rarity:'epic',effect:{constitution:20,qiyun:15,sanity:-20}},
   {id:'pan_guan_bi',name:'判官笔',desc:'诸葛渊所用魁星笔，一点即令目标失去知觉',rarity:'epic',effect:{cultivation:35,comprehension:20}},
+  {id:'daqi_jinfu',name:'大齐金符',desc:'大齐皇室的龙纹金符，握住时眼前会闪过一个永不天黑的世界——那是大齐的苍穹',rarity:'epic',effect:{cultivation:30,comprehension:20,qiyun:10,sanity:-15}},
   {id:'yin_jian',name:'银锏',desc:'武财神法器，碎银汇聚巨力砸击可破甲',rarity:'epic',effect:{cultivation:30,wealth:20,constitution:10}},
 
   // ===== 传说 (Legendary) =====
@@ -261,6 +265,11 @@ const ACHIEVEMENTS = [
   {id:'family_protector',name:'守护家人',desc:'已婚且修为达到金丹',icon:'🏠'},
   {id:'shuangxiu_master',name:'欢喜禅定',desc:'修成五智如来双修法门',icon:'☸'},
   {id:'shuangxiu_resist',name:'以爱破道',desc:'以人间情爱对抗肉欲天道',icon:'❤'},
+  // === 跨世界成就 ===
+  {id:'crossworld_witness',name:'三界见证',desc:'见证三重历史交汇并沟通三条龙脉',icon:'🌐'},
+  {id:'daqi_explorer',name:'幽都访客',desc:'在梦境或裂缝中踏入大齐幽都',icon:'🏙'},
+  {id:'tianchen_contact',name:'天陈来客',desc:'与左丘咏直接接触',icon:'🌿'},
+  {id:'longmai_hero',name:'龙脉守护',desc:'参与龙脉续接大事',icon:'🐉'},
   {id:'karma_cycle',name:'因果轮回',desc:'因果从负转正超过50',icon:'☯'},
   {id:'body_break',name:'肉身崩溃',desc:'体魄降至0死亡',icon:'💔'},
   {id:'meet_danyang',name:'丹阳遗风',desc:'遇到丹阳子的传承',icon:'⚔'},
@@ -1320,6 +1329,117 @@ const SHUANGXIU_EVENTS = [
     {text:'斩断与五智如来的联系',effect:{cultivation:-40,sanity:20,comprehension:20,karma:20,constitution:-10},log:'你以极大的意志力斩断了和肉欲天道的联系。修为大跌——但你终于清醒了。有些力量，代价太大'},
     {text:'成为五智如来的使徒',effect:{cultivation:60,sanity:-40,karma:-30,comprehension:25,connections:-20},log:'你跪在金佛面前说："我愿为你效命。"五智如来的力量灌入你体内——你再也回不了头了'},
     {text:'以人间情爱对抗天道',effect:{cultivation:20,sanity:10,karma:15,comprehension:30,connections:10},log:'你想起了伴侣的笑容、孩子的啼哭。你说："我修的不是你的肉欲天道——我修的是人间的爱。"五智如来沉默了。也许，这才是真正的双修之道',achieve:'shuangxiu_resist'}]},
+];
+
+// === 跨世界事件 CROSSWORLD EVENTS (大齐·天陈·龙脉) ===
+const CROSSWORLD_EVENTS = [
+  // ====== 第一阶段：觉醒·听闻 (age 15+, cultivation 15+) ======
+  {text:'你在<span class="loc">鲁城</span>的茶馆里听到一个<span class="npc">白发老者</span>在讲古——他说一千年前，这片土地上不是五国，而是一个叫"<span class="mys">大齐</span>"的统一帝国。"大齐的天空永远不会天黑，"老者压低声音说，"因为有龙脉撑着时辰。后来龙脉断了，天塌了，大齐也跟着碎了。"',
+    trigger:{minAge:15,cultivation:15},noFlag:'daqi_aware',choices:[
+    {text:'追问大齐的细节',effect:{comprehension:12,sanity:-5,cultivation:5},log:'老者说大齐的都城叫"幽都"，与大梁上京城空间重叠。他还说诸葛渊——那个"司命之下第一人"——就是大齐的遗民。你觉得这老头可能不是在讲故事',setFlag:'daqi_aware'},
+    {text:'当作故事听听',effect:{comprehension:5},log:'好听的故事罢了。一千年前的事，谁说得准？'},
+    {text:'请老者喝酒套话',effect:{comprehension:10,wealth:-5,connections:5,sanity:-3},log:'三杯下肚，老者说了更多——大齐的皇帝代代化为龙脉，维持着天地秩序。"你们大梁的龙脉？"他冷笑，"那是拼接出来的，一条人体蜈蚣罢了。"',setFlag:'daqi_aware'}]},
+  {text:'你在一处古战场遗址发现了一块<span class="itm">金色鳞片</span>状的碎片。碎片入手时，你的脑海中闪过一幅画面——一片<span class="mys">永不天黑</span>的苍穹下，一座巍峨的都城屹立着。画面只持续了一瞬便消失了。',
+    trigger:{minAge:16,cultivation:15},noFlag:'daqi_vision',choices:[
+    {text:'仔细感应碎片',effect:{comprehension:15,cultivation:10,sanity:-10},log:'那是……龙脉的碎片？你感受到了一个庞大帝国的余韵——大齐。那片永恒白昼的天空令你心神震荡',setFlag:{daqi_vision:true,daqi_aware:true},item:'longmai_suipian'},
+    {text:'揣入怀中',effect:{comprehension:5,qiyun:5},log:'你把碎片收好，决定日后再研究',item:'longmai_suipian',setFlag:'daqi_aware'},
+    {text:'放回原处',effect:{karma:3},log:'你隐约觉得这东西不该随便带走'}]},
+  {text:'一个<span class="npc">落魄书生</span>拦住你，自称是<span class="mys">大齐皇室后裔</span>。他掏出一枚<span class="itm">龙纹玉佩</span>说："你要是去过<span class="loc">龙眠泽</span>，就知道那里的龙气和大梁不一样——那是大齐残留的正统龙脉。"',
+    trigger:{minAge:18,cultivation:20},flagReq:'daqi_aware',noFlag:'longmai_aware',choices:[
+    {text:'跟他去龙眠泽验证',effect:{comprehension:15,cultivation:10,sanity:-8,wealth:-10},log:'你跟着书生去了龙眠泽。他说的没错——那里的龙气是金色的，和大梁上京城灰白色的龙气截然不同。"大齐的龙脉是正统金龙，"他说，"大梁只是碎片拼成的赝品。"',setFlag:'longmai_aware'},
+    {text:'记下他的话',effect:{comprehension:8,connections:5},log:'你记住了——龙眠泽、正统龙脉、大齐。这些线索或许以后有用',setFlag:'longmai_aware'},
+    {text:'不理他',effect:{},log:'疯子太多了，你加快脚步走了'}]},
+
+  // ====== 第二阶段：大齐线 (age 20+, cultivation 30+, requires daqi_aware) ======
+  {text:'你在<span class="loc">上京城</span>的地底发现了一条<span class="mys">暗道</span>——不是大梁修的，看石砖工艺至少有千年历史。暗道深处有一面石壁，壁上刻着一幅地图：五国的疆界消失了，取而代之的是一个统一帝国的全景。地图正中刻着两个字——"<span class="danger-text">大齐</span>"。',
+    trigger:{minAge:20,cultivation:30},flagReq:'daqi_aware',noFlag:'daqi_underground',choices:[
+    {text:'深入探索暗道',effect:{comprehension:18,cultivation:15,sanity:-15,constitution:-5},log:'暗道通向一座地下宫殿。宫殿穹顶上绘满了壁画——大齐历代皇帝化为龙脉的场景。最后一幅画上，龙脉断裂，天空碎成五块。你在一面铜镜前驻足——镜中映出的不是你，而是一片永不天黑的天空',setFlag:'daqi_underground'},
+    {text:'拓印地图后离开',effect:{comprehension:12,cultivation:5},log:'你拓下了大齐全境图。这东西拿给监天司看，不知道能换多少阳寿丹',setFlag:'daqi_underground'},
+    {text:'原路返回',effect:{sanity:5},log:'地下的空气太沉了，你不想冒险'}]},
+  {text:'你在修炼中陷入了一个<span class="mys">奇异的梦境</span>——你站在一座巍峨的都城门口，城门上写着"<span class="danger-text">幽都</span>"。天空<span class="mys">永远是白昼</span>，没有太阳也没有月亮，但苍穹明亮如同正午。街上的人穿着一千年前的服饰，但他们看不见你。一个身穿玄色官服、面容刚毅的<span class="npc">男人</span>从你身边经过——他的腰间挂着一柄<span class="itm">笔</span>和一本<span class="itm">老皇历</span>。',
+    trigger:{minAge:22,cultivation:35},flagReq:'daqi_aware',noFlag:'daqi_youdu_dream',choices:[
+    {text:'跟上那个男人',effect:{comprehension:20,cultivation:15,sanity:-15},log:'你跟了他一路。他走进了一座气势恢宏的衙门——大门上挂着"监天司"的匾额。他就是诸葛渊——活着的诸葛渊，大齐时代的诸葛渊。你终于理解了：幽都和上京城空间重叠，大齐与大梁是同一片土地上的两个历史',setFlag:{daqi_youdu_dream:true,met_zhuge_dream:true}},
+    {text:'在幽都中游荡',effect:{comprehension:15,cultivation:10,sanity:-10},log:'你在幽都街头走了很久。这座城和上京城的布局一模一样，但一切都更完整、更有序。大齐的龙气如金色丝线织满了整座城。你醒来时，手心还残留着一丝温热',setFlag:'daqi_youdu_dream'},
+    {text:'强行醒来',effect:{sanity:5,comprehension:5},log:'这梦太真实了。你猛地掐了自己一把——醒来后你发现枕头上有一缕金色的光丝'}]},
+  {text:'你在<span class="loc">四齐</span>游历时，遇到一个<span class="npc">兵家老兵</span>。他自称当年参加过"<span class="mys">龙脉回归</span>"之战——那是几十年前，大齐的残余力量试图恢复龙脉，但最终失败了。"大齐的人从来没有真的消失，"老兵说，"他们只是被挤到了另一层历史里。天空如果突然变亮，那就是大齐在往回挤。"',
+    trigger:{minAge:20,cultivation:25},flagReq:'daqi_aware',locReq:'si_qi',choices:[
+    {text:'请教大齐兵家的武技',effect:{cultivation:15,constitution:10,comprehension:8,wealth:-10},log:'老兵教了你几招大齐兵家的古法——以血涂兵书可引煞气暴增。他说大齐兵家的传承比大梁的要正统得多'},
+    {text:'打听龙脉回归的细节',effect:{comprehension:15,sanity:-8,connections:10},log:'老兵说龙脉回归需要一个"真命天子"坐上大齐的龙椅。他还说，有人一直在暗中寻找大齐皇室血脉',setFlag:'longmai_huigui_aware'},
+    {text:'道谢离开',effect:{connections:5},log:'你向老兵行了一礼。大齐的历史比你想象的复杂得多'}]},
+
+  // ====== 第三阶段：龙脉与诸葛渊 (age 22+, cultivation 40+) ======
+  {text:'你在<span class="loc">龙眠泽</span>深处修炼时，突然感受到脚下的<span class="mys">龙气剧烈震荡</span>——金色的龙气从地底涌出，天空出现了一道<span class="danger-text">裂缝</span>。裂缝对面是一片永不天黑的天空。你看到了<span class="mys">幽都</span>的轮廓，就悬浮在裂缝之中。一个<span class="npc">身影</span>站在裂缝边缘，向你这边望过来。',
+    trigger:{minAge:22,cultivation:40},flagReq:'daqi_youdu_dream',locReq:'long_min',choices:[
+    {text:'走向裂缝',effect:{cultivation:25,comprehension:20,sanity:-20,constitution:-10},log:'你穿过了裂缝——一瞬间你同时身处两个世界。大齐和大梁重叠在一起，你看到了同一条街上大齐的行人和大梁的商贩互相穿过彼此。那个身影是诸葛渊的<span class="mys">残影</span>——他已死多年，但以心蟠之力维持着大齐的"存在"。他只说了一句话："龙脉断裂之日，世界将再次分崩。"',setFlag:'crossed_worlds'},
+    {text:'在裂缝前感悟',effect:{cultivation:15,comprehension:18,sanity:-10},log:'你没有贸然穿过去，而是在裂缝边打坐。两个世界的灵气同时灌入你体内——大齐的金色龙气和大梁的灰白龙气混合在一起，让你对天地秩序有了全新的理解'},
+    {text:'后退',effect:{sanity:5,comprehension:8},log:'裂缝在你退后的同时关闭了。你呆坐了很久，不确定刚才看到的是真是假'}]},
+  {text:'你在<span class="loc">杏岛</span>上诸葛渊曾修炼的地方打坐时，一个<span class="mys">虚幻的身影</span>出现在你面前。他手持<span class="itm">判官笔</span>，腰佩<span class="itm">六曜通书</span>，面容虽已模糊，但气势如山如海——这是<span class="npc">诸葛渊</span>的残魂。"<span class="mys">你能看到我，说明你已经触碰到了两重历史的边界。</span>"他说。',
+    trigger:{minAge:24,cultivation:45},flagReq:'daqi_youdu_dream',locReq:'xing_dao',choices:[
+    {text:'请教跨世界之法',effect:{comprehension:25,cultivation:20,sanity:-20,connections:10},log:'诸葛渊说："大齐、大梁、天陈——三重历史空间重叠。大齐是正统原史，大梁是分裂分支，天陈……"他顿了顿，"天陈是比大齐更早的存在，拥有最古老的金龙龙脉。穿越其间需要龙脉碎片为引、心蟠之力为桥。"他递给你一枚金色令符',setFlag:'met_zhuge_spirit',item:'daqi_jinfu'},
+    {text:'询问大齐的命运',effect:{comprehension:18,cultivation:10,sanity:-12,karma:5},log:'诸葛渊说他用心蟠之力维持着大齐的残存，但已力竭。"龙脉需要新的皇帝，新的牺牲。"他看向远方——"高智坚身上流着大齐龙脉之血。如果他能登上龙椅……大齐或许还有救。"',setFlag:'met_zhuge_spirit'},
+    {text:'默默感受他的气息',effect:{cultivation:15,comprehension:12,sanity:-8},log:'你没有说话，只是感受着"司命之下第一人"的余威。诸葛渊看了你一眼便消散了。但他的气息让你的修为有了突破',setFlag:'met_zhuge_spirit'}]},
+  {text:'你得到了<span class="itm">大齐金符</span>后，每到夜深人静时便能隐约<span class="mys">看到两个世界的重叠</span>——大梁的街道上浮现出大齐幽都的轮廓，路人之间穿行着一千年前的鬼影。你发现<span class="npc">高智坚</span>——那个自称大齐皇族后裔的年轻人——确实与龙脉有着非同寻常的联系。他走过的地方，大齐的影像更加清晰。',
+    trigger:{minAge:24,cultivation:45},flagReq:'met_zhuge_spirit',noFlag:'gaozhi_contact',choices:[
+    {text:'私下联络高智坚',effect:{connections:15,cultivation:10,comprehension:12,sanity:-10,qiyun:-5},log:'你找到了高智坚。他并不惊讶——"你也看到了？"他握着龙纹玉佩说，"诸葛渊告诉我，龙脉断裂之时便是我即位之日。但代价是……历代大齐皇帝，都要化为龙脉的一部分。"',setFlag:{gaozhi_contact:true,longmai_huigui_aware:true}},
+    {text:'暗中观察高智坚',effect:{comprehension:10,connections:5,sanity:-5},log:'你远远地跟着高智坚。他去了龙眠泽、去了上京城地下、去了四齐……他在寻找续接龙脉的方法。大齐的复兴不是传说，而是正在发生的事',setFlag:{gaozhi_contact:true}},
+    {text:'不介入此事',effect:{sanity:5,karma:3},log:'帝王将相的事，你一个普通修士还是别掺和了'}]},
+
+  // ====== 第四阶段：天陈线 (age 25+, cultivation 50+) ======
+  {text:'你在<span class="loc">南疆</span>深处的一座古庙中发现了一块<span class="itm">墨绿古玉</span>。玉上刻着你看不懂的古文——不是大梁文，也不是大齐文，更古老。握住古玉时，你的耳边响起了<span class="mys">树木疯长</span>的声音，仿佛整片森林在呼吸。一个低沉的声音说："<span class="danger-text">天陈的子民，已经一千年没有新人来过了。</span>"',
+    trigger:{minAge:25,cultivation:50},noFlag:'tianchen_aware',choices:[
+    {text:'回应那个声音',effect:{comprehension:20,cultivation:15,sanity:-15,constitution:5},log:'你问："天陈是什么？"声音说："比大齐更古老的国度。大齐分裂为五国，但天陈从未分裂——因为天陈的龙脉是最古老、最完整的金龙。掌管它的人叫左丘咏，他拥有<span class="mys">生长天道</span>。"',setFlag:'tianchen_aware',item:'tianchen_guyu'},
+    {text:'放下古玉',effect:{sanity:5,comprehension:8},log:'你把古玉放回了原处。但那个声音在你脑中回荡了很久——天陈，一个比大齐更古老的国度'},
+    {text:'带走古玉研究',effect:{comprehension:12,cultivation:8,sanity:-8},log:'你把古玉揣入怀中。也许能找到懂古文的人来翻译',item:'tianchen_guyu',setFlag:'tianchen_aware'}]},
+  {text:'你在<span class="loc">边境</span>目睹了一个不可思议的场景——一片<span class="danger-text">枯死的树林在一夜之间疯长</span>，从残枝败叶变成了参天巨木。巨木之间出现了一座<span class="mys">古城</span>的虚影，城中的人穿着你从未见过的服饰。一个<span class="npc">身披树叶甲胄的武将</span>从虚影中走出，他的脚踏过之处，草木以肉眼可见的速度生长。他就是——<span class="danger-text">左丘咏</span>。',
+    trigger:{minAge:26,cultivation:55},flagReq:'tianchen_aware',noFlag:'met_zuoqiu',choices:[
+    {text:'上前搭话',effect:{comprehension:20,cultivation:20,sanity:-20,connections:15,constitution:-8},log:'左丘咏低头看着你，眼神古老而悲悯。"你是大梁人？"他说，"告诉你们的监天司——天陈不是入侵，是<span class="danger-text">回归</span>。这片土地的生长天道一直在我手里。"他走后，你脚下的土地开了一朵金色的花',setFlag:'met_zuoqiu'},
+    {text:'远远观察',effect:{comprehension:15,cultivation:10,sanity:-12},log:'你不敢靠近。左丘咏的存在感太强了——他不是修士，他是<span class="danger-text">肉身司命</span>，掌管生长天道的存在。在他面前你连呼吸都困难。他扫了你一眼便走了，但那一眼就让你修为精进了一大截',setFlag:'met_zuoqiu'},
+    {text:'逃跑',effect:{sanity:-5,constitution:3},log:'你转身就跑。那个级别的存在，看你一眼你就得死'}]},
+  {text:'你听说<span class="fac">监天司</span>召开了紧急会议——<span class="danger-text">天陈国</span>的势力正在向大梁边境推进。和法教入侵不同，天陈的入侵是<span class="mys">无声的</span>——只要左丘咏经过的地方，草木便会疯长成密林，大梁的城镇被森林吞噬，百姓不得不撤离。监天司称其为"<span class="danger-text">绿潮</span>"。',
+    trigger:{minAge:27,cultivation:50},flagReq:'tianchen_aware',noFlag:'tianchen_invasion_aware',choices:[
+    {text:'加入抵抗天陈的行动',effect:{cultivation:15,connections:15,karma:10,constitution:-5,sanity:-10},log:'你加入了监天司组织的抵抗力量。但你很快发现——天陈的修士能<span class="danger-text">直接触碰天道</span>，个体实力远超大梁修士。一个天陈士兵就能打十个大梁精锐',setFlag:{tianchen_invasion_aware:true,resist_tianchen:true}},
+    {text:'打听天陈的弱点',effect:{comprehension:15,connections:10,sanity:-8},log:'你四处打听。一个老修士说："天陈强在龙脉——他们有最古老最完整的金龙龙脉。要抗衡天陈，大梁的龙脉得先续上。"他看了看天空，"诸葛渊也是这么想的。"',setFlag:'tianchen_invasion_aware'},
+    {text:'避开战乱',effect:{sanity:5,qiyun:-5,wealth:-10},log:'你收拾行李向内陆撤退。天陈的事，交给监天司和那些大人物吧',setFlag:'tianchen_invasion_aware'}]},
+  {text:'你从<span class="fac">白莲教</span>的人口中得知了一个惊人的消息：<span class="loc">天陈</span>竟然就是白莲教传说中的"<span class="mys">真空家乡</span>"——那个无生老母的原初领地。天陈入侵大梁的真正目的不是领土，而是要杀死<span class="npc">白灵淼</span>——无生老母的心蟠。"天潢贵胄背叛了无生老母，"白莲教长老说，"他们要斩草除根。"',
+    trigger:{minAge:28,cultivation:55},flagReq:'tianchen_invasion_aware',choices:[
+    {text:'帮助白莲教保护白灵淼',effect:{connections:15,karma:15,cultivation:10,sanity:-10,constitution:-5},log:'你加入了护送白灵淼的队伍。天陈的追兵无处不在——每一片树林都可能是敌人的眼睛。白灵淼白发红瞳，面容安详，她说："无生老母不会让天陈得逞的。"',setFlag:'protect_bailingmiao'},
+    {text:'中立观望',effect:{comprehension:10,sanity:-5},log:'帝王将相、司命纷争——你一个小修士能做什么？但你心中不安——如果白灵淼死了，无生老母的慈悲天道将被天陈吞噬'},
+    {text:'把情报卖给监天司',effect:{wealth:30,connections:10,karma:-5},log:'你把白莲教的情报转交给了监天司。他们面色凝重——这场战争比他们想象的复杂得多'}]},
+
+  // ====== 第五阶段：龙脉续接·跨世界交汇 (age 28+, cultivation 60+) ======
+  {text:'大梁龙脉出现了<span class="danger-text">崩裂</span>的征兆——上京城的城墙开裂，大地震颤不止，天空出现了诡异的双色——一半是大梁的正常天色，一半是<span class="mys">大齐永恒的白昼</span>。街上的百姓恐慌奔逃，修士们纷纷自保。诸葛渊曾说过的话应验了：<span class="danger-text">"龙脉断裂之日，世界将再次分崩。"</span>',
+    trigger:{minAge:28,cultivation:60},flagReq:'longmai_huigui_aware',noFlag:'longmai_crisis',mandatory:true,choices:[
+    {text:'赶往龙眠泽稳定龙脉',effect:{cultivation:20,constitution:-15,sanity:-15,comprehension:15,karma:10},log:'你赶到龙眠泽时，金色龙气正从地底喷涌。你用尽全力将灵气灌入大地——但你一个人根本无济于事。龙脉需要的不是修为，而是一个愿意以身化龙的皇帝',setFlag:'longmai_crisis',combat:50},
+    {text:'寻找高智坚',effect:{connections:15,cultivation:10,sanity:-10,comprehension:10},log:'你找到了高智坚——他已经知道了。他站在上京城最高处，看着双色天空说："到时候了。"他身上的龙脉之血开始发光',setFlag:{longmai_crisis:true,gaozhi_contact:true}},
+    {text:'保护家人和周围的人',effect:{karma:15,connections:10,constitution:-5,sanity:-5},log:'你没有去管那些跨世界的大事，而是拼命保护身边的人。大地震颤时你护住了几个孩子——也许这才是你该做的',setFlag:'longmai_crisis'}]},
+  {text:'<span class="npc">高智坚</span>决定登上大齐的龙椅——以自身血脉续接断裂千年的龙脉。仪式在<span class="loc">上京城</span>地底的<span class="mys">幽都遗宫</span>中进行，三重历史在此刻交汇。你亲眼看到了大齐、大梁、天陈三个世界<span class="danger-text">同时显现</span>——三座都城叠在一起，三个时代的人在同一空间中穿行。高智坚身穿大齐龙袍坐上了龙椅，他的身体开始<span class="danger-text">金光透体</span>，正在化为龙脉的一部分。',
+    trigger:{minAge:29,cultivation:65},flagReq:'longmai_crisis',flagReq2:'gaozhi_contact',noFlag:'longmai_succession',mandatory:true,choices:[
+    {text:'为高智坚护法',effect:{cultivation:30,constitution:-10,sanity:-20,comprehension:20,karma:15},log:'你站在幽都遗宫中为高智坚护法。天陈的刺客、坐忘道的暗手纷纷涌来——他们不想让龙脉续接成功。你拼死抵挡，为高智坚争取了最后一刻时间。金龙龙脉重新贯通大地——天空恢复了正常。但高智坚的下半身已经化为金色鳞片',setFlag:'longmai_succession',combat:60},
+    {text:'帮助稳定三界结构',effect:{cultivation:25,comprehension:25,sanity:-18,constitution:-8,karma:10},log:'你用修为帮助稳定三个世界的交界面。在那一刻你同时存在于三个历史中——大齐的白昼、大梁的日落、天陈的远古密林。你感受到了天地秩序的本质——龙脉不是一条龙，而是世界本身的骨架',setFlag:'longmai_succession'},
+    {text:'记录下这一切',effect:{comprehension:20,cultivation:15,sanity:-10,karma:5},log:'你站在角落，把一切刻在脑海里。三重历史交汇、龙脉续接、高智坚化龙——这是改写天地格局的大事，而你是见证者之一。日后如果有人问起，你会说："我在场。"',setFlag:'longmai_succession'}]},
+  {text:'龙脉续接之后，大梁恢复了平静——但你知道世界已经不一样了。三重历史的边界变得<span class="mys">更加模糊</span>：偶尔能在夜间看到大齐幽都的灯火，边境的森林里隐约有天陈古城的回声。你在修炼中能感受到三条龙脉的共鸣——大梁的灰白、大齐的金色、天陈的墨绿。',
+    trigger:{minAge:30,cultivation:70},flagReq:'longmai_succession',choices:[
+    {text:'尝试沟通三条龙脉',effect:{cultivation:35,comprehension:25,sanity:-25,constitution:-10},log:'你在三条龙脉的交汇点打坐。三种力量在你体内流转——你仿佛看到了一千年前大齐分裂的那一刻，也看到了更早之前天陈建国的那一天。你对天地秩序的理解突破了凡人的极限',achieve:'crossworld_witness'},
+    {text:'以龙脉之力修炼',effect:{cultivation:30,comprehension:15,sanity:-15,qiyun:10},log:'三条龙脉的灵气让你的修为暴涨——但你清楚地感到自己正站在凡人与非凡之间的界限上'},
+    {text:'安然接受新世界',effect:{sanity:10,karma:10,comprehension:15,qiyun:5},log:'你没有贪求更多力量，只是安然接受了这个更加丰富的世界。三重历史共存——也许这才是天地本来的面貌'}]},
+
+  // ====== 特殊：道具触发的跨世界事件 ======
+  {text:'你握着<span class="itm">时辰沙漏</span>发现了一个秘密——沙粒向上流的速度和大齐的"时辰"完全吻合。大齐的世界里没有正常的昼夜交替，时间由龙脉维持。当你倒转沙漏时，周围的世界<span class="mys">闪烁</span>了——大梁的街道变成了大齐的幽都，又在一瞬间恢复。',
+    trigger:{minAge:20,cultivation:25},flagReq:'daqi_aware',choices:[
+    {text:'反复尝试倒转',effect:{comprehension:18,cultivation:12,sanity:-15},log:'每次倒转你都能短暂看到大齐的世界。你发现两个世界在某些地方"缝合"得不好——有些地方大齐的建筑会突然出现在大梁的街道上，然后消失'},
+    {text:'小心收好沙漏',effect:{comprehension:8,sanity:-3},log:'这东西太危险了。你把沙漏用布包好，放在最里面的口袋里'}],
+    itemReq:'shichen_shalou'},
+  {text:'<span class="itm">天陈古玉</span>在你手中突然发出了耀眼的绿光——一个<span class="mys">女人的声音</span>从玉中传出："母亲……无生老母……回来……"你意识到这块古玉和<span class="fac">白莲教</span>有着千丝万缕的联系——天陈曾是无生老母的领地，而这块古玉可能是她留下的信物。',
+    trigger:{minAge:22,cultivation:30},flagReq:'tianchen_aware',choices:[
+    {text:'以灵力灌入古玉',effect:{comprehension:20,cultivation:15,sanity:-18,karma:5},log:'古玉显现了一段远古记忆——天陈建国之初，无生老母以慈悲天道与生长天道共同守护这片土地。后来天潢贵胄背叛了她，左丘咏夺走了生长天道。从此无生老母只剩慈悲与死亡，天陈变成了一个没有慈悲的国度'},
+    {text:'把古玉交给白莲教',effect:{connections:15,karma:10,qiyun:5},log:'白莲教的人看到古玉后跪地痛哭——"这是圣母的遗物！真空家乡确实存在！"'}],
+    itemReq:'tianchen_guyu'},
+  {text:'你将<span class="itm">龙脉碎片</span>和<span class="itm">大齐金符</span>放在一起时，两件器物发出了<span class="mys">共鸣</span>。一道金色光柱冲天而起——你的意识被拉入了一个<span class="danger-text">完全不同的空间</span>。这是大齐幽都的皇宫，正统的金龙龙脉从皇座下盘旋而上。龙脉之上坐着一个半人半龙的存在——那是大齐最后一位皇帝的龙魂。他开口了："<span class="mys">大齐还有救吗？</span>"',
+    trigger:{minAge:25,cultivation:50},flagReq:'met_zhuge_spirit',choices:[
+    {text:'"有。高智坚身上有大齐的血。"',effect:{comprehension:25,cultivation:20,sanity:-20,qiyun:10,karma:10},log:'龙魂沉默了很久，然后点了点头。"那就拜托你——告诉他，龙椅在等他。代价他应该知道了。"金光消散，你回到了现实。手中的龙脉碎片已经碎成了粉末——它的使命完成了',setFlag:'longmai_huigui_aware'},
+    {text:'"我不知道。"',effect:{comprehension:15,sanity:-12,karma:5},log:'龙魂叹了口气。"这是实话。"他说，"千年等一回答，却等来了\u2018不知道\u2019——但至少你没有骗我。"他赐了你一缕龙气后消散了'},
+    {text:'"大齐已经过去了。"',effect:{comprehension:10,sanity:-8,karma:-5},log:'龙魂的表情变得悲伤。"也许你是对的。"他说完便消散了。皇座上留下了一滴金色的泪珠——那是千年龙魂最后的遗存'}],
+    itemReq:'longmai_suipian'},
 ];
 
 // === TALENT CONFLICTS (bidirectional) ===

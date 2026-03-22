@@ -858,6 +858,25 @@ function nextYear() {
     });
   }
 
+  // Add crossworld events (大齐·天陈·龙脉)
+  if(typeof CROSSWORLD_EVENTS !== 'undefined' && gameState.age >= 15) {
+    CROSSWORLD_EVENTS.forEach(function(cwe){
+      if(cwe.genderReq && cwe.genderReq !== gameState.gender) return;
+      if(cwe.trigger) {
+        if(cwe.trigger.minAge && gameState.age < cwe.trigger.minAge) return;
+        if(cwe.trigger.maxAge && gameState.age > cwe.trigger.maxAge) return;
+        if(cwe.trigger.cultivation && gameState.cultivation < cwe.trigger.cultivation) return;
+      }
+      if(cwe.flagReq && !gameState.flags[cwe.flagReq]) return;
+      if(cwe.flagReq2 && !gameState.flags[cwe.flagReq2]) return;
+      if(cwe.noFlag && gameState.flags[cwe.noFlag]) return;
+      if(cwe.locReq && !gameState.visitedLocations.includes(cwe.locReq)) return;
+      if(cwe.itemReq && !gameState.items.find(function(it){return it.id===cwe.itemReq;})) return;
+      if(cwe.check && !gameState.talents.find(function(t){return t.id===cwe.check;})) return;
+      eventPool.push(cwe);
+    });
+  }
+
   // Add canonical events (major novel events by timeline)
   if(typeof CANONICAL_EVENTS !== 'undefined') {
     CANONICAL_EVENTS.forEach(function(ce){
@@ -1646,6 +1665,10 @@ function applyChoice(c) {
   if(gameState.flags.married && gameState.flags.has_child) unlockAchieve('married_life');
   if(gameState.flags.married && gameState.cultivation >= 60) unlockAchieve('family_protector');
   if(gameState.flags.shuangxiu_master) unlockAchieve('shuangxiu_master');
+  // Crossworld achievements
+  if(gameState.flags.daqi_youdu_dream || gameState.flags.crossed_worlds) unlockAchieve('daqi_explorer');
+  if(gameState.flags.met_zuoqiu) unlockAchieve('tianchen_contact');
+  if(gameState.flags.longmai_succession) unlockAchieve('longmai_hero');
 
   updateDisplay();
   var delay = SPEED_DELAYS[speed] || 3000;
@@ -1854,6 +1877,10 @@ function gameOver(reason) {
   if(gameState.flags.married && gameState.flags.has_child) unlockAchieve('married_life');
   if(gameState.flags.married && gameState.cultivation >= 60) unlockAchieve('family_protector');
   if(gameState.flags.shuangxiu_master) unlockAchieve('shuangxiu_master');
+  // Crossworld achievements at death
+  if(gameState.flags.daqi_youdu_dream || gameState.flags.crossed_worlds) unlockAchieve('daqi_explorer');
+  if(gameState.flags.met_zuoqiu) unlockAchieve('tianchen_contact');
+  if(gameState.flags.longmai_succession) unlockAchieve('longmai_hero');
   // 散修 achievements
   if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
     unlockAchieve('sanxiu_path');
@@ -1945,6 +1972,10 @@ function gameOver(reason) {
   else if(gameState.flags.married && gameState.flags.has_child && gameState.cultivation>=60) ending = '你一手修道，一手持家，在修仙与红尘之间找到了平衡。临终之际，伴侣和孩子守在床前——在这个满是邪祟的世界里，你守住了人间最珍贵的东西。';
   else if(gameState.flags.married && gameState.flags.has_child && gameState.age>=60) ending = '你虽无大成就，但儿孙满堂、夫妻恩爱。临终之际你想：李火旺选择了迷惘与爱，你也选择了平凡与温暖——这未必不是另一种道。';
   else if(gameState.flags.married && gameState.age>=50) ending = '你与伴侣携手走过了大半辈子。世间多诡谲，但你们从未放开彼此的手。这就够了。';
+  // Crossworld endings
+  else if(gameState.flags.longmai_succession && gameState.cultivation>=80) ending = '你亲眼见证了<span class="itm">三重历史交汇</span>与龙脉续接。大齐、大梁、天陈——三个世界的边界因你而松动。你在三条龙脉的共鸣中度过余生，成为极少数理解天地秩序真相的凡人。';
+  else if(gameState.flags.crossed_worlds && gameState.cultivation>=60) ending = '你穿越了两重历史的边界，亲眼看到了大齐的永恒白昼。临终之际你能同时感受到两个世界——也许死后，你会在幽都的街道上继续行走。';
+  else if(gameState.flags.met_zuoqiu) ending = '你见过了<span class="itm">左丘咏</span>——掌管生长天道的肉身司命。那一面之缘让你明白：凡人与神之间的距离，远比你想象的要近。';
 
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
@@ -1970,6 +2001,8 @@ function gameOver(reason) {
     (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
     (gameState.flags.married ? '<p style="color:var(--gold);">红尘有伴 — '+(gameState.flags.spouse_candidate||'佳人')+'相随'+(gameState.flags.children ? '，育有'+gameState.flags.children+'子' : '')+'</p>' : '') +
     (gameState.flags.shuangxiu_master ? '<p style="color:var(--mystery);">五智如来·欢喜禅 — 双修法门已成</p>' : '') +
+    (gameState.flags.longmai_succession ? '<p style="color:var(--gold);">三界见证者 — 亲历龙脉续接，见证大齐·大梁·天陈交汇</p>' : gameState.flags.daqi_youdu_dream ? '<p style="color:var(--mystery);">曾踏入大齐幽都</p>' : '') +
+    (gameState.flags.met_zuoqiu ? '<p style="color:var(--accent-green);">曾面见天陈·左丘咏</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';
 
   // Copy life log to ending panel
