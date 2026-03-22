@@ -13,7 +13,6 @@ const TALENTS = {
     {id:'yin_nv',name:'阴女',desc:'先天纯阴之体，修炼阴柔功法进境极快',effect:{cultivation:20,comprehension:10,sanity:15},type:'special',rarity:'epic',hint:'修为+20 悟性+10 神志+15'},
     {id:'wang_zai',name:'罔灾',desc:'坐忘道斗姥选中之人，注定成为灾祸的化身',effect:{cultivation:30,sanity:-25,qiyun:-15},type:'special',rarity:'legendary',hint:'修为+30 神志-25 气运-15 坐忘道有特殊机遇'},
     {id:'tian_nai',name:'天内',desc:'生而为天内，天生能够看见白玉京',effect:{sanity:-20,cultivation:25,comprehension:15},type:'special',rarity:'legendary',hint:'神志-20 修为+25 悟性+15 白玉京对你敞开门户'},
-    {id:'xin_bo',name:'心蟠',desc:'身负无生老母的心蟠，擅长身份伪装与阵营庇护。可掩盖自身特质规避因果律束缚，坐忘道的欺骗手段对你效果较弱。加入监天司等势力可获得额外庇护。',effect:{cultivation:15,sanity:25,karma:10,connections:15},type:'special',rarity:'legendary',hint:'神志+25 人脉+15 因果+10 伪装身份 势力庇护'},
     {id:'xin_zhuo',name:'心浊',desc:'空间干扰者，其存在可扰乱现实。头发可强化法器对空间的干扰，可形成领域性干扰场域影响敌人感知。常作为顶级法器材料被争夺。',effect:{cultivation:25,sanity:-15,qiyun:-10,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 气运-10 空间扰动 法器强化'},
     {id:'xu_jing',name:'虚静',desc:'天生与虚空相合，不为幻象所迷',effect:{cultivation:20,sanity:15,comprehension:10},type:'special',rarity:'epic',hint:'修为+20 神志+15 悟性+10 虚空中自有一片天地'},
     {id:'kuang_lu',name:'狂卢',desc:'体内流淌着巴虺的血脉，痛苦即是力量',effect:{cultivation:25,constitution:15,sanity:-10},type:'special',rarity:'epic',hint:'修为+25 体魄+15 神志-10 袄景教视你为血脉后裔'},
@@ -1683,6 +1682,10 @@ const CANONICAL_EVENTS = [
     {text:'尝试与季灾沟通',effect:{cultivation:20,sanity:-15,comprehension:15},log:'你在冥想中触碰到了季灾的意识——他说："我曾经也不知道哪个世界是真的。现在我知道了——两个都是。"'},
     {text:'在季灾的庇护下修行',effect:{cultivation:15,sanity:10,comprehension:8},log:'季灾的存在让天道趋于稳定，你在这份安宁中修行受益匪浅'},
     {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
+  {text:'<span class="npc">季灾</span>的目光穿越白玉京落在你身上——你是<span class="mys">心素</span>，与他同类。他选中了你作为自己在人间的<span class="mys">因缘</span>：成为迷惘司命的<span class="mys">心蟠</span>。',
+    trigger:{minAge:30,yearMin:42,cultivation:100},check:'xinsu',choices:[
+    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实'},
+    {text:'拒绝，你要走自己的路',effect:{cultivation:20,sanity:15,comprehension:10,qiyun:-10},log:'季灾沉默了片刻，然后笑了："和我当年一样。"他的目光从你身上移开'}]},
 
   // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
   {text:'<span class="npc">左丘咏</span>被击败后，他的女儿<span class="npc">左千户</span>加入了<span class="fac">监天司</span>。你在一次任务中与她同行——她沉默寡言，但出手凌厉，身上隐隐有<span class="mys">天陈</span>的残余气息。',
@@ -1902,6 +1905,10 @@ const RANK_EVENTS = {
       rankReq:7,choices:[
       {text:'接受真相继续修行',effect:{cultivation:25,comprehension:20,sanity:-15},log:'知道了又如何？这条路已经走了太远'},
       {text:'脱离坐忘道',effect:{faction:'none',connections:-25,qiyun:10,sanity:10},log:'你毅然脱离了坐忘道，成为了散修'}]},
+    {text:'<span class="npc">阴阳斗姥</span>终于选中了你——你就是她在人间的<span class="mys">因缘</span>，她的<span class="mys">心蟠</span>。斗姥的谎言之力灌入你体内，你能感知一切虚假。',
+      rankReq:9,choices:[
+      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊'},
+      {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"'}]},
   ],
   jiantian: [
     {text:'你晋升<span class="fac">监天司</span>庚旗后，获得了查阅<span class="itm">机密档案</span>的权限——里面记载着各地邪祟和坐忘道的情报。',
@@ -1926,6 +1933,10 @@ const RANK_EVENTS = {
       rankReq:3,choices:[
       {text:'争夺牯神使之位',effect:{cultivation:30,connections:15,sanity:-20,qiyun:-10},log:'你在竞争中脱颖而出，获得了与巴虺沟通的资格'},
       {text:'甘当辅佐',effect:{connections:10,cultivation:10},log:'你选择辅佐新任牯神使，在教中依然受人尊重'}]},
+    {text:'你完成了三次<span class="danger-text">登阶</span>，<span class="npc">巴虺</span>终于注意到了你。它选中你作为自己在人间的<span class="mys">因缘</span>——你成为了巴虺的<span class="mys">心蟠</span>。痛苦天道之力贯穿全身。',
+      rankReq:4,choices:[
+      {text:'承受痛苦接受心蟠之身',effect:{cultivation:45,constitution:15,sanity:-25,karma:-15},log:'你成为了巴虺的心蟠！痛苦即是力量——你可以使用痛苦天道之术，自愈能力大幅增强'},
+      {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意'}]},
   ],
   bailian: [
     {text:'作为<span class="fac">白莲教</span>堂主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲</span>的司命。',
@@ -1936,6 +1947,10 @@ const RANK_EVENTS = {
       rankReq:3,choices:[
       {text:'全力修习',effect:{cultivation:25,karma:15,sanity:-10,constitution:-5},log:'红莲业火在你体内燃烧，你感到过去的罪孽在被洗涤'},
       {text:'谨慎修习',effect:{cultivation:10,karma:5},log:'你只取其精华，不至于伤了根基'}]},
+    {text:'<span class="npc">无生老母</span>在虚空中降下慈悲之光，选中了你作为她在人间的<span class="mys">因缘</span>——你成为了无生老母的<span class="mys">心蟠</span>。慈悲天道与你相合。',
+      rankReq:4,choices:[
+      {text:'接受慈悲天道',effect:{cultivation:35,sanity:20,karma:25,connections:15},log:'你成为了无生老母的心蟠，慈悲之力充盈全身。你能感知众生苦乐，伪装身份、庇护他人'},
+      {text:'以自身意志调和',effect:{cultivation:25,sanity:10,karma:15,comprehension:10},log:'你成为了心蟠，但保留了自己的判断——不是无条件的慈悲，而是有所选择'}]},
   ],
   biaoju: [
     {text:'你升为<span class="fac">镖局</span>镖头后，接到了一单<span class="danger-text">要命的活</span>——护送<span class="itm">龙脉碎片</span>去大梁皇城。',
