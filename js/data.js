@@ -181,6 +181,8 @@ const ACHIEVEMENTS = [
   {id:'reach_danuo',name:'超凡入圣',desc:'达到大傩境界',icon:'👁'},
   {id:'rich',name:'富甲一方',desc:'金银超过200',icon:'💰'},
   {id:'mad',name:'疯人院',desc:'心素天赋且神志归零',icon:'🌀'},
+  {id:'forgotten',name:'被遗忘者',desc:'心浊天赋且修为达金丹',icon:'🌫'},
+  {id:'saint',name:'白莲圣女',desc:'白化病天赋且加入白莲教',icon:'🤍'},
   {id:'old',name:'长命百岁',desc:'活到80岁以上',icon:'🧓'},
   {id:'faction_all',name:'见多识广',desc:'加入过3个不同势力（叛徒之路）',icon:'🏴'},
   {id:'traveler',name:'走遍天下',desc:'去过5个不同地方',icon:'🗺'},
@@ -608,6 +610,92 @@ const SPECIAL_EVENTS = [
     trigger:{minAge:10},choices:[
     {text:'惊讶地观察',effect:{sanity:-15,comprehension:12,cultivation:5},log:'那个世界...完全没有修仙，没有邪祟，没有门派。但那些"铁盒子"和"银色巨鸟"到底是什么？'},
     {text:'闭上眼等它消失',effect:{sanity:-5},log:'你闭上眼，等幻象消散。但你知道那不是幻象——那是真实存在的另一个世界'}],check:'xinsu'},
+  // === 心素专属：身体是药引/材料，被各方争夺 ===
+  {text:'你在市集上被一个<span class="npc">神秘修士</span>拦住，他盯着你的手，舔了舔嘴唇："<span class="danger-text">心素</span>的血肉……做成法器，威力可抵半件仙宝。"',
+    trigger:{minAge:14},check:'xinsu',choices:[
+    {text:'拔腿就跑',effect:{sanity:-15,constitution:3},log:'你发了疯似的逃跑——从那一刻起你才明白，自己的身体不属于自己'},
+    {text:'反击',effect:{sanity:-10,cultivation:8,constitution:-3},log:'你拼死打退了他，但他临走时笑着说："会有更多人来的。"',combat:40},
+    {text:'大声呼救',effect:{connections:10,sanity:-10},log:'路人赶来，那人遁走了。但你看到人群中有几双眼睛，也在盯着你的身体'}]},
+  {text:'<span class="fac">坐忘道</span>的人找上了你——他们知道你是<span class="mys">心素</span>。一个笑嘻嘻的人说："把你的<span class="danger-text">皮</span>给我们，可以做一件<span class="itm">不死法衣</span>。放心，你能长回来的。"',
+    trigger:{minAge:16,cultivation:20},check:'xinsu',choices:[
+    {text:'誓死不从',effect:{sanity:-20,cultivation:10,constitution:-5},log:'他们动手了——你拼死逃脱，但身上多了几道永远不会消失的伤疤',combat:55},
+    {text:'假意答应后逃走',effect:{sanity:-15,comprehension:8,connections:-10},log:'你骗过了他们，但从此你知道——心素没有安全的地方'},
+    {text:'以条件交换保护',effect:{cultivation:15,sanity:-10,connections:15,karma:-10},log:'你和他们达成了交易：每年献一次血，换取他们的庇护'}]},
+  {text:'你的身体在受伤后<span class="mys">自行愈合</span>了——伤口冒着微光，皮肉在蠕动中恢复原状。旁边的人目瞪口呆。',
+    trigger:{minAge:18,cultivation:40},check:'xinsu',choices:[
+    {text:'赶紧遮住伤口',effect:{sanity:-10,connections:-5},log:'太迟了，有人看到了。心素自愈的消息会传开——更多人会来'},
+    {text:'感受这种力量',effect:{cultivation:15,comprehension:10,sanity:-15},log:'先天一炁在你体内涌动，你感到自己的肉身正在某种意义上"超越凡人"'},
+    {text:'趁机修炼自愈之术',effect:{cultivation:25,constitution:10,sanity:-20},log:'你学会了主动引导先天一炁修补肉体——但每次使用，你都分不清哪个世界更痛'}]},
+  {text:'你在梦中听到一个声音说："<span class="mys">太始变而成形，形而有质，而未成体，是曰心素。</span>"你突然明白了自己体内<span class="mys">先天一炁</span>的本质——你能<span class="danger-text">以假修真</span>。',
+    trigger:{minAge:20,cultivation:60},check:'xinsu',choices:[
+    {text:'尝试以假修真',effect:{cultivation:40,sanity:-30,comprehension:20},log:'你凭空想象了一把剑——然后那把剑出现在了你手中。你颤抖着握住它：这是真的，你把幻觉变成了现实'},
+    {text:'不敢轻易尝试',effect:{comprehension:15,sanity:5},log:'以假修真……如果假的能变成真的，那什么才是真的？你不敢去想'}]},
+  {text:'<span class="fac">袄景教</span>的人绑架了你——他们要用你的<span class="danger-text">心素之血</span>完成登阶仪式。你被绑在祭坛上，周围是面目狰狞的信徒。',
+    trigger:{minAge:20,cultivation:50},check:'xinsu',choices:[
+    {text:'以先天一炁挣脱',effect:{cultivation:30,sanity:-25,constitution:-8},log:'你体内的先天一炁爆发，祭坛碎裂——但你失去了太多血，那些血被他们装走了',combat:70},
+    {text:'等待时机',effect:{sanity:-20,comprehension:10,connections:5},log:'有人救了你——但你在祭坛上听到了巴虺的低语，那声音至今还在你耳边'},
+    {text:'与他们谈判',effect:{cultivation:15,karma:-15,connections:10},log:'你用一管心素之血换取了自由和一份袄景教的功法'}]},
+  // === 心浊专属：遗忘与空间 ===
+  {text:'你在睡梦中<span class="mys">遗忘</span>了什么——醒来后你发现床边多了一个你从没见过的包袱。打开一看，里面是你<span class="danger-text">完全不记得</span>的物品。',
+    trigger:{minAge:8},check:'xin_zhuo',choices:[
+    {text:'努力回忆',effect:{sanity:-15,comprehension:10},log:'你拼命回想——脑中出现了片段：你把什么东西"藏"了起来。但藏去了哪里？'},
+    {text:'把包袱收好',effect:{sanity:-5,wealth:10},log:'不管了，东西是好东西就行。但你心底有种说不出的恐惧——你到底还遗忘了什么？'}]},
+  {text:'你和朋友聊天时提到了一个人名——对方露出困惑的表情："<span class="danger-text">谁？我们从来没有这个朋友。</span>"但你清楚地记得他。',
+    trigger:{minAge:12},check:'xin_zhuo',choices:[
+    {text:'去寻找那个人',effect:{sanity:-20,comprehension:10,connections:-5},log:'你找遍了所有地方——那个人不存在。或者说，那个人被你"藏起来"了。他在另一个空间里，可能还活着...'},
+    {text:'也许是我记错了',effect:{sanity:-10},log:'你选择相信朋友。但夜里你做了个梦——那个人在一片虚空中喊你的名字'},
+    {text:'检查自己的记忆',effect:{sanity:-15,comprehension:15},log:'你发现记忆中有很多"空洞"——像是有东西被挖走了。你到底藏了多少东西？'}]},
+  {text:'你的<span class="mys">头发</span>被一个修士看中了——他说心浊的头发能强化法器对空间的干扰力，价值连城。他愿意出<span class="itm">天价</span>购买。',
+    trigger:{minAge:14},check:'xin_zhuo',choices:[
+    {text:'卖一些给他',effect:{wealth:60,constitution:-3,sanity:-5},log:'他小心翼翼地收好你的头发——你感到身体有一部分被带走了'},
+    {text:'拒绝',effect:{connections:-5,sanity:5},log:'他走时眼中的贪婪让你不寒而栗——和心素一样，心浊也是被争夺的猎物'},
+    {text:'反问他心浊到底是什么',effect:{comprehension:15,sanity:-10},log:'他说："心浊能用心中的业障污染周遭的一切——你能把一切藏起来，包括自己。"'}]},
+  {text:'你情绪激动时——周围的东西开始<span class="mys">消失</span>。一棵树不见了，一块石头不见了，最后你面前的人也<span class="danger-text">凭空消失</span>了。',
+    trigger:{minAge:16,cultivation:20},check:'xin_zhuo',choices:[
+    {text:'拼命把他们找回来',effect:{sanity:-25,cultivation:15,comprehension:10,connections:-10},log:'你花了三天才把他"吐"出来——他从虚空中跌落，惊魂未定。你知道了：你的业障在失控'},
+    {text:'学会控制这种力量',effect:{cultivation:20,comprehension:15,sanity:-15},log:'你开始练习如何有意识地"藏"和"取"——但每次使用，你都会遗忘一些东西作为代价'},
+    {text:'封印自己的情绪',effect:{sanity:-10,connections:-15,comprehension:5},log:'你变得冷漠寡言，不敢和任何人亲近——因为你怕一不小心就把他们"藏"没了'}]},
+  {text:'你开始<span class="danger-text">遗忘自己的年龄</span>。照镜子时你不知道自己是二十岁还是四十岁——面容在年轻和衰老之间模糊不定。',
+    trigger:{minAge:25,cultivation:40},check:'xin_zhuo',choices:[
+    {text:'用刻字记录一切',effect:{sanity:-15,comprehension:10},log:'你在手臂上刻下了自己的年龄和名字——但第二天你发现字迹已经模糊，因为你把自己的记忆也藏起来了一部分'},
+    {text:'顺其自然',effect:{cultivation:15,sanity:-10,constitution:5},log:'也许遗忘就是心浊的宿命。你把年龄也藏进了那个空间——从此你不再衰老，但代价是你越来越不知道"自己是谁"'},
+    {text:'向高人求助',effect:{connections:10,wealth:-30,sanity:-5},log:'高人说："心浊到最后，会把自己也藏起来——连雌雄都分不清。"'}]},
+  {text:'两个心浊<span class="danger-text">靠近</span>了——你遇到了另一个心浊。你们站在一起的瞬间，方圆百丈内的一切开始<span class="mys">被吞噬</span>：树木、房屋、行人，全部被拉入虚空。',
+    trigger:{minAge:20,cultivation:60},check:'xin_zhuo',choices:[
+    {text:'联手控制业障',effect:{cultivation:40,sanity:-30,comprehension:20,connections:15},log:'你们拼尽全力才稳住了局面——但那个心浊告诉你："生死心浊碰到一起，连司命化身都能伤到。我们是最危险的存在。"'},
+    {text:'立刻分开',effect:{sanity:-15,cultivation:10},log:'你转身就跑——身后的虚空还在吞噬着一切。你们绝不能再靠近'},
+    {text:'试着与另一个心浊交流',effect:{comprehension:20,sanity:-20,connections:10},log:'对方说他/她已经忘记了大半辈子的事，连自己的名字都不确定了。你看到了自己的未来，不寒而栗'}]},
+  {text:'你发现自己<span class="danger-text">忘记了自己的性别</span>——镜中的面容亦男亦女，模糊不清。心浊的业障已经开始侵蚀你最核心的自我。',
+    trigger:{minAge:30,cultivation:80},check:'xin_zhuo',choices:[
+    {text:'用一件珍贵之物锚定自我',effect:{cultivation:25,sanity:-20,comprehension:15,wealth:-50},log:'你把最珍贵的记忆绑在一件实物上——只要那件东西还在，你就不会完全遗忘自己'},
+    {text:'接受心浊的命运',effect:{cultivation:50,sanity:-35,comprehension:25},log:'你放弃了抵抗——性别、年龄、名字、过去，一切都被藏进了那个空间。你变成了"纯粹的心浊"，力量暴涨，但自我几乎消失'},
+    {text:'以天道之力对抗业障',effect:{cultivation:35,sanity:10,comprehension:15,karma:-10},log:'你找到了暂时的平衡——但你知道这只是延缓，心浊的遗忘终究会吞噬一切'}]},
+  // === 白化病专属：白莲教圣女之路与被觊觎 ===
+  {text:'你从小就因为<span class="danger-text">白发红瞳</span>被村里人嘲笑和排挤——他们叫你"妖怪""不祥之人"。只有母亲说："我们家的人，生来就不一样。"',
+    trigger:{minAge:6,maxAge:14},check:'bai_hua',choices:[
+    {text:'忍受',effect:{sanity:-10,constitution:3,karma:5},log:'你学会了低头走路，不和任何人对视。但夜里你对着水面看自己的红瞳——为什么我生来如此？'},
+    {text:'打回去',effect:{sanity:-5,constitution:5,connections:-10},log:'你和欺负你的人打了一架。赢了，但他们更加疏远你了'},
+    {text:'躲起来不出门',effect:{sanity:-15,comprehension:5},log:'你开始害怕人群，害怕别人的目光'}]},
+  {text:'一群<span class="fac">白莲教</span>的人来到你家——他们看到你时眼睛亮了："<span class="mys">白发红瞳</span>……这是<span class="npc">无生老母</span>的标记！你有成为<span class="itm">圣女</span>的资质！"',
+    trigger:{minAge:12,maxAge:22},check:'bai_hua',choices:[
+    {text:'跟他们走',effect:{cultivation:15,connections:20,sanity:-5,karma:5},log:'白莲教的人对你毕恭毕敬——在这里，你的白化病不是诅咒，而是圣恩。你第一次感到被需要'},
+    {text:'拒绝',effect:{connections:-5,sanity:5},log:'他们离开了，但临走时说："无生老母会再来找你的。"'},
+    {text:'问他们圣女要做什么',effect:{comprehension:10,sanity:-5},log:'他们说圣女是无生老母在人间的代言人，要以慈悲渡化众生。但你看到他们眼中的狂热——这和慈悲无关'}]},
+  {text:'你的白化体质被修士发现——他说你的<span class="danger-text">血液</span>和<span class="danger-text">毛发</span>是炼制特殊法器的珍贵材料："不如心素值钱，但也是上等货色。"',
+    trigger:{minAge:15},check:'bai_hua',choices:[
+    {text:'逃跑',effect:{sanity:-10,constitution:3},log:'你再一次为自己的身体而逃命——和心素一样，白化之人在这个世界也不安全'},
+    {text:'和他谈条件',effect:{wealth:40,constitution:-3,karma:-5},log:'你卖了一管血和几缕头发。代价不大，但你感到恶心——把自己当货物卖'},
+    {text:'求助白莲教',effect:{connections:15,cultivation:5},log:'白莲教的人赶来保护了你——"圣女之体岂容亵渎！"但你知道，他们的保护也是另一种控制'}]},
+  {text:'<span class="fac">白莲教</span>中有人对你说出了一个秘密：历代<span class="itm">圣女</span>最终都会成为<span class="npc">无生老母</span>的<span class="mys">心蟠</span>——慈悲天道的因缘。这是白化之人的<span class="danger-text">宿命</span>。',
+    trigger:{minAge:20,cultivation:40},check:'bai_hua',choices:[
+    {text:'接受这个宿命',effect:{cultivation:25,karma:15,sanity:-15,comprehension:10},log:'如果白化病是无生老母留下的标记，那也许这一切痛苦都有意义——你开始认真修行慈悲之道'},
+    {text:'抗拒宿命',effect:{cultivation:10,sanity:-10,connections:-15},log:'你不想当任何人的棋子——你逃离了白莲教，但那些白发红瞳在人群中太过显眼'},
+    {text:'深入了解无生老母',effect:{comprehension:20,cultivation:15,sanity:-10},log:'你查阅了大量典籍——无生老母是掌管慈悲的司命，白灵淼是她最有名的心蟠。白化病不是病，是与慈悲天道的共鸣'}]},
+  {text:'你做了一个梦——梦中<span class="npc">无生老母</span>的声音温柔而悲悯："<span class="mys">我的孩子，你受苦了。</span>"你感到全身被温暖包裹，白发在月光下发出淡淡的光。',
+    trigger:{minAge:25,cultivation:60},check:'bai_hua',choices:[
+    {text:'向无生老母祈祷',effect:{cultivation:30,karma:20,sanity:15,comprehension:10},log:'你感到慈悲之力涌入体内——白化病带来的一切痛苦似乎都在被治愈。不是身体，是心'},
+    {text:'保持警惕',effect:{comprehension:15,sanity:-5,cultivation:10},log:'司命的慈悲……真的是慈悲吗？你不敢完全信任'},
+    {text:'哭出来',effect:{sanity:20,karma:10},log:'你跪在月光下哭了很久——这么多年，第一次有"人"对你说"你受苦了"'}]},
   {text:'你在一间废弃的老屋中发现了一个<span class="itm">暗格</span>——里面藏着一把<span class="itm">赊刀</span>和大量<span class="fac">监天司</span>的秘密档案。这是某位<span class="npc">赊刀人</span>的藏身处。',
     trigger:{minAge:16,yearMin:0,yearMax:25},choices:[
     {text:'仔细翻阅档案',effect:{comprehension:15,cultivation:10,connections:10,sanity:-10},log:'档案中记载着各地邪祟的详细信息和应对之法——其中一些邪祟就在你附近'},
@@ -2196,6 +2284,16 @@ const STAT_COMBO_EVENTS = [
     comboReq:{sanity_max:30,cult_min:80},trigger:{minAge:20},check:'xinsu',choices:[
     {text:'承受两界之力',effect:{cultivation:40,sanity:-25,constitution:-10,comprehension:20},log:'你同时存在于两个世界！这种力量前所未有！'},
     {text:'切断连接',effect:{cultivation:-15,sanity:15,constitution:5},log:'你强行切断了与另一个世界的联系'}]},
+  // Low sanity + high cultivation (xin_zhuo) = 遗忘失控
+  {text:'你的修为越来越高，但遗忘也越来越严重——你已经忘记了<span class="danger-text">自己为什么修炼</span>。心浊的业障在吞噬你的一切目的和意义。',
+    comboReq:{sanity_max:25,cult_min:60},trigger:{minAge:25},check:'xin_zhuo',choices:[
+    {text:'把修炼的目的刻在骨头上',effect:{cultivation:30,constitution:-10,sanity:-15,comprehension:20},log:'你用法力在自己的骨骼上刻下了六个字。每次遗忘时骨骼会疼痛提醒你——但那六个字是什么，你已经记不清了'},
+    {text:'放弃抵抗，随遗忘而去',effect:{cultivation:45,sanity:-30,comprehension:25},log:'你不再抵抗——当遗忘褪去一切后，剩下的就是纯粹的力量。你成了一个没有过去的存在，但你的空间之力强到足以撕裂现实'}]},
+  // High karma + bai_hua = 慈悲共鸣
+  {text:'你的白化之体与因果善业产生了<span class="mys">共鸣</span>——你的白发开始自行发光，能治愈身边人的伤痛。百姓跪地称你为"<span class="itm">活菩萨</span>"。',
+    comboReq:{karma_min:30},trigger:{minAge:20},check:'bai_hua',choices:[
+    {text:'以慈悲之力渡人',effect:{cultivation:25,karma:20,connections:20,constitution:-5},log:'你用自己的生命力治愈他人——白莲教说这就是无生老母的力量在你体内觉醒'},
+    {text:'隐藏这种能力',effect:{sanity:-10,comprehension:10},log:'你不想成为任何人的圣女或活菩萨——你只想做自己'}]},
   // High constitution + low cultivation = 武道极致
   {text:'你的体魄无比强健但修为有限，一位<span class="npc">武痴</span>找到你：他研究出一种<span class="mys">以武入道</span>之法。',
     comboReq:{const_min:70,cult_max:30},trigger:{minAge:18},choices:[

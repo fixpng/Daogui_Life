@@ -387,6 +387,17 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.05) { gameState.constitution -= 1; } // 命格短促
   if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.15) { gameState.cultivation += 2; }
   if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.12) { gameState.constitution += 1; }
+  // 心浊：随机遗忘（失去少量属性）但获得修为，年龄越大越严重
+  if(gameState.talents.find(function(t){return t.id==='xin_zhuo';})) {
+    if(Math.random()<0.12) { gameState.cultivation += 2; }
+    if(gameState.age > 25 && Math.random()<0.08) { gameState.connections = Math.max(0, gameState.connections - 2); } // 遗忘人际关系
+    if(gameState.age > 40 && Math.random()<0.06) { gameState.wealth = Math.max(-80, gameState.wealth - 5); } // 遗忘藏钱处
+  }
+  // 白化病：外貌引来的关注，白莲教好感，但也被觊觎
+  if(gameState.talents.find(function(t){return t.id==='bai_hua';})) {
+    if(Math.random()<0.08) { gameState.connections -= 1; } // 外人排斥
+    if(gameState.faction === 'bailian' && Math.random()<0.10) { gameState.karma += 2; gameState.connections += 2; } // 白莲教内受尊崇
+  }
 
   // Constitution natural drift (age affects constitution, cultivation slows aging)
   var agingReduction = Math.floor(gameState.cultivation / 50); // high cultivation slows aging
@@ -1389,6 +1400,9 @@ function gameOver(reason) {
   // New faction-specific achievements
   if(gameState.faction === 'luo_jiao' && FACTIONS.luo_jiao && (gameState.factionRank || 0) >= FACTIONS.luo_jiao.ranks.length - 1) unlockAchieve('luo_master');
   if(gameState.faction === 'nanjiang' && FACTIONS.nanjiang && (gameState.factionRank || 0) >= FACTIONS.nanjiang.ranks.length - 1) unlockAchieve('gu_king');
+  // 三心成就
+  if(gameState.talents.find(function(t){return t.id==='xin_zhuo';}) && gameState.cultivation>=60) unlockAchieve('forgotten');
+  if(gameState.talents.find(function(t){return t.id==='bai_hua';}) && gameState.faction==='bailian') unlockAchieve('saint');
   if(gameState.faction === 'bingjia' && FACTIONS.bingjia && (gameState.factionRank || 0) >= FACTIONS.bingjia.ranks.length - 1) unlockAchieve('bingjia_marshal');
   if(gameState.faction === 'fomen' && FACTIONS.fomen && (gameState.factionRank || 0) >= FACTIONS.fomen.ranks.length - 1) unlockAchieve('fomen_abbot');
   if(gameState.factionHistory.length >= 5) unlockAchieve('all_factions');
@@ -1423,7 +1437,9 @@ function gameOver(reason) {
   else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
   else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
   else if(gameState.cultivation>=200 && rankName) ending = '你以<span class="itm">' + factionName + '·' + rankName + '</span>之身达到大乘境界，名震天下！';
-  else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质。';
+  else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质——以假修真，两界归一。';
+  else if(gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xin_zhuo';})) ending = '你把自己也藏进了那个空间——姓名、年龄、过去、性别，全部消失了。但你的力量化为一片永恒的虚空，连司命都无法窥探。';
+  else if(gameState.cultivation>=60 && gameState.talents.find(function(t){return t.id==='bai_hua';})) ending = '白发红瞳，一生被视为不祥。但你用慈悲之力证明了自己——无生老母的标记不是诅咒，而是渡世的烙印。';
   // Stat-influenced endings
   else if(gameState.karma>=60 && gameState.cultivation>=60) ending = '你一生行善积德，功德圆满。金光护体之中，你安详地闭上了双眼——死后有万民自发送行。';
   else if(gameState.karma<=-60 && gameState.cultivation>=60) ending = '你一生造业无数，业障深重。临终之际，无数冤魂在你面前浮现——你在恐惧中走完了这一世。';
