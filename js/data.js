@@ -2896,6 +2896,32 @@ const LINKED_EVENTS = [
   {trigger:{minAge:30},flagReq:'kicked_beggar',text:'你连续遭遇了诸多不幸——先是生意赔了，然后朋友背叛你，最后你在路上无缘无故摔断了腿。躺在床上时，你突然想起了那个被你踢过的<span class="npc">老乞丐</span>。',choices:[
     {text:'后悔不已',effect:{karma:5,sanity:-8,constitution:-5},log:'你开始反思自己的所作所为。也许这就是因果报应'},
     {text:'不信这些',effect:{sanity:-5},log:'你不信什么因果。只是运气不好罢了——但心底那个声音说：真的只是运气吗？'}]},
+
+  // === 道具影响结局事件 ===
+  // 夜遇邪祟 → 山鬼花钱辟邪
+  {trigger:{minAge:14,maxAge:40},text:'深夜赶路，一团黑雾忽然从路边扑来，阴风阵阵，你感到骨髓发寒——是<span class="danger-text">游荡邪祟</span>！',choices:[
+    {text:'硬着头皮跑',effect:{sanity:-12,constitution:-5},log:'你拼命狂奔，邪祟在身后穷追不舍，你的心神受到了严重冲击。',itemBonus:{item:'shan_gui_hua_qian',effect:{sanity:15,qiyun:5}}},
+    {text:'站住不动装死',effect:{sanity:-8},log:'你蹲在地上一动不动，邪祟围着你转了几圈才散去。你浑身湿透了冷汗。',itemBonus:{item:'shan_gui_hua_qian',effect:{sanity:12}}}]},
+
+  // 遭遇强敌 → 煞气宝剑助战
+  {trigger:{minAge:20,maxAge:50,cultivation:20},text:'一个蒙面的<span class="danger-text">邪修</span>拦住了你的去路，二话不说就朝你攻来。他修为比你高出不少，你处于绝对下风。',choices:[
+    {text:'拼死反击',effect:{cultivation:8,constitution:-10},log:'你与邪修殊死搏斗，虽然挡住了致命一击，但也被打得遍体鳞伤。',combat:40,itemBonus:{item:'sha_qi_bao_jian',effect:{cultivation:12,constitution:8}}},
+    {text:'且战且退',effect:{constitution:-5,comprehension:5},log:'你边打边退，寻找逃跑的机会。对方也没穷追不舍。',itemBonus:{item:'sha_qi_bao_jian',effect:{cultivation:8}}}]},
+
+  // 困在闹鬼废墟 → 八卦镜照妖
+  {trigger:{minAge:18,maxAge:45,cultivation:15},text:'你误入了一座<span class="danger-text">废弃的宅院</span>。门一关就再也打不开了，四面八方传来诡异的笑声，地板上冒出一只只惨白的手。',choices:[
+    {text:'四处寻找出口',effect:{sanity:-10,comprehension:5},log:'你在鬼气森森的宅院中摸索了整整一夜，终于找到了一扇暗门逃了出来。',itemBonus:{item:'ba_gua_jing',effect:{sanity:15,cultivation:10}}},
+    {text:'原地打坐稳住心神',effect:{sanity:-5,cultivation:5},log:'你闭目打坐，任凭鬼魅在你身边嬉闹。天亮后，宅院的门自己开了。',itemBonus:{item:'ba_gua_jing',effect:{sanity:10,comprehension:8}}}]},
+
+  // 有人中毒垂危 → 润血丹救命
+  {trigger:{minAge:16,maxAge:40},text:'路边一个<span class="npc">年轻人</span>中了蛇毒，面色发青，浑身抽搐。他同伴跪在地上哀求你帮忙。',choices:[
+    {text:'用你所知的方法救治',effect:{karma:8,connections:8,constitution:-3},log:'你用尽浑身解数帮他排毒，虽然救回一命，但你自己也累得够呛。',itemBonus:{item:'run_xue_dan',effect:{karma:5,constitution:8,connections:5}}},
+    {text:'帮忙找草药',effect:{karma:5,connections:3},log:'你跑遍附近山头找来解毒草药，勉强稳住了他的伤势。',itemBonus:{item:'run_xue_dan',effect:{constitution:5,karma:3}}}]},
+
+  // 穿越危险地带 → 匿迹符箓隐匿
+  {trigger:{minAge:16,maxAge:45,cultivation:10},text:'前方的路经过一片<span class="danger-text">妖兽</span>出没的密林。你已经看到好几具白骨了，但绕路要多走三天。',choices:[
+    {text:'小心翼翼穿过去',effect:{constitution:-5,sanity:-5,cultivation:5},log:'你屏住呼吸穿过密林，好几次与妖兽擦肩而过。出林时你的腿还在发抖。',itemBonus:{item:'ni_ji_fu',effect:{sanity:10,constitution:8}}},
+    {text:'绕远路走',effect:{constitution:-3},log:'你选择了安全的远路。虽然多走了三天，但至少没有生命危险。'}]},
 ];
 
 // ========== 道具获取事件 ==========
@@ -3030,4 +3056,137 @@ const ITEM_EVENTS = [
   {itemGive:'liu_yao_tong_shu',itemRarity:'legendary',trigger:{minAge:40,maxAge:80,cultivation:85},text:'你在诸葛渊的秘密洞府中发现了一本残破的<span class="itm">老皇历</span>。封面上写着"<span class="mys">六曜通书</span>"四个字，字迹歪歪扭扭，像是小孩写的。但你知道，这本书的真正能力是——<span class="mys">言出法随，写什么就发生什么</span>。',choices:[
     {text:'带走六曜通书',effect:{cultivation:55,comprehension:30,sanity:-20},item:'liu_yao_tong_shu',log:'你翻开第一页，上面只写了一句话："你翻开了这本书。"然后你意识到——这句话是在你翻开书的那一刻自动出现的。这本书记录着一切，也可以改写一切。'},
     {text:'这种力量太恐怖了',effect:{comprehension:15},log:'你把书放了回去。改写现实的力量，那是天道的领域。你不想沾染。'}]},
+];
+
+// ========== 道具相关剧情事件（持有道具触发） ==========
+const ITEM_STORY_EVENTS = [
+  // ===== 普通道具实用场景 (Common) =====
+  // 1. 山鬼花钱自动辟邪
+  {itemReq:'shan_gui_hua_qian',trigger:{minAge:12,maxAge:35},text:'夜深人静，你忽然被一股阴寒的气息惊醒。一个<span class="danger-text">小邪祟</span>正趴在你胸口，吸取你的阳气。就在你惊恐万分时，挂在脖子上的<span class="itm">山鬼花钱</span>忽然发出赤红的光芒，邪祟惨叫一声被弹飞了出去！',choices:[
+    {text:'检查山鬼花钱',effect:{sanity:5,qiyun:3},log:'花钱上的红绳烫得你手指发疼，但邪祟已经消散了。看来这东西确实管用。'},
+    {text:'追出去看看',effect:{cultivation:5,sanity:-3},log:'你追到门外，邪祟已经不见了。但你隐约看到远处还有几个黑影在游荡——这地方不安全。'}]},
+
+  // 2. 润血丹止血救命
+  {itemReq:'run_xue_dan',trigger:{minAge:14,maxAge:40},text:'你被一块从山上滚落的碎石击中，大腿被划开了一道长长的口子，<span class="danger-text">鲜血</span>止不住地往外涌。你头晕目眩，意识在模糊。',choices:[
+    {text:'赶紧用润血丹',effect:{constitution:10,sanity:3},log:'你颤抖着从怀里摸出<span class="itm">润血丹</span>敷在伤口上。丹药化开的瞬间，伤口就像被无形的线缝合了一样，血立刻止住了。'},
+    {text:'撕衣服包扎',effect:{constitution:-5,sanity:-3},log:'你撕下衣角勉强包扎住了伤口，但血还在渗。你得尽快找个地方休息。'}]},
+
+  // 3. 辟谷丹赶路充饥
+  {itemReq:'bi_gu_dan',trigger:{minAge:14,maxAge:40},text:'你已经在荒野中走了三天，带的干粮早就吃完了。你的肚子咕咕直叫，双腿像灌了铅一样沉重。远处隐约能看到一座镇子，但至少还有半天的路程。',choices:[
+    {text:'服用辟谷丹',effect:{constitution:5,cultivation:3},log:'你从怀中取出<span class="itm">辟谷丹</span>服下。一股温暖的气流从丹田散开，饥饿感瞬间消失了。你脚步轻快地朝镇子走去。'},
+    {text:'找野果充饥',effect:{constitution:-3},log:'你在路边找了些野果勉强填饱肚子，但总觉得没什么力气。'}]},
+
+  // 4. 匿迹符箓隐匿行踪
+  {itemReq:'ni_ji_fu',trigger:{minAge:14,maxAge:40},text:'一群<span class="danger-text">山匪</span>正在搜山，你听到他们说要抓一个过路的修士——就是你。树林里到处都是火把的光芒，脚步声越来越近。',choices:[
+    {text:'激活匿迹符箓',effect:{sanity:8,qiyun:5},log:'你将<span class="itm">匿迹符箓</span>贴在额头上，整个人的气息瞬间消散。山匪从你身边走过，却像完全看不到你一样。'},
+    {text:'往山上跑',effect:{constitution:-5,sanity:-5},log:'你拼命往山上跑，树枝刮得你满身是伤。好在你跑得够快，总算甩掉了追兵。'}]},
+
+  // 5. 五脏定身符箓定身救人
+  {itemReq:'wu_zang_fu',trigger:{minAge:16,maxAge:45,cultivation:10},text:'你的同伴忽然<span class="danger-text">双目翻白</span>，浑身抽搐倒在地上。你感应到有一股邪气正在侵入他的身体——他被附身了！同伴的嘴里发出不属于他的声音："让开...这具身体归我了..."',choices:[
+    {text:'用五脏定身符箓',effect:{cultivation:8,connections:10,karma:5},log:'你将<span class="itm">五脏定身符箓</span>拍在同伴的胸口，符箓钻入体内裹住五脏。邪气被封在体内无法运转，同伴的意识慢慢恢复了。他醒来后对你千恩万谢。'},
+    {text:'试着用自己的修为逼出邪气',effect:{cultivation:5,constitution:-8,sanity:-5},log:'你将手掌贴在同伴背上输入真气。邪气被逼退了，但你自己也被反噬，吐了一口血。'}]},
+
+  // ===== 精良道具事件 (Uncommon) =====
+  // 1. 黑漆棺材驱散煞气
+  {itemReq:'hei_qi_guan_cai',trigger:{minAge:18,maxAge:45,cultivation:15},text:'你遇到一个浑身缠满<span class="danger-text">煞气</span>的<span class="npc">年轻人</span>。他痛苦地蜷缩在路边，黑色的雾气从他身上不断涌出。"救...救我..."他虚弱地求助。',choices:[
+    {text:'打开黑漆棺材',effect:{cultivation:10,karma:8,connections:10},log:'你取出<span class="itm">黑漆棺材</span>，对准年轻人打开棺盖。三息之间，煞气如被巨力吸引，全部涌入棺材之中。年轻人长舒一口气瘫倒在地："恩人...恩人！"'},
+    {text:'不敢贸然接触',effect:{karma:-3},log:'煞气太重了，你怕伤及自身。年轻人绝望的眼神让你有些愧疚。'}]},
+
+  // 2. 八卦镜反弹邪术
+  {itemReq:'ba_gua_jing',trigger:{minAge:20,maxAge:50,cultivation:20},text:'深夜独行，一个<span class="danger-text">披头散发的女鬼</span>忽然出现在你面前，张口就向你喷出一道黑色的<span class="danger-text">邪光</span>！',choices:[
+    {text:'举起八卦镜',effect:{cultivation:15,sanity:5,qiyun:5},log:'你下意识举起<span class="itm">八卦镜</span>，镜面射出一道耀眼的白光，将邪光原封不动地反弹回去！女鬼被自己的邪术击中，惨叫着化为一缕黑烟消散了。'},
+    {text:'就地翻滚躲避',effect:{sanity:-10,constitution:-5},log:'你堪堪躲过邪光，但余波还是擦到了你。你感到一阵剧烈的头痛。'}]},
+
+  // 3. 铜钱面罩隐藏身份（心素专用）
+  {itemReq:'tong_qian_mian_zhao',check:'xinsu',trigger:{minAge:18,maxAge:50,cultivation:15},text:'一群<span class="npc">修士</span>忽然包围了你。为首的人指着你说："他身上的气息不对——是<span class="danger-text">心素体质</span>！抓住他，心素的身体可是炼制法器的绝佳材料！"',choices:[
+    {text:'戴上铜钱面罩',effect:{sanity:15,cultivation:5,qiyun:5},log:'你迅速戴上<span class="itm">铜钱面罩</span>。铜钱贴上面部的瞬间，你的气息被完全遮蔽。那群修士面面相觑："奇怪...刚才明明感应到了..."他们搜索了一圈，从你身边走过却毫无察觉。'},
+    {text:'拼死突围',effect:{constitution:-10,sanity:-8,cultivation:8},log:'你奋力打倒两个人杀出一条血路。但你知道——你的心素身份已经暴露了，以后得更加小心。'}]},
+
+  // 4. 包浆核桃破阵
+  {itemReq:'bao_jiang_he_tao',trigger:{minAge:22,maxAge:50,cultivation:25},text:'你误入了一个<span class="danger-text">邪修</span>布下的<span class="danger-text">困杀阵</span>。四周的雾气越来越浓，你感到方向感在消失，体力也在不断流失。再这样下去，你会被活活困死在阵中。',choices:[
+    {text:'祭出包浆核桃',effect:{cultivation:15,sanity:10,comprehension:8},log:'你将<span class="itm">包浆核桃</span>投掷出去。核桃上的禁制符文亮起，两颗核桃在空中旋转碰撞，释放出强烈的禁制之力。困杀阵的节点被逐一击破，雾气散去，你重见天日。'},
+    {text:'静坐感悟阵法破绽',effect:{comprehension:10,sanity:-8,constitution:-5},log:'你盘腿坐下闭目感悟。花了三天三夜，你终于找到了阵法的薄弱点，强行突破了出去。但你已经筋疲力尽。'}]},
+
+  // 5. 尖牙葫芦储存丹药
+  {itemReq:'jian_ya_hu_lu',trigger:{minAge:22,maxAge:50,cultivation:20},text:'你得到了一批珍贵的<span class="itm">阳寿丹</span>，但它们在空气中迅速溶解——五行之气在侵蚀丹药。眼看着丹丸一粒粒化为乌有。',choices:[
+    {text:'赶紧装进尖牙葫芦',effect:{constitution:12,wealth:10,cultivation:5},log:'你连忙将剩余的阳寿丹塞进<span class="itm">尖牙葫芦</span>。葫芦五行不侵的特性完美保存了丹药。以后你再也不用担心丹药消散了。'},
+    {text:'当场全部服下',effect:{constitution:15,sanity:-5},log:'你来不及多想，把所有丹丸一股脑塞进嘴里。药力太猛，你的身体一时承受不住，但至少没浪费。'}]},
+
+  // ===== 稀有道具剧情 (Rare) =====
+  // 1. 道铃召唤游老爷
+  {itemReq:'dao_ling',trigger:{minAge:22,maxAge:55,cultivation:30},text:'你遇到了一个棘手的问题——一座村庄被<span class="danger-text">厉鬼</span>缠上了，每夜都有人死去。你的修为不足以独自对付这只厉鬼。你看着手中的<span class="itm">道铃</span>，犹豫着是否该用它。',choices:[
+    {text:'摇响道铃召唤游老爷',effect:{cultivation:20,karma:10,connections:15,constitution:-8},log:'你口含泥土，摇响道铃。一个幽远的声音在耳边响起——游老爷来了。他只用一指就将厉鬼镇压。但代价是三月阳寿，你感到生命力在流逝。村民们对你感恩戴德。',setFlag:'dao_ling_used'},
+    {text:'靠自己想办法',effect:{cultivation:10,sanity:-10,constitution:-5},log:'你花了七天七夜，用尽一切手段才将厉鬼封印。虽然成功了，但你也差点搭上自己的命。'}]},
+
+  // 2. 紫穗剑引来兵家高手
+  {itemReq:'zi_sui_jian',trigger:{minAge:22,maxAge:50,cultivation:35},text:'一个身穿铁甲的<span class="npc">兵家高手</span>找到了你。他一眼就认出了你手中的<span class="itm">紫穗剑</span>："这把剑...你是从兵器库里拿的？我乃兵家<span class="npc">铁狮子</span>，我要和你决一剑！只有胜者才有资格持此剑。"',choices:[
+    {text:'应战',effect:{cultivation:20,constitution:-8,comprehension:10},log:'你与铁狮子激战三百回合。紫穗剑的煞气在战斗中不断增强，你险胜一招。铁狮子收剑抱拳："好剑法！这剑跟对人了。"从此你在兵家的名声大振。',combat:60},
+    {text:'让出紫穗剑',effect:{karma:5,sanity:5,cultivation:-5},log:'你将紫穗剑双手奉上。铁狮子接过剑，沉默良久，又还给了你："你不贪恋法器，这份心性反而说明你配得上它。好好用。"'}]},
+
+  // 3. 流珠法眼发现秘境
+  {itemReq:'liu_zhu_fa_yan',trigger:{minAge:25,maxAge:55,cultivation:35},text:'你行走在一片看似普通的山谷中。<span class="itm">流珠法眼</span>忽然在你眉心剧烈震动——你看到了<span class="mys">常人看不到的东西</span>：山壁上隐藏着一道门，门后是一个巨大的洞府，灵气浓郁得几乎凝成了雾。',choices:[
+    {text:'进入秘境修炼',effect:{cultivation:30,comprehension:20,sanity:-5},log:'你推开隐形的石门走了进去。洞府中有一座天然的灵池，你在池边打坐三日，修为精进了一大截。这就是流珠法眼的妙用——看透虚妄，发现隐秘。'},
+    {text:'记下位置以后再来',effect:{comprehension:10,qiyun:5},log:'你在山壁上做了个记号。这种秘境不知道还有多少陷阱，贸然进去太危险了。'}]},
+
+  // 4. 七星铜钱剑镇凶宅
+  {itemReq:'qi_xing_tong_qian_jian',trigger:{minAge:20,maxAge:50,cultivation:30},text:'路过一座<span class="danger-text">凶宅</span>，你感应到里面邪气冲天。当地百姓苦不堪言，有人说这宅子里住着一只<span class="danger-text">百年老鬼</span>。你腰间的<span class="itm">七星铜钱剑</span>忽然自己嗡鸣起来，铜钱碰撞发出清脆的声响。',choices:[
+    {text:'持剑入宅除邪',effect:{cultivation:25,karma:12,connections:15,sanity:-8},log:'你拔出七星铜钱剑，一百八十四枚古钱绽放金光。老鬼现形后，你以铜钱剑布下七星阵，将老鬼彻底超度。百姓们奔走相告，你成了远近闻名的除邪人。'},
+    {text:'绕道而行',effect:{},log:'你按住嗡鸣的铜钱剑，选择绕路走。不是所有的事都需要你出手。'}]},
+
+  // ===== 史诗道具独立支线 (Epic) =====
+  // 1. 大千录献祭线 - 第一阶段
+  {itemReq:'da_qian_lu',trigger:{minAge:28,maxAge:60,cultivation:40},text:'深夜，<span class="itm">大千录</span>忽然自己翻开了。书页上的文字像蛇一样扭动，一个低沉的声音从书中传出："<span class="mys">献上一指，我教你第二登阶...</span>"你看到书页上浮现出一种强大的功法——但代价是你的一根手指。',choices:[
+    {text:'咬牙斩下小指献祭',effect:{cultivation:25,constitution:-10,sanity:-8},log:'你一刀斩下左手小指，鲜血滴在大千录上。书页贪婪地吸收了血液，强大的功法直接灌入你的脑海。你的修为暴涨，但失去手指的痛楚让你差点昏过去。',setFlag:'daqianlu_whisper'},
+    {text:'抵抗诱惑合上书',effect:{sanity:-15},log:'你强忍着功法的诱惑，用力合上了大千录。但那个声音还在你脑海中回荡...你开始怀疑自己的决定。',setFlag:'daqianlu_whisper'}]},
+
+  // 大千录献祭线 - 第二阶段
+  {itemReq:'da_qian_lu',flagReq:'daqianlu_whisper',trigger:{minAge:32,maxAge:65,cultivation:50},text:'一个身着火袄的<span class="npc">祆景教长老</span>找到了你。他一眼就认出了你怀中的<span class="itm">大千录</span>："你就是大千录的新持有者？我可以教你第二登阶的完整功法——但你得替祆景教办一件事。"',choices:[
+    {text:'答应他',effect:{cultivation:30,comprehension:15,karma:-10},log:'长老将第二登阶的功法倾囊相授。你的实力突飞猛进，但你也被卷入了祆景教的阴谋之中。',setFlag:'daqianlu_stage2'},
+    {text:'拒绝，自行参悟',effect:{comprehension:20,cultivation:10},log:'你拒绝了长老。大千录上的功法艰深晦涩，但你决定靠自己的悟性去参透它。'}]},
+
+  // 2. 星宿剑引雷
+  {itemReq:'xing_su_jian',trigger:{minAge:32,maxAge:65,cultivation:55},text:'一场<span class="mys">罕见的雷暴</span>席卷大地。你手中的<span class="itm">星宿剑</span>疯狂震动，剑身上的纹路亮起刺目的白光——它在<span class="mys">吸引雷电</span>！闪电一道接一道劈向你，大地在你脚下龟裂。',choices:[
+    {text:'以身引雷，以雷淬体',effect:{cultivation:30,constitution:-15,comprehension:15},log:'你将星宿剑高举过顶，一道巨雷直劈而下！雷电贯穿你的全身，你的经脉被烧灼殆尽又在瞬间重生。剧痛过后，你发现自己的修为突破了一个全新的境界。'},
+    {text:'将剑插入地面导雷',effect:{comprehension:15,cultivation:10},log:'你将星宿剑插入地面，雷电顺着剑身导入大地。你安然无恙，但也错过了以雷淬体的机会。不过看着雷电在剑身上游走，你对雷法有了更深的理解。'}]},
+
+  // 3. 泰阿剑剑灵试炼
+  {itemReq:'tai_a_jian',trigger:{minAge:30,maxAge:60,cultivation:50},text:'你在打坐时，<span class="itm">泰阿剑</span>忽然自行出鞘。一个身穿古甲的<span class="mys">半透明身影</span>从剑身中浮现——是泰阿剑的剑灵。"<span class="mys">持剑者，你的心志配得上这把剑吗？</span>"剑灵举起一把虚幻的长剑指向你："<span class="mys">接我三剑。</span>"',choices:[
+    {text:'迎上去接剑',effect:{cultivation:35,constitution:-10,comprehension:15},log:'剑灵的三剑一剑比一剑凶猛。第一剑你勉强挡住，第二剑你被击退十步，第三剑你被打得吐血——但你没有倒下。剑灵微微点头："<span class="mys">你通过了。</span>"泰阿剑的煞气不再排斥你，你与它彻底融为一体。',combat:80},
+    {text:'单膝跪地表示敬意',effect:{comprehension:20,karma:5},log:'你没有接剑，而是跪在剑灵面前。剑灵沉默良久："你选择了谦逊...也是一种心志。"剑灵消散了，泰阿剑回到你手中，但你总觉得还差一步才能完全驾驭它。'}]},
+
+  // 4. 龙鳞甲感应龙脉
+  {itemReq:'long_lin_jia',trigger:{minAge:28,maxAge:60,cultivation:45},text:'穿着<span class="itm">龙鳞甲</span>赶路时，你忽然感到铠甲在剧烈震动。脚下的大地传来一阵低沉的脉动，像是巨兽的心跳。龙鳞甲的鳞片指引你往地下看——那里有一条<span class="mys">龙脉</span>。',choices:[
+    {text:'沿着龙脉探索',effect:{cultivation:25,constitution:15,qiyun:10},log:'你顺着龙脉的脉动深入地下，在一个巨大的地下溶洞中找到了一处<span class="mys">龙脉交汇点</span>。龙鳞甲与龙脉产生了共鸣，磅礴的龙气涌入你的体内。你在这里打坐七日，修为突飞猛进。'},
+    {text:'记下位置，不深入',effect:{comprehension:10,qiyun:5},log:'你在地面做了标记。龙脉之下可能有危险，还是等准备充分再来。'}]},
+
+  // 5. 判官笔异动
+  {itemReq:'pan_guan_bi',trigger:{minAge:30,maxAge:60,cultivation:50},text:'<span class="itm">判官笔</span>忽然从你的行囊中飞出，笔尖悬在空中自动书写。你凑近一看——它写下的是一个人的名字和生辰八字。你认出来了，这个人是附近一个横行乡里的<span class="danger-text">恶霸</span>。判官笔似乎在催促你——去点他。',choices:[
+    {text:'持笔前去',effect:{cultivation:20,karma:8,connections:10},log:'你找到那个恶霸，以判官笔点在他眉心。恶霸当场昏倒，从此性情大变，不再为恶。乡民们以为是神明显灵，对你感激涕零。'},
+    {text:'收起判官笔',effect:{comprehension:8,sanity:-5},log:'你将判官笔按回行囊。你不想被一支笔牵着鼻子走——即使它可能是对的。但笔尖的星光在行囊中持续闪烁，让你有些不安。'}]},
+
+  // ===== 传说道具独立支线 (Legendary) =====
+  // 1. 六曜通书 - 言出法随
+  {itemReq:'liu_yao_tong_shu',trigger:{minAge:42,maxAge:80,cultivation:80},text:'你无意间翻开<span class="itm">六曜通书</span>，随手在空白页上写了一句"<span class="mys">明日天晴</span>"。第二天——真的放晴了。连续暴雨七天后的突然放晴，不是巧合。你意识到这本书的力量远超你的想象，<span class="danger-text">你写什么，它就会发生</span>。',choices:[
+    {text:'写下"我的修为大增"',effect:{cultivation:35,sanity:-15,karma:-10},log:'笔落纸上的瞬间，你感到一股洪流般的力量涌入体内。你的修为确实大增了——但你也感到了一股说不清的恐惧。这种力量太容易让人上瘾了。',setFlag:'liuyao_awakened'},
+    {text:'合上书，再也不随便写',effect:{sanity:10,comprehension:15},log:'你被这种力量吓到了。言出法随——这是天道的权柄，不是凡人该碰的。你小心翼翼地将六曜通书封存起来。',setFlag:'liuyao_awakened'}]},
+
+  // 六曜通书 - 第二阶段
+  {itemReq:'liu_yao_tong_shu',flagReq:'liuyao_awakened',trigger:{minAge:45,maxAge:85,cultivation:75},text:'一个实力深不可测的<span class="npc">修士</span>找到了你。他的眼神直直盯着你怀中的<span class="itm">六曜通书</span>："那本书...交出来。它不属于你，也不属于任何人。我追踪它已经两百年了。"',choices:[
+    {text:'拒绝，准备战斗',effect:{cultivation:20,constitution:-10,sanity:-10},log:'你紧握六曜通书与他激战。他的实力远在你之上，但每当你濒临危险，六曜通书就自动翻开一页，现实被轻微扭曲，让你化险为夷。最终那修士负伤退去："你会后悔的...那本书会吞噬你。"',combat:100},
+    {text:'与他谈判',effect:{connections:10,comprehension:15,wealth:-20},log:'你提出条件。经过漫长的谈判，你们达成了协议——你可以保留六曜通书，但承诺绝不用它改写他人的命运。他留下了一些修炼心得作为交换。'}]},
+
+  // 2. 心蟠脊骨剑 - 诸葛渊记忆
+  {itemReq:'xin_pan_ji_gu_jian',check:'xinsu',trigger:{minAge:35,maxAge:70,cultivation:70},text:'夜深人静时，<span class="itm">心蟠脊骨剑</span>忽然发出低沉的嗡鸣。你握住剑柄的瞬间，眼前一黑——你看到了<span class="mys">诸葛渊的记忆</span>。你看到他在两界裂隙中孤独地战斗，看到他以自己的脊骨铸成这把剑，看到他最后的眼神中既有决绝也有不舍。',choices:[
+    {text:'深入感受记忆',effect:{cultivation:35,comprehension:25,sanity:-20},log:'你沉浸在诸葛渊的记忆中——阴阳斗姥之术、太虚剑意、两界穿梭的秘法...这些记忆如洪流般冲刷着你的意识。你的心素体质与脊骨剑产生了前所未有的共鸣。当你醒来时，你发现自己领悟了一丝太虚剑意。'},
+    {text:'强行切断连接',effect:{sanity:5,comprehension:10},log:'你挣脱了记忆的漩涡。诸葛渊的记忆太沉重了，你还承受不住。但那些画面已经刻在了你的脑海中——你需要时间慢慢消化。'}]},
+
+  // 3. 心浊画卷 - 画中世界
+  {itemReq:'xin_zhuo_hua_juan',check:'xin_zhuo',trigger:{minAge:30,maxAge:70,cultivation:60},text:'你不小心碰到了<span class="itm">心浊画卷</span>的卷轴，它自动展开了。一股巨大的吸力从画卷中涌出——你的身体在被<span class="danger-text">拉进去</span>！你拼命抓住桌角，但吸力越来越强。你瞥了一眼画卷中的世界——那是一片宁静的山水田园，天空是永恒的黄昏色，远处有几个模糊的人影在走动。那是<span class="mys">诸葛渊创造的世界</span>。',choices:[
+    {text:'放手，进入画中世界',effect:{cultivation:30,comprehension:25,sanity:-20},log:'你松开了手，身体被卷入画中。在画中世界里，时间的流逝变得很慢。你看到了被遗忘的人们在这里生活——他们失去了所有记忆，但看起来很平静。你在画中世界修炼了很久，当你找到出口回到现实时，外面只过了一天。但你的记忆也变得有些模糊了。'},
+    {text:'拼命抵抗吸力',effect:{constitution:-8,sanity:-10,cultivation:10},log:'你拼尽全力抓住桌角，指甲都断了。最终画卷的吸力消退，卷轴重新卷起。你瘫在地上大口喘气——太危险了。但你也因此感悟到了心浊之力的一角。'}]},
+
+  // 4. 心素脊骨剑共鸣
+  {itemReq:'xin_su_ji_gu_jian',check:'xinsu',trigger:{minAge:32,maxAge:65,cultivation:65},text:'你在月圆之夜修炼时，<span class="itm">心素脊骨剑</span>忽然与你的心素体质产生了<span class="mys">完全共鸣</span>。你的意识扩散开来，你发现自己可以"看到"方圆百米内所有物体的内部结构——骨骼、经脉、甚至灵气的流向。',choices:[
+    {text:'尝试用意识扭曲物体',effect:{cultivation:30,comprehension:15,sanity:-15},log:'你将意识集中在一块巨石上，用心素之力扭曲它的内部结构。巨石无声无息地碎裂了。你意识到这就是心素脊骨剑的真正力量——从内部瓦解一切。但过度使用让你的神志有些恍惚。'},
+    {text:'收敛心神，慢慢适应',effect:{comprehension:20,cultivation:15},log:'你不敢贸然使用这种力量，而是慢慢感受共鸣带来的变化。你的感知力大幅提升，对战时能看透对手的弱点。'}]},
 ];

@@ -993,11 +993,11 @@ function nextYear() {
       // Skip if player already has this item
       if(ie.itemGive && gameState.items.find(function(it){return it.id===ie.itemGive;})) return;
       // Rarity-based probability filter
-      var rarityChance = 1.0;
-      if(ie.itemRarity === 'uncommon') rarityChance = 0.6;
-      else if(ie.itemRarity === 'rare') rarityChance = 0.3;
-      else if(ie.itemRarity === 'epic') rarityChance = 0.12;
-      else if(ie.itemRarity === 'legendary') rarityChance = 0.05;
+      var rarityChance = 0.35;
+      if(ie.itemRarity === 'uncommon') rarityChance = 0.12;
+      else if(ie.itemRarity === 'rare') rarityChance = 0.05;
+      else if(ie.itemRarity === 'epic') rarityChance = 0.01;
+      else if(ie.itemRarity === 'legendary') rarityChance = 0.002;
       if(Math.random() > rarityChance) return;
       // Standard trigger checks
       if(ie.check && !gameState.talents.find(function(t){return t.id===ie.check;})) return;
@@ -1013,6 +1013,22 @@ function nextYear() {
         if(ie.trigger.yearMax !== undefined && gameState.year > ie.trigger.yearMax) return;
       }
       eventPool.push(ie);
+    });
+  }
+
+  // Add item story events (持有道具触发的剧情)
+  if(typeof ITEM_STORY_EVENTS !== 'undefined') {
+    ITEM_STORY_EVENTS.forEach(function(ise){
+      // Check item requirement
+      if(ise.itemReq && !gameState.items.find(function(it){return it.id===ise.itemReq;})) return;
+      if(ise.check && !gameState.talents.find(function(t){return t.id===ise.check;})) return;
+      if(ise.flagReq && !gameState.flags[ise.flagReq]) return;
+      if(ise.trigger) {
+        if(ise.trigger.minAge && gameState.age < ise.trigger.minAge) return;
+        if(ise.trigger.maxAge && gameState.age > ise.trigger.maxAge) return;
+        if(ise.trigger.cultivation && gameState.cultivation < ise.trigger.cultivation) return;
+      }
+      eventPool.push(ise);
     });
   }
 
@@ -1433,6 +1449,19 @@ function applyChoice(c) {
   if(c.effect.qiyun) gameState.qiyun = Math.max(-100,Math.min(100,gameState.qiyun+c.effect.qiyun));
   if(c.effect.karma) gameState.karma = Math.max(-100,Math.min(100,gameState.karma+c.effect.karma));
   if(c.effect.constitution) gameState.constitution = Math.max(0,Math.min(100,gameState.constitution+c.effect.constitution));
+
+  // 持有特定道具时获得额外加成
+  if(c.itemBonus) {
+    var bonusItem = gameState.items.find(function(it){return it.id===c.itemBonus.item;});
+    if(bonusItem) {
+      addLog('<span class="itm">'+bonusItem.name+'</span>发挥了作用！');
+      if(c.itemBonus.effect) {
+        for(var bk in c.itemBonus.effect) {
+          if(gameState[bk] !== undefined) gameState[bk] += c.itemBonus.effect[bk];
+        }
+      }
+    }
+  }
 
   // === FACTION JOIN LOGIC (one faction only, betrayal mechanics) ===
   if(c.factionJoin) {
