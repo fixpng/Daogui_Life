@@ -132,49 +132,93 @@ const FACTIONS = {
 };
 
 const ITEMS = [
-  {id:'fu_lu',name:'镇邪符箓',desc:'可抵御邪祟一次',effect:{sanity:15}},
-  {id:'dan_yao',name:'筑基丹',desc:'提升修为',effect:{cultivation:20}},
-  {id:'jing_shu',name:'太清真经',desc:'记载上古功法',effect:{cultivation:30,sanity:-10}},
-  {id:'gui_mian',name:'鬼面',desc:'戴上可融入鬼市',effect:{connections:10,sanity:-5}},
-  {id:'hun_po_shi',name:'魂魄石',desc:'封印魂魄之物',effect:{sanity:20}},
-  {id:'xue_yu',name:'血玉',desc:'以血为引的邪物',effect:{cultivation:15,sanity:-15}},
-  {id:'tian_shu',name:'天书残页',desc:'记载天机的残卷',effect:{cultivation:25}},
-  {id:'hei_tai_sui',name:'黑太岁',desc:'食之可见两界，但代价极大',effect:{cultivation:40,sanity:-40}},
-  {id:'bai_yu_pei',name:'白玉佩',desc:'温润通灵，安神定魄',effect:{sanity:25}},
-  {id:'yin_yang_jing',name:'阴阳镜',desc:'可映照气运业力',effect:{comprehension:15,qiyun:10}},
-  {id:'po_jie_zhu',name:'破戒珠',desc:'佛门叛逆之物，蕴含极端力量',effect:{cultivation:25,qiyun:-20}},
-  {id:'tian_ji_pan',name:'天机盘',desc:'可推演天命走向',effect:{comprehension:20}},
-  {id:'long_hu_dan',name:'龙虎丹',desc:'淬炼体魄的灵丹',effect:{constitution:25,cultivation:10}},
-  {id:'nuo_mian',name:'傩面',desc:'大傩仪式所用面具，戴上后人格会变',effect:{cultivation:30,sanity:-20,qiyun:-15}},
-  {id:'dan_yang_jian',name:'丹阳遗剑',desc:'丹阳子遗物，剑身有裂痕',effect:{cultivation:20,comprehension:10}},
-  // === NEW: 道诡异仙特色法宝 ===
-  {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',effect:{cultivation:40,sanity:-30,qiyun:-10}},
-  {id:'da_qian_lu',name:'大千录',desc:'袄景教传承法器，记载献祭之术',effect:{cultivation:35,sanity:-20,constitution:-15}},
-  {id:'hong_lian_ye_huo',name:'红莲业火',desc:'白莲教至高神通，可烧灼因果',effect:{cultivation:30,karma:15,sanity:-15}},
-  {id:'tian_shu_shi_ban',name:'天书石板',desc:'丹阳子所藏，记载天书内容',effect:{cultivation:50,sanity:-25}},
-  {id:'qi_dao_gu',name:'七道骨',desc:'巴虺信徒遗骨，可召唤巴虺之力',effect:{cultivation:35,sanity:-25,qiyun:-15}},
-  {id:'pan_chi_long_jing',name:'蟠螭龙晶',desc:'龙脉精华，蕴含秩序天道',effect:{cultivation:45,sanity:-10,constitution:10}},
-  {id:'ji_zai_ling',name:'季灾令',desc:'季灾的信物，掌管迷惘',effect:{cultivation:50,sanity:20,qiyun:15}},
-  {id:'xu_kong_zhu',name:'虚空珠',desc:'两界夹缝之物，心素可用',effect:{sanity:40,cultivation:20}},
-  {id:'bai_ling_miao_shen_xiang',name:'白灵淼神像',desc:'无生老母心蟠的雕像',effect:{cultivation:25,sanity:20,karma:10}},
-  {id:'bing_shu_can_ye',name:'兵书残页',desc:'兵家传承，以血修炼',effect:{cultivation:25,constitution:20,karma:-10}},
-  {id:'qi_xing_tong_qian_jian',name:'七星铜钱剑',desc:'罗教至宝，一百八十四枚古钱',effect:{cultivation:30,comprehension:15}},
-  {id:'zhao_gu_zhi_yin',name:'招魂引',desc:'可召唤亡魂，与鬼脉相合',effect:{cultivation:20,sanity:-15,connections:10}},
-  {id:'tian_gou_yan_lei',name:'天狗眼泪',desc:'天狗食日时掉落，可短暂看清天道',effect:{cultivation:25,comprehension:25}},
-  {id:'dan_yang_yan_mu',name:'丹阳子遗物',desc:'包含天书石板和遗剑的传承',effect:{cultivation:60,sanity:-20}},
-  // === 新增门派法宝 ===
-  {id:'gu_chong_ping',name:'蛊虫瓶',desc:'南疆蛊师炼制的蛊虫容器，内藏万蛊之王',effect:{cultivation:25,constitution:10,sanity:-15}},
-  {id:'bing_shu',name:'兵书',desc:'兵家至宝，以血为墨方可修炼',effect:{cultivation:35,constitution:15,karma:-15}},
-  {id:'jin_gang_zhu',name:'金刚珠',desc:'佛门至宝，蕴含金刚不坏之力',effect:{cultivation:20,constitution:15,sanity:10}},
-  {id:'luo_pan',name:'罗盘',desc:'罗教传人的寻龙点穴之器',effect:{comprehension:20,cultivation:15,qiyun:5}},
-  {id:'she_dao',name:'赊刀',desc:'监天司赊刀人的佩刀，可斩邪祟',effect:{cultivation:20,sanity:10,connections:5}},
-  {id:'hua_ping_wa',name:'花瓶娃',desc:'正德寺以女婴炼成的邪物，阴气极重',effect:{cultivation:30,sanity:-30,karma:-25}},
-  {id:'wan_du_fan',name:'万毒幡',desc:'南疆巫王的法器，可释放万种毒虫',effect:{cultivation:30,constitution:-10,sanity:-15}},
-  {id:'tong_ling',name:'铜铃',desc:'李火旺的铜铃，轻摇时能安定心神',effect:{sanity:30,cultivation:10}},
-  {id:'zuo_wang_lun',name:'坐忘论',desc:'坐忘道的核心功法秘籍',effect:{cultivation:30,comprehension:15,sanity:-20}},
-  {id:'ci_bei_zhu',name:'慈悲珠',desc:'无生老母慈悲天道的结晶',effect:{karma:20,sanity:15,cultivation:15}},
-  {id:'po_tong_jing',name:'破铜镜',desc:'河底捞出的古旧铜镜，镜面模糊，触手冰凉',effect:{comprehension:5,sanity:3}},
-  {id:'yu_jian',name:'古玉简',desc:'老乞丐赠予的玉简，刻有模糊的古文',effect:{cultivation:10,comprehension:8}},
+  // ===== 普通 (Common) =====
+  {id:'fu_lu',name:'镇邪符箓',desc:'可抵御邪祟一次',rarity:'common',effect:{sanity:15}},
+  {id:'dan_yao',name:'筑基丹',desc:'提升修为',rarity:'common',effect:{cultivation:20}},
+  {id:'gui_mian',name:'鬼面',desc:'戴上可融入鬼市',rarity:'common',effect:{connections:10,sanity:-5}},
+  {id:'shan_gui_hua_qian',name:'山鬼花钱',desc:'红绳穿铜钱，随身佩戴可辟邪挡小邪祟',rarity:'common',effect:{sanity:5,qiyun:3}},
+  {id:'yang_shou_dan',name:'阳寿丹',desc:'圆鼓带金寿字，服一粒增一年阳寿。触五行即散，修士通用货币',rarity:'common',effect:{constitution:8}},
+  {id:'run_xue_dan',name:'润血丹',desc:'快速止血治外伤的丹药',rarity:'common',effect:{constitution:10}},
+  {id:'bi_gu_dan',name:'辟谷丹',desc:'服用后可代饭数日，适合赶路',rarity:'common',effect:{constitution:5,cultivation:3}},
+  {id:'da_li_wan',name:'大力丸',desc:'增寿加蛮力，短期战力暴增',rarity:'common',effect:{constitution:12,cultivation:5}},
+  {id:'ni_ji_fu',name:'匿迹符箓',desc:'减生气避邪祟，隐匿行踪',rarity:'common',effect:{sanity:8,qiyun:3}},
+  {id:'wu_zang_fu',name:'五脏定身符箓',desc:'钻入体内裹五脏，可施展定身术',rarity:'common',effect:{cultivation:10,constitution:5}},
+
+  // ===== 精良 (Uncommon) =====
+  {id:'hun_po_shi',name:'魂魄石',desc:'封印魂魄之物',rarity:'uncommon',effect:{sanity:20}},
+  {id:'xue_yu',name:'血玉',desc:'以血为引的邪物',rarity:'uncommon',effect:{cultivation:15,sanity:-15}},
+  {id:'bai_yu_pei',name:'白玉佩',desc:'温润通灵，安神定魄',rarity:'uncommon',effect:{sanity:25}},
+  {id:'po_tong_jing',name:'破铜镜',desc:'河底捞出的古旧铜镜，镜面模糊，触手冰凉',rarity:'uncommon',effect:{comprehension:5,sanity:3}},
+  {id:'yu_jian',name:'古玉简',desc:'老乞丐赠予的玉简，刻有模糊的古文',rarity:'uncommon',effect:{cultivation:10,comprehension:8}},
+  {id:'hei_qi_guan_cai',name:'黑漆棺材',desc:'小臂大小，开盖三息可驱散目标身上煞气',rarity:'uncommon',effect:{sanity:15,cultivation:8}},
+  {id:'ba_gua_jing',name:'八卦镜',desc:'陈瞎子所用，射光如剑可破邪照邪祟',rarity:'uncommon',effect:{cultivation:15,comprehension:10}},
+  {id:'sha_qi_bao_jian',name:'煞气宝剑',desc:'削铁如泥，自带煞气可破邪祟伤魂',rarity:'uncommon',effect:{cultivation:18,constitution:5}},
+  {id:'hei_yu_bi_shou',name:'黑玉匕首',desc:'锋利异常，可破开乩童肉身',rarity:'uncommon',effect:{cultivation:12,constitution:8}},
+  {id:'gu_shou_chuan',name:'蛊手串',desc:'拓跋丹青所制，内含蛊虫可防御反制敌人',rarity:'uncommon',effect:{constitution:12,cultivation:8,sanity:-5}},
+  {id:'chang_ming_suo',name:'长命锁',desc:'拓跋丹青所制防御法器，保平安',rarity:'uncommon',effect:{constitution:10,sanity:5}},
+  {id:'jian_ya_hu_lu',name:'尖牙葫芦',desc:'李志所用，专门储存阳寿丹防五行消散',rarity:'uncommon',effect:{constitution:8,wealth:10}},
+  {id:'tong_qian_mian_zhao',name:'铜钱面罩',desc:'道光通宝铜钱串成，隐藏心素气息与身份，降低存在感',rarity:'uncommon',effect:{sanity:15,cultivation:5}},
+  {id:'bao_jiang_he_tao',name:'包浆核桃',desc:'拓跋丹青的禁制法器，可困敌封邪祟',rarity:'uncommon',effect:{cultivation:15,sanity:10}},
+
+  // ===== 稀有 (Rare) =====
+  {id:'jing_shu',name:'太清真经',desc:'记载上古功法',rarity:'rare',effect:{cultivation:30,sanity:-10}},
+  {id:'tian_shu',name:'天书残页',desc:'记载天机的残卷',rarity:'rare',effect:{cultivation:25}},
+  {id:'yin_yang_jing',name:'阴阳镜',desc:'可映照气运业力',rarity:'rare',effect:{comprehension:15,qiyun:10}},
+  {id:'po_jie_zhu',name:'破戒珠',desc:'佛门叛逆之物，蕴含极端力量',rarity:'rare',effect:{cultivation:25,qiyun:-20}},
+  {id:'tian_ji_pan',name:'天机盘',desc:'可推演天命走向',rarity:'rare',effect:{comprehension:20}},
+  {id:'long_hu_dan',name:'龙虎丹',desc:'淬炼体魄的灵丹',rarity:'rare',effect:{constitution:25,cultivation:10}},
+  {id:'nuo_mian',name:'傩面',desc:'大傩仪式所用面具，戴上后人格会变',rarity:'rare',effect:{cultivation:30,sanity:-20,qiyun:-15}},
+  {id:'dan_yang_jian',name:'丹阳遗剑',desc:'丹阳子遗物，剑身有裂痕',rarity:'rare',effect:{cultivation:20,comprehension:10}},
+  {id:'qi_xing_tong_qian_jian',name:'七星铜钱剑',desc:'罗教至宝，一百八十四枚古钱',rarity:'rare',effect:{cultivation:30,comprehension:15}},
+  {id:'zhao_gu_zhi_yin',name:'招魂引',desc:'可召唤亡魂，与鬼脉相合',rarity:'rare',effect:{cultivation:20,sanity:-15,connections:10}},
+  {id:'tian_gou_yan_lei',name:'天狗眼泪',desc:'天狗食日时掉落，可短暂看清天道',rarity:'rare',effect:{cultivation:25,comprehension:25}},
+  {id:'she_dao',name:'赊刀',desc:'监天司赊刀人的佩刀，可斩邪祟',rarity:'rare',effect:{cultivation:20,sanity:10,connections:5}},
+  {id:'luo_pan',name:'罗盘',desc:'罗教传人的寻龙点穴之器',rarity:'rare',effect:{comprehension:20,cultivation:15,qiyun:5}},
+  {id:'jin_gang_zhu',name:'金刚珠',desc:'佛门至宝，蕴含金刚不坏之力',rarity:'rare',effect:{cultivation:20,constitution:15,sanity:10}},
+  {id:'gu_chong_ping',name:'蛊虫瓶',desc:'南疆蛊师炼制的蛊虫容器，内藏万蛊之王',rarity:'rare',effect:{cultivation:25,constitution:10,sanity:-15}},
+  {id:'zuo_wang_lun',name:'坐忘论',desc:'坐忘道的核心功法秘籍',rarity:'rare',effect:{cultivation:30,comprehension:15,sanity:-20}},
+  {id:'ci_bei_zhu',name:'慈悲珠',desc:'无生老母慈悲天道的结晶',rarity:'rare',effect:{karma:20,sanity:15,cultivation:15}},
+  {id:'tong_ling',name:'铜铃',desc:'李火旺的铜铃，轻摇时能安定心神',rarity:'rare',effect:{sanity:30,cultivation:10}},
+  {id:'dao_ling',name:'道铃',desc:'摇晃发声致头晕，可召唤游老爷。沟通需口含泥土，指使一次耗三月阳寿',rarity:'rare',effect:{cultivation:20,sanity:-10,connections:8}},
+  {id:'zi_sui_jian',name:'紫穗剑',desc:'兵家法器，黑柄紫绫煞气极重，杀意外放可冲击心神',rarity:'rare',effect:{cultivation:25,constitution:10,sanity:-10}},
+  {id:'ren_she_ru_yi',name:'人舌如意',desc:'冯二牛赠，心素舌头炼制。挥动可让目标陷入迷惘',rarity:'rare',effect:{cultivation:20,comprehension:12,sanity:-8}},
+  {id:'liu_zhu_fa_yan',name:'流珠法眼',desc:'拳头大法器，埋入印堂可增强视觉、破邪震祟',rarity:'rare',effect:{comprehension:20,cultivation:15,sanity:-10}},
+  {id:'xuan_guang_jing',name:'旋光镜',desc:'玄牝所赠，可实时掌握全局战局与攻势布局',rarity:'rare',effect:{comprehension:18,connections:10,cultivation:10}},
+  {id:'she_li_zi',name:'舍利子',desc:'无根水服下可得心眼通，眼瞎心不瞎感知四周',rarity:'rare',effect:{comprehension:25,sanity:15,cultivation:10}},
+  {id:'wu_gou_yu_pai',name:'无垢阳寿玉牌',desc:'获取无垢阳寿，不沾因果的纯净续命之物',rarity:'rare',effect:{constitution:15,karma:10,qiyun:8}},
+  {id:'pian_jing',name:'骗经',desc:'罗教骗术幻术功法，混淆视听',rarity:'rare',effect:{cultivation:20,comprehension:15,karma:-5}},
+  {id:'jin_qiao_miao_jing',name:'金桥妙经',desc:'感悟可生死人肉白骨，需长期诵读',rarity:'rare',effect:{cultivation:25,comprehension:20,karma:10}},
+  {id:'huo_ao_zhen_jing',name:'火袄箴经',desc:'祆景教经文，蜡油烧伤口以轻伤代重伤，施法需怜悯',rarity:'rare',effect:{cultivation:20,constitution:10,karma:-8}},
+
+  // ===== 史诗 (Epic) =====
+  {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',rarity:'epic',effect:{cultivation:40,sanity:-30,qiyun:-10}},
+  {id:'da_qian_lu',name:'大千录',desc:'袄景教传承法器，记载献祭之术',rarity:'epic',effect:{cultivation:35,sanity:-20,constitution:-15}},
+  {id:'hong_lian_ye_huo',name:'红莲业火',desc:'白莲教至高神通，可烧灼因果',rarity:'epic',effect:{cultivation:30,karma:15,sanity:-15}},
+  {id:'tian_shu_shi_ban',name:'天书石板',desc:'丹阳子所藏，记载天书内容',rarity:'epic',effect:{cultivation:50,sanity:-25}},
+  {id:'qi_dao_gu',name:'七道骨',desc:'巴虺信徒遗骨，可召唤巴虺之力',rarity:'epic',effect:{cultivation:35,sanity:-25,qiyun:-15}},
+  {id:'bing_shu_can_ye',name:'兵书残页',desc:'兵家传承，以血修炼',rarity:'epic',effect:{cultivation:25,constitution:20,karma:-10}},
+  {id:'bing_shu',name:'兵书',desc:'兵家至宝，以血为墨方可修炼',rarity:'epic',effect:{cultivation:35,constitution:15,karma:-15}},
+  {id:'hua_ping_wa',name:'花瓶娃',desc:'正德寺以女婴炼成的邪物，阴气极重',rarity:'epic',effect:{cultivation:30,sanity:-30,karma:-25}},
+  {id:'wan_du_fan',name:'万毒幡',desc:'南疆巫王的法器，可释放万种毒虫',rarity:'epic',effect:{cultivation:30,constitution:-10,sanity:-15}},
+  {id:'xing_su_jian',name:'星宿剑',desc:'大梁国师皇甫天罡之剑，可引雷电大范围攻击',rarity:'epic',effect:{cultivation:40,comprehension:15,sanity:-10}},
+  {id:'long_lin_jia',name:'龙鳞甲',desc:'龙鳞卫专属铠甲，蕴含龙脉气运，免疫先天一炁',rarity:'epic',effect:{constitution:25,cultivation:20,qiyun:10}},
+  {id:'tai_a_jian',name:'泰阿剑',desc:'上古名剑，煞气极重，斩妖除魔破大邪',rarity:'epic',effect:{cultivation:45,constitution:10,sanity:-15}},
+  {id:'ren_pi_fa_qi',name:'人皮法器',desc:'以自身人皮炼制，挡灾转运，濒死可换命复活一次',rarity:'epic',effect:{constitution:20,qiyun:15,sanity:-20}},
+  {id:'pan_guan_bi',name:'判官笔',desc:'诸葛渊所用魁星笔，一点即令目标失去知觉',rarity:'epic',effect:{cultivation:35,comprehension:20}},
+  {id:'yin_jian',name:'银锏',desc:'武财神法器，碎银汇聚巨力砸击可破甲',rarity:'epic',effect:{cultivation:30,wealth:20,constitution:10}},
+
+  // ===== 传说 (Legendary) =====
+  {id:'hei_tai_sui',name:'黑太岁',desc:'食之可见两界，但代价极大',rarity:'legendary',effect:{cultivation:40,sanity:-40}},
+  {id:'pan_chi_long_jing',name:'蟠螭龙晶',desc:'龙脉精华，蕴含秩序天道',rarity:'legendary',effect:{cultivation:45,sanity:-10,constitution:10}},
+  {id:'ji_zai_ling',name:'季灾令',desc:'季灾的信物，掌管迷惘',rarity:'legendary',effect:{cultivation:50,sanity:20,qiyun:15}},
+  {id:'xu_kong_zhu',name:'虚空珠',desc:'两界夹缝之物，心素可用',rarity:'legendary',effect:{sanity:40,cultivation:20}},
+  {id:'bai_ling_miao_shen_xiang',name:'白灵淼神像',desc:'无生老母心蟠的雕像',rarity:'legendary',effect:{cultivation:25,sanity:20,karma:10}},
+  {id:'dan_yang_yan_mu',name:'丹阳子遗物',desc:'包含天书石板和遗剑的传承',rarity:'legendary',effect:{cultivation:60,sanity:-20}},
+  {id:'xin_pan_ji_gu_jian',name:'心蟠脊骨剑',desc:'诸葛渊脊骨炼成的太虚剑，可开两界裂隙穿梭、召唤斗姥元君',rarity:'legendary',effect:{cultivation:60,comprehension:25,sanity:-30}},
+  {id:'xin_su_ji_gu_jian',name:'心素脊骨剑',desc:'心素脊骨炼成，扭曲物体形态，强化近战控制',rarity:'legendary',effect:{cultivation:50,constitution:15,sanity:-25}},
+  {id:'liu_yao_tong_shu',name:'六曜通书',desc:'诸葛渊的老皇历，言出法随写啥发生啥，可禁一切',rarity:'legendary',effect:{cultivation:55,comprehension:30,sanity:-20}},
+  {id:'xin_zhuo_hua_juan',name:'心浊画卷',desc:'诸葛渊法器，使人忘却记忆并收入画卷中的世界',rarity:'legendary',effect:{cultivation:50,sanity:-25,comprehension:20}},
+  {id:'hei_fang_chui',name:'黑色心浊纺锤',desc:'诸葛渊所赠，蜡黄老骨缠黑丝，强力掩盖心素体质',rarity:'legendary',effect:{sanity:30,cultivation:20,qiyun:10}},
 ];
 
 const ACHIEVEMENTS = [
@@ -2852,4 +2896,138 @@ const LINKED_EVENTS = [
   {trigger:{minAge:30},flagReq:'kicked_beggar',text:'你连续遭遇了诸多不幸——先是生意赔了，然后朋友背叛你，最后你在路上无缘无故摔断了腿。躺在床上时，你突然想起了那个被你踢过的<span class="npc">老乞丐</span>。',choices:[
     {text:'后悔不已',effect:{karma:5,sanity:-8,constitution:-5},log:'你开始反思自己的所作所为。也许这就是因果报应'},
     {text:'不信这些',effect:{sanity:-5},log:'你不信什么因果。只是运气不好罢了——但心底那个声音说：真的只是运气吗？'}]},
+];
+
+// ========== 道具获取事件 ==========
+const ITEM_EVENTS = [
+  // ===== 普通道具获取 (Common) =====
+  {itemGive:'shan_gui_hua_qian',itemRarity:'common',trigger:{minAge:8,maxAge:20},text:'你路过一个热闹的集市，一个<span class="npc">老妇人</span>在路边摆摊卖各种杂货。红绳穿铜钱的<span class="itm">山鬼花钱</span>在阳光下泛着铜光。',choices:[
+    {text:'花几文钱买一个',effect:{wealth:-2,sanity:5,qiyun:3},item:'shan_gui_hua_qian',log:'老妇人笑眯眯地把山鬼花钱递给你："小娃娃，戴着它能辟邪呢。"'},
+    {text:'看看就走',effect:{},log:'你看了几眼，还是没舍得花钱。'}]},
+
+  {itemGive:'yang_shou_dan',itemRarity:'common',trigger:{minAge:12,maxAge:30},text:'一个走街串巷的<span class="npc">游方道士</span>在路边吆喝："阳寿丹！正宗阳寿丹！服一粒增一年阳寿！"他面前摆着几个圆鼓鼓的金字丹丸。',choices:[
+    {text:'买一粒试试',effect:{wealth:-5,constitution:8},item:'yang_shou_dan',log:'你把丹丸吞下，一股暖流涌遍全身。果然是修士间的通用货币。'},
+    {text:'这种江湖骗子不理',effect:{},log:'你摇摇头走开了。谁知道是不是假的。'}]},
+
+  {itemGive:'run_xue_dan',itemRarity:'common',trigger:{minAge:10,maxAge:25},text:'你在山路上发现一个倒在地上的<span class="npc">受伤行脚商</span>，他身边散落着几个药包。他虚弱地说："求你...帮我包扎一下..."',choices:[
+    {text:'帮他包扎',effect:{karma:5,constitution:10},item:'run_xue_dan',log:'你帮他止了血。他感激不尽，从药包里取出一瓶润血丹送给你："这是止血的好东西，你留着用。"'},
+    {text:'搜他身上的财物',effect:{karma:-10,wealth:8},log:'你趁他虚弱搜了他的钱袋。他绝望地看着你，眼神里满是悲凉。'},
+    {text:'不管他',effect:{},log:'你匆匆走过。荒山野岭的，谁知道是不是陷阱。'}]},
+
+  {itemGive:'bi_gu_dan',itemRarity:'common',trigger:{minAge:14,maxAge:35,cultivation:10},text:'你在一座破庙里歇脚，遇到一个<span class="npc">云游僧人</span>。他见你风尘仆仆，从行囊里取出一个小瓷瓶。',choices:[
+    {text:'接受他的好意',effect:{cultivation:3,constitution:5},item:'bi_gu_dan',log:'"这是辟谷丹，服用后可代饭数日，赶路用得上。"僧人双手合十，转身离去。'},
+    {text:'婉言谢绝',effect:{karma:2},log:'你谢过他的好意。僧人微微一笑，自行离去。'}]},
+
+  {itemGive:'da_li_wan',itemRarity:'common',trigger:{minAge:15,maxAge:30,cultivation:15},text:'集镇上一个<span class="npc">卖药的壮汉</span>正在表演徒手碎石，围观者啧啧称奇。他得意地举起一个药瓶："大力丸！吃了力大无穷！"',choices:[
+    {text:'买一盒',effect:{wealth:-8,constitution:12,cultivation:5},item:'da_li_wan',log:'你吃下一丸，果然浑身气力大增，筋骨都在嘎嘎作响。'},
+    {text:'看热闹就好',effect:{},log:'你看了会儿表演就走了。'}]},
+
+  {itemGive:'ni_ji_fu',itemRarity:'common',trigger:{minAge:12,maxAge:28,cultivation:5},text:'你在道观外的地摊上，发现一叠画着奇怪符文的黄纸。摊主是个<span class="npc">落魄的符箓师</span>，眼窝深陷，一看就是精力透支过度。',choices:[
+    {text:'买一张匿迹符箓',effect:{wealth:-3,sanity:8,qiyun:3},item:'ni_ji_fu',log:'符箓师教你贴身佩戴："遇到不干净的东西，这符能让你隐匿行踪。"'},
+    {text:'买一张镇邪符箓',effect:{wealth:-3,sanity:15},item:'fu_lu',log:'你选了张镇邪符箓。符箓师叮嘱你紧急时才用。'},
+    {text:'不买',effect:{},log:'你觉得这些东西不太靠谱。'}]},
+
+  // ===== 精良道具获取 (Uncommon) =====
+  {itemGive:'hei_qi_guan_cai',itemRarity:'uncommon',trigger:{minAge:16,maxAge:35,cultivation:20},text:'你帮一个<span class="npc">棺材铺老板</span>驱走了一只骚扰他铺子的恶鬼。老板感激涕零，从柜台下面取出一个小臂大小的<span class="itm">黑漆棺材</span>。',choices:[
+    {text:'收下黑漆棺材',effect:{sanity:15,cultivation:8},item:'hei_qi_guan_cai',log:'"这是祖传的宝贝，开盖三息可驱散煞气。你帮了我大忙，这个给你正合适。"'},
+    {text:'只收银两酬谢',effect:{wealth:15},log:'你收了银两便离去。棺材铺的东西，你不太想碰。'}]},
+
+  {itemGive:'ba_gua_jing',itemRarity:'uncommon',trigger:{minAge:18,maxAge:40,cultivation:25},text:'你在一处古战场遗迹中探索，在一具白骨旁发现了一面铜镜。镜面虽然蒙尘，但一擦拭就射出耀眼的光芒。旁边还有一封遗书，写着"<span class="mys">陈瞎子绝笔</span>"。',choices:[
+    {text:'收起八卦镜',effect:{cultivation:15,comprehension:10},item:'ba_gua_jing',log:'你小心地收起八卦镜。这面镜子射出的光如利剑一般，对邪祟有极强的克制力。'},
+    {text:'原地安葬白骨，不取遗物',effect:{karma:8},log:'你为白骨堆了个土坟，将遗物一起埋了。做人要有底线。'}]},
+
+  {itemGive:'sha_qi_bao_jian',itemRarity:'uncommon',trigger:{minAge:18,maxAge:35,cultivation:30},text:'你击败了一个为祸乡里的<span class="npc">邪修</span>。他倒地后，手中的宝剑发出嗡鸣，剑身上煞气翻涌。',choices:[
+    {text:'收取煞气宝剑',effect:{cultivation:18,constitution:5},item:'sha_qi_bao_jian',log:'你握住剑柄，一股寒意直透指尖。这把剑削铁如泥，自带煞气，是对付邪祟的利器。'},
+    {text:'将剑就地封印',effect:{karma:5,sanity:5},log:'你用符箓将宝剑封印在地下。这种邪物，还是不碰为妙。'}]},
+
+  {itemGive:'gu_shou_chuan',itemRarity:'uncommon',trigger:{minAge:16,maxAge:40,cultivation:20},factionReq:'nanjiang',text:'<span class="npc">拓跋丹青</span>见你修行刻苦，从自己手腕上取下一串手串递给你。手串上的珠子微微蠕动，仔细看竟是一只只蛊虫盘踞其上。',choices:[
+    {text:'戴上蛊手串',effect:{constitution:12,cultivation:8,sanity:-5},item:'gu_shou_chuan',log:'"内含蛊虫，可防御反制敌人。不过戴久了心神会受影响，小心。"拓跋丹青叮嘱道。'},
+    {text:'婉拒',effect:{connections:3},log:'你谢过师兄的好意，但蛊虫实在让你有些发怵。'}]},
+
+  {itemGive:'chang_ming_suo',itemRarity:'uncommon',trigger:{minAge:14,maxAge:30,cultivation:15},text:'路过一个即将被洪水冲垮的村庄，你拼尽全力救出了一个<span class="npc">被困的婴儿</span>。婴儿的祖母泣不成声，将一把银锁塞到你手里。',choices:[
+    {text:'收下长命锁',effect:{constitution:10,sanity:5,karma:8},item:'chang_ming_suo',log:'"这是我们家祖传的长命锁，保平安的！恩人你一定要收下！"老人家跪在泥水里不肯起来。'},
+    {text:'推辞不受',effect:{karma:10},log:'你把锁还给老人家："留给孩子吧，我不需要。"'}]},
+
+  {itemGive:'jian_ya_hu_lu',itemRarity:'uncommon',trigger:{minAge:20,maxAge:40,cultivation:25},text:'你在鬼市的角落发现一个<span class="npc">卖杂货的老鬼</span>，他手里摇着一个尖牙状的小葫芦。"嘿嘿，这葫芦可是好东西，专门储存阳寿丹，五行不侵。"',choices:[
+    {text:'用灵石交换',effect:{wealth:-15,constitution:8},item:'jian_ya_hu_lu',log:'老鬼把葫芦扔给你："李志以前用的，后来不知怎的流到了鬼市。你小子运气不错。"'},
+    {text:'不和鬼做生意',effect:{},log:'你转身就走。和鬼打交道，总觉得不安心。'}]},
+
+  {itemGive:'tong_qian_mian_zhao',itemRarity:'uncommon',trigger:{minAge:16,maxAge:35,cultivation:20},text:'一个<span class="npc">神秘的赊刀人</span>拦住了你的去路。他什么也不说，只是递过来一张铜钱串成的面罩。"戴上它，没人能认出你。"',choices:[
+    {text:'戴上铜钱面罩',effect:{sanity:15,cultivation:5},item:'tong_qian_mian_zhao',log:'道光通宝的铜钱贴在脸上冰冰凉凉的。你发现周围人的目光直接滑过你，好像你不存在一样。'},
+    {text:'拒绝陌生人的东西',effect:{},log:'你警惕地后退几步。赊刀人也不强求，转身消失在人群中。'}]},
+
+  {itemGive:'bao_jiang_he_tao',itemRarity:'uncommon',trigger:{minAge:20,maxAge:45,cultivation:30},factionReq:'nanjiang',text:'<span class="npc">拓跋丹青</span>把你叫到密室，从怀中取出一对包浆核桃。核桃表面油光锃亮，但细看之下，上面刻满了细如蚁足的禁制符文。',choices:[
+    {text:'接过包浆核桃',effect:{cultivation:15,sanity:10},item:'bao_jiang_he_tao',log:'"这对核桃是禁制法器，可困敌封邪祟。关键时刻能救你一命。"拓跋丹青语重心长。'},
+    {text:'问他为什么给自己',effect:{connections:5},log:'拓跋丹青叹了口气："因为我怕你以后会遇到我都帮不了的事。"'}]},
+
+  // ===== 稀有道具获取 (Rare) =====
+  {itemGive:'dao_ling',itemRarity:'rare',trigger:{minAge:18,maxAge:40,cultivation:30},factionReq:'daomen',text:'道门的<span class="npc">长老</span>将你带到祖师堂后的密室。桌上放着一枚古朴的铃铛，长老面色凝重："这是<span class="itm">道铃</span>，可召唤游老爷。但代价极大——沟通需口含泥土，指使一次耗三月阳寿。"',choices:[
+    {text:'郑重接过道铃',effect:{cultivation:20,sanity:-10,connections:8},item:'dao_ling',log:'铃铛入手的瞬间，你听到了一声幽远的叹息。仿佛有什么东西，在很远很远的地方，回应了你。'},
+    {text:'这代价太大了',effect:{sanity:5},log:'你摇了摇头。三月阳寿换一次指使，这买卖太亏了。'}]},
+
+  {itemGive:'pian_jing',itemRarity:'rare',trigger:{minAge:20,maxAge:45,cultivation:35},factionReq:'luojiao',text:'罗教的<span class="npc">教主</span>在深夜将你唤入密室，案上放着一本泛黄的经书。"这是<span class="itm">骗经</span>，罗教骗术幻术的根基。学了它，你能混淆天地视听。但因果也会缠上你。"',choices:[
+    {text:'翻开骗经',effect:{cultivation:20,comprehension:15,karma:-5},item:'pian_jing',log:'经文入目的刹那，你觉得世界变得不真实了。真假之间的界限模糊了，这既是力量，也是诅咒。'},
+    {text:'合上经书',effect:{karma:3},log:'你把经书推了回去。欺天之术，终究不是正道。'}]},
+
+  {itemGive:'zi_sui_jian',itemRarity:'rare',trigger:{minAge:20,maxAge:45,cultivation:35},factionReq:'bingjia',text:'兵家的<span class="npc">教官</span>把你带到兵器库最深处。一把黑柄紫绫的长剑悬挂在墙上，剑身散发着浓烈的煞气，你还没靠近就感觉到了压迫性的杀意。',choices:[
+    {text:'拔出紫穗剑',effect:{cultivation:25,constitution:10,sanity:-10},item:'zi_sui_jian',log:'剑离鞘的瞬间，你的心神被一股暴戾的杀意冲击。教官沉声道："控制住它，别让它控制你。"'},
+    {text:'这煞气太重了',effect:{sanity:3},log:'你后退一步。这把剑的杀意太重，你还没准备好。'}]},
+
+  {itemGive:'jin_qiao_miao_jing',itemRarity:'rare',trigger:{minAge:22,maxAge:50,cultivation:40},text:'你在一座荒废的古寺中发现了一间密室。密室中央的莲花台上放着一卷金光闪闪的经文——<span class="itm">金桥妙经</span>。传说感悟此经可以<span class="mys">生死人、肉白骨</span>。',choices:[
+    {text:'取走金桥妙经',effect:{cultivation:25,comprehension:20,karma:10},item:'jin_qiao_miao_jing',log:'你翻开经文，每一个字都仿佛活了过来。这需要长期诵读才能领悟，但仅仅是开篇，就让你的修为有了精进。'},
+    {text:'在此处诵读但不带走',effect:{comprehension:10,karma:5},log:'你在莲花台前打坐诵读，虽未带走经文，但已有所悟。'}]},
+
+  {itemGive:'she_li_zi',itemRarity:'rare',trigger:{minAge:20,maxAge:45,cultivation:35},text:'一场暴雨冲垮了山体，露出了一座古老的<span class="mys">地下佛窟</span>。你进入其中，在最深处的佛像腹中发现了一颗晶莹剔透的舍利子。',choices:[
+    {text:'将舍利子以无根水服下',effect:{comprehension:25,sanity:15,cultivation:10},item:'she_li_zi',log:'舍利子入腹的瞬间，你的眼前一黑——然后，你发现自己虽然什么都看不见，却能清晰地感知到周围一切。这就是心眼通。'},
+    {text:'供奉在佛像前',effect:{karma:10,sanity:5},log:'你把舍利子放回佛像前，恭敬地磕了三个头。有些东西，不该随便拿。'}]},
+
+  {itemGive:'huo_ao_zhen_jing',itemRarity:'rare',trigger:{minAge:18,maxAge:40,cultivation:30},factionReq:'aojing',text:'袄景教的<span class="npc">祆正</span>将你带到圣火殿。殿中央的圣火熊熊燃烧，火中隐约可见一卷经文。"这是<span class="itm">火袄箴经</span>。蜡油烧伤口以轻伤代重伤，但施法需有怜悯之心。"',choices:[
+    {text:'伸手入火取经',effect:{cultivation:20,constitution:10,karma:-8},item:'huo_ao_zhen_jing',log:'火焰灼痛了你的手，但经文完好无损。翻开第一页，上面写着："以痛止痛，以伤疗伤。"'},
+    {text:'还不是时候',effect:{},log:'你望着圣火，觉得自己的修为还不够。'}]},
+
+  {itemGive:'wu_gou_yu_pai',itemRarity:'rare',trigger:{minAge:25,maxAge:50,cultivation:40},text:'你在一处灵气充沛的山谷中打坐，忽然感应到地下有异物。挖开泥土，一块温润的<span class="itm">玉牌</span>出现在眼前，上面刻着"无垢"二字，散发着纯净的光芒。',choices:[
+    {text:'将玉牌收入怀中',effect:{constitution:15,karma:10,qiyun:8},item:'wu_gou_yu_pai',log:'这是无垢阳寿玉牌，不沾因果的纯净续命之物。你感觉自己的寿元仿佛延长了一些。'},
+    {text:'原封不动埋回去',effect:{karma:5},log:'你把玉牌埋了回去。无功不受禄。'}]},
+
+  {itemGive:'xuan_guang_jing',itemRarity:'rare',trigger:{minAge:20,maxAge:45,cultivation:35},text:'<span class="npc">玄牝</span>在你完成一次危险的任务后，从袖中取出一面小巧的圆镜。"这是<span class="itm">旋光镜</span>，能让你掌握全局战局。以后遇到大阵仗，用得上。"',choices:[
+    {text:'收下旋光镜',effect:{comprehension:18,connections:10,cultivation:10},item:'xuan_guang_jing',log:'镜面转动时，你看到了周围方圆数里的一切。山川地形、人员布局，尽在掌握之中。'},
+    {text:'这太贵重了',effect:{connections:5},log:'你推辞再三。玄牝笑了笑："那就当我借你的。"'}]},
+
+  {itemGive:'ren_she_ru_yi',itemRarity:'rare',trigger:{minAge:22,maxAge:45,cultivation:30},text:'<span class="npc">冯二牛</span>找到你，神色有些古怪。他从包袱里取出一柄如意，通体暗红，表面凹凸不平。"这是<span class="itm">人舌如意</span>...用心素舌头炼制的。你别嫌恶心，挥动一下就能让目标陷入迷惘。"',choices:[
+    {text:'接过人舌如意',effect:{cultivation:20,comprehension:12,sanity:-8},item:'ren_she_ru_yi',log:'如意入手的瞬间，你隐约听到了无数人的窃窃私语。这东西虽然邪门，但确实强力。'},
+    {text:'这东西太邪了',effect:{sanity:3},log:'你看着那通体暗红的如意，实在下不了手。冯二牛也没勉强。'}]},
+
+  // ===== 史诗道具获取 (Epic) =====
+  {itemGive:'xing_su_jian',itemRarity:'epic',trigger:{minAge:30,maxAge:60,cultivation:60},text:'你在一座雷击不断的<span class="mys">山巅</span>上发现了一把插在巨石中的长剑。每一道雷电劈下，剑身都会发出耀眼的光芒。剑柄上刻着"<span class="itm">星宿</span>"二字——这是大梁国师<span class="npc">皇甫天罡</span>之剑。',choices:[
+    {text:'拔出星宿剑',effect:{cultivation:40,comprehension:15,sanity:-10},item:'xing_su_jian',log:'你双手握住剑柄，用尽全力拔出。剑出石的瞬间，天空炸响一道惊雷，你的身体被电流贯穿——但你没有倒下。星宿剑认主了。'},
+    {text:'这剑太危险了',effect:{comprehension:5},log:'你在远处观望了许久，最终还是没敢上前。引雷之剑，非常人能驾驭。'}]},
+
+  {itemGive:'long_lin_jia',itemRarity:'epic',trigger:{minAge:25,maxAge:55,cultivation:50},text:'你在龙脉之地的地下宫殿中，发现了一副完整的铠甲。铠甲鳞片泛着幽蓝色的光泽，每一片都刻满了细密的纹路——这是<span class="itm">龙鳞甲</span>，龙鳞卫的专属铠甲。',choices:[
+    {text:'穿上龙鳞甲',effect:{constitution:25,cultivation:20,qiyun:10},item:'long_lin_jia',log:'铠甲贴上身体的瞬间，你感到一股磅礴的气运涌入体内。龙脉之力与你融为一体，你甚至可以免疫先天一炁的侵蚀。'},
+    {text:'这是龙鳞卫之物，不该擅取',effect:{karma:5},log:'你退了出去。龙鳞卫的遗物，拿了恐怕会惹来麻烦。'}]},
+
+  {itemGive:'tai_a_jian',itemRarity:'epic',trigger:{minAge:30,maxAge:60,cultivation:55},text:'在一处上古遗迹的最深处，你发现了一把被封印在寒冰中的古剑。剑身上铭刻着两个古篆——"<span class="itm">泰阿</span>"。即使隔着冰封，你都能感受到剑上煞气的压迫。',choices:[
+    {text:'破冰取剑',effect:{cultivation:45,constitution:10,sanity:-15},item:'tai_a_jian',log:'冰碎的瞬间，一股凛冽的煞气席卷方圆百米。你强忍着恶心握住了剑柄——上古名剑泰阿，斩妖除魔，无坚不摧。'},
+    {text:'这煞气会吞噬心智',effect:{comprehension:5},log:'你看了看那把剑，又看了看自己的手。算了，还是等修为再高些再来。'}]},
+
+  {itemGive:'pan_guan_bi',itemRarity:'epic',trigger:{minAge:28,maxAge:55,cultivation:55},text:'你在一处文昌阁的废墟中，发现了一支形如毛笔的法器，笔尖散发着莹莹星光。旁边的石碑上刻着：<span class="mys">"魁星点斗，判官批命。"</span>这是<span class="npc">诸葛渊</span>曾经使用过的<span class="itm">判官笔</span>。',choices:[
+    {text:'拿起判官笔',effect:{cultivation:35,comprehension:20},item:'pan_guan_bi',log:'笔入手的瞬间，你的指尖传来一阵刺痛。星光沿着你的经脉游走，最后汇聚在眉心。你隐约觉得，用这支笔点一下目标，就能令其失去知觉。'},
+    {text:'这是诸葛渊的遗物，不敢妄取',effect:{sanity:5},log:'你恭敬地行了一礼便退了出去。诸葛渊的法器，岂是你能随便碰的。'}]},
+
+  {itemGive:'yin_jian',itemRarity:'epic',trigger:{minAge:25,maxAge:55,cultivation:50},text:'你在一座武财神庙中祈福时，神像忽然<span class="mys">金光大盛</span>。一把银色的锏从神像手中飞出，稳稳落在你面前。庙祝大惊失色："这...这是<span class="itm">银锏</span>，武财神的法器！"',choices:[
+    {text:'恭敬接过银锏',effect:{cultivation:30,wealth:20,constitution:10},item:'yin_jian',log:'银锏入手，你感觉到无数碎银在锏身上汇聚成巨力。这把锏可破一切甲胄——武财神选择了你。'},
+    {text:'跪拜后退出',effect:{wealth:10,karma:5},log:'你磕了三个响头，然后退出庙门。神明赐予之物，你受之有愧。'}]},
+
+  // ===== 传说道具获取 (Legendary) =====
+  {itemGive:'xin_pan_ji_gu_jian',itemRarity:'legendary',trigger:{minAge:35,maxAge:70,cultivation:80},text:'你在两界夹缝中跋涉时，忽然看到一把悬浮在虚空中的长剑。剑身由<span class="mys">骨骼</span>铸成，散发着令人窒息的威压。你认出来了——这是<span class="npc">诸葛渊</span>以自己的脊骨炼成的<span class="itm">太虚剑</span>。剑身上残留的意识碎片向你传递着信息："<span class="mys">拿起我...打开两界裂隙...</span>"',choices:[
+    {text:'握住心蟠脊骨剑',effect:{cultivation:60,comprehension:25,sanity:-30},item:'xin_pan_ji_gu_jian',log:'你的手触碰到剑柄的瞬间，两界的裂隙在你眼前撕裂开来。诸葛渊的记忆如洪流般涌入你的脑海——阴阳斗姥、太虚剑意、两界穿梭...你几乎要被这些信息淹没。但你挺住了。'},
+    {text:'这超出了你的承受范围',effect:{comprehension:10},log:'你后退了一步。诸葛渊的脊骨剑，那是连季灾都忌惮的东西。你还没有那个资格。'}]},
+
+  {itemGive:'xin_su_ji_gu_jian',itemRarity:'legendary',trigger:{minAge:30,maxAge:65,cultivation:70},check:'xinsu',text:'你在一次濒死体验中，灵魂短暂脱离了肉身。在灵魂世界中，你看到了一把由<span class="mys">脊骨</span>凝成的剑，正在等待着你。一个声音在你耳边响起："<span class="mys">心素体质者，唯你能驾驭此剑。</span>"',choices:[
+    {text:'以灵魂握住脊骨剑',effect:{cultivation:50,constitution:15,sanity:-25},item:'xin_su_ji_gu_jian',log:'剑与你的心素体质产生了共鸣。你发现自己可以扭曲物体的形态，近战控制力大幅增强。但代价是——你的心智在一点点被侵蚀。'},
+    {text:'拒绝这份力量',effect:{sanity:10},log:'你的灵魂后退了。有些力量，不是你该碰的。'}]},
+
+  {itemGive:'liu_yao_tong_shu',itemRarity:'legendary',trigger:{minAge:40,maxAge:80,cultivation:85},text:'你在诸葛渊的秘密洞府中发现了一本残破的<span class="itm">老皇历</span>。封面上写着"<span class="mys">六曜通书</span>"四个字，字迹歪歪扭扭，像是小孩写的。但你知道，这本书的真正能力是——<span class="mys">言出法随，写什么就发生什么</span>。',choices:[
+    {text:'带走六曜通书',effect:{cultivation:55,comprehension:30,sanity:-20},item:'liu_yao_tong_shu',log:'你翻开第一页，上面只写了一句话："你翻开了这本书。"然后你意识到——这句话是在你翻开书的那一刻自动出现的。这本书记录着一切，也可以改写一切。'},
+    {text:'这种力量太恐怖了',effect:{comprehension:15},log:'你把书放了回去。改写现实的力量，那是天道的领域。你不想沾染。'}]},
 ];

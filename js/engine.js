@@ -987,6 +987,35 @@ function nextYear() {
     });
   }
 
+  // Add item acquisition events
+  if(typeof ITEM_EVENTS !== 'undefined') {
+    ITEM_EVENTS.forEach(function(ie){
+      // Skip if player already has this item
+      if(ie.itemGive && gameState.items.find(function(it){return it.id===ie.itemGive;})) return;
+      // Rarity-based probability filter
+      var rarityChance = 1.0;
+      if(ie.itemRarity === 'uncommon') rarityChance = 0.6;
+      else if(ie.itemRarity === 'rare') rarityChance = 0.3;
+      else if(ie.itemRarity === 'epic') rarityChance = 0.12;
+      else if(ie.itemRarity === 'legendary') rarityChance = 0.05;
+      if(Math.random() > rarityChance) return;
+      // Standard trigger checks
+      if(ie.check && !gameState.talents.find(function(t){return t.id===ie.check;})) return;
+      if(ie.flagReq && !gameState.flags[ie.flagReq]) return;
+      if(ie.factionReq === true && gameState.faction === 'none') return;
+      if(ie.factionReq && ie.factionReq !== true && gameState.faction !== ie.factionReq) return;
+      if(ie.locReq && !gameState.visitedLocations.includes(ie.locReq)) return;
+      if(ie.trigger) {
+        if(ie.trigger.minAge && gameState.age < ie.trigger.minAge) return;
+        if(ie.trigger.maxAge && gameState.age > ie.trigger.maxAge) return;
+        if(ie.trigger.cultivation && gameState.cultivation < ie.trigger.cultivation) return;
+        if(ie.trigger.yearMin !== undefined && gameState.year < ie.trigger.yearMin) return;
+        if(ie.trigger.yearMax !== undefined && gameState.year > ie.trigger.yearMax) return;
+      }
+      eventPool.push(ie);
+    });
+  }
+
   // Add cultivation-tier events
   if(typeof CULTIVATION_TIER_EVENTS !== 'undefined') {
 
