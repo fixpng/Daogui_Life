@@ -371,9 +371,11 @@ function nextYear() {
   gameState.lastAgeStep = ageStep;
 
   // Cultivation gain - 修为提升极难，且有瓶颈阻碍
+  // 6岁以下不可能有修为增长
   // 修为越高，自然提升概率越低（瓶颈效应）
   var compBonus = Math.floor(gameState.comprehension / 100); // 悟性影响很小，最多+1
   var cultGain = 0;
+  if(gameState.age >= 7) {
   // 基础概率随修为递减：凡人2%, 练气1.5%, 筑基1%, 金丹0.5%, 元婴0.2%, 化神+几乎0
   var baseCultChance = 0.02;
   if(gameState.cultivation >= 150) baseCultChance = 0.005;
@@ -433,6 +435,7 @@ function nextYear() {
     if(Math.random() < 0.3) cultGain += 1; // 散修自悟概率降低
     if(Math.random() < 0.05) gameState.comprehension += 1; // 散修更善于独立思考
   }
+  } // end if(gameState.age >= 7) - 6岁以下无修为增长
 
   gameState.cultivation += cultGain;
 
@@ -1094,7 +1097,8 @@ function nextYear() {
   updateDisplay();
   // x1=3s, x2=1.5s, x3=1s, x4=0.5s, x5=0.25s
   var delay = SPEED_DELAYS[speed] || 3000;
-  if(autoMode && gameState.alive) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
+  // 只在非等待选择状态下重启定时器（避免事件显示后定时器空转导致卡住）
+  if(autoMode && gameState.alive && !waitingForChoice) { clearTimeout(autoTimer); autoTimer = setTimeout(nextYear, delay); }
 }
 
 // === AUDIO STATE UPDATE ===
@@ -1238,6 +1242,14 @@ function showEvent(event) {
   });
   if(!validChoices.length) { quietYear(); return; }
 
+  // 检查是否有任何选项能被点击（req满足）
+  var anyClickable = validChoices.some(function(c){ return checkChoiceReq(c).met; });
+  if(!anyClickable) {
+    // 所有选项都锁定——解锁第一个作为兜底（降低效果）
+    // 或者添加一个"离开"选项
+    validChoices.push({text:'无能为力，只好离开', effect:{sanity:-3}, log:'这件事超出了你目前的能力范围'});
+  }
+
   // Play event sound
   if(typeof DaoguiAudio !== 'undefined') DaoguiAudio.playEventSound();
 
@@ -1311,9 +1323,13 @@ function applyChoice(c) {
 
   if(c.effect.sanity && isXinsu) gameState.sanity = Math.max(0,Math.min(120,gameState.sanity+c.effect.sanity));
   if(c.effect.cultivation) {
-    // 事件修为奖励受瓶颈影响
-    var cultReward = c.effect.cultivation > 0 ? applyCultResistance(c.effect.cultivation) : c.effect.cultivation;
-    gameState.cultivation += cultReward;
+    // 6岁以下不可能有修为增长
+    if(gameState.age < 7 && c.effect.cultivation > 0) {
+      // 幼年不可修炼，忽略正向修为
+    } else {
+      var cultReward = c.effect.cultivation > 0 ? applyCultResistance(c.effect.cultivation) : c.effect.cultivation;
+      gameState.cultivation += cultReward;
+    }
   }
   if(c.effect.wealth) gameState.wealth += c.effect.wealth;
   if(c.effect.connections) gameState.connections += c.effect.connections;
