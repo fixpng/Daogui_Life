@@ -189,6 +189,7 @@ const ITEMS = [
   {id:'pian_jing',name:'骗经',desc:'罗教骗术幻术功法，混淆视听',rarity:'rare',effect:{cultivation:20,comprehension:15,karma:-5}},
   {id:'jin_qiao_miao_jing',name:'金桥妙经',desc:'感悟可生死人肉白骨，需长期诵读',rarity:'rare',effect:{cultivation:25,comprehension:20,karma:10}},
   {id:'huo_ao_zhen_jing',name:'火袄箴经',desc:'祆景教经文，蜡油烧伤口以轻伤代重伤，施法需怜悯',rarity:'rare',effect:{cultivation:20,constitution:10,karma:-8}},
+  {id:'shuangxiu_jing',name:'欢喜禅残经',desc:'五智如来双修法门残卷，记载男女交合修炼之术，散发着令人不安的金光',rarity:'rare',effect:{cultivation:20,comprehension:15,sanity:-15,karma:-10}},
 
   // ===== 史诗 (Epic) =====
   {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',rarity:'epic',effect:{cultivation:40,sanity:-30,qiyun:-10}},
@@ -254,7 +255,12 @@ const ACHIEVEMENTS = [
   {id:'epiphany',name:'大彻大悟',desc:'悟性达到80以上',icon:'💡'},
   {id:'betrayer',name:'六亲不认',desc:'叛出门派后加入新门派',icon:'🗡'},
   {id:'loyal',name:'从一而终',desc:'始终效忠同一门派至死',icon:'🛡'},
-  {id:'dual_cult_survive',name:'九死一生',desc:'双修后存活至50岁',icon:'⚡'},
+  {id:'dual_cult_survive',name:'九死一生',desc:'叛出多个门派后存活至50岁',icon:'⚡'},
+  // === 婚恋成就 ===
+  {id:'married_life',name:'红尘有幸',desc:'成婚并拥有子嗣',icon:'💑'},
+  {id:'family_protector',name:'守护家人',desc:'已婚且修为达到金丹',icon:'🏠'},
+  {id:'shuangxiu_master',name:'欢喜禅定',desc:'修成五智如来双修法门',icon:'☸'},
+  {id:'shuangxiu_resist',name:'以爱破道',desc:'以人间情爱对抗肉欲天道',icon:'❤'},
   {id:'karma_cycle',name:'因果轮回',desc:'因果从负转正超过50',icon:'☯'},
   {id:'body_break',name:'肉身崩溃',desc:'体魄降至0死亡',icon:'💔'},
   {id:'meet_danyang',name:'丹阳遗风',desc:'遇到丹阳子的传承',icon:'⚔'},
@@ -534,10 +540,6 @@ const ADULT_EVENTS = [
     {text:'徐徐图之',effect:{constitution:5,comprehension:3},log:'循序渐进也是一种智慧'}],
     trigger:{minAge:25,constitution:50}},
   // === GENDER-SPECIFIC ADULT EVENTS ===
-  {text:'你到了成家的年纪，<span class="npc">长辈</span>催促你成婚。',choices:[
-    {text:'娶妻成家',effect:{connections:15,wealth:-20,qiyun:5,karma:5},log:'你成了家，多了牵挂也多了动力',genderReq:'male'},
-    {text:'嫁为人妇',effect:{connections:15,wealth:10,qiyun:5,karma:5},log:'你出了嫁，多了依靠也多了责任',genderReq:'female'},
-    {text:'一心修道',effect:{cultivation:10,connections:-10,comprehension:5},log:'你拒绝了婚事，一心向道'}]},
   {text:'一位<span class="npc">美貌女子</span>在路边向你求助，声称被人追杀。',genderReq:'male',choices:[
     {text:'英雄救美',effect:{connections:15,karma:5,constitution:-3},log:'你击退了追兵，她对你感激涕零'},
     {text:'假装没看见',effect:{karma:-5},log:'你心中有愧地走开了'},
@@ -1094,29 +1096,9 @@ const QIYUN_EVENTS = [
     {text:'不去理会',effect:{qiyun:3},log:'顺其自然也是一种智慧'}]},
 ];
 
-// === DUAL CULTIVATION EVENTS (triggered when having faction history) ===
-const DUAL_CULTIVATION_EVENTS = [
-  {text:'你前门派的<span class="danger-text">追杀者</span>找上门来，他们要你以血偿还叛逃之罪。',choices:[
-    {text:'迎战',effect:{cultivation:10,constitution:-10,sanity:-10,qiyun:-5},log:'你击退了追杀者，但身上多了几道伤口'},
-    {text:'逃跑',effect:{connections:-10,sanity:-5},log:'你仓皇逃窜，丢尽了颜面'},
-    {text:'请现门派保护',effect:{connections:-5,qiyun:-5},log:'新门派出面，但对你的忠诚产生了怀疑'}]},
-  {text:'你发现自己修炼两种不同的功法后，体内出现了<span class="danger-text">走火入魔</span>的迹象。',choices:[
-    {text:'全力压制',effect:{constitution:-15,sanity:-15,cultivation:-10},log:'你强行压制了冲突，但修为倒退了'},
-    {text:'尝试融合',effect:{cultivation:30,constitution:-10,sanity:-20,comprehension:10},log:'痛苦异常！但你隐约找到了融合的可能'},
-    {text:'放弃一种功法',effect:{cultivation:-20,sanity:10,constitution:5},log:'你忍痛放弃，身体终于稳定下来'}]},
-  {text:'两个门派的<span class="mys">功法</span>在你体内激烈冲突，你感到<span class="danger-text">经脉几近崩溃</span>。',choices:[
-    {text:'以命搏命突破',effect:{cultivation:40,constitution:-20,sanity:-25},log:'你在生死之间找到了一线生机！',req:{constitution:30}},
-    {text:'散去所有修为重来',effect:{cultivation:-50,constitution:10,sanity:10,comprehension:15},log:'你从头来过，但这次走得更稳'}]},
-  {text:'你的新门派发现你曾经<span class="danger-text">背叛旧主</span>，门内开始疏远你。',choices:[
-    {text:'用实力证明自己',effect:{cultivation:10,connections:10,qiyun:-5},log:'他们暂时接受了你，但信任不再'},
-    {text:'不在意',effect:{connections:-15},log:'独来独往也不是坏事'}]},
-  {text:'你在修炼中看到了<span class="mys">两个门派祖师</span>在你识海中争斗。',choices:[
-    {text:'任其争斗',effect:{sanity:-20,comprehension:15},log:'你在争斗中悟到了两种道的共通之处'},
-    {text:'将一方驱逐',effect:{cultivation:-15,sanity:10},log:'你彻底与一种道诀别了'}]},
-];
-
-// === 散修 EVENTS (triggered when player is unaffiliated but has faction history) ===
+// === 散修 EVENTS (triggered when player is unaffiliated or has betrayed factions) ===
 const SANXIU_EVENTS = [
+  // --- 基础散修事件 ---
   {text:'你在山间独自修炼，没有门规束缚，反而悟出了<span class="mys">一丝独特的道意</span>。',choices:[
     {text:'深入参悟',effect:{cultivation:15,comprehension:10},log:'散修之道，在于自由'},
     {text:'记录下来',effect:{comprehension:8,wealth:5},log:'你将心得写成手札，或许日后能卖个好价钱'}]},
@@ -1160,6 +1142,184 @@ const SANXIU_EVENTS = [
     {text:'请教融合之法',effect:{cultivation:25,comprehension:15,sanity:-10},log:'那方法极为凶险，但你隐约看到了一条全新的道路'},
     {text:'交流心得',effect:{cultivation:10,comprehension:10,connections:10},log:'你们互相印证，都有所收获'},
     {text:'不信他',effect:{sanity:5},log:'江湖骗子太多，还是靠自己'}]},
+  // --- 叛门余波事件（原双修事件，现归入散修体系） ---
+  {text:'你前门派的<span class="danger-text">追杀者</span>找上门来，他们要你以血偿还叛逃之罪。',
+    trigger:{factionHistoryMin:2},choices:[
+    {text:'迎战',effect:{cultivation:10,constitution:-10,sanity:-10,qiyun:-5},log:'你击退了追杀者，但身上多了几道伤口',combat:45},
+    {text:'逃跑',effect:{connections:-10,sanity:-5},log:'你仓皇逃窜，丢尽了颜面'},
+    {text:'以散修身份震慑',effect:{cultivation:5,connections:5,comprehension:3},log:'你亮出散修的实力，追杀者犹豫了'}]},
+  {text:'你发现自己修炼过多家门派的功法后，体内出现了<span class="danger-text">走火入魔</span>的迹象——不同法力互相冲撞。',
+    trigger:{factionHistoryMin:2,cultivation:20},choices:[
+    {text:'全力压制',effect:{constitution:-15,sanity:-15,cultivation:-10},log:'你强行压制了冲突，但修为倒退了'},
+    {text:'尝试融合百家',effect:{cultivation:30,constitution:-10,sanity:-20,comprehension:10},log:'痛苦异常！但你隐约找到了融合的可能'},
+    {text:'放弃一种功法',effect:{cultivation:-20,sanity:10,constitution:5},log:'你忍痛放弃，身体终于稳定下来'}]},
+  {text:'多家门派的<span class="mys">功法</span>在你体内激烈冲突，你感到<span class="danger-text">经脉几近崩溃</span>。',
+    trigger:{factionHistoryMin:2,cultivation:30},choices:[
+    {text:'以命搏命突破',effect:{cultivation:40,constitution:-20,sanity:-25},log:'你在生死之间找到了一线生机！',req:{constitution:30}},
+    {text:'散去所有修为重来',effect:{cultivation:-50,constitution:10,sanity:10,comprehension:15},log:'你从头来过，但这次走得更稳'}]},
+  {text:'曾经的门派<span class="danger-text">悬赏通缉</span>你——叛门之人，人人得而诛之。',
+    trigger:{factionHistoryMin:2,minAge:20},choices:[
+    {text:'用实力证明自己无需依附任何人',effect:{cultivation:10,connections:10,qiyun:-5},log:'你打败了几拨赏金猎人，名声反而更响了'},
+    {text:'隐居避祸',effect:{connections:-15,comprehension:8,sanity:5},log:'你躲入深山修炼，远离江湖是非'}]},
+  {text:'你在修炼中看到了<span class="mys">曾经历过的各门派祖师</span>在你识海中争斗——散修之身，百家争鸣。',
+    trigger:{factionHistoryMin:2,cultivation:40},choices:[
+    {text:'任其争斗，从中悟道',effect:{sanity:-20,comprehension:15,cultivation:15},log:'你在争斗中悟到了各家之道的共通之处——殊途同归'},
+    {text:'将所有门派痕迹驱逐',effect:{cultivation:-15,sanity:10,comprehension:5},log:'你彻底斩断了与旧门派的一切因缘，从此只有自己的道'}]},
+  // --- 散修独行事件 ---
+  {text:'你在荒野中修炼时，天降<span class="mys">异象</span>——无门无派之人反而更容易感应天地。',
+    trigger:{minAge:22,cultivation:25},choices:[
+    {text:'借天地之力突破',effect:{cultivation:25,comprehension:10,constitution:-5},log:'你感受到了天地间无处不在的道意'},
+    {text:'静观其变',effect:{comprehension:8,qiyun:5},log:'你默默记下了天象变化的规律'}]},
+  {text:'一个<span class="npc">落魄的门派弟子</span>跪求你收他为徒，说你比他师父强百倍。',
+    trigger:{minAge:30,cultivation:60},choices:[
+    {text:'收下他',effect:{connections:15,karma:10,comprehension:5},log:'你第一次有了弟子，散修也可以传道'},
+    {text:'拒绝',effect:{comprehension:3},log:'你不想让任何人走你这条九死一生的路'},
+    {text:'指点几句便走',effect:{karma:8,connections:5},log:'你点拨了他几句，便飘然而去——散修来去自如'}]},
+];
+
+// === 婚恋事件 ROMANCE EVENTS ===
+const ROMANCE_EVENTS = [
+  // --- 初遇 ---
+  {text:'你在<span class="loc">集市</span>上与一名<span class="npc">温婉女子</span>擦肩而过，她回头看了你一眼，眼波流转间似有万语千言。',
+    genderReq:'male',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'搭话',effect:{connections:10,qiyun:3},log:'你鼓起勇气搭话，她微微一笑——她叫苏婉儿，是附近药铺的采药女',setFlag:{romance_met:true,spouse_candidate:'苏婉儿'}},
+    {text:'错过',effect:{comprehension:2},log:'缘分来了又走了，你转身离开'},
+    {text:'暗中跟随',effect:{connections:3,karma:-3},log:'你远远跟了一段路，记住了她家的方向',setFlag:{romance_met:true,spouse_candidate:'苏婉儿'}}]},
+  {text:'你在山路上偶遇一名<span class="npc">青年剑客</span>，他替你挡下了一只山中邪祟，然后冲你笑了笑。',
+    genderReq:'female',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'道谢并询问姓名',effect:{connections:10,qiyun:3},log:'他说他叫沈鹤，是个走南闯北的游侠',setFlag:{romance_met:true,spouse_candidate:'沈鹤'}},
+    {text:'独自离开',effect:{comprehension:2},log:'你点了点头便走了，但心里记住了那个身影'},
+    {text:'邀他同行一程',effect:{connections:8,qiyun:5},log:'你们结伴走了一段路，他的见闻让你大开眼界',setFlag:{romance_met:true,spouse_candidate:'沈鹤'}}]},
+  // --- 情愫 ---
+  {text:'你与<span class="npc">心仪之人</span>在月下不期而遇。夜风拂面，月光如水——在这个满是邪祟和阴谋的世界里，这样的宁静格外珍贵。',
+    trigger:{minAge:17},flagReq:'romance_met',noFlag:'married',choices:[
+    {text:'表露心意',effect:{connections:15,qiyun:5,karma:5},log:'你说出了心中所想。对方沉默了一会儿，然后轻轻点了点头',setFlag:'courting'},
+    {text:'默默相伴',effect:{connections:8,sanity:5},log:'有些话不必说出口，你们在月光下安静地坐了很久'},
+    {text:'压下心思',effect:{comprehension:5,cultivation:5},log:'修道之人不该有儿女情长——但你心里知道，这个念头压不住'}]},
+  {text:'你听说<span class="npc">心仪之人</span>遇到了麻烦——有人觊觎对方家中的祖传之物，正上门逼迫。',
+    trigger:{minAge:17},flagReq:'romance_met',noFlag:'married',choices:[
+    {text:'出手相助',effect:{connections:15,karma:10,constitution:-3,qiyun:5},log:'你赶到时对方正被围困。你出手击退了恶人，对方看你的眼神变了',setFlag:'courting'},
+    {text:'报官处理',effect:{connections:5,karma:5},log:'你去报了官，总算解了围'},
+    {text:'不便插手',effect:{karma:-5,connections:-5},log:'你犹豫了——修道者该不该卷入凡俗纠纷？'}]},
+  // --- 成婚 ---
+  {text:'<span class="npc">长辈</span>得知你有了心上人，张罗着要给你们操办婚事。在这乱世之中，能成一段姻缘实属不易。',
+    trigger:{minAge:18},flagReq:'courting',noFlag:'married',choices:[
+    {text:'拜堂成亲',effect:{connections:20,wealth:-30,qiyun:10,karma:10,sanity:5},log:'红烛高照，你们在三媒六聘下结为夫妻。这世间多了一个你愿意为之而活的人',setFlag:{married:true,children:0}},
+    {text:'私定终身',effect:{connections:10,wealth:-5,qiyun:5,karma:3},log:'你们没有大操大办，在一棵老槐树下许了誓——此生不离不弃',setFlag:{married:true,children:0}},
+    {text:'暂时推迟',effect:{connections:-5,comprehension:3},log:'你说修为未成，不愿拖累对方。对方虽有不舍，但也理解'}]},
+  {text:'你到了成家的年纪，经人介绍认识了一位门当户对的<span class="npc">良人</span>。虽非一见钟情，但相处下来越发觉得合适。',
+    trigger:{minAge:20},noFlag:'married',noFlag2:'romance_met',choices:[
+    {text:'顺其自然，成婚',effect:{connections:15,wealth:-20,qiyun:5,karma:5,sanity:3},log:'你们成了亲。婚后日子虽平淡，但有人等你回家的感觉很好',setFlag:{married:true,children:0,spouse_candidate:'良人'},genderReq:'male'},
+    {text:'顺其自然，出嫁',effect:{connections:15,wealth:10,qiyun:5,karma:5,sanity:3},log:'你嫁入了一个殷实人家。丈夫虽不懂修行，却待你很好',setFlag:{married:true,children:0,spouse_candidate:'良人'},genderReq:'female'},
+    {text:'一心修道，婉拒',effect:{cultivation:10,connections:-10,comprehension:5},log:'你拒绝了婚事，一心向道。长辈叹了口气'}]},
+  // --- 子嗣 ---
+  {text:'你的<span class="npc">伴侣</span>告诉你一个消息——你们要有孩子了。在这个充满诡异的世界里，新生命的到来显得格外珍贵。',
+    trigger:{minAge:20},flagReq:'married',noFlag:'has_child',choices:[
+    {text:'喜极而泣',effect:{qiyun:10,karma:10,connections:10,sanity:5},log:'你小心翼翼地守护着这个即将到来的小生命。数月后，一声啼哭响彻屋内——你有了第一个孩子',setFlag:{has_child:true,children:1}},
+    {text:'又喜又忧',effect:{qiyun:5,karma:5,connections:5,wealth:-10},log:'喜的是后继有人，忧的是这世道太危险。孩子出生时你看着那张小脸，暗暗发誓要守护好这个家',setFlag:{has_child:true,children:1}},
+    {text:'忧心忡忡',effect:{sanity:-5,karma:3,connections:5},log:'你不确定自己能否在这个满是邪祟的世界里保护好一个孩子。但当孩子出生的那一刻，你什么都不想了',setFlag:{has_child:true,children:1}}]},
+  {text:'你的孩子周岁了。<span class="npc">伴侣</span>抱着孩子站在门口等你回家，你突然觉得这一刻比任何修炼突破都要珍贵。',
+    trigger:{minAge:21},flagReq:'has_child',choices:[
+    {text:'多陪陪家人',effect:{connections:10,sanity:8,karma:5,cultivation:-3},log:'你放下修炼，陪孩子度过了几个安宁的日子'},
+    {text:'为家人更努力修炼',effect:{cultivation:10,comprehension:5,connections:-3},log:'你想变强，为了守护他们——但伴侣说你已经很久没回家了'}]},
+  {text:'你的第二个孩子出生了——这一次你多了几分从容，也多了几分牵挂。',
+    trigger:{minAge:23},flagReq:'has_child',noFlag:'second_child',choices:[
+    {text:'感到满足',effect:{qiyun:5,karma:8,connections:8,sanity:3},log:'家中又多了一张小嘴巴，热闹了不少',setFlag:{second_child:true,children:2}},
+    {text:'倍感压力',effect:{wealth:-15,constitution:-3,comprehension:3},log:'养家的担子更重了，你咬牙扛着',setFlag:{second_child:true,children:2}}]},
+  // --- 家庭生活 ---
+  {text:'你的<span class="npc">伴侣</span>在夜里突然惊醒，说梦到了一些<span class="mys">奇怪的东西</span>——那些东西和你修行路上遇到的邪祟描述如出一辙。',
+    trigger:{minAge:22},flagReq:'married',choices:[
+    {text:'用法力护住伴侣',effect:{cultivation:-5,sanity:-5,karma:5,connections:10},log:'你在枕边设了一道护阵。伴侣安心地睡去了，你却一夜未眠'},
+    {text:'安慰说只是噩梦',effect:{connections:5,karma:-3},log:'你撒了谎。有些事情，知道了反而是祸'},
+    {text:'带伴侣去寺庙祈福',effect:{wealth:-10,karma:5,sanity:3},log:'正德寺的僧人念了一通经文。有没有用不好说，但伴侣安心了些'}]},
+  {text:'你的孩子展现出了<span class="mys">修炼天赋</span>——有门派前来询问是否愿意送孩子去学艺。',
+    trigger:{minAge:26},flagReq:'has_child',choices:[
+    {text:'送去修炼',effect:{connections:15,cultivation:5,karma:3},log:'你把孩子送入门派。离别时孩子哭得撕心裂肺，你别过头去不敢看'},
+    {text:'自己教导',effect:{comprehension:8,cultivation:8,connections:-5},log:'你决定亲自传授孩子修行之法——你不想让孩子走你的弯路'},
+    {text:'不让孩子修炼',effect:{karma:5,sanity:5,connections:-3},log:'你见过太多修士的下场。你希望孩子过普通人的日子'}]},
+  {text:'<span class="npc">伴侣</span>在你修炼受伤后，日夜守在床边照料你。等你醒来时，看到对方眼下的黑眼圈和鬓角新添的白发。',
+    trigger:{minAge:25},flagReq:'married',choices:[
+    {text:'承诺以后小心些',effect:{connections:10,sanity:8,karma:5},log:'你握住对方的手说："我会好好的。"这句话你也不知道能不能做到'},
+    {text:'心生愧疚',effect:{connections:5,sanity:-5,karma:3},log:'修道和家庭，你到底该怎么选？'}]},
+  {text:'你的<span class="npc">伴侣</span>染了一场重病。普通药石无效——你怀疑是<span class="danger-text">邪祟作祟</span>。',
+    trigger:{minAge:24},flagReq:'married',choices:[
+    {text:'倾尽修为救治',effect:{cultivation:-15,constitution:-10,connections:15,karma:15,sanity:-5},log:'你用自己的修为做药引，终于保住了伴侣的性命。你虚弱了很久，但值得'},
+    {text:'四处求医问药',effect:{wealth:-30,connections:10,karma:5,qiyun:-5},log:'你走遍了周围的城镇，花光了积蓄，终于找到了一位游方道士解了邪祟'},
+    {text:'向门派求助',effect:{connections:-5,karma:3,wealth:-10},log:'你拉下脸向人求助，好在有人伸出了援手',factionReq:true}]},
+  {text:'你与<span class="npc">伴侣</span>在后院里晒着太阳。孩子在一旁追逐蝴蝶。你忽然觉得——修道也好，世俗也罢，也许<span class="mys">这一刻</span>才是真正的道。',
+    trigger:{minAge:30},flagReq:'has_child',choices:[
+    {text:'享受这一刻',effect:{sanity:10,karma:8,qiyun:5,comprehension:5},log:'你什么也没做，只是在阳光下微微笑了。李火旺选择了迷惘与爱——也许你也一样'},
+    {text:'心中不安',effect:{comprehension:8,cultivation:5,sanity:-3},log:'越是美好的东西越怕失去。你看着家人的笑脸，暗自警惕'}]},
+  // --- 老来伴 ---
+  {text:'你两鬓斑白，<span class="npc">伴侣</span>也早已不复当年模样。但每天清晨，对方都会为你煮一碗热粥。这种默契无需言语。',
+    trigger:{minAge:55},flagReq:'married',choices:[
+    {text:'深感珍惜',effect:{sanity:10,karma:10,qiyun:5},log:'你牵起对方的手说了句"辛苦了"。对方笑着说："傻话。"'},
+    {text:'教对方修炼养生之法',effect:{cultivation:3,connections:5,constitution:3},log:'你把简单的养生功法教给了伴侣。日子还长着呢'}]},
+];
+
+// === 双修事件 SHUANGXIU EVENTS (五智如来·男女双修) ===
+const SHUANGXIU_EVENTS = [
+  // --- 初识双修法门 ---
+  {text:'你在<span class="loc">正德寺</span>的藏经阁深处发现了一卷被刻意藏起的<span class="itm">残经</span>。经文上记载着一种名为"<span class="mys">欢喜禅</span>"的秘法——以男女交合之术修炼，号称可直通<span class="mys">五智如来</span>法门。经文边注写着："<span class="danger-text">切莫轻试，肉欲天道非凡人可驾驭。</span>"',
+    trigger:{minAge:20,cultivation:20},choices:[
+    {text:'仔细研读',effect:{comprehension:15,cultivation:10,sanity:-10,karma:-5},log:'你通读全文——这法门以阴阳交合为媒介，引动体内真元互相流转。修炼时需双方心意相通，否则轻则走火入魔，重则形神俱灭。你心中隐约有了一些领悟',setFlag:'know_shuangxiu'},
+    {text:'放回原处',effect:{karma:5,comprehension:3},log:'你把经文放了回去。有些东西，不该碰'},
+    {text:'带走经文',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-8},log:'你将残经揣入怀中。总觉得这东西日后会有大用——或大祸',setFlag:'know_shuangxiu',item:'shuangxiu_jing'}]},
+  {text:'一名云游的<span class="npc">老僧</span>在路边化缘时突然拉住你说："<span class="mys">施主身上有五智如来的气息。</span>"他说佛门修行并非只有苦行一途，<span class="danger-text">肉欲</span>本身也是天道的一部分——五智如来掌管此道，以欢喜禅定为法门。但他的眼神深处，藏着某种你看不透的东西。',
+    trigger:{minAge:18,cultivation:15},choices:[
+    {text:'请教五智如来法门',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-3},log:'老僧说：男女交合，阴阳流转，可引天地灵气入体。但——"佛门背后的那位，可不是什么慈悲的存在。"说完他便消失了',setFlag:'know_shuangxiu'},
+    {text:'不理他',effect:{sanity:3,qiyun:3},log:'你加快脚步走了。这世道疯子太多'},
+    {text:'施舍他一些食物',effect:{karma:5,connections:3},log:'老僧道了谢便离开了。临走前意味深长地看了你一眼'}]},
+  // --- 寻找双修道侣 ---
+  {text:'你开始思索<span class="mys">欢喜禅</span>的修炼之法——经文上说，双修需要一位"<span class="npc">道侣</span>"，双方修为相近、心意相通，方能在交合中引动天地灵气。你的伴侣虽无修为，但你与对方之间的默契与情感，或许正是"心意相通"的另一种形态。',
+    trigger:{minAge:20,cultivation:25},flagReq:'know_shuangxiu',flagReq2:'married',choices:[
+    {text:'与伴侣坦诚相告',effect:{connections:10,comprehension:8,sanity:-5},log:'你把双修之事告诉了伴侣。对方沉默了很久，最终说："如果能帮到你，我愿意试试。"',setFlag:'shuangxiu_ready'},
+    {text:'独自琢磨',effect:{comprehension:10,sanity:-8},log:'你没有告诉伴侣，而是独自研读经文——但经文明确说了，双修不可独行'},
+    {text:'放弃此念',effect:{karma:5,sanity:5},log:'你看了看熟睡的伴侣，打消了这个念头。有些东西不该让无辜的人卷入'}]},
+  {text:'你在修炼途中遇到一位<span class="npc">女修士</span>（自称来自<span class="fac">佛门</span>别院），她直言不讳地说自己正在寻找<span class="mys">双修道侣</span>。她修为不低，眉心隐约有一点<span class="danger-text">金光</span>——那是修行五智如来法门的痕迹。',
+    genderReq:'male',trigger:{minAge:20,cultivation:30},flagReq:'know_shuangxiu',noFlag:'married',choices:[
+    {text:'答应与她双修',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-10,constitution:-5},log:'你们在一处隐秘洞府中修炼欢喜禅。交合之际，你感到体内真元如潮水般涌动——但也感受到了一股来自深处的、不属于你们任何人的<span class="danger-text">窥视</span>',setFlag:'shuangxiu_ready'},
+    {text:'婉拒',effect:{comprehension:5,karma:3},log:'你拒绝了她。她并不意外，只是说："缘分未到。"'},
+    {text:'询问五智如来的真相',effect:{comprehension:12,sanity:-10,cultivation:5},log:'她说五智如来是佛门背后真正的主人——它掌管肉欲天道，所有欢喜禅修行者的力量最终都会流向它。"但力量是真的。"她补充道'}]},
+  // --- 双修实践 ---
+  {text:'夜深人静，你与<span class="npc">道侣</span>开始尝试<span class="mys">欢喜禅</span>双修。按照经文所述，你们盘膝相对，双手相握，然后——交合。真元在两具身体之间流转，如同阴阳太极。你能感受到对方的心跳、呼吸、甚至思绪。在某一刻，你们仿佛融为了一体——天地灵气疯狂涌入，修为暴涨。但在灵气深处，你隐约看到了一尊<span class="danger-text">金色巨佛</span>的虚影。它在笑。',
+    trigger:{minAge:20,cultivation:30},flagReq:'shuangxiu_ready',choices:[
+    {text:'继续修炼，不管那尊佛',effect:{cultivation:35,comprehension:15,sanity:-20,constitution:-8,karma:-10},log:'你们将双修推向极致。修为大增——但那尊金佛的笑容越来越清晰了。五智如来的影子已经笼罩了你们',setFlag:'shuangxiu_deep'},
+    {text:'立即停止',effect:{cultivation:15,sanity:-10,comprehension:8},log:'你猛然收功。那尊金佛的虚影消散了——但你知道它一直都在。五智如来的肉欲天道，远比你想象的危险'},
+    {text:'尝试以心意抵抗那尊佛',effect:{cultivation:25,sanity:-15,comprehension:12,karma:5},log:'你在交合中分出心神抵御金佛的窥视。勉强成功了——但你知道这只是暂时的',setFlag:'shuangxiu_deep'}]},
+  {text:'双修之后，你发现自己的<span class="mys">感知力</span>大幅提升——你能感受到周围所有人的情绪波动，仿佛七情六欲都在你面前袒露无遗。这是<span class="danger-text">五智如来·肉欲天道</span>赐予双修者的"恩惠"。但这种感知越来越强，让你难以忍受——街上随便走一圈，所有人的贪嗔痴慢疑都涌入你的脑海。',
+    trigger:{minAge:22,cultivation:40},flagReq:'shuangxiu_deep',choices:[
+    {text:'修炼控制这种感知',effect:{comprehension:20,cultivation:15,sanity:-15,constitution:-5},log:'你花了很长时间学会过滤杂念。这种感知力用好了是一柄利器，但稍有不慎就会被淹没'},
+    {text:'封印这种能力',effect:{sanity:10,comprehension:-5,cultivation:-10,karma:5},log:'你用法力封住了这种感知。清净了，但也失去了双修带来的一部分好处'},
+    {text:'借此感知修炼',effect:{cultivation:25,comprehension:15,sanity:-25,karma:-8},log:'你开始利用这种感知力加速修炼——吸取周围人的情绪波动转化为修为。五智如来的道，果然和慈悲无关'}]},
+  // --- 深入双修 ---
+  {text:'你在一次深层双修中进入了<span class="mys">禅定</span>状态——在那里你看到了<span class="danger-text">五智如来</span>的真身。它并非佛像上那个慈悲的面孔。它有<span class="danger-text">无数只手</span>，每一只手都在做着不可言说的事情。它的每一张脸上都挂着<span class="danger-text">极乐的笑容</span>，但那笑容让你毛骨悚然。它开口说："<span class="mys">你们的欢喜，就是我的供养。继续。</span>"',
+    trigger:{minAge:24,cultivation:50},flagReq:'shuangxiu_deep',choices:[
+    {text:'不惧，继续修炼',effect:{cultivation:40,sanity:-30,comprehension:20,karma:-15,constitution:-10},log:'你直面五智如来的真身继续双修。修为暴涨的同时，你感到自己正在失去某些东西——但你已经停不下来了',setFlag:'shuangxiu_master'},
+    {text:'收功退出',effect:{cultivation:10,sanity:-15,comprehension:10,karma:5},log:'你强行退出了禅定。道侣问你看到了什么，你沉默了很久才说："以后…少修一些吧。"'},
+    {text:'试图与五智如来对话',effect:{cultivation:20,sanity:-25,comprehension:25,karma:-10},log:'你问它："你到底想要什么？"它笑着说："我要的东西，你们每一个人都在给我。不只是修士——所有的人，只要还有欲望，就是我的信徒。"',setFlag:'shuangxiu_master'}]},
+  {text:'你的双修已经到了极高的境界——每一次交合都能引发方圆数里的<span class="mys">灵气潮汐</span>。附近的修士开始注意到异常。有人慕名而来请教，有人面带惧色地避开你们。<span class="fac">佛门</span>的人悄悄传言："<span class="danger-text">又有人走上了五智如来的路。</span>"',
+    trigger:{minAge:26,cultivation:60},flagReq:'shuangxiu_master',choices:[
+    {text:'不理会外界，继续精进',effect:{cultivation:30,comprehension:15,sanity:-20,connections:-15,karma:-10},log:'你们闭关双修，不再理会外界。修为突飞猛进，但你发现自己越来越难以控制体内的欲念'},
+    {text:'收敛行迹',effect:{cultivation:10,sanity:5,connections:5,comprehension:5},log:'你们开始刻意压低修炼强度，避免引人注目。低调行事是活命的不二法门'},
+    {text:'广收双修门徒',effect:{connections:20,cultivation:15,karma:-20,sanity:-15},log:'你开始传授双修之法。追随者越来越多——你隐约感觉自己正在建立某种邪教'}]},
+  // --- 双修之祸 ---
+  {text:'<span class="fac">监天司</span>的人找上门来，指控你修炼<span class="danger-text">禁术</span>——五智如来的双修法门在大梁属于被明令禁止的邪法。他们手持<span class="itm">缉拿令</span>，要将你就地正法。',
+    trigger:{minAge:24,cultivation:40},flagReq:'shuangxiu_deep',choices:[
+    {text:'束手就擒',effect:{cultivation:-20,connections:-10,sanity:-10,karma:5},log:'你被关进了监天司的牢房。在暗无天日的地牢里，你开始反思这一切是否值得'},
+    {text:'拼死抵抗',effect:{cultivation:10,constitution:-15,sanity:-15,connections:-20,karma:-10},log:'你与监天司的人拼了个两败俱伤，勉强逃脱。从此你成了通缉犯',combat:55},
+    {text:'以双修之力蛊惑对方',effect:{cultivation:5,karma:-20,sanity:-20,connections:5},log:'你动用了五智如来赐予的感知力，操纵了领头人的欲念。他放了你——但你知道自己又往深渊迈了一步'}]},
+  {text:'你的<span class="npc">道侣</span>在一次双修后突然陷入了<span class="danger-text">昏迷</span>——体内真元枯竭，生机急速流失。你这才意识到，双修从来不是对等的——<span class="mys">五智如来的法门</span>从一开始就在以一方的生机滋养另一方。你是受益者。',
+    trigger:{minAge:22,cultivation:35},flagReq:'shuangxiu_deep',choices:[
+    {text:'不惜一切代价救回道侣',effect:{cultivation:-30,constitution:-15,sanity:-10,karma:15,connections:10},log:'你反转双修法门，将自己的修为输入道侣体内。你虚弱到几乎站不起来——但道侣终于睁开了眼'},
+    {text:'以药石续命',effect:{wealth:-40,cultivation:-10,sanity:-10,karma:5},log:'你倾尽家财买来续命丹药，勉强稳住了道侣的状况。但你知道，再这样下去迟早出事'},
+    {text:'继续修炼，牺牲道侣',effect:{cultivation:30,sanity:-30,karma:-30,connections:-20},log:'你看着昏迷的道侣，内心的某个声音说：这是必要的牺牲。你继续修炼了。五智如来在笑——你已经是它的人了'}]},
+  // --- 双修终局 ---
+  {text:'经过长年累月的双修，你终于触摸到了<span class="mys">肉欲天道</span>的边界。在那里你看到了真相——<span class="danger-text">五智如来</span>不是佛。它是一尊以天下苍生的欲望为食的<span class="danger-text">司命</span>。所有修炼欢喜禅的人，都不过是它的<span class="danger-text">养料</span>。而你——已经喂了它太多了。',
+    trigger:{minAge:30,cultivation:80},flagReq:'shuangxiu_master',choices:[
+    {text:'斩断与五智如来的联系',effect:{cultivation:-40,sanity:20,comprehension:20,karma:20,constitution:-10},log:'你以极大的意志力斩断了和肉欲天道的联系。修为大跌——但你终于清醒了。有些力量，代价太大'},
+    {text:'成为五智如来的使徒',effect:{cultivation:60,sanity:-40,karma:-30,comprehension:25,connections:-20},log:'你跪在金佛面前说："我愿为你效命。"五智如来的力量灌入你体内——你再也回不了头了'},
+    {text:'以人间情爱对抗天道',effect:{cultivation:20,sanity:10,karma:15,comprehension:30,connections:10},log:'你想起了伴侣的笑容、孩子的啼哭。你说："我修的不是你的肉欲天道——我修的是人间的爱。"五智如来沉默了。也许，这才是真正的双修之道',achieve:'shuangxiu_resist'}]},
 ];
 
 // === TALENT CONFLICTS (bidirectional) ===

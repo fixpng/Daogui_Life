@@ -656,10 +656,10 @@ function nextYear() {
     }
   }
 
-  // Dual cultivation risk: if factionHistory > 1 and currently in a faction, risk events
-  var dualCultRisk = gameState.factionHistory.length > 1 && gameState.faction !== 'none';
-  if(dualCultRisk && Math.random() < 0.15) {
-    // 15% chance per year of dual cultivation side effects
+  // Faction betrayal risk: if factionHistory > 1 and currently in a faction, risk events
+  var betrayalRisk = gameState.factionHistory.length > 1 && gameState.faction !== 'none';
+  if(betrayalRisk && Math.random() < 0.15) {
+    // 15% chance per year of betrayal consequences
     gameState.constitution -= 2;
     gameState.sanity = Math.max(0, gameState.sanity - 3);
   }
@@ -723,6 +723,9 @@ function nextYear() {
     if(ev.check && !gameState.talents.find(function(t){return t.id===ev.check;})) return false;
     // NPC/flag条件过滤
     if(ev.flagReq && !gameState.flags[ev.flagReq]) return false;
+    if(ev.flagReq2 && !gameState.flags[ev.flagReq2]) return false;
+    if(ev.noFlag && gameState.flags[ev.noFlag]) return false;
+    if(ev.noFlag2 && gameState.flags[ev.noFlag2]) return false;
     if(ev.npcReq && !gameState.npcMet[ev.npcReq]) return false;
     if(ev.npcFavorMin && (!gameState.npcMet[ev.npcReq] || gameState.npcMet[ev.npcReq].favor < ev.npcFavorMin)) return false;
     if(ev.trigger) {
@@ -806,18 +809,51 @@ function nextYear() {
     });
   }
 
-  // Add dual cultivation events (if player has betrayed a faction)
-  if(typeof DUAL_CULTIVATION_EVENTS !== 'undefined' && gameState.factionHistory.length > 1 && gameState.faction !== 'none') {
-    eventPool.push.apply(eventPool, DUAL_CULTIVATION_EVENTS);
-  }
-
-  // Add 散修 events (left faction, currently unaffiliated)
-  if(typeof SANXIU_EVENTS !== 'undefined' && gameState.faction === 'none' && gameState.factionHistory.length > 0) {
+  // Add 散修 events (unaffiliated with faction history, includes former dual cult events)
+  if(typeof SANXIU_EVENTS !== 'undefined' && (gameState.faction === 'none' && gameState.factionHistory.length > 0) || gameState.factionHistory.length > 1) {
     SANXIU_EVENTS.forEach(function(se){
       if(se.trigger) {
         if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
         if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
+        if(se.trigger.factionHistoryMin && gameState.factionHistory.length < se.trigger.factionHistoryMin) return;
       }
+      // Skip faction-betrayal events if currently in a faction (those need faction === 'none' unless factionHistoryMin is set)
+      if(!se.trigger || !se.trigger.factionHistoryMin) {
+        if(gameState.faction !== 'none') return;
+        if(gameState.factionHistory.length === 0) return;
+      }
+      eventPool.push(se);
+    });
+  }
+
+  // Add romance events
+  if(typeof ROMANCE_EVENTS !== 'undefined' && gameState.age >= 16) {
+    ROMANCE_EVENTS.forEach(function(re){
+      if(re.genderReq && re.genderReq !== gameState.gender) return;
+      if(re.trigger) {
+        if(re.trigger.minAge && gameState.age < re.trigger.minAge) return;
+        if(re.trigger.cultivation && gameState.cultivation < re.trigger.cultivation) return;
+      }
+      if(re.flagReq && !gameState.flags[re.flagReq]) return;
+      if(re.flagReq2 && !gameState.flags[re.flagReq2]) return;
+      if(re.noFlag && gameState.flags[re.noFlag]) return;
+      if(re.noFlag2 && gameState.flags[re.noFlag2]) return;
+      if(re.factionReq === true && gameState.faction === 'none') return;
+      eventPool.push(re);
+    });
+  }
+
+  // Add shuangxiu (dual cultivation) events - 五智如来法门
+  if(typeof SHUANGXIU_EVENTS !== 'undefined' && gameState.age >= 18) {
+    SHUANGXIU_EVENTS.forEach(function(se){
+      if(se.genderReq && se.genderReq !== gameState.gender) return;
+      if(se.trigger) {
+        if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
+        if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
+      }
+      if(se.flagReq && !gameState.flags[se.flagReq]) return;
+      if(se.flagReq2 && !gameState.flags[se.flagReq2]) return;
+      if(se.noFlag && gameState.flags[se.noFlag]) return;
       eventPool.push(se);
     });
   }
@@ -1274,8 +1310,20 @@ function quietYear() {
     } else {
       msgs = ['平淡的一年','日子不好不坏','又一年过去了','波澜不惊','日复一日'];
     }
-    if(gameState.gender === 'female' && a > 20 && a < 35) msgs.push('邻家嫂子又来催你成家的事了');
-    if(gameState.gender === 'male' && a > 25 && a < 40) msgs.push('你开始承担更多养家的责任');
+    if(gameState.gender === 'female' && a > 20 && a < 35 && !gameState.flags.married) msgs.push('邻家嫂子又来催你成家的事了');
+    if(gameState.gender === 'male' && a > 25 && a < 40 && !gameState.flags.married) msgs.push('你开始承担更多养家的责任');
+    // Married life quiet year messages
+    if(gameState.flags.married && gameState.flags.has_child) {
+      msgs.push('你回到家中，孩子扑上来抱住你的腿——平凡的一天');
+      msgs.push('伴侣做了你爱吃的菜，一家人围坐在桌前');
+      if(a > 40) msgs.push('看着孩子一天天长大，你感到时光飞逝');
+    } else if(gameState.flags.married) {
+      msgs.push('你和伴侣在院中闲坐，岁月静好');
+      msgs.push('伴侣叮嘱你修炼时小心些。你点了点头');
+    }
+    if(gameState.flags.shuangxiu_deep) {
+      msgs.push('夜深人静时，你感到五智如来的目光仿佛穿透了虚空');
+    }
     // Stat-influenced quiet year messages
     if(gameState.constitution < 20) msgs.push('你的身体越来越差，连起床都费力');
     if(gameState.constitution > 80) msgs.push('你精力充沛，清晨打了一套拳便觉神清气爽');
@@ -1594,6 +1642,10 @@ function applyChoice(c) {
   if(gameState.constitution>=90) unlockAchieve('iron_body');
   if(gameState.comprehension>=80) unlockAchieve('epiphany');
   if(gameState.factionHistory.length > 1 && gameState.age >= 50) unlockAchieve('dual_cult_survive');
+  // Marriage and family achievements
+  if(gameState.flags.married && gameState.flags.has_child) unlockAchieve('married_life');
+  if(gameState.flags.married && gameState.cultivation >= 60) unlockAchieve('family_protector');
+  if(gameState.flags.shuangxiu_master) unlockAchieve('shuangxiu_master');
 
   updateDisplay();
   var delay = SPEED_DELAYS[speed] || 3000;
@@ -1664,6 +1716,22 @@ function updateDisplay() {
   if(constEl) {
     constEl.textContent = gameState.constitution;
     constEl.className = 'detail-value' + (gameState.constitution < 20 ? ' danger' : gameState.constitution < 35 ? ' low' : '');
+  }
+  // Spouse display
+  var spouseEl = document.getElementById('spouse-display');
+  if(spouseEl) {
+    if(gameState.flags.married) {
+      var spouseName = gameState.flags.spouse_candidate || '伴侣';
+      var childText = gameState.flags.children ? ' · 子嗣'+gameState.flags.children+'人' : '';
+      spouseEl.textContent = spouseName + childText;
+      spouseEl.className = 'detail-value good-karma';
+    } else if(gameState.flags.romance_met) {
+      spouseEl.textContent = '有情人';
+      spouseEl.className = 'detail-value';
+    } else {
+      spouseEl.textContent = '未婚';
+      spouseEl.className = 'detail-value';
+    }
   }
   document.getElementById('current-location').textContent = gameState.location.name;
   document.getElementById('era-name').textContent = getEraName();
@@ -1782,6 +1850,10 @@ function gameOver(reason) {
   if(gameState.comprehension>=80) unlockAchieve('epiphany');
   if(gameState.factionHistory.length > 1 && gameState.age >= 50) unlockAchieve('dual_cult_survive');
   if(gameState.factionHistory.length === 1 && gameState.faction !== 'none') unlockAchieve('loyal');
+  // Marriage, family and shuangxiu achievements at death
+  if(gameState.flags.married && gameState.flags.has_child) unlockAchieve('married_life');
+  if(gameState.flags.married && gameState.cultivation >= 60) unlockAchieve('family_protector');
+  if(gameState.flags.shuangxiu_master) unlockAchieve('shuangxiu_master');
   // 散修 achievements
   if(gameState.faction === 'none' && gameState.factionHistory.length > 0) {
     unlockAchieve('sanxiu_path');
@@ -1868,6 +1940,11 @@ function gameOver(reason) {
   else if(gameState.comprehension>=70 && gameState.cultivation>=30) ending = '你悟性通天，虽未能成就大道，但留下的道论将启发后来者。';
   else if(gameState.connections>=60 && gameState.cultivation<10) ending = '你虽是凡人，却人脉广达，一生交友无数。临终之际，故友旧交纷纷前来送行——这一世，值了。';
   else if(gameState.wealth>=200 && gameState.cultivation<10) ending = '你虽无修仙之缘，却富甲一方。临终之际，金银堆满了灵堂，但你知道这些带不走。';
+  // Family and shuangxiu endings
+  else if(gameState.flags.shuangxiu_master && gameState.cultivation>=100) ending = '你修成了<span class="itm">五智如来的欢喜禅</span>，以肉欲天道之力突破了凡人的极限。但你分不清那力量到底是你的还是五智如来的——也许从一开始，双修者就只是它的容器。';
+  else if(gameState.flags.married && gameState.flags.has_child && gameState.cultivation>=60) ending = '你一手修道，一手持家，在修仙与红尘之间找到了平衡。临终之际，伴侣和孩子守在床前——在这个满是邪祟的世界里，你守住了人间最珍贵的东西。';
+  else if(gameState.flags.married && gameState.flags.has_child && gameState.age>=60) ending = '你虽无大成就，但儿孙满堂、夫妻恩爱。临终之际你想：李火旺选择了迷惘与爱，你也选择了平凡与温暖——这未必不是另一种道。';
+  else if(gameState.flags.married && gameState.age>=50) ending = '你与伴侣携手走过了大半辈子。世间多诡谲，但你们从未放开彼此的手。这就够了。';
 
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
@@ -1889,8 +1966,10 @@ function gameOver(reason) {
       gameState.xinpan==='baxi'?'巴虺（痛苦天道）':gameState.xinpan==='wusheng'?'无生老母（慈悲天道）':
       gameState.xinpan==='panchi'?'蟠螭（秩序天道）':gameState.xinpan==='yuer'?'于儿神（法教天道）':'未知'
     ) + '</p>' : '') +
-    (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 双修之路，九死一生</p>' : '') +
+    (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 散修之路，九死一生</p>' : '') +
     (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
+    (gameState.flags.married ? '<p style="color:var(--gold);">红尘有伴 — '+(gameState.flags.spouse_candidate||'佳人')+'相随'+(gameState.flags.children ? '，育有'+gameState.flags.children+'子' : '')+'</p>' : '') +
+    (gameState.flags.shuangxiu_master ? '<p style="color:var(--mystery);">五智如来·欢喜禅 — 双修法门已成</p>' : '') +
     '<div class="ending-reason">'+ending+'</div>';
 
   // Copy life log to ending panel
