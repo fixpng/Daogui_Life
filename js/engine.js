@@ -147,12 +147,8 @@ function startGame() {
   gameState.location = birthLocations[Math.floor(Math.random()*birthLocations.length)];
   gameState.wealth += Math.floor(gameState.location.wealth/2);
 
-  // Year assignment: ancient person or normal
-  if(gameState.talents.find(function(t){return t.id==='gu_ren';})) {
-    gameState.year = -(200 + Math.floor(Math.random() * 1800));
-  } else {
-    gameState.year = Math.floor(Math.random()*60)-50;
-  }
+  // Year assignment
+  gameState.year = Math.floor(Math.random()*60)-50;
 
   gameState.visitedLocations.push(gameState.location.id);
 
@@ -319,7 +315,6 @@ function nextYear() {
     cultGain = Math.floor(Math.random() * 2) + compBonus;
     // 天赋加成（但仍需要有机缘才能触发）
     if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 2;
-    if(gameState.talents.find(function(t){return t.id==='jie_dan';}) && gameState.cultivation<60) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='xian_gu';})) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='wu_xing';})) cultGain += 1;
   }
@@ -336,7 +331,6 @@ function nextYear() {
   }
 
   // Ancient person cultivation bonus
-  if(gameState.talents.find(function(t){return t.id==='gu_ren';}) && gameState.year < -100) cultGain += 2; // 远古灵气充沛
 
   // Faction rank progression
   if(gameState.faction !== 'none' && FACTIONS[gameState.faction] && FACTIONS[gameState.faction].rankReqs) {
@@ -391,10 +385,6 @@ function nextYear() {
   if(gameState.talents.find(function(t){return t.id==='gui_ying';}) && Math.random()<0.08) { gameState.cultivation += 4; gameState.sanity = Math.max(0, gameState.sanity - 2); }
   if(gameState.talents.find(function(t){return t.id==='fan_gu';}) && Math.random()<0.10) { gameState.comprehension += 2; gameState.cultivation += 1; }
   if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.05) { gameState.constitution -= 1; } // 命格短促
-  if(gameState.talents.find(function(t){return t.id==='dan_yang_chuan';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.comprehension += 1; }
-  if(gameState.talents.find(function(t){return t.id==='she_dao_ren';}) && Math.random()<0.10) { gameState.connections += 2; }
-  if(gameState.talents.find(function(t){return t.id==='nuo_wu_ti';}) && Math.random()<0.08) { gameState.cultivation += 2; gameState.sanity = Math.min(120, gameState.sanity + 1); }
-  if(gameState.talents.find(function(t){return t.id==='kuang_lu';}) && Math.random()<0.08) { gameState.cultivation += 3; gameState.constitution += 1; }
   if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.15) { gameState.cultivation += 2; }
   if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.12) { gameState.constitution += 1; }
 
@@ -1371,7 +1361,6 @@ function gameOver(reason) {
   if(gameState.talents.find(function(t){return t.id==='mo_ying';}) && gameState.age>=50) unlockAchieve('shadow_friend');
 
   // Ancient person achievement
-  if(gameState.talents.find(function(t){return t.id==='gu_ren';}) && gameState.cultivation>=100) unlockAchieve('ancient_master');
 
   // New attribute achievements
   if(gameState.qiyun>=80) unlockAchieve('good_qiyun');
