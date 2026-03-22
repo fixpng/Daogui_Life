@@ -7,12 +7,10 @@ const TALENTS = {
     {id:'tian_yan',name:'天眼',desc:'能窥见常人不可见之物',effect:{sanity:-10,cultivation:15,comprehension:20},type:'special',rarity:'epic',hint:'修为+15 悟性+20 神志-10'},
     {id:'gui_mai',name:'鬼脉',desc:'先天通灵体质，与亡者共鸣',effect:{sanity:-15,cultivation:20,qiyun:-10,karma:-5},type:'special',rarity:'epic',hint:'修为+20 气运-10 因果-5 神志-15'},
     {id:'gu_ren',name:'古人',desc:'你并非此世之人，出生于数百乃至上千年前的远古时代',effect:{cultivation:15,connections:-15,comprehension:10},type:'special',rarity:'legendary',hint:'修为+15 悟性+10 人脉-15 出生年份为远古时代'},
-    // === 道诡异仙特色天赋 ===
     {id:'long_mai',name:'龙脉之体',desc:'天生与龙脉相合，可吸收龙脉之力修炼',effect:{cultivation:25,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 可感应龙脉'},
     {id:'si_ming',name:'司命之种',desc:'身负成为司命的潜质，感知天道之力',effect:{cultivation:20,comprehension:20,qiyun:15},type:'special',rarity:'legendary',hint:'修为+20 悟性+20 气运+15 风险与机遇并存'},
     {id:'yang_tian',name:'阳男',desc:'先天纯阳之体，修炼阳刚功法进境极快',effect:{cultivation:20,constitution:15,sanity:10},type:'special',rarity:'epic',hint:'修为+20 体魄+15 神志+10'},
     {id:'yin_nv',name:'阴女',desc:'先天纯阴之体，修炼阴柔功法进境极快',effect:{cultivation:20,comprehension:10,sanity:15},type:'special',rarity:'epic',hint:'修为+20 悟性+10 神志+15'},
-    // === 更多道诡异仙原创天赋 ===
     {id:'wang_zai',name:'罔灾',desc:'坐忘道斗姥选中之人，注定成为灾祸的化身',effect:{cultivation:30,sanity:-25,qiyun:-15},type:'special',rarity:'legendary',hint:'修为+30 神志-25 气运-15 坐忘道有特殊机遇'},
     {id:'tian_nai',name:'天内',desc:'生而为天内，天生能够看见白玉京',effect:{sanity:-20,cultivation:25,comprehension:15},type:'special',rarity:'legendary',hint:'神志-20 修为+25 悟性+15 白玉京对你敞开门户'},
     {id:'xin_bo',name:'心蟠',desc:'身负无生老母的心蟠，擅长身份伪装与阵营庇护。可掩盖自身特质规避因果律束缚，坐忘道的欺骗手段对你效果较弱。加入监天司等势力可获得额外庇护。',effect:{cultivation:15,sanity:25,karma:10,connections:15},type:'special',rarity:'legendary',hint:'神志+25 人脉+15 因果+10 伪装身份 势力庇护'},
@@ -93,7 +91,6 @@ const LOCATIONS = [
   {id:'shang_jing',name:'上京城',desc:'大梁国都，天子脚下，龙气汇聚',danger:15,wealth:90},
   {id:'si_qi',name:'四齐',desc:'大齐故地，法教入侵后满目疮痍',danger:55,wealth:20},
   {id:'an_ci',name:'安慈庵',desc:'静心师太曾在此驱邪济世',danger:25,wealth:10},
-  // === NEW LOCATIONS ===
   {id:'zheng_de_si',name:'正德寺',desc:'佛门圣地，但传闻做着什么勾当',danger:45,wealth:35},
   {id:'kun_lun',name:'昆仑',desc:'传说中的万山之祖，上古秘境所在',danger:60,wealth:40},
   {id:'baiyu_jing',name:'白玉京',desc:'倒悬于天空的神之城，天道汇聚之地',danger:80,wealth:0},
