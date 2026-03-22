@@ -173,6 +173,8 @@ const ITEMS = [
   {id:'tong_ling',name:'铜铃',desc:'李火旺的铜铃，轻摇时能安定心神',effect:{sanity:30,cultivation:10}},
   {id:'zuo_wang_lun',name:'坐忘论',desc:'坐忘道的核心功法秘籍',effect:{cultivation:30,comprehension:15,sanity:-20}},
   {id:'ci_bei_zhu',name:'慈悲珠',desc:'无生老母慈悲天道的结晶',effect:{karma:20,sanity:15,cultivation:15}},
+  {id:'po_tong_jing',name:'破铜镜',desc:'河底捞出的古旧铜镜，镜面模糊，触手冰凉',effect:{comprehension:5,sanity:3}},
+  {id:'yu_jian',name:'古玉简',desc:'老乞丐赠予的玉简，刻有模糊的古文',effect:{cultivation:10,comprehension:8}},
 ];
 
 const ACHIEVEMENTS = [
@@ -1635,15 +1637,15 @@ const CANONICAL_EVENTS = [
     {text:'闭目修炼抵御',effect:{cultivation:15,comprehension:10,sanity:-10},log:'你在黑暗中感知到了天道的波动'},
     {text:'帮助受灾百姓',effect:{karma:15,connections:15,qiyun:5},log:'你在天灾中救助了不少人'},
     {text:'躲在家中',effect:{sanity:-5},log:'黑暗过去后，世界似乎变了'}]},
-  {text:'有人在<span class="loc">大梁</span>各地发现了<span class="itm">龙脉</span>的踪迹——由一位位皇帝摞成的神秘存在，蕴含着秩序司命<span class="npc">蟠螭</span>的天道之力。',
+  {text:'有人在<span class="loc">大梁</span>各地发现了<span class="mys">龙脉</span>的踪迹——地底深处有巨大的东西在涌动，每逢龙脉经过之地，方圆十里草木疯长、灵气紊乱。',
     trigger:{minAge:20,yearMin:16,yearMax:25,cultivation:50},choices:[
     {text:'尝试感应龙脉',effect:{cultivation:30,comprehension:15,sanity:-15},log:'龙脉的气息让你浑身颤栗——那是超越凡人理解的力量'},
-    {text:'收集龙脉情报',effect:{connections:15,comprehension:10,wealth:10},log:'你打听到龙脉可以免疫绝大部分的神通功法'},
+    {text:'收集龙脉情报',effect:{connections:15,comprehension:10,wealth:10},log:'你打听到龙脉似乎和历代皇帝有关，所过之处神通法术皆失效'},
     {text:'不碰这种东西',effect:{sanity:5},log:'龙脉之事，非凡人能染指'}]},
-  {text:'江湖传闻<span class="npc">李火旺</span>已非凡人——他以<span class="itm">先天一炁</span>成就了自己的司命<span class="mys">季灾</span>，掌管迷惘与清醒。',
+  {text:'江湖中突然传出一个骇人的消息：<span class="npc">李火旺</span>做了一件前无古人的事——没人说得清具体是什么，但天象异变、大地震动，似乎天地法则本身都被动摇了。',
     trigger:{minAge:18,yearMin:18,yearMax:28,cultivation:40},mandatory:true,choices:[
-    {text:'追寻季灾之道',effect:{cultivation:20,comprehension:20,sanity:-20},log:'迷惘与清醒...你第一次思考"道"的本质'},
-    {text:'敬而远之',effect:{sanity:5,qiyun:3},log:'凡人不该妄想成为司命'}]},
+    {text:'打听详情',effect:{comprehension:20,sanity:-15,cultivation:10},log:'众说纷纭，有人说他成了仙，有人说他疯了，有人说他变成了"那种东西"——没人敢说清楚是什么'},
+    {text:'敬而远之',effect:{sanity:5,qiyun:3},log:'那种层次的事，你连想都不敢想'}]},
 
   // --- 卷4 时期: 法教入侵 / 补白玉京 (year 20 ~ 35) ---
   {text:'<span class="fac">法教</span>大军从大齐涌入，<span class="danger-text">四齐沦陷</span>！法教的十二大巫以活人祭祀召唤<span class="npc">于儿神</span>，所过之处寸草不生。',
@@ -1656,49 +1658,49 @@ const CANONICAL_EVENTS = [
     {text:'响应号召',effect:{cultivation:20,connections:25,constitution:-8,qiyun:10},log:'你在联军中作战，亲眼见证了各派高手的风采',combat:80},
     {text:'提供情报支援',effect:{connections:15,wealth:15,comprehension:5},log:'你在后方为联军提供了关键情报'},
     {text:'隔岸观火',effect:{comprehension:5},log:'两边的力量都太过恐怖'}]},
-  {text:'法教覆灭后，<span class="npc">于儿神</span>被斗杀，但天灾再次降临——<span class="danger-text">死亡消失了</span>！没有任何生物能够死去。',
+  {text:'法教覆灭后，天地间发生了<span class="danger-text">不可思议的异变</span>——<span class="danger-text">死亡消失了</span>！没有任何生物能够死去，被砍断的手还在动，被杀的鸡还在跑。',
     trigger:{minAge:12,yearMin:25,yearMax:33},mandatory:true,choices:[
     {text:'利用不死之身修炼',effect:{cultivation:30,constitution:10,sanity:-20},log:'在无法死亡的日子里，你疯狂地修炼，承受着本该致死的痛苦'},
-    {text:'寻找原因',effect:{comprehension:15,sanity:-15,cultivation:10},log:'你意识到是白玉京中掌管死亡的天道出了问题'},
+    {text:'寻找原因',effect:{comprehension:15,sanity:-15,cultivation:10},log:'没有人知道为什么。有老修士猜测是某种天地法则被打破了，但具体是什么，众说纷纭'},
     {text:'惊恐不安',effect:{sanity:-10},log:'不能死去...这比死亡更恐怖'}]},
-  {text:'<span class="loc">白玉京</span>的裂隙肉眼可见地出现在天空中！巨大的倒悬之城时隐时现，<span class="mys">牦之门</span>的轮廓清晰可辨。',
-    trigger:{minAge:20,yearMin:28,yearMax:36,cultivation:80},mandatory:true,choices:[
-    {text:'尝试接近白玉京',effect:{cultivation:50,sanity:-30,comprehension:20,qiyun:-10},log:'你在白玉京的边缘感受到了十六条天道的余韵——迷惘、清醒、死亡、慈悲、谎言、痛苦、秘密、秩序...',achieve:'witness_baiyu',visit:'baiyu_jing'},
-    {text:'远远膜拜',effect:{cultivation:15,sanity:-10,qiyun:5},log:'凡人只能仰望神的居所'}]},
-  {text:'<span class="npc">玄牝</span>司丞突然化为<span class="mys">六爪金龙</span>，带着一群龙人冲入白玉京裂隙！传闻这是为了给<span class="npc">李火旺</span>补充龙气以修补白玉京。',
+  {text:'天空出现了<span class="danger-text">前所未见的异象</span>——巨大的裂缝撕开了苍穹，隐约可见一座<span class="mys">倒悬之城</span>的轮廓在云层之上时隐时现。整个大梁的人都看到了。',
+    trigger:{minAge:20,yearMin:28,yearMax:36},mandatory:true,choices:[
+    {text:'跪地膜拜',effect:{cultivation:15,sanity:-10,qiyun:5,karma:5},log:'无数人跪在地上叩首。没人知道那是什么，但所有人都感受到了那种超越凡人的威压'},
+    {text:'冷静观察',effect:{comprehension:20,sanity:-15,cultivation:10},log:'你强忍恐惧仔细观察——那座城市的建筑不属于人间的任何风格。裂缝持续了三天三夜才消散'}]},
+  {text:'<span class="npc">玄牝</span>司丞率领一群修士冲入了天空中的裂缝——然后整个人<span class="mys">化为了一条金龙</span>！数万人亲眼目睹了这一幕。从此之后再无人见过玄牝。',
     trigger:{minAge:15,yearMin:28,yearMax:35},mandatory:true,choices:[
-    {text:'助阵',effect:{cultivation:20,constitution:-10,qiyun:15,connections:15},log:'你贡献了自己的一份力量，虽然微薄',visit:'baiyu_jing'},
-    {text:'见证历史',effect:{comprehension:15,sanity:-10},log:'你亲眼看到了凡人化龙的壮观一幕'}]},
+    {text:'为玄牝立碑',effect:{karma:10,connections:10},log:'不管他去了哪里，化龙的一幕已成为这一代人最刻骨铭心的记忆'},
+    {text:'试图理解化龙之术',effect:{comprehension:15,cultivation:10,sanity:-10},log:'人怎么可能变成龙？这究竟是什么样的修为？你百思不得其解'}]},
 
-  // --- 卷5 时期: 福生天入侵 / 大傩觉醒 (year 30 ~ 45) ---
-  {text:'天灾接连发生——先是<span class="danger-text">谎言消失</span>（没人能说谎了），然后<span class="danger-text">腐烂消失</span>（尸体不再腐烂）。天道一条条出了问题。',
+  // --- 卷5 时期: 天地异变 (year 30 ~ 45) ---
+  {text:'天灾接连发生——先是<span class="danger-text">没人能说谎了</span>，所有人开口只能说真话；然后<span class="danger-text">尸体不再腐烂</span>，死去的人保持着死前的样子。世界的法则一条条失灵。',
     trigger:{minAge:15,yearMin:30,yearMax:40},mandatory:true,choices:[
-    {text:'寻找天灾根源',effect:{comprehension:20,cultivation:15,sanity:-20},log:'你逐渐意识到——白玉京中的司命们正在被什么东西侵蚀'},
+    {text:'记录每一种异变',effect:{comprehension:20,cultivation:10,sanity:-15},log:'你把每种异变都记录了下来——谎言消失、腐烂停止、疼痛消失……像是有什么东西在一样一样地被夺走'},
     {text:'适应新世界',effect:{cultivation:10,comprehension:5},log:'没有谎言的世界...反而更混乱了'},
     {text:'恐惧退缩',effect:{sanity:-15},log:'世界正在崩塌，你无力阻止'}]},
-  {text:'修士圈中传来噩耗：被<span class="danger-text">福生天</span>污染的<span class="npc">三清元尊</span>正在祸害白玉京中的其他司命。<span class="npc">李火旺</span>正带领诸司命进行最后的抵抗。',
-    trigger:{minAge:20,yearMin:33,yearMax:42,cultivation:60},choices:[
-    {text:'贡献修为助力',effect:{cultivation:-20,qiyun:25,karma:20,comprehension:15},log:'你将部分修为化为力量投入白玉京方向——虽然不知道有没有用'},
-    {text:'为天下祈祷',effect:{karma:10,sanity:-10,qiyun:5},log:'你跪地祈祷，愿天道平安'},
-    {text:'在乱世中自保',effect:{constitution:5,sanity:-5},log:'天道之战，非凡人能干预'}]},
-  {text:'一道<span class="mys">金光</span>从白玉京中射出，天地间所有天灾在同一时刻<span class="itm">消失</span>了。传闻<span class="npc">季灾</span>吞食了所有天道，以一己之力成为了新的<span class="itm">大傩</span>——守护着白玉京。',
+  {text:'天空中的异象越来越频繁——<span class="danger-text">黑色的裂缝</span>不断出现，有修士看到裂缝中有<span class="mys">巨大的眼睛</span>在窥视人间。各大门派紧急集结。',
+    trigger:{minAge:20,yearMin:33,yearMax:42,cultivation:40},choices:[
+    {text:'贡献自己的力量',effect:{cultivation:-15,qiyun:20,karma:15,comprehension:10},log:'你不知道各派高人在做什么，但你能感受到——他们在和某种不可名状的东西对抗'},
+    {text:'为天下祈祷',effect:{karma:10,sanity:-10,qiyun:5},log:'你跪地祈祷，愿这一切快点结束'},
+    {text:'在乱世中自保',effect:{constitution:5,sanity:-5},log:'天塌下来有高个子顶着'}]},
+  {text:'某一天，一道<span class="mys">金光</span>从天际射出，照亮了整个世界。同一瞬间，所有异变<span class="itm">全部消失了</span>——谎言回来了、死亡回来了、腐烂回来了。天地恢复了正常。没人知道发生了什么。',
     trigger:{minAge:15,yearMin:35,yearMax:45},mandatory:true,choices:[
-    {text:'感悟季灾之道',effect:{cultivation:40,comprehension:25,sanity:20},log:'迷惘即清醒，清醒即迷惘。你在季灾的道中看到了一切的答案。',achieve:'witness_jizai'},
-    {text:'庆祝太平',effect:{qiyun:15,connections:10,karma:5},log:'天下终于太平了，百姓欢呼雀跃'},
-    {text:'继续修行',effect:{cultivation:15,comprehension:10},log:'不管天道如何变迁，你只走自己的道'}]},
+    {text:'感叹天地之力',effect:{comprehension:25,cultivation:15,sanity:10},log:'那道金光的余韵在你心中久久不散。你不知道是谁拯救了这个世界，但你知道有人做到了'},
+    {text:'庆祝太平',effect:{qiyun:15,connections:10,karma:5},log:'天下终于太平了，百姓欢呼雀跃。有人说是佛祖显灵，有人说是天道自愈'},
+    {text:'继续修行',effect:{cultivation:15,comprehension:10},log:'不管天地发生了什么，你只走自己的道'}]},
 
   // --- 天陈国相关 (year 25 ~ 35) ---
-  {text:'一个名为<span class="fac">天陈</span>的神秘国家浮出水面，其统治者<span class="npc">左丘咏</span>据说能直接掌控一条天道——<span class="mys">生长</span>。他驾着金龙向大梁进发。',
+  {text:'一个名为<span class="fac">天陈</span>的神秘国家突然出现在大梁边境——据说其统治者<span class="npc">左丘咏</span>拥有某种让万物疯狂生长的诡异能力。他驾着金龙向大梁进发，所过之处草木化为参天巨树、农田变成密林。',
     trigger:{minAge:18,yearMin:25,yearMax:33,cultivation:40},choices:[
-    {text:'加入抵抗',effect:{cultivation:20,connections:15,constitution:-10,qiyun:5},log:'你在抵抗左丘咏的战役中出了一份力，但面对掌控天道之人，你感到无比渺小',combat:90},
-    {text:'研究天陈历史',effect:{comprehension:15,cultivation:10},log:'你发现天陈就是过去的"真空家乡"——曾被无生老母彻底控制的国度'},
-    {text:'远离战场',effect:{sanity:-5},log:'凡间司命之间的较量，不是你能参与的'}]},
+    {text:'加入抵抗',effect:{cultivation:20,connections:15,constitution:-10,qiyun:5},log:'你在抵抗左丘咏的战役中出了一份力，但面对那种不可思议的力量，你感到无比渺小',combat:90},
+    {text:'打听天陈的来历',effect:{comprehension:15,cultivation:10},log:'有人说天陈就是传说中的"真空家乡"——一个被某种力量彻底控制的国度，已经存在了不知多少年'},
+    {text:'远离战场',effect:{sanity:-5},log:'那种层面的较量，不是你能参与的'}]},
 
   // --- 各派日常重大事件 ---
-  {text:'<span class="fac">白莲教</span>的<span class="npc">圣女白灵淼</span>突然现身，传闻她是<span class="mys">无生老母</span>的心蟠，能直接召唤无生老母。',
+  {text:'<span class="fac">白莲教</span>的<span class="npc">圣女白灵淼</span>突然现身——一个白发红瞳的女子，传闻她能做到常人不可能做到的事。白莲教众对她顶礼膜拜。',
     trigger:{minAge:15,yearMin:10,yearMax:30},choices:[
-    {text:'设法面见圣女',effect:{connections:20,cultivation:10,sanity:-10},log:'白灵淼的气质令人既敬畏又怜惜——一个白化病女子，却承载着司命的力量'},
-    {text:'远离白莲教的事',effect:{},log:'司命的心蟠，那是另一个层次的存在'}]},
+    {text:'设法面见圣女',effect:{connections:20,cultivation:10,sanity:-10},log:'白灵淼的气质令人既敬畏又怜惜。她很安静，但你隐约感到她身上有一种远超修为的力量'},
+    {text:'远离白莲教的事',effect:{},log:'白莲教的圣女，不是你该去打听的'}]},
   {text:'<span class="fac">兵家</span>的传承物<span class="itm">兵书</span>重现江湖。将血涂抹在书页上可修行兵家之法：煞气冲击、扩大体型、血肉不灭则肉身不死。',
     trigger:{minAge:18,yearMin:5,yearMax:25,cultivation:30},choices:[
     {text:'设法获取兵书残页',effect:{cultivation:20,constitution:10,karma:-10,connections:-5},log:'你得到了一页兵书残页，修炼后感到煞气充盈',combat:60},
@@ -1924,10 +1926,10 @@ const CANONICAL_EVENTS = [
     {text:'躲着他',effect:{sanity:3},log:'监天司的人来从来不是好事'}]},
 
   // --- 监天司·玄牝补充 (year 15 ~ 35) ---
-  {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>的真实身份被揭露——她不是人类，而是<span class="mys">蟠螭</span>一族的龙人。她体内流淌着龙脉之血，能化身六爪金龙。这个秘密让整个监天司震动。',
+  {text:'<span class="fac">监天司</span>司丞<span class="npc">玄牝</span>的真实身份被揭露——她不是普通人类，而是某种<span class="mys">龙人</span>血脉的后裔。她体内流淌着龙脉之血。这个秘密让整个监天司震动。',
     trigger:{minAge:18,yearMin:15,yearMax:30,cultivation:40},choices:[
-    {text:'去见玄牝',effect:{connections:15,cultivation:10,comprehension:10,sanity:-5},log:'玄牝的龙威令人窒息——她虽是龙人，但为守护大梁已经付出了太多'},
-    {text:'研究龙人血脉',effect:{comprehension:15,cultivation:8},log:'龙人是蟠螭司命的后裔，体内的龙脉之血赋予了他们秩序天道的力量碎片'},
+    {text:'去见玄牝',effect:{connections:15,cultivation:10,comprehension:10,sanity:-5},log:'玄牝的气场令人窒息——她虽然不是纯正人类，但为守护大梁已经付出了太多'},
+    {text:'研究龙人血脉',effect:{comprehension:15,cultivation:8},log:'龙人的血脉极为稀有，传闻他们和大梁的龙脉有某种深层联系'},
     {text:'无所谓',effect:{},log:'人也好龙也好，能守护天下就是好人'}]},
 
   // --- 大千录（袄景教传承法器） (year 10 ~ 25) ---
@@ -2783,4 +2785,71 @@ const TALENT_EVENTS = [
   {check:'duan_ming',trigger:{minAge:18},text:'一个<span class="npc">相士</span>拉住你："施主面有<span class="danger-text">死气</span>，恐怕不过而立之年。"',choices:[
     {text:'问有无破解之法',effect:{comprehension:8,cultivation:5,wealth:-10},log:'相士说唯有修真可延寿，卖了你一本入门功法'},
     {text:'既然命短就活得精彩',effect:{qiyun:10,cultivation:5,karma:3,sanity:5},log:'不怕死的人反而活得比谁都洒脱'}]},
+];
+
+// ========== 前后联系事件（需要flag/npc系统） ==========
+const LINKED_EVENTS = [
+  // === 童年恩人线 ===
+  {trigger:{minAge:5,maxAge:10},text:'你在路边饿得快晕倒了。一个卖<span class="itm">包子</span>的<span class="npc">大叔</span>看你可怜，塞给你两个热包子，还摸了摸你的头："孩子，好好活着。"',choices:[
+    {text:'狼吞虎咽',effect:{constitution:5,karma:3,connections:3},log:'你记住了大叔的脸。这辈子第一次有陌生人对你好。',npcMeet:'baozi_uncle',npcFavor:10,npcTag:'恩人',setFlag:'baozi_saved'},
+    {text:'把一个包子分给旁边的小乞丐',effect:{karma:8,connections:5,constitution:3},log:'大叔看到你分包子，笑着又多给了你一个。',npcMeet:'baozi_uncle',npcFavor:15,npcTag:'恩人',setFlag:'baozi_saved'}]},
+  // 报恩
+  {trigger:{minAge:25},flagReq:'baozi_saved',npcReq:'baozi_uncle',text:'你在集市上看到了一个熟悉的身影——当年给你包子的<span class="npc">大叔</span>。他老了很多，包子摊也破旧了。他似乎没认出你。',choices:[
+    {text:'买下他所有的包子',effect:{wealth:-10,karma:10,connections:5},log:'你买光了大叔的包子，分给了路过的穷人。大叔笑得合不拢嘴。你没告诉他你是谁，但你心里的一块石头落了地。',npcMeet:'baozi_uncle',npcFavor:10},
+    {text:'帮他翻新摊位',effect:{wealth:-20,karma:15,connections:10},log:'你出钱帮大叔翻新了摊位。他认出了你："你是当年那个孩子？！"你们相拥而泣。',npcMeet:'baozi_uncle',npcFavor:20},
+    {text:'默默路过',effect:{karma:-3},log:'你假装没看到。他只是个卖包子的，你现在...不一样了。'}]},
+
+  // === 少年仇人线 ===
+  {trigger:{minAge:8,maxAge:14},text:'一个比你大几岁的<span class="danger-text">恶少</span>抢了你的东西，还把你打了一顿。他叫<span class="npc">周胖子</span>，是本地小地主的儿子。你鼻青脸肿地躺在地上，他扬长而去。',choices:[
+    {text:'记住他的脸',effect:{sanity:-5,comprehension:3},log:'你咬着牙记住了——周胖子。总有一天你会让他加倍偿还。',npcMeet:'zhou_pangzi',npcFavor:-20,npcTag:'仇人',setFlag:'zhou_bullied'},
+    {text:'忍了',effect:{sanity:-3},log:'你爬起来拍了拍灰。这种事已经不是第一次了。',setFlag:'zhou_bullied'},
+    {text:'追上去拼了',effect:{constitution:-8,sanity:3,cultivation:3},log:'你被打得更惨了，但你一口咬在他手上，他疼得嗷嗷叫。从此他对你多了一分忌惮。',npcMeet:'zhou_pangzi',npcFavor:-10,npcTag:'仇人',setFlag:'zhou_bullied'}]},
+  // 三十年河东
+  {trigger:{minAge:30},flagReq:'zhou_bullied',text:'你路过一个破落的村庄，看到一个胖乎乎的中年男人在路边乞讨。仔细一看——是<span class="npc">周胖子</span>！当年那个地主家的恶少，如今瘦了一圈，衣衫褴褛。他认出了你，吓得往后缩。',choices:[
+    {text:'递给他一碗饭',effect:{karma:15,sanity:5,connections:3},log:'"吃吧。"你只说了两个字。周胖子愣了半天，然后哭了出来。他磕了三个头："对不起...对不起..."'},
+    {text:'冷冷看他一眼就走',effect:{sanity:3},log:'你没说话，只是看了他一眼。那个眼神比任何报复都让他害怕。'},
+    {text:'还他当年那一拳',effect:{karma:-5,sanity:5,constitution:3},log:'你一拳打在他脸上："这是还你小时候的。"周胖子不敢还手，捂着脸嚎啕大哭。打完之后你反而觉得空虚——这不值得。'}]},
+
+  // === 救命之恩线 ===
+  {trigger:{minAge:15,maxAge:30},text:'你在山路上遇到一个被毒蛇咬伤的<span class="npc">年轻女子</span>，她面色发青，已经快不行了。',choices:[
+    {text:'帮她吸出毒液',effect:{constitution:-5,karma:10,connections:10},log:'你冒着中毒的危险救了她。她说她叫<span class="npc">沈青萍</span>，是个走镖的。她说她欠你一条命。',npcMeet:'shen_qingping',npcFavor:30,npcTag:'救命恩',setFlag:'saved_shen'},
+    {text:'去附近找草药',effect:{karma:8,connections:5,comprehension:3},log:'你找到了解毒的草药，虽然晚了点但总算救了她。她说叫沈青萍，走镖的。',npcMeet:'shen_qingping',npcFavor:20,npcTag:'恩人',setFlag:'saved_shen'},
+    {text:'不敢冒险',effect:{karma:-5,sanity:-3},log:'你犹豫了太久...等你下定决心时她已经不动了。你在路边挖了个坑埋了她。'}]},
+  // 恩人回报
+  {trigger:{minAge:30},flagReq:'saved_shen',npcReq:'shen_qingping',text:'你陷入了一场麻烦——被几个<span class="danger-text">强盗</span>围在了死胡同里。正当你以为完了的时候，一个身影从天而降，三拳两脚就把强盗打翻了。是<span class="npc">沈青萍</span>！她比当年壮了不少，腰间别着一把刀。',choices:[
+    {text:'叙旧',effect:{connections:15,wealth:10,qiyun:5},log:'"当年你救了我，今天我还你。"她笑着拍了拍你的肩。她现在是一方镖头，手下有百号人。你们成了过命的交情。',npcMeet:'shen_qingping',npcFavor:15},
+    {text:'让她教你几招',effect:{cultivation:10,constitution:8,connections:10},log:'沈青萍教了你几手实战搏击术。"下次别落单。"她说。',npcMeet:'shen_qingping',npcFavor:10}]},
+
+  // === 物品前后联系线 ===
+  // 早期捡到破铜镜
+  {trigger:{minAge:8,maxAge:15},text:'你在河边洗脸时，水底反射出一道奇怪的光。你伸手摸去，捞出了一面<span class="itm">破铜镜</span>——镜面模糊不清，但触手冰凉。',choices:[
+    {text:'留着',effect:{comprehension:3},log:'你把破铜镜揣在怀里。虽然照不清人，但你莫名觉得这东西不一般。',item:'po_tong_jing',setFlag:'has_mirror'},
+    {text:'扔回河里',effect:{},log:'就是个破镜子而已。你没多想。'}]},
+  // 铜镜发挥作用
+  {trigger:{minAge:20},flagReq:'has_mirror',text:'一个邪修向你释放了<span class="danger-text">摄魂术</span>！你感到意识在被抽离身体——就在这时，怀里的<span class="itm">破铜镜</span>突然<span class="mys">发出耀眼的光芒</span>，将邪术反弹了回去！邪修惨叫一声逃走了。',choices:[
+    {text:'仔细研究铜镜',effect:{cultivation:15,comprehension:12,sanity:-5},log:'铜镜上的锈迹脱落了一些，露出了隐约的符文。这不是普通的镜子——它可能是某种上古法器的碎片',req:{item:'po_tong_jing'}},
+    {text:'感谢铜镜救命',effect:{qiyun:8,cultivation:5},log:'你不懂符文，但你知道这面镜子救了你一命。你更加珍惜地收好了它'}]},
+
+  // === 师恩线 ===
+  {trigger:{minAge:12,maxAge:20},text:'一位云游的<span class="npc">老道士</span>在你家门口歇脚。他看了你一眼说："这孩子根骨不错，我教你三招防身的功夫吧。不收钱。"',choices:[
+    {text:'恭敬拜师',effect:{cultivation:10,constitution:5,comprehension:8},log:'老道士教了你三天三夜，你学到了吐纳入门和一套简单的拳法。临走时他说："二十年后若还记得老道，来<span class="loc">终南山</span>找我。"',npcMeet:'lao_daoshi',npcFavor:20,npcTag:'恩师',setFlag:'daoshi_taught'},
+    {text:'学完不想走',effect:{cultivation:12,comprehension:10,connections:5},log:'老道士笑了："缘分到了自然会再见。"他飘然而去，你追不上。',npcMeet:'lao_daoshi',npcFavor:15,npcTag:'恩师',setFlag:'daoshi_taught'}]},
+  // 多年后重逢
+  {trigger:{minAge:35},flagReq:'daoshi_taught',npcReq:'lao_daoshi',text:'你在山中修行时偶遇一座小道观。进去一看——<span class="npc">当年教你功夫的老道士</span>正在院中打拳！他看起来竟然一点没变老。',choices:[
+    {text:'上前行礼',effect:{cultivation:20,comprehension:15,connections:10},log:'"你来了。"老道士好像早就知道你会来。他又教了你三天，这次的功法比当年深了百倍。',npcMeet:'lao_daoshi',npcFavor:15},
+    {text:'偷偷观摩他的功法',effect:{cultivation:12,comprehension:20},log:'你没有打扰他，只是远远看着。光是看他打拳，你就悟了不少东西。几十年不老...这位老道士究竟是什么人？'}]},
+
+  // === 因果报应线 ===
+  {trigger:{minAge:15,maxAge:25},text:'路边有个<span class="npc">老乞丐</span>被一群人欺负。他们往他身上泼脏水，还踢他的碗。',choices:[
+    {text:'出手相助',effect:{karma:12,connections:5,wealth:-3},log:'你赶走了那群人，给老乞丐买了碗热面。他对你深深鞠了一躬，从怀里取出一个<span class="itm">破布包</span>递给你："施主的善心，老朽无以为报。这东西留给有缘人。"包里是一枚古朴的<span class="itm">玉简</span>。',setFlag:'helped_beggar',item:'yu_jian'},
+    {text:'视而不见',effect:{karma:-3},log:'你低头走过。这世上受苦的人太多了，你管不过来。'},
+    {text:'也踹他一脚',effect:{karma:-15,sanity:-3,connections:-5},log:'你不知道为什么也踹了一脚。事后你心里不好受。',setFlag:'kicked_beggar'}]},
+  // 善报
+  {trigger:{minAge:30},flagReq:'helped_beggar',text:'你遇到了生死危机——被困在了一座即将坍塌的废墟里。就在绝望的时候，一个声音响起："<span class="mys">善缘已种，善果自来。</span>"一股无形的力量将你托出了废墟。你想起了当年那个<span class="npc">老乞丐</span>。',choices:[
+    {text:'感叹因果不虚',effect:{karma:10,qiyun:10,cultivation:8,sanity:5},log:'一碗面换一条命。你从此更加坚信善有善报'},
+    {text:'四处寻找老乞丐',effect:{comprehension:10,connections:5},log:'你找了很久也没找到他。也许他根本不是普通的乞丐'}]},
+  // 恶报
+  {trigger:{minAge:30},flagReq:'kicked_beggar',text:'你连续遭遇了诸多不幸——先是生意赔了，然后朋友背叛你，最后你在路上无缘无故摔断了腿。躺在床上时，你突然想起了那个被你踢过的<span class="npc">老乞丐</span>。',choices:[
+    {text:'后悔不已',effect:{karma:5,sanity:-8,constitution:-5},log:'你开始反思自己的所作所为。也许这就是因果报应'},
+    {text:'不信这些',effect:{sanity:-5},log:'你不信什么因果。只是运气不好罢了——但心底那个声音说：真的只是运气吗？'}]},
 ];

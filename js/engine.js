@@ -8,6 +8,8 @@ var gameState = {
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
+  npcMet: {},   // NPC记忆: {npc_id: {favor: 数值, met_age: 首次相遇年龄, tag: '标签'}}
+  flags: {},    // 事件标记: {flag_name: true/value} 用于事件前后联系
   dualCultWarned:false,
   lastLifeTalents:[],
   xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'
@@ -118,6 +120,8 @@ function startGame() {
     visitedLocations: [],
     factionHistory: [],  // Reset faction history for new run
     eventHistory: new Set(),
+    npcMet: {},
+    flags: {},
     dualCultWarned: false,
     lastLifeTalents: gameState.lastLifeTalents || [],  // Keep last life's talents for carry-over feature
     xinpan: null // 心蟠状态重置
@@ -282,15 +286,15 @@ function getRealmName(c) {
 function getEraName() {
   var y = gameState.year;
   if(y<-500) return '远古';
-  if(y<-100) return '诸司命并立';
-  if(y<-10) return '丹阳子活跃';
-  if(y<1) return '清风观覆灭';
-  if(y<5) return '李火旺入世';
+  if(y<-100) return '乱世';
+  if(y<-10) return '邪道横行';
+  if(y<1) return '清风观之变';
+  if(y<5) return '妖邪四起';
   if(y<15) return '坐忘道之乱';
-  if(y<25) return '龙脉纷争';
-  if(y<35) return '白玉京之战';
-  if(y<50) return '季灾降世';
-  return '后季灾';
+  if(y<25) return '龙脉异动';
+  if(y<35) return '天降异象';
+  if(y<50) return '天地巨变';
+  return '太平年间';
 }
 
 // === LIFESPAN BY CULTIVATION ===
@@ -717,6 +721,10 @@ function nextYear() {
     if(ev.locReq && !gameState.visitedLocations.includes(ev.locReq)) return false;
     if(ev.noTalent && gameState.talents.find(function(t){return t.id===ev.noTalent;})) return false;
     if(ev.check && !gameState.talents.find(function(t){return t.id===ev.check;})) return false;
+    // NPC/flag条件过滤
+    if(ev.flagReq && !gameState.flags[ev.flagReq]) return false;
+    if(ev.npcReq && !gameState.npcMet[ev.npcReq]) return false;
+    if(ev.npcFavorMin && (!gameState.npcMet[ev.npcReq] || gameState.npcMet[ev.npcReq].favor < ev.npcFavorMin)) return false;
     if(ev.trigger) {
       if(ev.trigger.minAge && gameState.age < ev.trigger.minAge) return false;
       if(ev.trigger.maxAge && gameState.age > ev.trigger.maxAge) return false;
@@ -828,6 +836,8 @@ function nextYear() {
       }
       if(ce.check && !gameState.talents.find(function(t){return t.id===ce.check;})) return;
       if(ce.locReq && !gameState.visitedLocations.includes(ce.locReq)) return;
+      if(ce.flagReq && !gameState.flags[ce.flagReq]) return;
+      if(ce.npcReq && !gameState.npcMet[ce.npcReq]) return;
       eventPool.push(ce);
     });
   }
@@ -993,6 +1003,21 @@ function nextYear() {
     });
   }
 
+  // Add linked events (前后联系事件)
+  if(typeof LINKED_EVENTS !== 'undefined') {
+    LINKED_EVENTS.forEach(function(le){
+      if(le.check && !gameState.talents.find(function(t){return t.id===le.check;})) return;
+      if(le.flagReq && !gameState.flags[le.flagReq]) return;
+      if(le.npcReq && !gameState.npcMet[le.npcReq]) return;
+      if(le.trigger) {
+        if(le.trigger.minAge && gameState.age < le.trigger.minAge) return;
+        if(le.trigger.maxAge && gameState.age > le.trigger.maxAge) return;
+        if(le.trigger.cultivation && gameState.cultivation < le.trigger.cultivation) return;
+      }
+      eventPool.push(le);
+    });
+  }
+
     CULTIVATION_TIER_EVENTS.forEach(function(ce){
       if(ce.cultMin !== undefined && gameState.cultivation < ce.cultMin) return;
       if(ce.cultMax !== undefined && gameState.cultivation > ce.cultMax) return;
@@ -1083,7 +1108,9 @@ function nextYear() {
   if(mandatoryPool.length > 0) {
     var ev = mandatoryPool[Math.floor(Math.random()*mandatoryPool.length)];
     gameState.eventHistory.add(ev.text);
+    updateDisplay(); // 先刷新面板再显示事件
     showEvent(ev);
+    return; // 立即返回，让浏览器渲染选项按钮
   } else if(Math.random() < eventChance && eventPool.length > 0) {
     // Filter out already-seen mandatory events from pool, keep non-mandatory (replayable)
     var availablePool = eventPool.filter(function(ev){
@@ -1092,7 +1119,9 @@ function nextYear() {
     if(availablePool.length > 0) {
       var ev = availablePool[Math.floor(Math.random()*availablePool.length)];
       if(ev.mandatory) gameState.eventHistory.add(ev.text);
+      updateDisplay(); // 先刷新面板再显示事件
       showEvent(ev);
+      return; // 立即返回，让浏览器渲染选项按钮
     } else {
       quietYear();
     }
@@ -1461,6 +1490,18 @@ function applyChoice(c) {
   }
   if(c.visit && !gameState.visitedLocations.includes(c.visit)) {
     gameState.visitedLocations.push(c.visit);
+  }
+  // NPC记忆系统
+  if(c.npcMeet) {
+    var nid = c.npcMeet;
+    if(!gameState.npcMet[nid]) gameState.npcMet[nid] = {favor:0, met_age:gameState.age};
+    if(c.npcFavor) gameState.npcMet[nid].favor += c.npcFavor;
+    if(c.npcTag) gameState.npcMet[nid].tag = c.npcTag;
+  }
+  // 事件标记系统
+  if(c.setFlag) {
+    if(typeof c.setFlag === 'string') gameState.flags[c.setFlag] = true;
+    else if(typeof c.setFlag === 'object') { for(var fk in c.setFlag) gameState.flags[fk] = c.setFlag[fk]; }
   }
   if(c.relocate) {
     var newLoc = LOCATIONS.find(function(l){return l.id===c.relocate;});
