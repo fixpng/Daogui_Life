@@ -1,8 +1,8 @@
 // === GAME DATA ===
 const TALENTS = {
   special: [
-    {id:'xinsu',name:'心素',desc:'体内有先天一炁，会陷入迷惘以及幻觉之中，身体各部位都是炼制法器的绝佳材料，是各大门派争相抢夺的珍贵资源。能无意识地将所想之物修真出来。心素的能力是以假修真，但只修真不修假，容易走火入魔。代表：李火旺。',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10 穿梭两界 身体是顶级药引 易陷入疯狂'},
-    {id:'xin_zhuo',name:'心浊',desc:'能够把东西或者人藏进另一个空间，常常下一秒就会忘了上一秒。心浊心中的业障影响最多的不是别人而是自己，会逐渐遗忘自己藏起来了什么——记忆、年龄、甚至雌雄。头发可强化法器，常作为顶级材料被争夺。疑似和掌管秘密的三清有关。代表：闻人诡。',effect:{cultivation:25,sanity:-15,qiyun:-10,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 气运-10 空间扰动 遗忘自我 法器材料'},
+    {id:'xinsu',name:'心素',desc:'先天体质，体内有先天一炁。核心能力为"炼假成真"——可将主观信念、想象之物在一定范围内变为现实。能感知两个平行世界的存在并在两界间穿梭沟通。对精神污染有天然抗性，不易被诡异直接抹除。但身体各部位皆是炼制法器的绝佳材料，被各方觊觎。心素本身不自带心蟠，需通过特定仪式才能发挥最大潜力。代表：李火旺。',effect:{sanity:30,cultivation:5,comprehension:10},type:'special',rarity:'legendary',hint:'神志+30 修为+5 悟性+10 穿梭两界 身体是顶级药引 易陷入疯狂'},
+    {id:'xin_zhuo',name:'心浊',desc:'先天体质，与心素同属先天特殊体质但方向不同。核心能力为"业障空间藏匿"——可将人、物、记忆藏进独立的业障空间，但会逐渐遗忘自己藏了什么，甚至遗忘年龄、性别等自我认知。内心业障会向外扩散污染环境，严重时可击伤司命化身。两个心浊相遇可能引发大范围存在抹消。头发可强化法器。代表：闻人诡。',effect:{cultivation:25,sanity:-15,qiyun:-10,constitution:10},type:'special',rarity:'legendary',hint:'修为+25 体魄+10 气运-10 空间扰动 遗忘自我 法器材料'},
     {id:'bai_hua',name:'白化病',desc:'天生白发红瞳，外貌异于常人。白莲教族人中偶有此症，外人多视为不祥，但白莲教内视为圣女之相。身体同样是珍贵的材料，被各方觊觎。代表：白灵淼。',effect:{connections:-10,sanity:-5,qiyun:10,karma:5},type:'special',rarity:'epic',hint:'人脉-10 神志-5 气运+10 因果+5 白莲教好感 外貌引人注目'},
   ],
   good: [
@@ -328,6 +328,7 @@ const ACHIEVEMENTS = [
   {id:'xinpan_wusheng',name:'慈悲之心',desc:'成为无生老母的心蟠',icon:'🤍'},
   {id:'xinpan_panchi',name:'秩序之柱',desc:'成为蟠螭的心蟠',icon:'🐉'},
   {id:'xinpan_yuer',name:'法则之器',desc:'成为于儿神的心蟠',icon:'👁'},
+  {id:'xinpan_sanqing',name:'秘密守护者',desc:'成为三清的心蟠',icon:'🔮'},
   {id:'xinpan_ascend',name:'心蟠飞升',desc:'以心蟠之身修为达大乘',icon:'⚡'},
   {id:'xinpan_jizai_master',name:'迷惘通明',desc:'季灾心蟠且修为达化神',icon:'💫'},
   {id:'xinpan_doumo_master',name:'谎言织网',desc:'斗姥心蟠且人脉达50',icon:'🕸'},
@@ -2237,8 +2238,8 @@ const CANONICAL_EVENTS = [
     {text:'在季灾的庇护下修行',effect:{cultivation:15,sanity:10,comprehension:8},log:'季灾的存在让天道趋于稳定，你在这份安宁中修行受益匪浅'},
     {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
   {text:'<span class="npc">季灾</span>的目光穿越白玉京落在你身上——你是<span class="mys">心素</span>，与他同类。他选中了你作为自己在人间的<span class="mys">因缘</span>：成为迷惘司命的<span class="mys">心蟠</span>。',
-    trigger:{minAge:30,yearMin:42,cultivation:100},check:'xinsu',choices:[
-    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实',xinpan:'jizai'},
+    trigger:{minAge:30,yearMin:42,cultivation:100},check:'xinsu',noFlag:'has_xinpan',choices:[
+    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实',xinpan:'jizai',setFlag:'has_xinpan'},
     {text:'拒绝，你要走自己的路',effect:{cultivation:20,sanity:15,comprehension:10,qiyun:-10},log:'季灾沉默了片刻，然后笑了："和我当年一样。"他的目光从你身上移开'}]},
 
   // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
@@ -2548,9 +2549,9 @@ const RANK_EVENTS = {
       {text:'接受真相继续修行',effect:{cultivation:25,comprehension:20,sanity:-15},log:'知道了又如何？这条路已经走了太远'},
       {text:'脱离坐忘道',effect:{faction:'none',connections:-25,qiyun:10,sanity:10},log:'你毅然脱离了坐忘道，成为了散修'}]},
     {text:'<span class="npc">阴阳斗姥</span>终于选中了你——你就是她在人间的<span class="mys">因缘</span>，她的<span class="mys">心蟠</span>。斗姥的谎言之力灌入你体内，你能感知一切虚假。',
-      rankReq:9,choices:[
-      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊',xinpan:'doumo'},
-      {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"',xinpan:'doumo'}]},
+      rankReq:9,noFlag:'has_xinpan',choices:[
+      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊',xinpan:'doumo',setFlag:'has_xinpan'},
+      {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"',xinpan:'doumo',setFlag:'has_xinpan'}]},
   ],
   jiantian: [
     {text:'你晋升<span class="fac">监天司</span>庚旗后，获得了查阅<span class="itm">机密档案</span>的权限——里面记载着各地邪祟和坐忘道的情报。',
@@ -2566,10 +2567,10 @@ const RANK_EVENTS = {
       {text:'亲自追查叛徒',effect:{cultivation:10,connections:-5,sanity:-10,comprehension:8},log:'你揪出了叛徒，但发现他被坐忘道洗脑多年...'},
       {text:'加强自身防护',effect:{constitution:5,sanity:5},log:'你开始更加谨慎地行事'}]},
     {text:'你被提拔为<span class="fac">监天司</span>司天少监，获准进入<span class="loc">上京城</span>地下的<span class="mys">龙脉核心</span>。在那里，你触碰到了<span class="npc">蟠螭</span>的意识——秩序天道的司命，以龙脉为躯体镇守大梁国运。蟠螭选中了你作为它在人间的<span class="mys">因缘</span>。',
-      rankReq:8,choices:[
-      {text:'接受蟠螭的因缘，成为秩序天道的心蟠',effect:{cultivation:40,qiyun:20,constitution:10,comprehension:15,sanity:-15},log:'你成为了蟠螭的心蟠！秩序天道之力流入血脉——你能感知天下龙脉走向，一切混乱在你面前无所遁形。你的存在本身就是大梁的镇国之柱',xinpan:'panchi'},
+      rankReq:8,noFlag:'has_xinpan',choices:[
+      {text:'接受蟠螭的因缘，成为秩序天道的心蟠',effect:{cultivation:40,qiyun:20,constitution:10,comprehension:15,sanity:-15},log:'你成为了蟠螭的心蟠！秩序天道之力流入血脉——你能感知天下龙脉走向，一切混乱在你面前无所遁形。你的存在本身就是大梁的镇国之柱',xinpan:'panchi',setFlag:'has_xinpan'},
       {text:'敬畏地婉拒',effect:{cultivation:20,qiyun:10,comprehension:10},log:'蟠螭的龙吟在你耳边回荡。它没有强求——秩序从不强迫，只是等待'},
-      {text:'接受力量但保持独立',effect:{cultivation:30,qiyun:15,constitution:5,sanity:-8},log:'你接受了蟠螭的部分力量，但没有完全交出自己。秩序天道在你体内与你的意志共存',xinpan:'panchi'}]},
+      {text:'接受力量但保持独立',effect:{cultivation:30,qiyun:15,constitution:5,sanity:-8},log:'你接受了蟠螭的部分力量，但没有完全交出自己。秩序天道在你体内与你的意志共存',xinpan:'panchi',setFlag:'has_xinpan'}]},
   ],
   aojing: [
     {text:'你在<span class="fac">袄景教</span>中地位渐高，获准修习<span class="itm">大千录</span>上的高级神通——以献祭自身痛苦来施展强大法术。',
@@ -2581,9 +2582,9 @@ const RANK_EVENTS = {
       {text:'争夺牯神使之位',effect:{cultivation:30,connections:15,sanity:-20,qiyun:-10},log:'你在竞争中脱颖而出，获得了与巴虺沟通的资格'},
       {text:'甘当辅佐',effect:{connections:10,cultivation:10},log:'你选择辅佐新任牯神使，在教中依然受人尊重'}]},
     {text:'你完成了三次<span class="danger-text">登阶</span>，<span class="npc">巴虺</span>终于注意到了你。它选中你作为自己在人间的<span class="mys">因缘</span>——你成为了巴虺的<span class="mys">心蟠</span>。痛苦天道之力贯穿全身。',
-      rankReq:4,choices:[
-      {text:'承受痛苦接受心蟠之身',effect:{cultivation:45,constitution:15,sanity:-25,karma:-15},log:'你成为了巴虺的心蟠！痛苦即是力量——你可以使用痛苦天道之术，自愈能力大幅增强',xinpan:'baxi'},
-      {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意',xinpan:'baxi'}]},
+      rankReq:4,noFlag:'has_xinpan',choices:[
+      {text:'承受痛苦接受心蟠之身',effect:{cultivation:45,constitution:15,sanity:-25,karma:-15},log:'你成为了巴虺的心蟠！痛苦即是力量——你可以使用痛苦天道之术，自愈能力大幅增强',xinpan:'baxi',setFlag:'has_xinpan'},
+      {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意',xinpan:'baxi',setFlag:'has_xinpan'}]},
   ],
   bailian: [
     {text:'作为<span class="fac">白莲教</span>坛主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲·生长·死亡</span>的司命。',
@@ -2595,9 +2596,9 @@ const RANK_EVENTS = {
       {text:'全力修习',effect:{cultivation:25,karma:15,sanity:-10,constitution:-5},log:'红莲业火在你体内燃烧，你感到过去的罪孽在被洗涤'},
       {text:'谨慎修习',effect:{cultivation:10,karma:5},log:'你只取其精华，不至于伤了根基'}]},
     {text:'<span class="npc">无生老母</span>在虚空中降下慈悲之光，选中了你作为她在人间的<span class="mys">因缘</span>——你成为了无生老母的<span class="mys">心蟠</span>。慈悲天道与你相合。',
-      rankReq:4,choices:[
-      {text:'接受慈悲天道',effect:{cultivation:35,sanity:20,karma:25,connections:15},log:'你成为了无生老母的心蟠，慈悲之力充盈全身。你能感知众生苦乐，伪装身份、庇护他人',xinpan:'wusheng'},
-      {text:'以自身意志调和',effect:{cultivation:25,sanity:10,karma:15,comprehension:10},log:'你成为了心蟠，但保留了自己的判断——不是无条件的慈悲，而是有所选择',xinpan:'wusheng'}]},
+      rankReq:4,noFlag:'has_xinpan',choices:[
+      {text:'接受慈悲天道',effect:{cultivation:35,sanity:20,karma:25,connections:15},log:'你成为了无生老母的心蟠，慈悲之力充盈全身。你能感知众生苦乐，伪装身份、庇护他人',xinpan:'wusheng',setFlag:'has_xinpan'},
+      {text:'以自身意志调和',effect:{cultivation:25,sanity:10,karma:15,comprehension:10},log:'你成为了心蟠，但保留了自己的判断——不是无条件的慈悲，而是有所选择',xinpan:'wusheng',setFlag:'has_xinpan'}]},
   ],
   biaoju: [
     {text:'你升为<span class="fac">镖局</span>镖头后，接到了一单<span class="danger-text">要命的活</span>——护送<span class="itm">龙脉碎片</span>去大梁皇城。',
@@ -2619,9 +2620,9 @@ const RANK_EVENTS = {
       {text:'接受龙脉力量',effect:{cultivation:40,constitution:10,sanity:-20,karma:-25},log:'龙脉的力量让你脱胎换骨，但你能感觉到这力量中蕴含着无数生命的哀嚎'},
       {text:'叛出法教投奔大梁',effect:{faction:'none',connections:20,karma:25,qiyun:15},log:'你将法教的全部计划交给了监天司，成为了叛逃者'}]},
     {text:'你完成了终极的<span class="danger-text">十二次血祭</span>，<span class="npc">于儿神</span>的目光终于落在了你身上——那是一种超越一切理解的存在，它没有善恶，只有<span class="mys">法则</span>。于儿选中你作为它在人间的<span class="mys">因缘</span>——成为于儿神的心蟠。',
-      rankReq:4,choices:[
-      {text:'接受于儿神的因缘',effect:{cultivation:50,constitution:10,sanity:-30,karma:-20,qiyun:-15},log:'你成为了于儿神的心蟠！一种超越善恶的力量涌入体内——你不再是人，也不再是鬼，你是于儿在人间的法则执行者。十二大巫跪伏在你面前',xinpan:'yuer'},
-      {text:'在法则中保留人性',effect:{cultivation:35,constitution:5,sanity:-15,karma:-10},log:'你接受了于儿的力量，但拼命守住了作为人的记忆和感情。于儿对此无动于衷——它只关心法则的执行',xinpan:'yuer'},
+      rankReq:4,noFlag:'has_xinpan',choices:[
+      {text:'接受于儿神的因缘',effect:{cultivation:50,constitution:10,sanity:-30,karma:-20,qiyun:-15},log:'你成为了于儿神的心蟠！一种超越善恶的力量涌入体内——你不再是人，也不再是鬼，你是于儿在人间的法则执行者。十二大巫跪伏在你面前',xinpan:'yuer',setFlag:'has_xinpan'},
+      {text:'在法则中保留人性',effect:{cultivation:35,constitution:5,sanity:-15,karma:-10},log:'你接受了于儿的力量，但拼命守住了作为人的记忆和感情。于儿对此无动于衷——它只关心法则的执行',xinpan:'yuer',setFlag:'has_xinpan'},
       {text:'恐惧地拒绝',effect:{cultivation:15,sanity:-20,karma:10},log:'于儿的目光从你身上移开。你瘫倒在地——仅仅是被它注视这一刻，你的三魂七魄就险些崩溃'}]},
   ],
   luo_jiao: [
@@ -3093,6 +3094,25 @@ const XINPAN_EVENTS = [
     {text:'全力压制失控的力量',effect:{cultivation:-10,sanity:-15,constitution:-10,karma:10},log:'你拼尽全力才压制住了失控的力量——但你知道，下一次可能压不住了'},
     {text:'顺应失控，让力量自然宣泄',effect:{cultivation:30,sanity:-20,karma:-15,connections:-10},log:'力量宣泄后你变得更强了——但周围的惨状让你良心不安'},
     {text:'将失控的力量导入地脉',effect:{cultivation:15,qiyun:10,comprehension:10,constitution:-5},log:'你将多余的力量导入了地脉——那片土地将来会诞生一处灵脉'}]},
+
+  // ========== 三清 (秘密天道) 专属事件 ==========
+  // 三清心蟠觉醒
+  {text:'你在<span class="loc">龙脉深处</span>窥见了一个不该看到的<span class="mys">秘密</span>——三清篡改因果的真相。三位模糊的身影出现在你面前，用无声的方式告诉你：你已经知道了<span class="mys">秘密</span>，现在你必须守护它。三清选中了你作为他们在人间的<span class="mys">因缘</span>。',
+    trigger:{minAge:25,cultivation:60},flagReq:'daqi_aware',noFlag:'has_xinpan',choices:[
+    {text:'守护秘密，成为三清心蟠',effect:{cultivation:35,comprehension:25,sanity:-20,karma:-10},log:'你成为了三清的心蟠！秘密天道之力涌入脑海——你能感知一切被隐藏的真相，但窥见福生天全貌的三清已然疯狂，你也隐约听到了那个方向传来的低语',xinpan:'sanqing',setFlag:'has_xinpan'},
+    {text:'拼命遗忘这一切',effect:{comprehension:10,sanity:-10},log:'你拼命想忘掉看到的一切，但那些秘密已经刻在了你的灵魂深处'}]},
+  {xinpanReq:'sanqing',text:'三清的<span class="mys">秘密之力</span>让你能看穿一切谎言和伪装。你能感知到每个人心中隐藏的秘密——有些秘密温暖，有些令人作呕。',
+    trigger:{minAge:20},choices:[
+    {text:'窥探周围人的秘密',effect:{comprehension:15,connections:10,sanity:-10,karma:-5},log:'你看穿了很多人的秘密。有些人感激你的洞察，有些人恐惧你的目光'},
+    {text:'克制窥探的冲动',effect:{comprehension:8,sanity:5,karma:5},log:'你压下了窥探秘密的冲动——三清因为窥见太多而疯狂，你不想步其后尘'}]},
+  {xinpanReq:'sanqing',text:'你梦见了<span class="npc">诸葛渊</span>——三清的另一个心蟠。他的残魂告诉你："不要试图看清<span class="danger-text">福生天</span>的全貌。三清就是因此而疯的。守住你能守的秘密就够了。"',
+    trigger:{minAge:28,cultivation:60},choices:[
+    {text:'听从诸葛渊的忠告',effect:{comprehension:15,sanity:10,cultivation:10,karma:5},log:'你决定不再深入窥探最终的秘密。守护——而非揭露——才是秘密天道的真谛'},
+    {text:'你想亲眼看看福生天',effect:{comprehension:25,cultivation:20,sanity:-30,karma:-15},log:'你向那个方向看了一眼——只是一眼。恐惧、未知、绝望——三种天道构成的存在瞬间充斥了你的认知。你尖叫着醒来，再也忘不掉那一眼'}]},
+  {xinpanReq:'sanqing',text:'三清的<span class="mys">因果之力</span>在你体内觉醒——你发现自己可以<span class="mys">篡改</span>小范围内的因果关系。一个人本该死去的命运，你可以暂时改写。但每次篡改都会让你离疯狂更近一步。',
+    trigger:{minAge:35,cultivation:80},choices:[
+    {text:'篡改因果救一个人',effect:{cultivation:30,karma:20,sanity:-25,comprehension:15},log:'你改写了一条因果线——一个本该死于邪祟的孩子活了下来。但你的意识中多了一道裂缝'},
+    {text:'封印因果之力',effect:{cultivation:15,comprehension:10,sanity:5,karma:5},log:'你将这股力量封印在体内。诸葛渊的忠告回荡在耳边——有些力量，不该被使用'}]},
 ];
 
 // ========== 天赋专属事件 ==========

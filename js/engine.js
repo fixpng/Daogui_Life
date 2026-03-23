@@ -12,7 +12,7 @@ var gameState = {
   flags: {},    // 事件标记: {flag_name: true/value} 用于事件前后联系
   dualCultWarned:false,
   lastLifeTalents:[],
-  xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'
+  xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'|'sanqing'
 };
 var autoMode = false, speed = 1, autoTimer = null, availableTalents = [];
 var SPEED_DELAYS = {1:3000, 2:1500, 3:750, 4:350, 5:200};
@@ -660,6 +660,12 @@ function nextYear() {
       if(Math.random()<0.10) gameState.karma = Math.max(-100, gameState.karma - 1);
       if(isXinsu && Math.random()<0.15) gameState.sanity = Math.max(0, gameState.sanity - 2);
       if(Math.random()<0.08) gameState.constitution = Math.min(100, gameState.constitution + 1);
+    } else if(xp === 'sanqing') {
+      // 三清心蟠: 秘密天道 - 悟性大增, 修为增, 因果不稳(窥见太多秘密)
+      if(Math.random()<0.12) gameState.cultivation += 2;
+      if(Math.random()<0.15) gameState.comprehension = Math.min(100, gameState.comprehension + 2);
+      if(isXinsu && Math.random()<0.15) gameState.sanity = Math.max(0, gameState.sanity - 2);
+      if(Math.random()<0.08) gameState.karma += (Math.random()<0.5 ? 1 : -1);
     }
   }
 
@@ -1781,7 +1787,7 @@ function updateDisplay() {
   }
   // Xinpan (心蟠) display
   if(gameState.xinpan) {
-    var xinpanNames = {jizai:'季灾·迷惘',doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教'};
+    var xinpanNames = {jizai:'季灾·迷惘',doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
     itemsEl.innerHTML += '<span class="item-badge" style="border-color:var(--mystery);color:var(--mystery);" title="司命的人间因缘">心蟠: '+(xinpanNames[gameState.xinpan]||'未知')+'</span>';
   }
 }
