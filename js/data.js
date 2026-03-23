@@ -322,7 +322,7 @@ const ACHIEVEMENTS = [
   {id:'buddha_evil',name:'佛心魔念',desc:'佛门弟子因果降至-30以下',icon:'😈'},
   // === 心蟠 ACHIEVEMENTS ===
   {id:'xinpan_any',name:'天道因缘',desc:'成为任意司命的心蟠',icon:'🔮'},
-  {id:'xinpan_jizai',name:'迷惘之锚',desc:'成为季灾的心蟠',icon:'🌀'},
+  // xinpan_jizai 已移除：季灾是主角李火旺专属
   {id:'xinpan_doumo',name:'谎言之舌',desc:'成为阴阳斗姥的心蟠',icon:'🎭'},
   {id:'xinpan_baxi',name:'痛苦之躯',desc:'成为巴虺的心蟠',icon:'🩸'},
   {id:'xinpan_wusheng',name:'慈悲之心',desc:'成为无生老母的心蟠',icon:'🤍'},
@@ -330,7 +330,7 @@ const ACHIEVEMENTS = [
   {id:'xinpan_yuer',name:'法则之器',desc:'成为于儿神的心蟠',icon:'👁'},
   {id:'xinpan_sanqing',name:'秘密守护者',desc:'成为三清的心蟠',icon:'🔮'},
   {id:'xinpan_ascend',name:'心蟠飞升',desc:'以心蟠之身修为达大乘',icon:'⚡'},
-  {id:'xinpan_jizai_master',name:'迷惘通明',desc:'季灾心蟠且修为达化神',icon:'💫'},
+  // xinpan_jizai_master 已移除：季灾是主角李火旺专属
   {id:'xinpan_doumo_master',name:'谎言织网',desc:'斗姥心蟠且人脉达50',icon:'🕸'},
   {id:'xinpan_wusheng_master',name:'大慈大悲',desc:'无生老母心蟠且因果达60',icon:'🪷'},
   {id:'xinpan_panchi_master',name:'龙脉守护',desc:'蟠螭心蟠且气运40以上体魄60以上',icon:'🏛'},
@@ -2237,10 +2237,7 @@ const CANONICAL_EVENTS = [
     {text:'尝试与季灾沟通',effect:{cultivation:20,sanity:-15,comprehension:15},log:'你在冥想中触碰到了季灾的意识——他说："我曾经也不知道哪个世界是真的。现在我知道了——两个都是。"'},
     {text:'在季灾的庇护下修行',effect:{cultivation:15,sanity:10,comprehension:8},log:'季灾的存在让天道趋于稳定，你在这份安宁中修行受益匪浅'},
     {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
-  {text:'<span class="npc">季灾</span>的目光穿越白玉京落在你身上——你是<span class="mys">心素</span>，与他同类。他选中了你作为自己在人间的<span class="mys">因缘</span>：成为迷惘司命的<span class="mys">心蟠</span>。',
-    trigger:{minAge:30,yearMin:42,cultivation:100},check:'xinsu',noFlag:'has_xinpan',choices:[
-    {text:'接受季灾的因缘',effect:{cultivation:50,comprehension:25,sanity:-20,qiyun:15},log:'你成为了季灾的心蟠！迷惘天道之力灌入体内——你能看穿一切虚妄，却也分不清哪个是真实',xinpan:'jizai',setFlag:'has_xinpan'},
-    {text:'拒绝，你要走自己的路',effect:{cultivation:20,sanity:15,comprehension:10,qiyun:-10},log:'季灾沉默了片刻，然后笑了："和我当年一样。"他的目光从你身上移开'}]},
+  // 季灾心蟠已移除：季灾是主角李火旺专属，玩家不可触发
 
   // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
   {text:'<span class="npc">左丘咏</span>被击败后，他的女儿<span class="npc">左千户</span>加入了<span class="fac">监天司</span>。你在一次任务中与她同行——她沉默寡言，但出手凌厉，身上隐隐有<span class="mys">天陈</span>的残余气息。',
@@ -2944,30 +2941,7 @@ const STAT_COMBO_EVENTS = [
 
 // === XINPAN EVENTS (心蟠专属事件，成为心蟠后触发) ===
 const XINPAN_EVENTS = [
-  // ========== 季灾 (迷惘天道) 专属事件 ==========
-  {xinpanReq:'jizai',text:'成为<span class="npc">季灾</span>的心蟠后，你的世界开始变得<span class="mys">模糊不清</span>——你看到的人，有时候是活人，有时候是一堆蠕动的肉块。你分不清哪个才是真的。',
-    trigger:{minAge:18},choices:[
-    {text:'尝试用心素分辨真假',effect:{comprehension:15,sanity:-15,cultivation:10},log:'你试图用心素之力辨明真伪——但迷惘天道告诉你，真假本就没有区别'},
-    {text:'闭上眼睛，只相信触觉',effect:{sanity:-5,constitution:5,comprehension:8},log:'你闭上眼，世界反而清晰了一些。但你知道这不是长久之计'},
-    {text:'向季灾祈求指引',effect:{cultivation:20,sanity:-20,qiyun:5},log:'季灾的意志涌入你的脑海——你看到了无数个"真实"重叠在一起，每一个都是真的'}]},
-
-  {xinpanReq:'jizai',text:'你在梦中见到了<span class="npc">季灾</span>的过去——那是一个和你一样迷惘的凡人，曾经也分不清梦与现实。他最终选择让<span class="mys">迷惘</span>成为自己的力量，由此登临司命之位。',
-    trigger:{minAge:25,cultivation:40},choices:[
-    {text:'效仿季灾，拥抱迷惘',effect:{cultivation:30,sanity:-25,comprehension:20},log:'你不再抗拒迷惘——当你接受一切都可能是假的时候，你反而获得了操纵真假的力量'},
-    {text:'你不想重蹈他的覆辙',effect:{sanity:10,comprehension:10,cultivation:5},log:'你选择保持清醒。季灾的意志似乎在叹息，但并未强迫你'},
-    {text:'追问心素的真正本质',effect:{comprehension:25,cultivation:15,sanity:-10},log:'季灾告诉你：心素就是让假变真、让真变假的力量。而你，就是这力量的种子'}]},
-
-  {xinpanReq:'jizai',text:'你发现自己能看到<span class="mys">两个世界</span>——一个是你熟悉的修真世界，另一个是一间白色的房间，有人穿着奇怪的白衣盯着你看。迷惘天道正在你身上展现它的本质。',
-    trigger:{minAge:30,cultivation:60},choices:[
-    {text:'尝试与白衣人交流',effect:{comprehension:20,sanity:-20,cultivation:15},log:'白衣人说："你该吃药了。"你不明白这是什么意思，但这句话让你头痛欲裂'},
-    {text:'强行关闭另一个世界的视野',effect:{cultivation:10,sanity:5,constitution:-5},log:'你用法力封印了那个世界的入口——但你隐约觉得，那边才是"真的"'},
-    {text:'同时存在于两个世界',effect:{cultivation:35,sanity:-30,comprehension:25},log:'你学会了同时感知两个世界——这让你的心素之力暴增，但神志也在崩溃的边缘'}]},
-
-  {xinpanReq:'jizai',text:'<span class="npc">季灾</span>的力量让你拥有了<span class="mys">心素</span>——你可以把虚假之物变为真实，也可以把真实之物化为虚无。但每次使用，你都更加分不清自己是谁。',
-    trigger:{minAge:35,cultivation:80},choices:[
-    {text:'用心素修真，将修为化为实质',effect:{cultivation:40,sanity:-30,comprehension:15},log:'你将虚无的力量变成了实在的修为——但你的记忆中又多了几段"不存在的过去"'},
-    {text:'用心素治疗自己的迷惘',effect:{sanity:20,cultivation:15,comprehension:10},log:'心素消除了一些幻觉，但你隐约觉得，被消除的那些才是真实的'},
-    {text:'将心素之力散布四方',effect:{cultivation:25,connections:20,qiyun:15,sanity:-15},log:'你让周围的人也开始看到"真相"——他们有的疯了，有的却因此觉醒了修行天赋'}]},
+  // 季灾 (迷惘天道) 专属事件已移除：季灾是主角李火旺专属，玩家不可获得
 
   // ========== 斗姥 (谎言天道) 专属事件 ==========
   {xinpanReq:'doumo',text:'成为<span class="npc">阴阳斗姥</span>的心蟠后，你发现自己说出的每一句话都带着<span class="mys">谎言天道</span>的力量——你说"这里很安全"，周围的危险就真的消失了。但谎言说多了，你自己也开始信了。',

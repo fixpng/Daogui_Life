@@ -12,7 +12,7 @@ var gameState = {
   flags: {},    // 事件标记: {flag_name: true/value} 用于事件前后联系
   dualCultWarned:false,
   lastLifeTalents:[],
-  xinpan: null // 心蟠状态: null 或 'jizai'|'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'|'sanqing'
+  xinpan: null // 心蟠状态: null 或 'doumo'|'baxi'|'wusheng'|'panchi'|'yuer'|'sanqing'
 };
 var autoMode = false, speed = 1, autoTimer = null, availableTalents = [];
 var SPEED_DELAYS = {1:3000, 2:1500, 3:750, 4:350, 5:200};
@@ -624,12 +624,7 @@ function nextYear() {
   // === XINPAN (心蟠) PASSIVE EFFECTS ===
   if(gameState.xinpan) {
     var xp = gameState.xinpan;
-    if(xp === 'jizai') {
-      // 季灾心蟠: 迷惘天道 - 修为缓增, 悟性增, 神志波动
-      if(Math.random()<0.15) gameState.cultivation += 2;
-      if(Math.random()<0.10) gameState.comprehension = Math.min(100, gameState.comprehension + 1);
-      if(isXinsu && Math.random()<0.20) gameState.sanity = Math.max(0, Math.min(120, gameState.sanity + (Math.floor(Math.random()*7) - 3)));
-    } else if(xp === 'doumo') {
+    if(xp === 'doumo') {
       // 斗姥心蟠: 谎言天道 - 修为增, 人脉增, 神志降, 因果不稳
       if(Math.random()<0.12) gameState.cultivation += 2;
       if(Math.random()<0.10) gameState.connections += 1;
@@ -1619,7 +1614,7 @@ function applyChoice(c) {
   if(c.xinpan) {
     gameState.xinpan = c.xinpan;
     addLog('<span class="mys">你成为了' + (
-      c.xinpan==='jizai'?'季灾':c.xinpan==='doumo'?'阴阳斗姥':c.xinpan==='baxi'?'巴虺':
+      c.xinpan==='doumo'?'阴阳斗姥':c.xinpan==='baxi'?'巴虺':
       c.xinpan==='wusheng'?'无生老母':c.xinpan==='panchi'?'蟠螭':c.xinpan==='yuer'?'于儿神':'未知司命'
     ) + '的心蟠！天道之力与你相合。</span>');
     // Unlock xinpan achievements
@@ -1787,7 +1782,7 @@ function updateDisplay() {
   }
   // Xinpan (心蟠) display
   if(gameState.xinpan) {
-    var xinpanNames = {jizai:'季灾·迷惘',doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
+    var xinpanNames = {doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
     itemsEl.innerHTML += '<span class="item-badge" style="border-color:var(--mystery);color:var(--mystery);" title="司命的人间因缘">心蟠: '+(xinpanNames[gameState.xinpan]||'未知')+'</span>';
   }
 }
@@ -1934,7 +1929,6 @@ function gameOver(reason) {
     unlockAchieve('xinpan_any');
     unlockAchieve('xinpan_' + gameState.xinpan);
     if(gameState.cultivation >= 200) unlockAchieve('xinpan_ascend');
-    if(gameState.xinpan === 'jizai' && gameState.cultivation >= 150) unlockAchieve('xinpan_jizai_master');
     if(gameState.xinpan === 'doumo' && gameState.connections >= 50) unlockAchieve('xinpan_doumo_master');
     if(gameState.xinpan === 'wusheng' && gameState.karma >= 60) unlockAchieve('xinpan_wusheng_master');
     if(gameState.xinpan === 'panchi' && gameState.qiyun >= 40 && gameState.constitution >= 60) unlockAchieve('xinpan_panchi_master');
@@ -1965,8 +1959,7 @@ function gameOver(reason) {
 
   var ending = reason;
   // Xinpan-specific endings (highest priority among custom endings)
-  if(gameState.xinpan === 'jizai' && gameState.cultivation >= 200) ending = '你是<span class="itm">季灾的心蟠</span>——迷惘天道的人间因缘。你在清醒与迷惘之间找到了自己的道，白玉京中季灾向你投来赞许的目光。';
-  else if(gameState.xinpan === 'doumo' && gameState.cultivation >= 200) ending = '你是<span class="itm">阴阳斗姥的心蟠</span>——谎言天道在你体内燃烧。你已分不清什么是真什么是假，但你已不在意——谎言即是你的真实。';
+  if(gameState.xinpan === 'doumo' && gameState.cultivation >= 200) ending = '你是<span class="itm">阴阳斗姥的心蟠</span>——谎言天道在你体内燃烧。你已分不清什么是真什么是假，但你已不在意——谎言即是你的真实。';
   else if(gameState.xinpan === 'baxi' && gameState.cultivation >= 200) ending = '你是<span class="itm">巴虺的心蟠</span>——痛苦天道贯穿全身。你以痛苦为粮、以献祭为道，肉身已化为承载痛苦天道的不朽容器。';
   else if(gameState.xinpan === 'wusheng' && gameState.cultivation >= 200) ending = '你是<span class="itm">无生老母的心蟠</span>——慈悲天道与你同在。你以一己之身承载众生苦乐，白灵淼曾走过的路，如今由你继续。';
   else if(gameState.xinpan === 'panchi' && gameState.cultivation >= 200) ending = '你是<span class="itm">蟠螭的心蟠</span>——秩序天道在你血脉中流淌。你化为龙脉的一部分，守护着大梁的安宁。皇朝兴衰，天道不灭。';
@@ -2014,7 +2007,7 @@ function gameOver(reason) {
     '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
     (gameState.xinpan ? '<p style="color:var(--mystery);">心蟠: ' + (
-      gameState.xinpan==='jizai'?'季灾（迷惘天道）':gameState.xinpan==='doumo'?'阴阳斗姥（谎言天道）':
+      gameState.xinpan==='doumo'?'阴阳斗姥（谎言天道）':
       gameState.xinpan==='baxi'?'巴虺（痛苦天道）':gameState.xinpan==='wusheng'?'无生老母（慈悲天道）':
       gameState.xinpan==='panchi'?'蟠螭（秩序天道）':gameState.xinpan==='yuer'?'于儿神（法教天道）':'未知'
     ) + '</p>' : '') +
