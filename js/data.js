@@ -160,8 +160,27 @@ const ITEMS = [
   {id:'da_li_wan',name:'大力丸',desc:'增寿加蛮力，短期战力暴增',rarity:'common',effect:{constitution:12,cultivation:5}},
   {id:'ni_ji_fu',name:'匿迹符箓',desc:'减生气避邪祟，隐匿行踪',rarity:'common',effect:{sanity:8,qiyun:3}},
   {id:'wu_zang_fu',name:'五脏定身符箓',desc:'钻入体内裹五脏，可施展定身术',rarity:'common',effect:{cultivation:10,constitution:5}},
+  // --- 教派入职道具 (普通) ---
+  {id:'luo_fulu_bao',name:'罗教符箓包',desc:'入教即发，内含匿迹符、五脏定身符、遁地符等基础符箓',rarity:'common',effect:{cultivation:5,sanity:5}},
+  {id:'huo_yanyu_la',name:'火蜒蚰蜡封简',desc:'入门弟子人手一份，可召唤蜡火蜒蚰疗伤御敌',rarity:'common',effect:{cultivation:8,constitution:5}},
+  {id:'jts_fa_jian',name:'监天司制式法剑',desc:'基层差役标配，剑身篆刻监天司篆文，用于斩除邪祟',rarity:'common',effect:{cultivation:10,constitution:3}},
+  {id:'yi_rong_mian',name:'易容面皮',desc:'坐忘道新手基础道具，用于伪装身份骗取信任',rarity:'common',effect:{connections:8,sanity:-3}},
+  {id:'bl_hushen_fu',name:'白莲纹布护身符',desc:'教众人手一枚，微弱护持心神、抵御低级邪祟',rarity:'common',effect:{sanity:8,karma:3}},
+  {id:'zds_jie_die',name:'正德寺戒牒',desc:'入门僧人身份凭证，可出入寺内基础区域',rarity:'common',effect:{karma:5,sanity:3}},
+  {id:'yin_huo_fu',name:'引火护鼎符',desc:'清风观弟子炼丹基础符箓，用于引动丹火保护丹炉',rarity:'common',effect:{cultivation:8,comprehension:3}},
+  {id:'shi_xie_gu_nang',name:'低阶噬邪蛊种囊',desc:'巫族新人入门蛊物，可吞噬低级邪祟阴气',rarity:'common',effect:{cultivation:5,constitution:5}},
+  {id:'xian_ji_shi_pai',name:'献祭石牌',desc:'记载基础献祭仪式与祭品规格，沟通于儿神的入门信物',rarity:'common',effect:{cultivation:8,sanity:-5}},
 
   // ===== 精良 (Uncommon) =====
+  // --- 教派入职道具 (精良) ---
+  {id:'jts_tie_pai',name:'监天司铁牌腰牌',desc:'正式编制身份凭证，可调动地方衙役、豁免俗律',rarity:'uncommon',effect:{connections:15,qiyun:5}},
+  {id:'ben_ming_pai',name:'本命麻将牌',desc:'入道即授，万饼条风三元之一，面容会逐渐贴合牌面',rarity:'uncommon',effect:{cultivation:10,connections:8,sanity:-8}},
+  {id:'cq_deng_jie',name:'苍蜣登阶誓约竹片',desc:'记录登阶禁忌与痛苦献祭规则，代表成为袄景教真正门徒',rarity:'uncommon',effect:{cultivation:12,constitution:-5,sanity:-8}},
+  {id:'wusheng_bao_gao',name:'无生宝诰',desc:'记载真空家乡、无生老母经文，可引动慈悲气息',rarity:'uncommon',effect:{karma:10,sanity:8,cultivation:5}},
+  {id:'xuerou_nianzhu',name:'血肉念珠',desc:'特殊材质制成，可感知周遭血肉气息，辅助修行血肉天道',rarity:'uncommon',effect:{cultivation:12,comprehension:8,sanity:-5}},
+  {id:'fan_cao_dan_fang',name:'凡草养炁丹方抄本',desc:'记录低级丹药炼制之法，正式弟子方可修习',rarity:'uncommon',effect:{comprehension:12,cultivation:8}},
+  {id:'kong_gu_di',name:'控蛊骨笛',desc:'异兽骨骼制成，吹奏特定音律指挥蛊虫',rarity:'uncommon',effect:{cultivation:12,constitution:5,sanity:-5}},
+  {id:'hei_an_zhou_jian',name:'黑暗咒简',desc:'引动黑暗气息沟通于儿神神力，法教核心弟子才能持有',rarity:'uncommon',effect:{cultivation:15,sanity:-10,karma:-5}},
   {id:'hun_po_shi',name:'魂魄石',desc:'封印魂魄之物',rarity:'uncommon',effect:{sanity:20}},
   {id:'xue_yu',name:'血玉',desc:'以血为引的邪物',rarity:'uncommon',effect:{cultivation:15,sanity:-15}},
   {id:'bai_yu_pei',name:'白玉佩',desc:'温润通灵，安神定魄',rarity:'uncommon',effect:{sanity:25}},
@@ -212,6 +231,12 @@ const ITEMS = [
   {id:'tianchen_guyu',name:'天陈古玉',desc:'一块散发着勃勃生机的墨绿古玉，上面刻着已失传千年的文字。握住它时你能听到树木生长的声音',rarity:'rare',effect:{cultivation:18,constitution:12,comprehension:10}},
 
   // ===== 史诗 (Epic) =====
+  // --- 教派传承道具 (史诗) ---
+  {id:'xian_du_yin_zhou',name:'仙都兹摄印咒真本',desc:'记载韩符一脉核心印法与口诀，操控铜钱剑的关键传承',rarity:'epic',effect:{cultivation:30,comprehension:20}},
+  {id:'yi_wen_zong_lu',name:'异闻总录·秘卷',desc:'收录天下邪祟、坐忘道众特征与弱点，监天司镇司典籍',rarity:'epic',effect:{comprehension:25,cultivation:20,connections:10}},
+  {id:'yy_pian_jing',name:'阴阳骗经残卷',desc:'记载斗姥天道下骗修核心法门，可敛取非罡壮大自身',rarity:'epic',effect:{cultivation:35,comprehension:15,sanity:-15,karma:-10}},
+  {id:'an_xi_jing_wen',name:'安息经文绢册',desc:'圣女一脉传承之物，蕴含无生老母气息，可安抚心神镇压癫狂',rarity:'epic',effect:{sanity:25,cultivation:20,karma:10}},
+  {id:'xuerou_fo_jing',name:'血肉佛陀残经',desc:'记载五智如来核心修行口诀，正德寺至高传承',rarity:'epic',effect:{cultivation:35,constitution:10,sanity:-20,karma:-10}},
   {id:'wang_tian_bao_gao',name:'罔天宝诰',desc:'坐忘道至宝，可召唤阴阳斗姥化身',rarity:'epic',effect:{cultivation:40,sanity:-30,qiyun:-10}},
   {id:'da_qian_lu',name:'大千录',desc:'袄景教传承法器，记载献祭之术',rarity:'epic',effect:{cultivation:35,sanity:-20,constitution:-15}},
   {id:'hong_lian_ye_huo',name:'红莲业火',desc:'白莲教至高神通，可烧灼因果',rarity:'epic',effect:{cultivation:30,karma:15,sanity:-15}},
@@ -452,7 +477,7 @@ const TEENAGE_EVENTS = [
     {text:'拜师学道',effect:{cultivation:20,connections:10,comprehension:5},log:'踏上修仙之路！'},{text:'婉言谢绝',effect:{sanity:5},log:'也许错过了什么'}]},
   {text:'<span class="fac">坐忘道</span>的人在镇上设坛讲法，围观者甚众。',choices:[
     {text:'揭穿骗局',effect:{connections:15,wealth:-10,qiyun:5},log:'引来坐忘道的敌意'},
-    {text:'请求入道',effect:{sanity:-20,wealth:30},log:'坐忘道弟子考验你...',factionJoin:'zuowang'},
+    {text:'请求入道',effect:{sanity:-20,wealth:30},log:'坐忘道弟子考验你的欺骗天赋...你获得了一张<span class="itm">易容面皮</span>',factionJoin:'zuowang',item:'yi_rong_mian'},
     {text:'默默走开',effect:{},log:'与你无关'}]},
   {text:'<span class="npc">县太爷</span>贴出告示征兵，抵御南疆蛮族。',choices:[
     {text:'投军报国',effect:{connections:20,wealth:20,cultivation:5,constitution:5,qiyun:5},log:'成为一名士兵'},{text:'想办法逃避',effect:{connections:-15,qiyun:-5},log:'躲在山里三个月'}]},
@@ -507,7 +532,7 @@ const ADULT_EVENTS = [
     {text:'应聘镖师',effect:{connections:30,wealth:40,constitution:5},log:'成为镖师，刀口舔血',factionJoin:'biaoju'},
     {text:'不去',effect:{},log:'这行当太危险'}]},
   {text:'<span class="fac">白莲教</span>暗中传教，许诺信徒来世荣华。',choices:[
-    {text:'请求入教',effect:{connections:20,sanity:-20},log:'白莲教考验你的忠心...',factionJoin:'bailian'},
+    {text:'请求入教',effect:{connections:20,sanity:-20},log:'白莲教考验你的忠心...你获得了一枚<span class="itm">白莲纹布护身符</span>',factionJoin:'bailian',item:'bl_hushen_fu'},
     {text:'向官府举报',effect:{connections:15,wealth:20,qiyun:-5},log:'官府封赏了你'},
     {text:'假装没看见',effect:{},log:'多一事不如少一事'}]},
   {text:'<span class="danger-text">山贼</span>拦路抢劫，为首的是个独眼大汉。',choices:[
@@ -521,14 +546,14 @@ const ADULT_EVENTS = [
     {text:'请他驱邪',effect:{sanity:15,wealth:-20,qiyun:5},log:'他画了一道符给你',item:'fu_lu'},
     {text:'不信这些',effect:{sanity:-5},log:'老道叹了口气走了'}]},
   {text:'<span class="fac">袄景教</span>的圣女向你伸出手，邀你加入圣火之下。',choices:[
-    {text:'加入袄景教',effect:{connections:40,cultivation:30},log:'你在圣火前立誓',factionJoin:'aojing'},
+    {text:'加入袄景教',effect:{connections:40,cultivation:30},log:'你在圣火前立誓，获得了一份<span class="itm">火蜒蚰蜡封简</span>',factionJoin:'aojing',item:'huo_yanyu_la'},
     {text:'敬而远之',effect:{},log:'宗教的事还是别掺和'}]},
   {text:'你在市集上看到有人贩卖<span class="itm">一块温润的白玉佩</span>。',choices:[
     {text:'买下（花费30金银）',effect:{wealth:-30,sanity:15},log:'白玉佩温润通灵，心神为之一宁',item:'bai_yu_pei',req:{wealth:30}},
     {text:'太贵了',effect:{},log:'钱要省着花'}]},
   {text:'一群<span class="fac">法教</span>信徒正在进行血腥的<span class="danger-text">献祭仪式</span>。',choices:[
     {text:'阻止他们',effect:{cultivation:10,connections:-15,sanity:-10,qiyun:15},log:'你打断了仪式，但法教记住了你',req:{cultivation:20}},
-    {text:'加入法教',effect:{cultivation:20,sanity:-25},log:'你跪在血泊中宣誓效忠',factionJoin:'fa_jiao'},
+    {text:'加入法教',effect:{cultivation:20,sanity:-25},log:'你跪在血泊中宣誓效忠，获得了一块<span class="itm">献祭石牌</span>',factionJoin:'fa_jiao',item:'xian_ji_shi_pai'},
     {text:'悄悄离开',effect:{sanity:-10,qiyun:-5},log:'那些尖叫声将长久萦绕'}]},
   {text:'一位<span class="npc">垂死的修士</span>将毕生修为传给你。',choices:[
     {text:'接受传承',effect:{cultivation:35,sanity:-15,comprehension:10},log:'巨大的力量涌入丹田！',req:{cultivation:30}},
@@ -609,11 +634,11 @@ const ADULT_EVENTS = [
     {text:'趁乱逃走',effect:{sanity:-5,karma:-3},log:'战场不是你该来的地方'}]},
   // === 新门派加入事件 ===
   {text:'一位<span class="fac">罗教</span>弟子在路边摆摊看风水，你上前攀谈。他见你悟性不凡，引你去见<span class="npc">韩符掌教</span>，问你是否愿意拜入<span class="fac">罗教</span>修习符箓与驱邪之术。',choices:[
-    {text:'拜入罗教',effect:{comprehension:15,cultivation:10,connections:10},log:'你成为罗教弟子，开始修习蛇骨山一脉平和内敛的罗教之法',factionJoin:'luo_jiao'},
+    {text:'拜入罗教',effect:{comprehension:15,cultivation:10,connections:10},log:'你成为罗教弟子，掌门亲授<span class="itm">罗教符箓包</span>，开始修习蛇骨山一脉平和内敛的罗教之法',factionJoin:'luo_jiao',item:'luo_fulu_bao'},
     {text:'请教一二后离去',effect:{comprehension:8},log:'你学到了一些基础的风水知识'},
     {text:'不感兴趣',effect:{},log:'看风水这种事太玄了'}]},
   {text:'你深入<span class="loc">南疆</span>时遭遇瘴气侵体，被一位<span class="fac">南疆巫族</span>的蛊师所救。他说你的体魄很适合修习<span class="mys">蛊术</span>。',choices:[
-    {text:'拜入南疆巫族',effect:{cultivation:15,constitution:5,sanity:-10},log:'你成为蛊童，开始学习与毒虫共处',factionJoin:'nanjiang'},
+    {text:'拜入南疆巫族',effect:{cultivation:15,constitution:5,sanity:-10},log:'你成为蛊童，获得了一只<span class="itm">低阶噬邪蛊种囊</span>，开始学习与毒虫共处',factionJoin:'nanjiang',item:'shi_xie_gu_nang'},
     {text:'道谢后离去',effect:{connections:5},log:'南疆的修行路子太诡异了'},
     {text:'请他教你几手蛊术',effect:{cultivation:8,comprehension:5,sanity:-5},log:'他教了你最基础的驱虫之法'}]},
   {text:'你在战场废墟中捡到了一页<span class="itm">兵书残页</span>，上面的文字被血浸染。一个<span class="fac">兵家</span>传人出现在你身后："你拿了不该拿的东西。不过…你有兵家的资质。"',choices:[
@@ -621,12 +646,12 @@ const ADULT_EVENTS = [
     {text:'交还兵书残页',effect:{connections:5,karma:5},log:'那人点了点头，消失在了战场烟尘中'},
     {text:'拒绝并保留残页',effect:{cultivation:10,qiyun:-5},log:'你留下了残页，但那人的眼神让你不安'}]},
   {text:'<span class="loc">正德寺</span>的僧人在路边施粥济民。一位<span class="npc">老僧</span>看到你便说："施主有佛缘，可愿入我<span class="fac">佛门</span>修行？"',choices:[
-    {text:'剃度出家',effect:{cultivation:10,karma:5,sanity:5,connections:5},log:'你在正德寺剃度为沙弥，开始了清修之路',factionJoin:'fomen'},
+    {text:'剃度出家',effect:{cultivation:10,karma:5,sanity:5,connections:5},log:'你在正德寺剃度为沙弥，获得了一份<span class="itm">戒牒</span>',factionJoin:'fomen',item:'zds_jie_die'},
     {text:'带发修行',effect:{cultivation:5,comprehension:5},log:'你在寺中修行数日，受益匪浅但未正式出家'},
     {text:'不入佛门',effect:{},log:'你双手合十谢过老僧'}]},
   // === 清风观加入事件 ===
   {text:'你在山中迷路时误入一座<span class="mys">破败道观</span>——<span class="loc">清风观</span>。一个不识字的中年男人盯着你看了许久，突然大笑："好材料！你留下吧。"他就是<span class="npc">丹阳子</span>。',trigger:{minAge:12},choices:[
-    {text:'留在清风观',effect:{cultivation:15,sanity:-10,karma:-5},log:'你成为清风观外门弟子。这里的师兄们大多有些残疾，气氛诡异...',factionJoin:'qingfeng'},
+    {text:'留在清风观',effect:{cultivation:15,sanity:-10,karma:-5},log:'你成为清风观外门弟子，获得了一张<span class="itm">引火护鼎符</span>。这里的师兄们大多有些残疾，气氛诡异...',factionJoin:'qingfeng',item:'yin_huo_fu'},
     {text:'趁夜逃走',effect:{sanity:-5,qiyun:3},log:'你趁丹阳子不注意逃出了清风观，身后传来他的叹息声'},
     {text:'跪拜求学',effect:{cultivation:20,sanity:-15,karma:-10,comprehension:5},log:'丹阳子对你的"诚意"很满意，亲自收你为内门弟子',factionJoin:'qingfeng'}]},
   // === 国师体系加入事件 ===
@@ -918,6 +943,27 @@ const FACTION_EVENTS = {
       {text:'继续深入',effect:{cultivation:30,sanity:-25,comprehension:15},log:'你忘记了...忘记了什么来着？'},{text:'退出坐忘',effect:{sanity:10,cultivation:5},log:'有些记忆比修为更重要'}]},
     {text:'坐忘道发现你私下还在研习<span class="mys">其他功法</span>，掌教召你问话。',choices:[
       {text:'坦白认错',effect:{connections:-10,qiyun:5},log:'掌教罚你面壁三月'},{text:'据理力争',effect:{connections:-20,comprehension:8,cultivation:5},log:'掌教对你大为不满，但你的见解让一些师兄刮目相看'}]},
+    // === 坐忘道·非罡诈骗剧情 ===
+    {text:'掌教授意你前往一座小城，冒充<span class="fac">监天司</span>的巡察使，以"<span class="danger-text">缴纳驱邪税</span>"为名敛取<span class="mys">非罡</span>。百姓对"监天司"言听计从。',choices:[
+      {text:'照办不误，大肆敛财',effect:{wealth:40,connections:-5,karma:-15,cultivation:15},log:'你骗了整座城的百姓，非罡源源不断流入坐忘道——但你心里不太好受'},
+      {text:'只骗富户，放过穷人',effect:{wealth:20,karma:-5,cultivation:10,qiyun:5},log:'你选择性地下手，掌教说你"手法尚可，心肠太软"'},
+      {text:'暗中放消息给真正的监天司',effect:{connections:10,karma:10,qiyun:10,sanity:-10},log:'你把坐忘道的计划透露了出去——但你在坐忘道的地位岌岌可危',setFlag:'betray_zuowang_jts'}]},
+    {text:'你被指派去<span class="fac">正德寺</span>附近设局——以"<span class="danger-text">佛门高僧开光</span>"为名义，向信众兜售假法器，从中<span class="mys">敛取非罡</span>。',choices:[
+      {text:'化妆成和尚行骗',effect:{wealth:30,cultivation:15,karma:-20,sanity:-10},log:'你剃了头套上袈裟，在寺门外卖假开光法器。信众们虔诚地掏出积蓄——你把他们的信仰变成了坐忘道的养料'},
+      {text:'改为骗富商',effect:{wealth:25,cultivation:10,karma:-10,connections:5},log:'你觉得骗穷苦信众太缺德，转而设局骗了几个大商人'},
+      {text:'找个理由推掉',effect:{connections:-15,qiyun:5},log:'你推说佛门有高手看守，完不成任务。掌教冷笑一声，没说什么'}]},
+    {text:'坐忘道收到情报：一支<span class="fac">罗教</span>弟子正在押送一批<span class="itm">七星铜钱剑</span>。掌教要你带人半路截杀，将法器据为己有——"<span class="mys">非罡在于掠夺，不限于欺骗。</span>"',choices:[
+      {text:'伏击罗教队伍',effect:{cultivation:20,karma:-20,connections:-10,constitution:-5},log:'一场血战，你击败了罗教弟子。铜钱剑被你夺走——但你在罗教已成了必杀之人',combat:60},
+      {text:'只抢货不杀人',effect:{cultivation:15,karma:-10,connections:-5},log:'你用坐忘之术迷惑了押送队伍，趁乱夺走了法器。罗教弟子醒来后一脸茫然',combat:40},
+      {text:'放罗教弟子走，谎称没找到人',effect:{karma:10,connections:-15,comprehension:5},log:'你向掌教谎报说罗教改了路线。坐忘道的人对你起了疑心'}]},
+    {text:'你在<span class="fac">坐忘道</span>内部发现了一个秘密——高层之间流传着一种叫"<span class="mys">非罡回流</span>"的修炼法：将敛取的非罡在自身体内转化为<span class="danger-text">真罡</span>。但据说转化失败会直接走火入魔。',choices:[
+      {text:'冒险尝试非罡回流',effect:{cultivation:40,sanity:-30,comprehension:20,constitution:-10},log:'你将体内积攒的非罡强行转化——那一刻你感受到了斗姥的真假天道的本质：非罡与真罡本就没有区别，区别只在于你信不信'},
+      {text:'向掌教请教',effect:{cultivation:20,comprehension:15,connections:10},log:'掌教难得露出赞赏的表情："你终于开始像个坐忘道的人了。"他传授了你一些非罡回流的要诀'},
+      {text:'太危险了，放弃',effect:{sanity:5,cultivation:5},log:'你决定不冒这个险。有些东西还是保命要紧'}]},
+    {text:'<span class="fac">坐忘道</span>掌教亲自给你派了一个大任务：渗透<span class="fac">白莲教</span>，利用白莲教信众的虔诚来<span class="mys">大规模敛取非罡</span>。"<span class="danger-text">信仰最盛处，非罡最易得。</span>"',choices:[
+      {text:'潜入白莲教卧底',effect:{connections:15,cultivation:20,karma:-15,sanity:-15},log:'你以信众身份混入白莲教，开始在祈祷仪式上暗中引导信众的精神力流向坐忘道。无生老母的信徒们毫无察觉',setFlag:'zuowang_spy_bailian'},
+      {text:'答应但暗中两头吃',effect:{wealth:30,connections:10,karma:-10,qiyun:-10},log:'你两头骗——一边向坐忘道交差，一边在白莲教也混得风生水起。但你知道这迟早要露馅'},
+      {text:'拒绝：底线不能丢',effect:{connections:-20,karma:5,qiyun:10},log:'掌教盯着你看了很久，说了一句："这就是你坐忘不了的东西。"你分不清这是讽刺还是惋惜'}]},
   ],
   jiantian: [
     {text:'<span class="fac">监天司</span>派你去调查一桩<span class="mys">灵异命案</span>。',choices:[
@@ -2537,6 +2583,10 @@ const RANK_EVENTS = {
       {text:'执行任务',effect:{connections:-10,qiyun:-15,karma:-15,cultivation:15},log:'整个村子陷入了混乱和猜疑——而骰子在远处大笑'},
       {text:'暗中破坏任务',effect:{connections:-5,qiyun:5,karma:10},log:'你没有完成任务，但骰子似乎并不在意'},
       {text:'问骰子目的',effect:{comprehension:10,sanity:-10},log:'骰子只说了一句："好玩就够了。"'}]},
+    {text:'你在坐忘道的位阶提升后，掌教亲手将一枚<span class="itm">本命麻将牌</span>贴在你脸上——你感到面皮一阵灼热，牌面逐渐与你的面容融为一体。"<span class="mys">从今往后，这就是你的脸。</span>"',
+      rankReq:2,choices:[
+      {text:'欣然接受',effect:{cultivation:15,connections:10,sanity:-10},log:'你的面容开始变化——镜中看到的不再是自己，而是一张麻将牌面',item:'ben_ming_pai'},
+      {text:'强忍不适',effect:{cultivation:10,sanity:-5},log:'你勉强适应了面皮融合的过程',item:'ben_ming_pai'}]},
     {text:'坐忘道的<span class="npc">红中</span>召集核心成员，要传授<span class="mys">罔天宝诰</span>——据说诵此咒可接引<span class="npc">斗姥</span>化身下凡。',
       rankReq:5,choices:[
       {text:'学习罔天宝诰',effect:{cultivation:35,sanity:-25,comprehension:15,qiyun:-15},log:'你感受到了阴阳斗姥那令人窒息的谎言之力...'},
@@ -2555,6 +2605,10 @@ const RANK_EVENTS = {
       rankReq:3,choices:[
       {text:'仔细研读',effect:{comprehension:15,cultivation:10,sanity:-10},log:'你对这个世界的黑暗面有了更深的了解'},
       {text:'只看自己需要的',effect:{comprehension:5,connections:5},log:'知道得太多不一定是好事'}]},
+    {text:'你在<span class="fac">监天司</span>中通过了正式编制考核，上司将一块<span class="itm">铁牌腰牌</span>交到你手中。"从今日起，你是监天司的正式差役。大梁之内，你有权调查一切异事。"',
+      rankReq:1,choices:[
+      {text:'郑重接过腰牌',effect:{connections:10,qiyun:5},log:'铁牌沉甸甸的，上面刻着你的编号。你终于是监天司的人了',item:'jts_tie_pai'},
+      {text:'请教前辈经验',effect:{connections:8,comprehension:5},log:'前辈拍了拍你的肩："小心坐忘道的人，他们什么脸都能变。"',item:'jts_tie_pai'}]},
     {text:'作为<span class="fac">监天司</span>己监丞，你被委以<span class="danger-text">剿灭</span>一个邪教据点的重任。',
       rankReq:4,choices:[
       {text:'亲自领队出击',effect:{cultivation:15,connections:15,constitution:-5,karma:5},log:'你成功铲除了邪教据点，声望大增',combat:65},
@@ -2574,6 +2628,10 @@ const RANK_EVENTS = {
       rankReq:2,choices:[
       {text:'修习献祭之法',effect:{cultivation:25,constitution:-8,sanity:-15,comprehension:10},log:'你学会了以指骨为飞刀、以皮肉为牢笼的可怕神通'},
       {text:'只学基础法术',effect:{cultivation:10,constitution:-3},log:'你只修习了低阶的献祭术'}]},
+    {text:'你完成了第一次<span class="danger-text">正式登阶</span>，教中长老将一片<span class="itm">苍蜣登阶誓约竹片</span>刻上你的名字——"从此你不再是信众，而是<span class="fac">袄景教</span>的真正门徒。痛苦即力量。"',
+      rankReq:1,choices:[
+      {text:'郑重接受',effect:{cultivation:15,sanity:-10,constitution:-3},log:'竹片入手的瞬间，你感到巴虺的目光落在了你身上',item:'cq_deng_jie'},
+      {text:'以痛苦宣誓效忠',effect:{cultivation:20,sanity:-15,constitution:-8},log:'你在竹片上刺出自己的鲜血。长老们赞许地点头',item:'cq_deng_jie'}]},
     {text:'教中传来消息：<span class="npc">牯神</span>即将苏醒，它是与<span class="npc">巴虺</span>平等的圣人，能自由召唤巴虺。教中要选出新一任<span class="npc">牯神使</span>。',
       rankReq:3,choices:[
       {text:'争夺牯神使之位',effect:{cultivation:30,connections:15,sanity:-20,qiyun:-10},log:'你在竞争中脱颖而出，获得了与巴虺沟通的资格'},
@@ -2584,10 +2642,10 @@ const RANK_EVENTS = {
       {text:'在痛苦中保留人性',effect:{cultivation:30,constitution:10,sanity:-10,karma:5},log:'你成为了心蟠，但没有完全被痛苦吞噬。巴虺对你的选择既不满也不在意',xinpan:'baxi',setFlag:'has_xinpan'}]},
   ],
   bailian: [
-    {text:'作为<span class="fac">白莲教</span>坛主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲·生长·死亡</span>的司命。',
+    {text:'作为<span class="fac">白莲教</span>坛主，你获悉圣母<span class="npc">无生老母</span>的真实面目——她是掌管<span class="mys">慈悲·生长·死亡</span>的司命。二神亲手将一卷<span class="itm">无生宝诰</span>交到你手中。',
       rankReq:1,choices:[
-      {text:'更加虔诚信仰',effect:{cultivation:20,comprehension:10,qiyun:10},log:'理解了无生老母的本质后，你的信仰更加坚定'},
-      {text:'产生动摇',effect:{comprehension:15,sanity:-10,connections:-5},log:'司命...这已经超出了你对"教"的理解'}]},
+      {text:'更加虔诚信仰',effect:{cultivation:20,comprehension:10,qiyun:10},log:'理解了无生老母的本质后，你的信仰更加坚定',item:'wusheng_bao_gao'},
+      {text:'产生动摇',effect:{comprehension:15,sanity:-10,connections:-5},log:'司命...这已经超出了你对"教"的理解',item:'wusheng_bao_gao'}]},
     {text:'<span class="fac">白莲教</span>二神传你<span class="itm">红莲业火</span>的高阶用法——可以烧灼因果、净化业障。你掌八苦十情，主持教中大小仪式。',
       rankReq:2,choices:[
       {text:'全力修习',effect:{cultivation:25,karma:15,sanity:-10,constitution:-5},log:'红莲业火在你体内燃烧，你感到过去的罪孽在被洗涤'},
@@ -2821,7 +2879,7 @@ const CONNECTIONS_EVENTS = [
     {text:'两不相帮',effect:{connections:-5},log:'你不想卷入门派纷争'}]},
   {text:'你的名声传到了<span class="fac">监天司</span>耳中，他们派人来<span class="npc">招揽你</span>。',
     connReq:{min:30},trigger:{minAge:18},choices:[
-    {text:'加入监天司',effect:{connections:15,wealth:15},log:'你凭借人脉直接进入了监天司',factionJoin:'jiantian'},
+    {text:'加入监天司',effect:{connections:15,wealth:15},log:'你凭借人脉进入了监天司，获发<span class="itm">制式法剑</span>',factionJoin:'jiantian',item:'jts_fa_jian'},
     {text:'婉拒',effect:{connections:5,comprehension:3},log:'你选择保持自由身'}]},
   {text:'你认识的一位<span class="npc">老友</span>突然登门拜访，说有一桩<span class="itm">天大的机缘</span>要与你共享。',
     connReq:{min:50},trigger:{minAge:20},choices:[
