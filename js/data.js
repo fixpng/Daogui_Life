@@ -90,7 +90,7 @@ const FACTIONS = {
     ranks:['癸卒','壬伍','辛什','庚旗','己监丞','戊记相','丁将','丙将','司天少监','司天监'],
     rankReqs:[0,10,20,35,50,70,90,120,170,250],
     rankAgeReqs:[0,0,16,18,22,26,30,35,40,50]},
-  aojing: {name:'袄景教', bonus:{cultivation:8,connections:3,qiyun:-2}, desc:'原为两支分别信奉牯神和巴虺的教派，后合并。修炼途径为苍蜣登阶——以极端自残和痛苦献祭换取巴虺赐力。等级按劫数划分，底层以器官+数字为号（如耳玖、手叁），三劫以上可获正式名号（眼见喜、身本忧等）。传承法器为大千录。',
+  aojing: {name:'袄景教', bonus:{cultivation:8,connections:3,qiyun:-2}, desc:'内部供奉巴虺与牯神，同一教派内的不同信仰侧重。修炼途径为苍蜣登阶——以极端自残和痛苦献祭换取巴虺赐力。等级按劫数划分，底层以器官+数字为号（如耳玖、手叁），三劫以上可获正式名号（眼见喜、身本忧等）。传承法器为大千录。',
     requirement:{cultivation:20}, requireDesc:'需修为境界达练气以上',
     ranks:['一劫','二劫','三劫','四劫','五劫'],
     rankReqs:[0,20,50,100,200],
@@ -115,7 +115,7 @@ const FACTIONS = {
     ranks:['兵卒','伍长','偏将','大将'],
     rankReqs:[0,25,60,150],
     rankAgeReqs:[0,0,20,35]},
-  fomen: {name:'正德寺', bonus:{cultivation:5,karma:5,sanity:3,connections:3}, desc:'大梁佛门正统，等级依次为沙弥、比丘、执事、住持、方丈。禅度方丈为正德寺最高，掌血肉天道。表面慈悲为怀，实为五智如来（肉欲天道司命）的影子。晋升依据禅定境界、度化功绩、镇压邪祟。',
+  fomen: {name:'正德寺', bonus:{cultivation:5,karma:5,sanity:3,connections:3}, desc:'大梁佛门正统，等级依次为沙弥、比丘、执事、住持、方丈。禅度方丈为正德寺最高，掌血肉天道。表面慈悲为怀，实为五智如来（血肉天道司命）的影子。晋升依据禅定境界、度化功绩、镇压邪祟。',
     requirement:{karma_min:-10}, requireDesc:'需因果不低于-10（恶人不可入佛门）',
     ranks:['沙弥','比丘','执事','住持','方丈'],
     rankReqs:[0,15,35,70,120],
@@ -246,7 +246,7 @@ const ITEMS = [
 const ACHIEVEMENTS = [
   {id:'first_death',name:'初入轮回',desc:'第一次死亡',icon:'☠'},
   {id:'reach_jindan',name:'金丹大道',desc:'达到金丹境界',icon:'⭕'},
-  {id:'reach_danuo',name:'超凡入圣',desc:'达到大傩境界',icon:'👁'},
+  {id:'reach_danuo',name:'超凡入圣',desc:'达到肉身司命境界',icon:'👁'},
   {id:'rich',name:'富甲一方',desc:'金银超过200',icon:'💰'},
   {id:'mad',name:'疯人院',desc:'心素天赋且神志归零',icon:'🌀'},
   {id:'forgotten',name:'被遗忘者',desc:'心浊天赋且修为达金丹',icon:'🌫'},
@@ -281,7 +281,7 @@ const ACHIEVEMENTS = [
   {id:'married_life',name:'红尘有幸',desc:'成婚并拥有子嗣',icon:'💑'},
   {id:'family_protector',name:'守护家人',desc:'已婚且修为达到金丹',icon:'🏠'},
   {id:'shuangxiu_master',name:'欢喜禅定',desc:'修成五智如来双修法门',icon:'☸'},
-  {id:'shuangxiu_resist',name:'以爱破道',desc:'以人间情爱对抗肉欲天道',icon:'❤'},
+  {id:'shuangxiu_resist',name:'以爱破道',desc:'以人间情爱对抗血肉天道',icon:'❤'},
   // === 跨世界成就 ===
   {id:'crossworld_witness',name:'三界见证',desc:'见证三重历史交汇并沟通三条龙脉',icon:'🌐'},
   {id:'daqi_explorer',name:'幽都访客',desc:'在梦境或裂缝中踏入大齐幽都',icon:'🏙'},
@@ -1343,12 +1343,12 @@ const ROMANCE_EVENTS = [
 // === 双修事件 SHUANGXIU EVENTS (五智如来·男女双修) ===
 const SHUANGXIU_EVENTS = [
   // --- 初识双修法门 ---
-  {text:'你在<span class="loc">正德寺</span>的藏经阁深处发现了一卷被刻意藏起的<span class="itm">残经</span>。经文上记载着一种名为"<span class="mys">欢喜禅</span>"的秘法——以男女交合之术修炼，号称可直通<span class="mys">五智如来</span>法门。经文边注写着："<span class="danger-text">切莫轻试，肉欲天道非凡人可驾驭。</span>"',
+  {text:'你在<span class="loc">正德寺</span>的藏经阁深处发现了一卷被刻意藏起的<span class="itm">残经</span>。经文上记载着一种名为"<span class="mys">欢喜禅</span>"的秘法——以男女交合之术修炼，号称可直通<span class="mys">五智如来</span>法门。经文边注写着："<span class="danger-text">切莫轻试，血肉天道非凡人可驾驭。</span>"',
     trigger:{minAge:20,cultivation:20},choices:[
     {text:'仔细研读',effect:{comprehension:15,cultivation:10,sanity:-10,karma:-5},log:'你通读全文——这法门以阴阳交合为媒介，引动体内真元互相流转。修炼时需双方心意相通，否则轻则走火入魔，重则形神俱灭。你心中隐约有了一些领悟',setFlag:'know_shuangxiu'},
     {text:'放回原处',effect:{karma:5,comprehension:3},log:'你把经文放了回去。有些东西，不该碰'},
     {text:'带走经文',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-8},log:'你将残经揣入怀中。总觉得这东西日后会有大用——或大祸',setFlag:'know_shuangxiu',item:'shuangxiu_jing'}]},
-  {text:'一名云游的<span class="npc">老僧</span>在路边化缘时突然拉住你说："<span class="mys">施主身上有五智如来的气息。</span>"他说佛门修行并非只有苦行一途，<span class="danger-text">肉欲</span>本身也是天道的一部分——五智如来掌管此道，以欢喜禅定为法门。但他的眼神深处，藏着某种你看不透的东西。',
+  {text:'一名云游的<span class="npc">老僧</span>在路边化缘时突然拉住你说："<span class="mys">施主身上有五智如来的气息。</span>"他说佛门修行并非只有苦行一途，<span class="danger-text">血肉</span>本身也是天道的一部分——五智如来掌管此道，以欢喜禅定为法门。但他的眼神深处，藏着某种你看不透的东西。',
     trigger:{minAge:18,cultivation:15},choices:[
     {text:'请教五智如来法门',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-3},log:'老僧说：男女交合，阴阳流转，可引天地灵气入体。但——"佛门背后的那位，可不是什么慈悲的存在。"说完他便消失了',setFlag:'know_shuangxiu'},
     {text:'不理他',effect:{sanity:3,qiyun:3},log:'你加快脚步走了。这世道疯子太多'},
@@ -1363,14 +1363,14 @@ const SHUANGXIU_EVENTS = [
     genderReq:'male',trigger:{minAge:20,cultivation:30},flagReq:'know_shuangxiu',noFlag:'married',choices:[
     {text:'答应与她双修',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-10,constitution:-5},log:'你们在一处隐秘洞府中修炼欢喜禅。交合之际，你感到体内真元如潮水般涌动——但也感受到了一股来自深处的、不属于你们任何人的<span class="danger-text">窥视</span>',setFlag:'shuangxiu_ready'},
     {text:'婉拒',effect:{comprehension:5,karma:3},log:'你拒绝了她。她并不意外，只是说："缘分未到。"'},
-    {text:'询问五智如来的真相',effect:{comprehension:12,sanity:-10,cultivation:5},log:'她说五智如来是佛门背后真正的主人——它掌管肉欲天道，所有欢喜禅修行者的力量最终都会流向它。"但力量是真的。"她补充道'}]},
+    {text:'询问五智如来的真相',effect:{comprehension:12,sanity:-10,cultivation:5},log:'她说五智如来是佛门背后真正的主人——它掌管血肉天道，所有欢喜禅修行者的力量最终都会流向它。"但力量是真的。"她补充道'}]},
   // --- 双修实践 ---
   {text:'夜深人静，你与<span class="npc">道侣</span>开始尝试<span class="mys">欢喜禅</span>双修。按照经文所述，你们盘膝相对，双手相握，然后——交合。真元在两具身体之间流转，如同阴阳太极。你能感受到对方的心跳、呼吸、甚至思绪。在某一刻，你们仿佛融为了一体——天地灵气疯狂涌入，修为暴涨。但在灵气深处，你隐约看到了一尊<span class="danger-text">金色巨佛</span>的虚影。它在笑。',
     trigger:{minAge:20,cultivation:30},flagReq:'shuangxiu_ready',choices:[
     {text:'继续修炼，不管那尊佛',effect:{cultivation:35,comprehension:15,sanity:-20,constitution:-8,karma:-10},log:'你们将双修推向极致。修为大增——但那尊金佛的笑容越来越清晰了。五智如来的影子已经笼罩了你们',setFlag:'shuangxiu_deep'},
-    {text:'立即停止',effect:{cultivation:15,sanity:-10,comprehension:8},log:'你猛然收功。那尊金佛的虚影消散了——但你知道它一直都在。五智如来的肉欲天道，远比你想象的危险'},
+    {text:'立即停止',effect:{cultivation:15,sanity:-10,comprehension:8},log:'你猛然收功。那尊金佛的虚影消散了——但你知道它一直都在。五智如来的血肉天道，远比你想象的危险'},
     {text:'尝试以心意抵抗那尊佛',effect:{cultivation:25,sanity:-15,comprehension:12,karma:5},log:'你在交合中分出心神抵御金佛的窥视。勉强成功了——但你知道这只是暂时的',setFlag:'shuangxiu_deep'}]},
-  {text:'双修之后，你发现自己的<span class="mys">感知力</span>大幅提升——你能感受到周围所有人的情绪波动，仿佛七情六欲都在你面前袒露无遗。这是<span class="danger-text">五智如来·肉欲天道</span>赐予双修者的"恩惠"。但这种感知越来越强，让你难以忍受——街上随便走一圈，所有人的贪嗔痴慢疑都涌入你的脑海。',
+  {text:'双修之后，你发现自己的<span class="mys">感知力</span>大幅提升——你能感受到周围所有人的情绪波动，仿佛七情六欲都在你面前袒露无遗。这是<span class="danger-text">五智如来·血肉天道</span>赐予双修者的"恩惠"。但这种感知越来越强，让你难以忍受——街上随便走一圈，所有人的贪嗔痴慢疑都涌入你的脑海。',
     trigger:{minAge:22,cultivation:40},flagReq:'shuangxiu_deep',choices:[
     {text:'修炼控制这种感知',effect:{comprehension:20,cultivation:15,sanity:-15,constitution:-5},log:'你花了很长时间学会过滤杂念。这种感知力用好了是一柄利器，但稍有不慎就会被淹没'},
     {text:'封印这种能力',effect:{sanity:10,comprehension:-5,cultivation:-10,karma:5},log:'你用法力封住了这种感知。清净了，但也失去了双修带来的一部分好处'},
@@ -1398,11 +1398,11 @@ const SHUANGXIU_EVENTS = [
     {text:'以药石续命',effect:{wealth:-40,cultivation:-10,sanity:-10,karma:5},log:'你倾尽家财买来续命丹药，勉强稳住了道侣的状况。但你知道，再这样下去迟早出事'},
     {text:'继续修炼，牺牲道侣',effect:{cultivation:30,sanity:-30,karma:-30,connections:-20},log:'你看着昏迷的道侣，内心的某个声音说：这是必要的牺牲。你继续修炼了。五智如来在笑——你已经是它的人了'}]},
   // --- 双修终局 ---
-  {text:'经过长年累月的双修，你终于触摸到了<span class="mys">肉欲天道</span>的边界。在那里你看到了真相——<span class="danger-text">五智如来</span>不是佛。它是一尊以天下苍生的欲望为食的<span class="danger-text">司命</span>。所有修炼欢喜禅的人，都不过是它的<span class="danger-text">养料</span>。而你——已经喂了它太多了。',
+  {text:'经过长年累月的双修，你终于触摸到了<span class="mys">血肉天道</span>的边界。在那里你看到了真相——<span class="danger-text">五智如来</span>不是佛。它是一尊以天下苍生的欲望为食的<span class="danger-text">司命</span>。所有修炼欢喜禅的人，都不过是它的<span class="danger-text">养料</span>。而你——已经喂了它太多了。',
     trigger:{minAge:30,cultivation:80},flagReq:'shuangxiu_master',choices:[
-    {text:'斩断与五智如来的联系',effect:{cultivation:-40,sanity:20,comprehension:20,karma:20,constitution:-10},log:'你以极大的意志力斩断了和肉欲天道的联系。修为大跌——但你终于清醒了。有些力量，代价太大'},
+    {text:'斩断与五智如来的联系',effect:{cultivation:-40,sanity:20,comprehension:20,karma:20,constitution:-10},log:'你以极大的意志力斩断了和血肉天道的联系。修为大跌——但你终于清醒了。有些力量，代价太大'},
     {text:'成为五智如来的使徒',effect:{cultivation:60,sanity:-40,karma:-30,comprehension:25,connections:-20},log:'你跪在金佛面前说："我愿为你效命。"五智如来的力量灌入你体内——你再也回不了头了'},
-    {text:'以人间情爱对抗天道',effect:{cultivation:20,sanity:10,karma:15,comprehension:30,connections:10},log:'你想起了伴侣的笑容、孩子的啼哭。你说："我修的不是你的肉欲天道——我修的是人间的爱。"五智如来沉默了。也许，这才是真正的双修之道',achieve:'shuangxiu_resist'}]},
+    {text:'以人间情爱对抗天道',effect:{cultivation:20,sanity:10,karma:15,comprehension:30,connections:10},log:'你想起了伴侣的笑容、孩子的啼哭。你说："我修的不是你的血肉天道——我修的是人间的爱。"五智如来沉默了。也许，这才是真正的双修之道',achieve:'shuangxiu_resist'}]},
 ];
 
 // === 跨世界事件 CROSSWORLD EVENTS (大齐·天陈·龙脉) ===
@@ -1554,7 +1554,7 @@ const TALENT_CONFLICTS = {
 const STAT_TOOLTIPS = {
   age: '你在这一世的年龄',
   sanity: '神志：仅心素天赋可见。降至0则陷入永恒疯狂。受两界之力影响波动。',
-  cultivation: '修为：修炼境界，决定力量等级和寿命上限。凡人寿82，锻体90，练气100，筑基120，金丹150，元婴200，化神300，大乘500，大傩800，造化1200。',
+  cultivation: '修为：修炼境界，决定力量等级和寿命上限。凡人寿82，锻体90，练气100，筑基120，金丹150，元婴200，化神300，大乘500，肉身司命800，天人合一1200。',
   wealth: '金银：身上的钱财。降至-80会饿死街头。游历、购物都需要金银。',
   connections: '人脉：你在江湖中的社交关系网络。影响可触发的事件和势力互动。',
   comprehension: '悟性：对道的理解程度(0-100)。每30点悟性提升1点年修炼速度。影响高级事件触发。',
@@ -1855,7 +1855,7 @@ const ERA_EVENTS = [
     {text:'趁乱发财',effect:{wealth:15,karma:-8},log:'你在混乱中低买高卖，赚了一笔横财'}]},
   {text:'修士们议论纷纷——<span class="npc">斗姥</span>到底是什么？有人说是邪神，有人说是<span class="mys">司命</span>，没人说得清楚。',
     trigger:{yearMin:10,yearMax:20,minAge:14},choices:[
-    {text:'查阅古籍寻找答案',effect:{comprehension:10,sanity:-8},log:'古籍中的记载支离破碎，但你隐约拼凑出了斗姥的真相——它是掌管谎言的司命'},
+    {text:'查阅古籍寻找答案',effect:{comprehension:10,sanity:-8},log:'古籍中的记载支离破碎，但你隐约拼凑出了斗姥的真相——它是掌管真假的司命'},
     {text:'向高人请教',effect:{connections:5,comprehension:8,sanity:-5},log:'高人面色凝重地说："斗姥...不是我们能对抗的存在。"'}]},
 
   // --- 法教入侵期间 (year 20-32): 战火纷飞 ---
@@ -2212,7 +2212,7 @@ const CANONICAL_EVENTS = [
     {text:'这不过是改朝换代',effect:{comprehension:3},log:'对百姓来说，谁做皇帝都一样苦'}]},
 
   // --- 红中（坐忘道高层） (year 8 ~ 20) ---
-  {text:'<span class="fac">坐忘道</span>的<span class="npc">红中</span>在一座城镇中现身——他戴着红色面具，所到之处百姓不由自主地开始说谎。这就是谎言天道的力量。',
+  {text:'<span class="fac">坐忘道</span>的<span class="npc">红中</span>在一座城镇中现身——他戴着红色面具，所到之处百姓不由自主地开始说谎。这就是真假天道的力量。',
     trigger:{minAge:18,yearMin:8,yearMax:20,cultivation:20},choices:[
     {text:'尝试抵抗谎言之力',effect:{cultivation:10,sanity:-15,comprehension:10},log:'你咬破舌尖保持清醒——红中注意到了你，笑着说"有意思"'},
     {text:'向监天司报告红中的行踪',effect:{connections:10,karma:5,qiyun:5},log:'等监天司的人赶到时，红中早已消失无踪'},
@@ -2281,7 +2281,7 @@ const CANONICAL_EVENTS = [
     {text:'和骰子赌一局',effect:{wealth:30,sanity:-15,qiyun:-10},log:'你赢了——但你总觉得他是故意让你赢的。骰子笑了笑说："记住，你欠我一个人情。"'},
     {text:'观察骰子的手法',effect:{comprehension:15,sanity:-10},log:'你发现骰子的每一次掷骰都在操纵现实——这不是赌技，这是坐忘道的术法'},
     {text:'立刻离开',effect:{sanity:5},log:'直觉告诉你这个人极其危险——他看你的眼神像在看一颗棋子'}]},
-  {text:'<span class="npc">骰子</span>的真面目逐渐暴露——他不是人，而是<span class="fac">坐忘道</span>以<span class="mys">谎言天道</span>之力创造出的一个<span class="danger-text">概念体</span>。他能化身为任何人，操纵任何人的命运。<span class="fac">监天司</span>已将他列为头号通缉。',
+  {text:'<span class="npc">骰子</span>的真面目逐渐暴露——他不是人，而是<span class="fac">坐忘道</span>以<span class="mys">真假天道</span>之力创造出的一个<span class="danger-text">概念体</span>。他能化身为任何人，操纵任何人的命运。<span class="fac">监天司</span>已将他列为头号通缉。',
     trigger:{minAge:18,yearMin:10,yearMax:22,cultivation:40},choices:[
     {text:'协助监天司追捕骰子',effect:{connections:15,cultivation:10,sanity:-15,qiyun:5},log:'追踪骰子的过程如同与影子搏斗——他可以是街边卖菜的老翁，可以是你身旁的同伴，甚至可以是你自己'},
     {text:'收集骰子的情报',effect:{comprehension:12,connections:8,sanity:-8},log:'你发现骰子的最终目标是以皇帝身份号令兵家消灭监天司'},
@@ -2547,7 +2547,7 @@ const RANK_EVENTS = {
       {text:'脱离坐忘道',effect:{faction:'none',connections:-25,qiyun:10,sanity:10},log:'你毅然脱离了坐忘道，成为了散修'}]},
     {text:'<span class="npc">阴阳斗姥</span>终于选中了你——你就是她在人间的<span class="mys">因缘</span>，她的<span class="mys">心蟠</span>。斗姥的谎言之力灌入你体内，你能感知一切虚假。',
       rankReq:9,noFlag:'has_xinpan',choices:[
-      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用谎言天道之力——但你的自我在逐渐模糊',xinpan:'doumo',setFlag:'has_xinpan'},
+      {text:'接受斗姥的因缘',effect:{cultivation:40,comprehension:25,sanity:-30,connections:15,karma:-10},log:'你成为了斗姥的心蟠，可以使用真假天道之力——但你的自我在逐渐模糊',xinpan:'doumo',setFlag:'has_xinpan'},
       {text:'以己身抗衡斗姥意志',effect:{cultivation:25,sanity:-15,comprehension:15,karma:10},log:'你接受了心蟠之身，但拼命保住了自己的意志。斗姥似乎对此很"有趣"',xinpan:'doumo',setFlag:'has_xinpan'}]},
   ],
   jiantian: [
@@ -2943,8 +2943,8 @@ const STAT_COMBO_EVENTS = [
 const XINPAN_EVENTS = [
   // 季灾 (迷惘天道) 专属事件已移除：季灾是主角李火旺专属，玩家不可获得
 
-  // ========== 斗姥 (谎言天道) 专属事件 ==========
-  {xinpanReq:'doumo',text:'成为<span class="npc">阴阳斗姥</span>的心蟠后，你发现自己说出的每一句话都带着<span class="mys">谎言天道</span>的力量——你说"这里很安全"，周围的危险就真的消失了。但谎言说多了，你自己也开始信了。',
+  // ========== 斗姥 (真假天道) 专属事件 ==========
+  {xinpanReq:'doumo',text:'成为<span class="npc">阴阳斗姥</span>的心蟠后，你发现自己说出的每一句话都带着<span class="mys">真假天道</span>的力量——你说"这里很安全"，周围的危险就真的消失了。但谎言说多了，你自己也开始信了。',
     trigger:{minAge:18},choices:[
     {text:'利用谎言之力保护自己',effect:{cultivation:15,sanity:-10,connections:10,karma:-5},log:'你的话语成了武器和盾牌——但你再也说不出一句真话'},
     {text:'尽量保持沉默',effect:{sanity:5,comprehension:10,cultivation:5},log:'你选择沉默。斗姥的力量在沉默中蛰伏，等待着你开口的那一刻'},

@@ -277,8 +277,8 @@ function applyCultResistance(gain) {
 }
 
 function getRealmName(c) {
-  if(c>=400) return '造化';
-  if(c>=300) return '大傩';
+  if(c>=400) return '天人合一';
+  if(c>=300) return '肉身司命';
   if(c>=200) return '大乘';
   if(c>=150) return '化神';
   if(c>=100) return '元婴';
@@ -334,8 +334,8 @@ function nextYear() {
   var ageStep = 1;
   if(gameState.age >= 90) {
     var cultLevel = gameState.cultivation;
-    if(cultLevel >= 400) ageStep = Math.floor(Math.random() * 30) + 10; // 造化: 10-39年
-    else if(cultLevel >= 300) ageStep = Math.floor(Math.random() * 20) + 5; // 大傩: 5-24年
+    if(cultLevel >= 400) ageStep = Math.floor(Math.random() * 30) + 10; // 天人合一: 10-39年
+    else if(cultLevel >= 300) ageStep = Math.floor(Math.random() * 20) + 5; // 肉身司命: 5-24年
     else if(cultLevel >= 200) ageStep = Math.floor(Math.random() * 15) + 3; // 大乘: 3-17年
     else if(cultLevel >= 150) ageStep = Math.floor(Math.random() * 10) + 2; // 化神: 2-11年
     else if(cultLevel >= 100) ageStep = Math.floor(Math.random() * 7) + 2; // 元婴: 2-8年
@@ -625,7 +625,7 @@ function nextYear() {
   if(gameState.xinpan) {
     var xp = gameState.xinpan;
     if(xp === 'doumo') {
-      // 斗姥心蟠: 谎言天道 - 修为增, 人脉增, 神志降, 因果不稳
+      // 斗姥心蟠: 真假天道 - 修为增, 人脉增, 神志降, 因果不稳
       if(Math.random()<0.12) gameState.cultivation += 2;
       if(Math.random()<0.10) gameState.connections += 1;
       if(isXinsu && Math.random()<0.15) gameState.sanity = Math.max(0, gameState.sanity - 1);
@@ -1782,7 +1782,7 @@ function updateDisplay() {
   }
   // Xinpan (心蟠) display
   if(gameState.xinpan) {
-    var xinpanNames = {doumo:'斗姥·谎言',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
+    var xinpanNames = {doumo:'斗姥·真假',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
     itemsEl.innerHTML += '<span class="item-badge" style="border-color:var(--mystery);color:var(--mystery);" title="司命的人间因缘">心蟠: '+(xinpanNames[gameState.xinpan]||'未知')+'</span>';
   }
 }
@@ -1959,14 +1959,14 @@ function gameOver(reason) {
 
   var ending = reason;
   // Xinpan-specific endings (highest priority among custom endings)
-  if(gameState.xinpan === 'doumo' && gameState.cultivation >= 200) ending = '你是<span class="itm">阴阳斗姥的心蟠</span>——谎言天道在你体内燃烧。你已分不清什么是真什么是假，但你已不在意——谎言即是你的真实。';
+  if(gameState.xinpan === 'doumo' && gameState.cultivation >= 200) ending = '你是<span class="itm">阴阳斗姥的心蟠</span>——真假天道在你体内燃烧。你已分不清什么是真什么是假，但你已不在意——谎言即是你的真实。';
   else if(gameState.xinpan === 'baxi' && gameState.cultivation >= 200) ending = '你是<span class="itm">巴虺的心蟠</span>——痛苦天道贯穿全身。你以痛苦为粮、以献祭为道，肉身已化为承载痛苦天道的不朽容器。';
   else if(gameState.xinpan === 'wusheng' && gameState.cultivation >= 200) ending = '你是<span class="itm">无生老母的心蟠</span>——慈悲天道与你同在。你以一己之身承载众生苦乐，白灵淼曾走过的路，如今由你继续。';
   else if(gameState.xinpan === 'panchi' && gameState.cultivation >= 200) ending = '你是<span class="itm">蟠螭的心蟠</span>——秩序天道在你血脉中流淌。你化为龙脉的一部分，守护着大梁的安宁。皇朝兴衰，天道不灭。';
   else if(gameState.xinpan === 'yuer' && gameState.cultivation >= 200) ending = '你是<span class="itm">于儿神的心蟠</span>——一个超越凡人理解的存在选中了你。你的修行已不属于任何门派，而是属于另一种法则。';
   else if(gameState.xinpan && gameState.cultivation >= 100) ending = '你身为<span class="itm">司命的心蟠</span>，天道之力与你同在。虽未能达到极致，但你的存在已超越了普通修士——你是天道在人间的锚点。';
-  else if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">造化</span>之境，与天地同寿！';
-  else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">大傩</span>，俯瞰芸芸众生！';
+  else if(gameState.cultivation>=400) ending = '你超脱了一切，达到了<span class="itm">天人合一</span>之境，与天地同寿！';
+  else if(gameState.cultivation>=300) ending = '你成为了<span class="itm">肉身司命</span>，俯瞰芸芸众生！';
   else if(gameState.cultivation>=200 && factionName === '散修') ending = '你以<span class="itm">散修之身</span>达到大乘境界，百家之长融于一身，成为江湖传说！';
   else if(gameState.cultivation>=200 && rankName) ending = '你以<span class="itm">' + factionName + '·' + rankName + '</span>之身达到大乘境界，名震天下！';
   else if(gameState.sanity<=0 && gameState.cultivation>=100 && gameState.talents.find(function(t){return t.id==='xinsu';})) ending = '你看到了太多真相，在疯狂中窥见了大道的本质——以假修真，两界归一。';
@@ -1982,7 +1982,7 @@ function gameOver(reason) {
   else if(gameState.connections>=60 && gameState.cultivation<10) ending = '你虽是凡人，却人脉广达，一生交友无数。临终之际，故友旧交纷纷前来送行——这一世，值了。';
   else if(gameState.wealth>=200 && gameState.cultivation<10) ending = '你虽无修仙之缘，却富甲一方。临终之际，金银堆满了灵堂，但你知道这些带不走。';
   // Family and shuangxiu endings
-  else if(gameState.flags.shuangxiu_master && gameState.cultivation>=100) ending = '你修成了<span class="itm">五智如来的欢喜禅</span>，以肉欲天道之力突破了凡人的极限。但你分不清那力量到底是你的还是五智如来的——也许从一开始，双修者就只是它的容器。';
+  else if(gameState.flags.shuangxiu_master && gameState.cultivation>=100) ending = '你修成了<span class="itm">五智如来的欢喜禅</span>，以血肉天道之力突破了凡人的极限。但你分不清那力量到底是你的还是五智如来的——也许从一开始，双修者就只是它的容器。';
   else if(gameState.flags.married && gameState.flags.has_child && gameState.cultivation>=60) ending = '你一手修道，一手持家，在修仙与红尘之间找到了平衡。临终之际，伴侣和孩子守在床前——在这个满是邪祟的世界里，你守住了人间最珍贵的东西。';
   else if(gameState.flags.married && gameState.flags.has_child && gameState.age>=60) ending = '你虽无大成就，但儿孙满堂、夫妻恩爱。临终之际你想：李火旺选择了迷惘与爱，你也选择了平凡与温暖——这未必不是另一种道。';
   else if(gameState.flags.married && gameState.age>=50) ending = '你与伴侣携手走过了大半辈子。世间多诡谲，但你们从未放开彼此的手。这就够了。';
@@ -2007,7 +2007,7 @@ function gameOver(reason) {
     '<p>气运: <span style="color:var(--gold)">'+gameState.qiyun+' ('+qiyunDesc+')</span> · 体魄: <span style="color:var(--gold)">'+gameState.constitution+'</span></p>' +
     '<p>物品: <span style="color:var(--gold)">'+(gameState.items.length?gameState.items.map(function(i){return i.name;}).join('、'):'无')+'</span></p>' +
     (gameState.xinpan ? '<p style="color:var(--mystery);">心蟠: ' + (
-      gameState.xinpan==='doumo'?'阴阳斗姥（谎言天道）':
+      gameState.xinpan==='doumo'?'阴阳斗姥（真假天道）':
       gameState.xinpan==='baxi'?'巴虺（痛苦天道）':gameState.xinpan==='wusheng'?'无生老母（慈悲天道）':
       gameState.xinpan==='panchi'?'蟠螭（秩序天道）':gameState.xinpan==='yuer'?'于儿神（法教天道）':'未知'
     ) + '</p>' : '') +
