@@ -1266,6 +1266,30 @@ function nextYear() {
   }
 }
 
+// === LOCATION THEME MAPPING ===
+var LOCATION_THEMES = {
+  'zhao_cun': 'village', 'li_cun': 'village', 'wai_jiao': 'village',
+  'lu_cheng': 'city', 'yang_cheng': 'city', 'da_liang': 'city', 'shang_jing': 'city',
+  'shan_qu': 'mountain', 'kun_lun': 'mountain', 'xing_dao': 'mountain', 'long_min': 'mountain',
+  'qing_feng': 'evil', 'zheng_de_si': 'evil', 'an_ci': 'mountain',
+  'gui_shi': 'ghost', 'xu_kong': 'void', 'tian_chen': 'ghost',
+  'nan_jiang': 'jungle', 'hu_shan': 'jungle',
+  'bian_jing': 'war', 'si_qi': 'war', 'bei_jiang': 'war',
+  'baiyu_jing': 'celestial'
+};
+
+function applyLocationTheme() {
+  var locId = gameState.location ? gameState.location.id : 'zhao_cun';
+  var theme = LOCATION_THEMES[locId] || 'village';
+  // Remove all theme classes
+  var themeClasses = ['theme-village','theme-city','theme-mountain','theme-evil','theme-ghost','theme-jungle','theme-war','theme-celestial','theme-void'];
+  themeClasses.forEach(function(cls) { document.body.classList.remove(cls); });
+  // Apply new theme
+  document.body.classList.add('theme-' + theme);
+  // Update particles theme
+  if(typeof updateParticlesTheme === 'function') updateParticlesTheme(theme);
+}
+
 // === AUDIO STATE UPDATE ===
 function updateAudioState() {
   if(typeof DaoguiAudio === 'undefined') return;
@@ -1643,6 +1667,7 @@ function applyChoice(c) {
       if(!gameState.visitedLocations.includes(c.relocate)) gameState.visitedLocations.push(c.relocate);
       document.getElementById('current-location').textContent = newLoc.name;
       addLog('你辗转来到了<span class="loc">'+newLoc.name+'</span>。');
+      applyLocationTheme();
     }
   }
   // Death event handling
@@ -1785,6 +1810,7 @@ function updateDisplay() {
     var xinpanNames = {doumo:'斗姥·真假',baxi:'巴虺·痛苦',wusheng:'无生老母·慈悲',panchi:'蟠螭·秩序',yuer:'于儿·法教',sanqing:'三清·秘密'};
     itemsEl.innerHTML += '<span class="item-badge" style="border-color:var(--mystery);color:var(--mystery);" title="司命的人间因缘">心蟠: '+(xinpanNames[gameState.xinpan]||'未知')+'</span>';
   }
+  applyLocationTheme();
 }
 
 function addLog(text, type) {

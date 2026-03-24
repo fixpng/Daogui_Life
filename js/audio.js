@@ -65,7 +65,29 @@ var DaoguiAudio = (function() {
       filterFreq: 500,
       melodyComplexity: 0.8,
       baseNote: pentatonic.jiao
-    }
+    },
+    // Location-based modes
+    village: { tempo: 0.08, filterFreq: 400, melodyComplexity: 0.3, baseNote: pentatonic.gong },
+    city: { tempo: 0.12, filterFreq: 700, melodyComplexity: 0.5, baseNote: pentatonic.shang },
+    mountain: { tempo: 0.06, filterFreq: 350, melodyComplexity: 0.4, baseNote: pentatonic.jiao },
+    evil: { tempo: 0.15, filterFreq: 900, melodyComplexity: 0.8, baseNote: pentatonic.yu },
+    ghost: { tempo: 0.10, filterFreq: 500, melodyComplexity: 0.6, baseNote: 220 },
+    jungle: { tempo: 0.12, filterFreq: 600, melodyComplexity: 0.5, baseNote: pentatonic.zhi },
+    war: { tempo: 0.18, filterFreq: 1000, melodyComplexity: 0.9, baseNote: 196 },
+    celestial: { tempo: 0.05, filterFreq: 300, melodyComplexity: 0.3, baseNote: pentatonic.gongHigh },
+    void: { tempo: 0.04, filterFreq: 200, melodyComplexity: 0.2, baseNote: 130.81 }
+  };
+
+  // Location-to-audio-theme mapping (inside IIFE to access modes)
+  var LOCATION_THEMES_AUDIO = {
+    'zhao_cun': 'village', 'li_cun': 'village', 'wai_jiao': 'village',
+    'lu_cheng': 'city', 'yang_cheng': 'city', 'da_liang': 'city', 'shang_jing': 'city',
+    'shan_qu': 'mountain', 'kun_lun': 'mountain', 'xing_dao': 'mountain', 'long_min': 'mountain',
+    'qing_feng': 'evil', 'zheng_de_si': 'evil', 'an_ci': 'mountain',
+    'gui_shi': 'ghost', 'xu_kong': 'void', 'tian_chen': 'ghost',
+    'nan_jiang': 'jungle', 'hu_shan': 'jungle',
+    'bian_jing': 'war', 'si_qi': 'war', 'bei_jiang': 'war',
+    'baiyu_jing': 'celestial'
   };
 
   function init() {
@@ -158,6 +180,10 @@ var DaoguiAudio = (function() {
 
   // Get current music mode based on game state
   function getCurrentMode() {
+    // Location takes priority for atmosphere
+    var locTheme = currentState.location ? (LOCATION_THEMES_AUDIO[currentState.location] || null) : null;
+    if(locTheme && modes[locTheme]) return modes[locTheme];
+    // Fallback to age-based
     if (gameState.year < -100) return modes.ancient;
     if (gameState.age < 10) return modes.childhood;
     if (gameState.age < 18) return modes.teenage;

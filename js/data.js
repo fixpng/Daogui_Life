@@ -104,7 +104,7 @@ const FACTIONS = {
     requirement:{cultivation:5}, requireDesc:'需修为境界达锻体',
     ranks:['外门弟子','内门弟子','观主'],
     rankReqs:[0,25,80],
-    rankAgeReqs:[0,0,20]},
+    rankAgeReqs:[0,12,999]},
   luo_jiao: {name:'罗教', bonus:{cultivation:4,comprehension:5,karma:3}, desc:'蛇骨山韩符一脉。以七星铜钱剑为至宝，修行平和内敛，精通符箓、铜钱剑术、傀儡术与土煞之法。掌教韩符识心素、擅镇邪。创始人罗祖以一百八十四枚铜钱编成七星铜钱剑。',
     requirement:{comprehension:20}, requireDesc:'需悟性20以上',
     ranks:['弟子','执事','长老','掌教'],
@@ -363,112 +363,130 @@ const ACHIEVEMENTS = [
 
 // === EVENTS ===
 const CHILDHOOD_EVENTS = [
-  {text:'你在村口玩耍，<span class="npc">王大娘</span>给了你一块饴糖。',choices:[
+  {text:'你在摇篮里哭闹不止，<span class="npc">母亲</span>轻声哼着摇篮曲哄你入睡。',trigger:{maxAge:2},noTalent:'wu_qin',choices:[
+    {text:'安静入睡',effect:{sanity:3},log:'母亲的声音是最好的安神曲'},{text:'继续哭闹',effect:{constitution:2},log:'肺活量倒是练出来了'}]},
+  {text:'你第一次学会走路，<span class="npc">家人</span>围在身边又惊又喜。',trigger:{minAge:1,maxAge:2},choices:[
+    {text:'踉踉跄跄往前走',effect:{constitution:3,qiyun:2},log:'人生的第一步'},{text:'一屁股坐下来',effect:{sanity:2},log:'不急，路还长着呢'}]},
+  {text:'你高烧不退，<span class="npc">村里的赤脚郎中</span>被叫来看诊。他捏着你的小手，皱了皱眉。',trigger:{maxAge:3},choices:[
+    {text:'乖乖喝药',effect:{constitution:3,sanity:2},log:'苦得直吐，但烧退了'},{text:'哇哇大哭拒绝',effect:{constitution:-2,sanity:-3},log:'折腾了半天才灌进去'}]},
+  {text:'你在村口玩耍，<span class="npc">王大娘</span>给了你一块饴糖。',trigger:{minAge:3},choices:[
     {text:'吃掉',effect:{sanity:5},log:'糖很甜，这是童年为数不多的甜'},{text:'留着慢慢吃',effect:{connections:3,qiyun:3},log:'你学会了珍惜'}]},
   {text:'你突然<span class="danger-text">发起高烧</span>，烧得神志不清。',choices:[
     {text:'找郎中',effect:{wealth:-10},log:'药到病除'},{text:'硬扛过去',effect:{sanity:-10,constitution:-3},log:'落下了病根'}]},
-  {text:'<span class="npc">村里的孩子们</span>围着你，推搡嘲弄。',choices:[
+  {text:'<span class="npc">村里的孩子们</span>围着你，推搡嘲弄。',trigger:{minAge:4},choices:[
     {text:'告诉长辈',effect:{connections:5},log:'大人出面教训了他们'},{text:'默默忍受',effect:{sanity:-5,comprehension:2},log:'从此变得沉默寡言'}]},
-  {text:'深夜，你看到窗外有一道<span class="mys">模糊的人影</span>站在月光里。',choices:[
+  {text:'深夜，你看到窗外有一道<span class="mys">模糊的人影</span>站在月光里。',trigger:{minAge:3},choices:[
     {text:'蒙上被子',effect:{sanity:-5},log:'一夜未眠'},{text:'走出去看',effect:{sanity:-10,cultivation:3,comprehension:3},log:'什么都没有...真的什么都没有吗？'}]},
-  {text:'<span class="npc">父亲</span>带你去镇上赶集，你看到一个<span class="npc">算命先生</span>。',noTalent:'wu_qin',choices:[
+  {text:'<span class="npc">父亲</span>带你去镇上赶集，你看到一个<span class="npc">算命先生</span>。',trigger:{minAge:5},noTalent:'wu_qin',choices:[
     {text:'让他算一卦',effect:{cultivation:3,wealth:-5,comprehension:2},log:'他说你命格奇特'},{text:'不信这个',effect:{sanity:3},log:'理性是最好的护盾'}]},
-  {text:'你帮<span class="npc">母亲</span>在田里干活，累得满头大汗。',noTalent:'wu_qin',choices:[
+  {text:'你帮<span class="npc">母亲</span>在田里干活，累得满头大汗。',trigger:{minAge:6},noTalent:'wu_qin',choices:[
     {text:'坚持干完',effect:{connections:5,cultivation:2,constitution:2},log:'母亲很欣慰'},{text:'偷懒跑去玩',effect:{connections:-3},log:'被父亲训斥了一顿'}]},
-  {text:'村里来了一队<span class="fac">道士</span>，在祠堂里做法事。',choices:[
+  {text:'村里来了一队<span class="fac">道士</span>，在祠堂里做法事。',trigger:{minAge:5},choices:[
     {text:'偷偷观看',effect:{cultivation:5,comprehension:3},log:'那些符箓和咒语深深印入脑海'},{text:'害怕跑开',effect:{sanity:3},log:'离那些怪事远一点'}]},
-  {text:'后山传来奇怪的<span class="mys">哭声</span>，整个村子的狗都在叫。',choices:[
+  {text:'后山传来奇怪的<span class="mys">哭声</span>，整个村子的狗都在叫。',trigger:{minAge:6},choices:[
     {text:'假装没听到',effect:{sanity:-3},log:'那声音在梦里反复出现'},{text:'和小伙伴去探险',effect:{sanity:-8,cultivation:5,constitution:2},log:'在山洞里发现了奇怪的符文'}]},
-  {text:'你<span class="danger-text">饿了好几天</span>，肚子咕咕叫。',choices:[
+  {text:'你<span class="danger-text">饿了好几天</span>，肚子咕咕叫。',trigger:{minAge:3},choices:[
     {text:'忍着',effect:{sanity:-5,constitution:-2},log:'饥饿让人坚强'},{text:'去镇上讨饭',effect:{connections:-5,wealth:5,qiyun:-2},log:'学会了低头'}]},
-  {text:'过年了，<span class="npc">父母</span>给你做了新衣裳。',noTalent:'wu_qin',choices:[
+  {text:'过年了，<span class="npc">父母</span>给你做了新衣裳。',trigger:{minAge:3},noTalent:'wu_qin',choices:[
     {text:'开心地穿上',effect:{sanity:10,qiyun:2},log:'这是最快乐的一天'},{text:'想着村外的世界',effect:{cultivation:2,comprehension:2},log:'你心里藏着远方'}]},
-  {text:'你在河边洗衣服，看到水中倒映的<span class="mys">不是自己的脸</span>。',choices:[
+  {text:'你在河边洗衣服，看到水中倒映的<span class="mys">不是自己的脸</span>。',trigger:{minAge:5},choices:[
     {text:'揉揉眼睛再看',effect:{sanity:-8},log:'再看时一切正常...大概是错觉'},{text:'告诉大人',effect:{connections:-3,sanity:3},log:'没人相信你'}]},
-  {text:'一只<span class="mys">黑猫</span>每天跟着你，村里人说它不吉利。',choices:[
+  {text:'一只<span class="mys">黑猫</span>每天跟着你，村里人说它不吉利。',trigger:{minAge:4},choices:[
     {text:'收养它',effect:{connections:-5,sanity:5,qiyun:5},log:'它成了你唯一的伙伴'},{text:'赶走它',effect:{sanity:-3,qiyun:-3},log:'它临走前回头看了你一眼'}]},
   // === 孤儿专属童年事件 ===
-  {text:'你又饿了一整天。<span class="npc">收留你的老人</span>也揭不开锅了，你决定自己想办法。',check:'wu_qin',choices:[
+  {text:'你又饿了一整天。<span class="npc">收留你的老人</span>也揭不开锅了，你决定自己想办法。',trigger:{minAge:4},check:'wu_qin',choices:[
     {text:'去翻别人家的垃圾',effect:{wealth:3,connections:-3,sanity:-3},log:'你找到了半块馒头，狼吞虎咽'},
     {text:'去河边抓鱼',effect:{constitution:3,cultivation:2},log:'你抓到了两条小鱼，勉强填了肚子'}]},
-  {text:'其他孩子欺负你："<span class="danger-text">没爹没娘的野种！</span>"为首的胖子把你推倒在泥地里。',check:'wu_qin',choices:[
+  {text:'其他孩子欺负你："<span class="danger-text">没爹没娘的野种！</span>"为首的胖子把你推倒在泥地里。',trigger:{minAge:4},check:'wu_qin',choices:[
     {text:'咬牙站起来',effect:{constitution:3,sanity:-5,qiyun:3},log:'你擦掉血，一言不发地走了——总有一天你会强大到没人敢欺负'},
     {text:'反击',effect:{connections:-5,constitution:2,cultivation:2},log:'你被打了一顿，但胖子的鼻子也流血了'}]},
-  {text:'下雨了，你没有地方住。一座<span class="loc">破庙</span>成了你今晚的栖身之所。',check:'wu_qin',choices:[
+  {text:'下雨了，你没有地方住。一座<span class="loc">破庙</span>成了你今晚的栖身之所。',trigger:{minAge:5},check:'wu_qin',choices:[
     {text:'在佛像下蜷缩入睡',effect:{sanity:-5,cultivation:3},log:'你梦到了一些奇怪的画面——金光、莲花、还有一座倒悬的城'},
     {text:'生一堆火取暖',effect:{sanity:3,constitution:2},log:'火光照亮了破庙，你觉得不那么害怕了'}]},
   // === 清风观相关：被丹阳子拐走 ===
   {text:'一个自称<span class="npc">丹阳子</span>的道长来到村里，带着几个衣衫褴褛的小孩。他笑眯眯地看着你说："<span class="mys">这孩子有仙缘</span>，不如跟贫道去<span class="loc">清风观</span>修行，包吃包住。"你的父母犹豫不决。',
-    choices:[
-    {text:'跟着道长走',effect:{cultivation:5,sanity:-10,constitution:-5},log:'你被带进了清风观。那里有很多和你一样大的孩子……你们每天被喂各种苦涩的药汤，丹阳子说这是"筑基"。但有几个孩子喝完药后就再也没出来过。',visit:'qing_feng'},
+    trigger:{minAge:6,maxAge:10},choices:[
+    {text:'跟着道长走',effect:{cultivation:5,sanity:-10,constitution:-5},log:'你被带进了清风观。那里有很多和你一样大的孩子……你们每天被喂各种苦涩的药汤，丹阳子说这是"筑基"。但有几个孩子喝完药后就再也没出来过。',visit:'qing_feng',setFlag:'at_qingfeng'},
     {text:'大哭大闹不肯去',effect:{sanity:3,qiyun:5},log:'你死死抱住娘亲的腿，丹阳子叹了口气走了。后来你听说村里有几个小孩跟他走了，再也没回来。'},
-    {text:'被父母送去',effect:{cultivation:3,sanity:-8,constitution:-3,karma:-5},log:'你的父母收了丹阳子给的十两银子，把你送上了山。你回头看他们的背影，心中五味杂陈。',visit:'qing_feng'}]},
+    {text:'被父母送去',effect:{cultivation:3,sanity:-8,constitution:-3,karma:-5},log:'你的父母收了丹阳子给的十两银子，把你送上了山。你回头看他们的背影，心中五味杂陈。',visit:'qing_feng',setFlag:'at_qingfeng'}]},
   // === 清风观后续：药引子生涯 ===
   {text:'在<span class="loc">清风观</span>里，你和其他孩子每天都要喝丹阳子配的<span class="danger-text">丹药</span>。有个比你大的孩子悄悄告诉你："<span class="danger-text">我们不是弟子，是药引子。</span>"他说上个月那个叫小六的孩子被"炼"了。',
-    locReq:'qing_feng',choices:[
-    {text:'想办法逃跑',effect:{constitution:-8,sanity:-5,qiyun:8},log:'你趁夜翻墙，但清风观四周都是阵法。你被抓了回来，丹阳子罚你禁食三天。'},
-    {text:'乖乖听话等机会',effect:{sanity:-12,cultivation:5,comprehension:3},log:'你假装顺从，暗中观察清风观的布局。你发现后山有一条被荒草掩盖的小路…'},
-    {text:'偷偷藏药不喝',effect:{sanity:5,constitution:-3},log:'你把药吐在袖子里。虽然饿得头晕，但至少那些怪药没进你身体。'}]},
+    trigger:{minAge:7},locReq:'qing_feng',flagReq:'at_qingfeng',choices:[
+    {text:'想办法逃跑',effect:{constitution:-8,sanity:-5,qiyun:8},log:'你趁夜翻墙，但清风观四周都是阵法。你被抓了回来，丹阳子罚你禁食三天。',setFlag:'know_yaoyinzi'},
+    {text:'乖乖听话等机会',effect:{sanity:-12,cultivation:5,comprehension:3},log:'你假装顺从，暗中观察清风观的布局。你发现后山有一条被荒草掩盖的小路…',setFlag:'know_yaoyinzi'},
+    {text:'偷偷藏药不喝',effect:{sanity:5,constitution:-3},log:'你把药吐在袖子里。虽然饿得头晕，但至少那些怪药没进你身体。',setFlag:'know_yaoyinzi'}]},
+  // === 清风观后续：被迫炼丹 ===
+  {text:'丹阳子今天要<span class="danger-text">炼丹</span>，他把你和另外两个孩子叫到了丹房。你被命令往丹炉里添柴、搅拌药液。丹房里弥漫着刺鼻的气味，有个孩子忍不住呕吐了，被丹阳子一脚踢翻。',
+    trigger:{minAge:8},locReq:'qing_feng',flagReq:'know_yaoyinzi',choices:[
+    {text:'咬牙干活不吭声',effect:{constitution:-5,sanity:-8,cultivation:5},log:'你埋头苦干，尽量不去看炉子里翻滚的东西。丹阳子难得夸了你一句："这孩子还算听话。"你不知道这是好事还是坏事。'},
+    {text:'偷偷观察炼丹手法',effect:{comprehension:5,cultivation:8,sanity:-10},log:'你假装干活，暗中记下了丹阳子的炼丹步骤。虽然看不懂那些符文，但你隐约感觉到了灵气的流动——这就是修炼的本质吗？'},
+    {text:'装病逃避',effect:{sanity:3,constitution:-3},log:'你捂着肚子蹲在地上装病。丹阳子骂了你几句，让另一个孩子顶替了你。你躲过了一劫，但那个顶替你的孩子第二天就发起了高烧。'}]},
+  // === 清风观后续：孩子失踪 ===
+  {text:'和你睡同一间屋子的<span class="npc">小七</span>突然不见了。丹阳子说他"下山去了"，但你半夜听到了丹房方向传来的<span class="danger-text">惨叫声</span>。第二天早上，丹阳子笑眯眯地端出了一炉新丹药。',
+    trigger:{minAge:9},locReq:'qing_feng',flagReq:'know_yaoyinzi',choices:[
+    {text:'强忍恐惧假装不知道',effect:{sanity:-15,comprehension:3},log:'你把被子蒙在头上，假装什么都没听到。但小七的笑脸在你脑海中挥之不去。你开始数——清风观里还剩多少个孩子。'},
+    {text:'偷偷去丹房查看',effect:{sanity:-20,cultivation:5,comprehension:5},log:'你趁夜溜到丹房门口。透过门缝，你看到了地上的血迹和丹炉旁堆放的……你不敢再看了，捂着嘴跑回了房间。你终于明白了"药引子"三个字的真正含义。'},
+    {text:'和其他孩子商量逃跑',effect:{connections:5,sanity:-10,qiyun:3},log:'你把小七的事告诉了几个信得过的孩子。大家都吓坏了，但清风观四周的阵法让人绝望。一个年纪大些的孩子说："除非有人能破了那些阵法，否则我们一个也跑不了。"'}]},
   // === 清风观后续：火子哥来了 ===
   {text:'清风观来了一个新的孩子——一个<span class="npc">眼神很倔的少年</span>，大家叫他<span class="npc">火子哥</span>。他和别的孩子不一样，总是盯着空气发呆，然后突然说一些莫名其妙的话，比如"<span class="mys">这不是真的</span>""<span class="mys">我在精神病院</span>"。',
-    locReq:'qing_feng',choices:[
-    {text:'和火子哥交朋友',effect:{connections:15,sanity:-8,comprehension:5},log:'火子哥会在夜里给大家讲"另一个世界"的事。他说那边的人管你们的经历叫"幻觉"，而他在那边被绑在床上打针。你不知该信谁。'},
-    {text:'觉得他疯了',effect:{sanity:5},log:'你避开那个总说胡话的少年。但有时你半夜醒来，会看到他坐在窗边，身上散发着微弱的光…'},
-    {text:'暗中观察他',effect:{comprehension:8,sanity:-5},log:'你发现火子哥的话虽然听着疯，但他是清风观里唯一一个不怕丹阳子的人。'}]},
+    trigger:{minAge:10},locReq:'qing_feng',flagReq:'know_yaoyinzi',choices:[
+    {text:'和火子哥交朋友',effect:{connections:15,sanity:-8,comprehension:5},log:'火子哥会在夜里给大家讲"另一个世界"的事。他说那边的人管你们的经历叫"幻觉"，而他在那边被绑在床上打针。你不知该信谁。',setFlag:'met_huozi'},
+    {text:'觉得他疯了',effect:{sanity:5},log:'你避开那个总说胡话的少年。但有时你半夜醒来，会看到他坐在窗边，身上散发着微弱的光…',setFlag:'met_huozi'},
+    {text:'暗中观察他',effect:{comprehension:8,sanity:-5},log:'你发现火子哥的话虽然听着疯，但他是清风观里唯一一个不怕丹阳子的人。',setFlag:'met_huozi'}]},
   // === 清风观后续：逃离 ===
   {text:'一天深夜，<span class="loc">清风观</span>突然<span class="danger-text">天崩地裂</span>！火子哥不知从哪弄来了<span class="npc">丹阳子</span>的宝剑，在大殿里和丹阳子打了起来。丹药炉翻倒，整座观都在燃烧。火子哥朝你们喊："<span class="npc">快跑！！</span>"',
-    locReq:'qing_feng',choices:[
+    trigger:{minAge:12},locReq:'qing_feng',flagReq:'met_huozi',choices:[
     {text:'跟着火子哥一起跑',effect:{constitution:-10,sanity:-15,cultivation:10,connections:20,qiyun:10,karma:5},log:'你们在火光中拼命奔跑。有人摔倒了，火子哥回去背起他继续跑。你们终于逃出了清风观——身后的道观化为一片火海。火子哥清点人数：活下来的只有一半。'},
     {text:'趁乱从后山小路跑',effect:{constitution:-5,sanity:-8,qiyun:5},log:'你没有跟火子哥走，而是选了之前发现的后山小路。你一个人跑了整整一夜，天亮时已经完全不知道自己在哪。至少你还活着。'},
     {text:'回去救更多人',effect:{constitution:-20,sanity:-20,cultivation:8,karma:15,connections:10},log:'你冲回熊熊燃烧的清风观救人。你拉出了三个被困的孩子，但自己也被火焰灼伤了。火子哥最后把你拽了出来："傻子！你不要命了！"'},
     {text:'吓得躲在角落不敢动',effect:{sanity:-25,constitution:-20},log:'你蜷缩在墙角瑟瑟发抖。火焰烧到了身边，是另一个孩子拽着你跑出来的。你被烧伤得很重，但活了下来。你看到丹阳子的尸体倒在废墟里——他终于死了。'}]},
   // === 出生地相关童年事件 ===
   {text:'<span class="loc">赵家村</span>的老人们说，村后那口<span class="mys">古井</span>里住着一位井仙，每逢旱季会显灵。今年大旱，全村人跪在井边。',
-    locReq:'zhao_cun',choices:[
+    trigger:{minAge:5},locReq:'zhao_cun',choices:[
     {text:'跟着跪',effect:{sanity:-3,connections:5,karma:3},log:'井水果然涌了出来——是巧合还是…'},
     {text:'偷偷往井里扔石子',effect:{sanity:-8,cultivation:3,qiyun:-5},log:'你隐约听到井底传来一声叹息'}]},
   {text:'<span class="loc">李家村</span>与世隔绝，村里人说山外面住着<span class="danger-text">吃人的妖怪</span>。但你发现一条没人走过的<span class="mys">山间小路</span>。',
-    locReq:'li_cun',choices:[
+    trigger:{minAge:6},locReq:'li_cun',choices:[
     {text:'沿着小路走',effect:{cultivation:5,comprehension:3,sanity:-5},log:'你在山的另一边看到了一片从未见过的世界'},
     {text:'听大人的话别去',effect:{sanity:3,connections:3},log:'大人的话总是有道理的——大概吧'}]},
   {text:'<span class="loc">鲁城</span>的集市上来了一个卖<span class="itm">奇怪泥人</span>的外乡人。那泥人的眼珠会动。',
-    locReq:'lu_cheng',choices:[
+    trigger:{minAge:6},locReq:'lu_cheng',choices:[
     {text:'买一个',effect:{wealth:-5,cultivation:3,sanity:-5},log:'泥人到了晚上自己碎了，里面有一张写满字的纸条'},
     {text:'告诉捕快',effect:{connections:5,karma:3},log:'捕快来时摊主已不见踪影'}]},
   {text:'<span class="loc">阳城</span>知府大人发榜要征集<span class="mys">异闻录</span>——谁知道鬼怪之事可以拿赏钱。城里一时间人人争说怪事。',
-    locReq:'yang_cheng',choices:[
+    trigger:{minAge:7},locReq:'yang_cheng',choices:[
     {text:'把你看到的怪事讲出来',effect:{wealth:10,connections:5,sanity:-3},log:'知府的师爷格外注意了你...'},
     {text:'别掺和官府的事',effect:{sanity:3},log:'民不与官斗'}]},
   {text:'在<span class="loc">大梁城</span>长大的你见过不少达官贵人。今天街上封了路——据说是<span class="fac">监天司</span>在抓邪修。',
-    locReq:'da_liang',choices:[
+    trigger:{minAge:6},locReq:'da_liang',choices:[
     {text:'爬上屋顶偷看',effect:{cultivation:5,comprehension:3,sanity:-5},log:'你看到穿黑袍的人挥手间就把一栋房子拆了——那就是修士的力量'},
     {text:'躲在家里',effect:{sanity:3,wealth:2},log:'天子脚下也不太平'}]},
   {text:'<span class="loc">玉清山</span>的雾气里偶尔能听到<span class="mys">钟声</span>，但山上并没有寺庙。你从小听着这钟声长大。',
-    locReq:'shan_qu',choices:[
+    trigger:{minAge:5},locReq:'shan_qu',choices:[
     {text:'循着钟声去找',effect:{cultivation:8,comprehension:5,sanity:-10},log:'你在山腰发现了一个长满青苔的石洞，里面有一口裂了的铜钟'},
     {text:'当作风声',effect:{sanity:3},log:'习惯了就不觉得奇怪了'}]},
   {text:'<span class="loc">边境</span>又起了烽烟。你从记事起就在逃难，这已经是第三次了。',
-    locReq:'bian_jing',choices:[
+    trigger:{minAge:5},locReq:'bian_jing',choices:[
     {text:'偷一把刀防身',effect:{constitution:3,cultivation:3,karma:-3},log:'乱世中没有武器就没有安全感'},
     {text:'跟着大人跑',effect:{connections:3,sanity:-5},log:'你学会了在混乱中生存'}]},
   {text:'<span class="loc">南疆</span>的蛊婆给你戴上了一根红绳，说能<span class="mys">辟邪</span>。你发现戴上后确实不做噩梦了。',
-    locReq:'nan_jiang',choices:[
+    trigger:{minAge:5},locReq:'nan_jiang',choices:[
     {text:'一直戴着',effect:{sanity:8,cultivation:3},log:'红绳温温的，像有生命一样'},
     {text:'好奇拆开看里面',effect:{sanity:-10,comprehension:5,cultivation:5},log:'绳子里面缠着一只已经干瘪的小虫...蛊虫'}]},
   {text:'<span class="loc">上京城</span>的孩子们都在传：皇宫底下藏着一条<span class="mys">龙</span>，每到夜里能听见龙吟。',
-    locReq:'shang_jing',choices:[
+    trigger:{minAge:6},locReq:'shang_jing',choices:[
     {text:'半夜溜去皇宫墙根听',effect:{cultivation:5,sanity:-8,comprehension:5},log:'你……确实听到了什么。低沉的、如雷鸣般的呼吸声'},
     {text:'鬼扯的吧',effect:{sanity:3},log:'小孩子的话不能信'}]},
   {text:'你在<span class="loc">四齐</span>长大，这里到处都是废弃的庙宇和残破的旗帜。老人们说以前这里是一个强大的国家。',
-    locReq:'si_qi',choices:[
+    trigger:{minAge:6},locReq:'si_qi',choices:[
     {text:'去废庙里探索',effect:{cultivation:5,comprehension:3,sanity:-8},log:'你在佛像后面找到了一本发霉的经书'},
     {text:'帮大人种地',effect:{constitution:3,connections:3},log:'四齐虽破，还是得活下去'}]},
   // === NEW CHILDHOOD EVENTS ===
-  {text:'你在井边打水，看到井底似乎有<span class="mys">一双眼睛</span>在盯着你。',choices:[
+  {text:'你在井边打水，看到井底似乎有<span class="mys">一双眼睛</span>在盯着你。',trigger:{minAge:4},choices:[
     {text:'大声呼喊',effect:{connections:3,sanity:-3},log:'大人赶来时什么都没有'},{text:'回盯那双眼睛',effect:{sanity:-8,comprehension:5,cultivation:3},log:'那双眼睛眨了一下就消失了'}]},
-  {text:'村里的<span class="npc">老秀才</span>教你识字，你对"道"字格外感兴趣。',choices:[
+  {text:'村里的<span class="npc">老秀才</span>教你识字，你对"道"字格外感兴趣。',trigger:{minAge:5},choices:[
     {text:'追问"道"的含义',effect:{comprehension:5,cultivation:2},log:'老秀才说道可道非常道'},{text:'认真学其他字',effect:{connections:3,wealth:2},log:'读书识字是正途'}]},
-  {text:'你不小心踩死了一只蝴蝶，心里有种奇怪的<span class="mys">愧疚感</span>。',choices:[
+  {text:'你不小心踩死了一只蝴蝶，心里有种奇怪的<span class="mys">愧疚感</span>。',trigger:{minAge:3},choices:[
     {text:'把它埋了',effect:{qiyun:5,sanity:2,karma:3},log:'你第一次感受到因果'},{text:'不以为意',effect:{qiyun:-3,karma:-2},log:'不过是只虫子罢了'}]},
 ];
 
