@@ -541,7 +541,7 @@ const ADULT_EVENTS = [
   {text:'在<span class="loc">深山古洞</span>中，你发现了一处<span class="mys">上古遗迹</span>。',choices:[
     {text:'深入探索',effect:{cultivation:25,wealth:40,sanity:-20,comprehension:10},log:'获得了难以想象的机缘！',item:'tian_shu',req:{constitution:30}},{text:'原路返回',effect:{sanity:5},log:'好奇心害死猫'}]},
   {text:'一个<span class="npc">神秘商人</span>向你兜售一颗<span class="itm">来历不明的丹药</span>。',choices:[
-    {text:'买来服下',effect:{cultivation:15,sanity:-25,wealth:-20,constitution:5},log:'修为暴涨，但总感觉哪里不对...',item:'dan_yao'},
+    {text:'买来服下',effect:{cultivation:15,sanity:-25,wealth:-20,constitution:5},log:'修为暴涨，但总感觉哪里不对...',item:'dan_yao',req:{wealth:20}},
     {text:'谢绝',effect:{sanity:5},log:'来路不明的东西不能乱吃'}]},
   {text:'有人带你去见<span class="mys">黑太岁</span>——一种能让人看到另一个世界的东西。',choices:[
     {text:'吞食黑太岁',effect:{sanity:-50,cultivation:40,comprehension:15,qiyun:-15},log:'你看到了！两个世界叠加在一起！',item:'hei_tai_sui',req:{constitution:40}},
@@ -681,7 +681,7 @@ const ADULT_EVENTS = [
   {text:'你在地方上颇有名望，一位<span class="npc">朝廷巡查使</span>注意到了你。他说朝廷正缺能吏，问你是否愿意入仕为官，从小吏做起。',trigger:{minAge:18,connections:15,wealth:30},choices:[
     {text:'入仕为官',effect:{wealth:15,connections:10,qiyun:3},log:'你穿上了官服，开始了宦海生涯',factionJoin:'chaoting'},
     {text:'无意仕途',effect:{connections:5},log:'你志不在此，但与巡查使结下了一面之缘'},
-    {text:'请他引荐更高的职位',effect:{wealth:-20,connections:15},log:'你花了不少钱打点，直接获得了一个体面的起点',factionJoin:'chaoting'}]},
+    {text:'请他引荐更高的职位',effect:{wealth:-20,connections:15},log:'你花了不少钱打点，直接获得了一个体面的起点',factionJoin:'chaoting',req:{wealth:20}}]},
 ];
 
 const SPECIAL_EVENTS = [
@@ -1221,7 +1221,7 @@ const QIYUN_EVENTS = [
     {text:'以力镇压',effect:{cultivation:10,qiyun:-10,sanity:-10},log:'你用修为强行镇压了噩梦，但厄运更深了'}]},
   {text:'走在路上，你的<span class="mys">影子</span>突然变成了血红色，地上隐约出现无数哀嚎的面孔。',
     qiyunReq:{max:-50},choices:[
-    {text:'寻高僧化解',effect:{wealth:-30,qiyun:20,sanity:10},log:'高僧说你业障深重，但尚可救'},
+    {text:'寻高僧化解',effect:{wealth:-30,qiyun:20,sanity:10},log:'高僧说你业障深重，但尚可救',req:{wealth:30}},
     {text:'不理会',effect:{qiyun:-10,sanity:-15,constitution:-5},log:'气运之债，迟早要还'}]},
   // Karma cycle event
   {text:'你在修炼中突然感到气运之力在你体内<span class="mys">逆转翻涌</span>。',
@@ -1241,6 +1241,42 @@ const QIYUN_EVENTS = [
     qiyunReq:{min:40},choices:[
     {text:'感应那股力量',effect:{cultivation:20,comprehension:10,qiyun:5},log:'那似乎是...天道的眷顾？'},
     {text:'不去理会',effect:{qiyun:3},log:'顺其自然也是一种智慧'}]},
+  // Medium good qiyun
+  {text:'你在河里洗脸时摸到一块<span class="itm">奇石</span>，温润如玉，内含灵气。',
+    qiyunReq:{min:15},choices:[
+    {text:'握在手中修炼',effect:{cultivation:10,comprehension:5,qiyun:-5},log:'灵石中的灵气被你吸收殆尽'},
+    {text:'卖掉换钱',effect:{wealth:25,qiyun:-3},log:'灵石在黑市上卖了个好价钱'}]},
+  {text:'天上掉下一只受伤的<span class="npc">仙鹤</span>，恰好落在你面前。',
+    qiyunReq:{min:25},choices:[
+    {text:'救治仙鹤',effect:{karma:10,cultivation:15,qiyun:5},log:'仙鹤痊愈后绕你飞了三圈，洒下一片金色羽毛'},
+    {text:'捉了卖钱',effect:{wealth:20,karma:-10,qiyun:-10},log:'药铺掌柜出了高价，但你总觉得心里不踏实'}]},
+  {text:'你随手翻开路边一本被丢弃的旧书，竟是失传已久的<span class="itm">上古功法</span>！',
+    qiyunReq:{min:35},choices:[
+    {text:'苦心研读',effect:{cultivation:25,comprehension:15,qiyun:-10},log:'功法残卷虽不完整，但让你的修为大进'},
+    {text:'献给门派',effect:{connections:15,karma:10,qiyun:-5},log:'门派对你刮目相看',req:{faction:true}}]},
+  // Bad qiyun events
+  {text:'你走路时一脚踩空掉进了<span class="danger-text">陷阱</span>——这是猎人设的捕兽夹。',
+    qiyunReq:{max:-15},choices:[
+    {text:'挣扎脱身',effect:{constitution:-5,cultivation:3},log:'你费了好大力气才挣脱，腿上血淋淋的'},
+    {text:'大声呼救',effect:{connections:3,constitution:-3},log:'过路人帮你打开了夹子'}]},
+  {text:'你好不容易攒的钱被<span class="danger-text">扒手</span>偷了个精光。',
+    qiyunReq:{max:-10},choices:[
+    {text:'追上去抢回来',effect:{wealth:5,constitution:-3,cultivation:3},log:'你追了半条街才追上，打了一架才夺回一部分',combat:15},
+    {text:'自认倒霉',effect:{wealth:-15,comprehension:3},log:'唉，破财消灾吧'}]},
+  {text:'你睡觉时被蛇咬了——在这荒郊野外，<span class="danger-text">前不着村后不着店</span>。',
+    qiyunReq:{max:-20},choices:[
+    {text:'用修为逼毒',effect:{cultivation:5,constitution:-5,sanity:-3},log:'你勉强逼出了蛇毒，但元气大伤',req:{cultivation:10}},
+    {text:'咬牙找人求救',effect:{constitution:-8,connections:3},log:'你一瘸一拐走了半天才找到人帮忙'},
+    {text:'听天由命',effect:{constitution:-10,qiyun:5},log:'你昏迷了三天三夜，醒来后发现自己竟然没事——命硬'}]},
+  // Extreme qiyun
+  {text:'你在<span class="loc">悬崖边</span>脚一滑——你以为必死无疑，却在半空中<span class="mys">撞上一棵古松</span>，挂在了树枝上。',
+    qiyunReq:{min:40},choices:[
+    {text:'爬上去看看悬崖上有什么',effect:{cultivation:20,comprehension:10,qiyun:-5},log:'悬崖顶上有一个隐秘的山洞，里面刻满了功法心得'},
+    {text:'赶紧爬回安全的地方',effect:{constitution:3,sanity:3},log:'命要紧——你再也不走那条路了'}]},
+  {text:'你做什么都不顺——吃饭咬到舌头，走路被石头绊倒，修炼走火入魔。',
+    qiyunReq:{max:-30},choices:[
+    {text:'闭门不出等霉运过去',effect:{qiyun:5,comprehension:3},log:'你老老实实在家待了三个月，事情终于好转了'},
+    {text:'去庙里烧香',effect:{qiyun:8,karma:5,wealth:-5},log:'也不知道有没有用，但你心里踏实了点'}]},
 ];
 
 // === 散修 EVENTS (triggered when player is unaffiliated or has betrayed factions) ===
@@ -1263,7 +1299,7 @@ const SANXIU_EVENTS = [
     {text:'婉拒',effect:{comprehension:5},log:'你习惯了独行，不愿再受任何约束'},
     {text:'暗中观察',effect:{connections:5,comprehension:3},log:'你没有表态，但记住了几个有实力的人'}]},
   {text:'你在集市上看到旧门派的<span class="itm">秘传功法</span>被人当废纸卖。',choices:[
-    {text:'买下来',effect:{wealth:-15,cultivation:20,comprehension:8},log:'虽然叛出了门派，但这功法你再熟悉不过'},
+    {text:'买下来',effect:{wealth:-15,cultivation:20,comprehension:8},log:'虽然叛出了门派，但这功法你再熟悉不过',req:{wealth:15}},
     {text:'通知旧门派',effect:{connections:10,karma:10,qiyun:5},log:'旧门派的人对你态度好了一些'},
     {text:'不管闲事',effect:{},log:'已经不是你的门派了'}]},
   {text:'一位<span class="npc">年迈散修</span>临死前拉住你说："散修的路，走到最后的都是强者。"',
@@ -1459,7 +1495,7 @@ const SHUANGXIU_EVENTS = [
   {text:'你的<span class="npc">道侣</span>在一次双修后突然陷入了<span class="danger-text">昏迷</span>——体内真元枯竭，生机急速流失。你这才意识到，双修从来不是对等的——<span class="mys">五智如来的法门</span>从一开始就在以一方的生机滋养另一方。你是受益者。',
     trigger:{minAge:22,cultivation:35},flagReq:'shuangxiu_deep',choices:[
     {text:'不惜一切代价救回道侣',effect:{cultivation:-30,constitution:-15,sanity:-10,karma:15,connections:10},log:'你反转双修法门，将自己的修为输入道侣体内。你虚弱到几乎站不起来——但道侣终于睁开了眼'},
-    {text:'以药石续命',effect:{wealth:-40,cultivation:-10,sanity:-10,karma:5},log:'你倾尽家财买来续命丹药，勉强稳住了道侣的状况。但你知道，再这样下去迟早出事'},
+    {text:'以药石续命',effect:{wealth:-40,cultivation:-10,sanity:-10,karma:5},log:'你倾尽家财买来续命丹药，勉强稳住了道侣的状况。但你知道，再这样下去迟早出事',req:{wealth:40}},
     {text:'继续修炼，牺牲道侣',effect:{cultivation:30,sanity:-30,karma:-30,connections:-20},log:'你看着昏迷的道侣，内心的某个声音说：这是必要的牺牲。你继续修炼了。五智如来在笑——你已经是它的人了'}]},
   // --- 双修终局 ---
   {text:'经过长年累月的双修，你终于触摸到了<span class="mys">血肉天道</span>的边界。在那里你看到了真相——<span class="danger-text">五智如来</span>不是佛。它是一尊以天下苍生的欲望为食的<span class="danger-text">司命</span>。所有修炼欢喜禅的人，都不过是它的<span class="danger-text">养料</span>。而你——已经喂了它太多了。',
@@ -1658,6 +1694,33 @@ const KARMA_EVENTS = [
     karmaReq:{abs:20},choices:[
     {text:'请他化解',effect:{karma:10,qiyun:10,wealth:-15},log:'大师做法之后，你感觉身轻了不少'},
     {text:'自己的命自己扛',effect:{comprehension:5,constitution:3},log:'不假他人之手，也是一种修行'}]},
+  // Medium karma events
+  {text:'你在路上遇到一个受伤的<span class="npc">孩子</span>，他说被<span class="danger-text">山贼</span>劫了。',
+    karmaReq:{min:10},choices:[
+    {text:'救治并送他回家',effect:{karma:10,connections:5,wealth:-5},log:'孩子的父母千恩万谢，给你包了红包你没收'},
+    {text:'给他指路',effect:{karma:3},log:'你指了个方向就走了'},
+    {text:'身上有值钱的东西吗',effect:{karma:-10,wealth:5},log:'你翻了翻他的包袱，找到了几两碎银'}]},
+  {text:'你曾经帮过的一个<span class="npc">人</span>，如今发达了，专程来<span class="itm">报恩</span>。',
+    karmaReq:{min:40},choices:[
+    {text:'欣然接受',effect:{wealth:30,connections:15,qiyun:5},log:'善有善报，你曾经的善举终于有了回报'},
+    {text:'不用客气',effect:{karma:10,connections:10},log:'你挥挥手让他走了，但心里暖暖的'}]},
+  {text:'你梦中见到一座<span class="mys">金色佛塔</span>，有声音说："汝积善甚厚，赐悟性通灵。"',
+    karmaReq:{min:60},choices:[
+    {text:'虔心接受',effect:{comprehension:15,cultivation:10,karma:5},log:'醒来后你感到灵台清明，仿佛打开了一扇新的门'},
+    {text:'不受嗟来之食',effect:{comprehension:5,karma:5},log:'你不愿依赖他人的恩赐'}]},
+  // Negative karma consequences
+  {text:'你走在路上，一块瓦片从天而降砸在你头上——这绝非偶然。',
+    karmaReq:{max:-20},choices:[
+    {text:'反思自己',effect:{karma:8,comprehension:3,constitution:-3},log:'也许是自己做了太多坏事...'},
+    {text:'骂骂咧咧走开',effect:{karma:-3,constitution:-2},log:'你摸着头上的包，越想越气'}]},
+  {text:'你的<span class="danger-text">恶名</span>传遍了四方——有些门派明确表示不欢迎你。',
+    karmaReq:{max:-40},choices:[
+    {text:'收敛行为',effect:{karma:10,connections:5},log:'你开始刻意行善，试图改变自己的名声'},
+    {text:'恶人自有恶人磨',effect:{karma:-5,cultivation:8},log:'别人越怕你，你越强——这也是一种修行'}]},
+  {text:'因果报应不爽——你的<span class="danger-text">敌人</span>们联合起来对付你。',
+    karmaReq:{max:-60},choices:[
+    {text:'以一敌多',effect:{cultivation:10,constitution:-10,karma:-5},log:'你拼死杀出重围，但身上伤痕累累',combat:80},
+    {text:'跪地求饶',effect:{karma:15,connections:-10,wealth:-20},log:'你交出了财物和尊严，换来一条命'}]},
 ];
 
 // === CULTIVATION TIER EVENTS (filtered by cultivation range) ===
@@ -1930,7 +1993,7 @@ const ERA_EVENTS = [
     {text:'趁乱修炼',effect:{cultivation:8,comprehension:5,karma:-5},log:'你闭关修炼，对外面的战火充耳不闻'}]},
   {text:'物价飞涨！一颗普通的<span class="itm">辟谷丹</span>要价以前的十倍。黑市上什么都能买到——只要你出得起价。',
     trigger:{yearMin:20,yearMax:32,minAge:14},choices:[
-    {text:'高价囤积物资',effect:{wealth:-20,constitution:5,cultivation:3},log:'你咬牙买下了必需品，钱袋大幅缩水'},
+    {text:'高价囤积物资',effect:{wealth:-20,constitution:5,cultivation:3},log:'你咬牙买下了必需品，钱袋大幅缩水',req:{wealth:20}},
     {text:'去黑市碰运气',effect:{wealth:-10,cultivation:5,sanity:-5,qiyun:-3},log:'黑市上的东西良莠不齐，你买到了一些有用的东西'},
     {text:'以物易物',effect:{connections:5,wealth:5},log:'你用自己的本事换取了所需的物资'}]},
   {text:'法教的<span class="danger-text">于儿神</span>信徒在各地散布恐怖——活人祭祀、血池灌溉。整个大梁笼罩在恐惧之中。',
@@ -2022,7 +2085,7 @@ const TRAVEL_EVENTS = [
     {text:'退回安全地带',effect:{sanity:5},log:'南疆的瘴气不是闹着玩的'}]},
   {text:'你在<span class="loc">鬼市</span>外围看到有人在卖<span class="itm">来路不明的法器</span>。',
     locReq:'gui_shi',choices:[
-    {text:'砍价购买',effect:{wealth:-20,cultivation:10,karma:-5},log:'法器来历可疑，但确实好用'},
+    {text:'砍价购买',effect:{wealth:-20,cultivation:10,karma:-5},log:'法器来历可疑，但确实好用',req:{wealth:20}},
     {text:'报官处理',effect:{connections:10,karma:10},log:'你阻止了赃物流通'}]},
   {text:'前往<span class="loc">玉清山</span>的路上，你感受到浓郁的<span class="mys">灵气</span>。',
     locReq:'shan_qu',choices:[
@@ -2414,7 +2477,7 @@ const LOCAL_STORIES = [
   // --- 鲁城 ---
   {text:'<span class="loc">鲁城</span>的<span class="npc">张屠户</span>杀猪时在猪肚子里切出了一块<span class="itm">玉印</span>，上面刻着"<span class="mys">敕令</span>"二字。消息传遍全城。',
     locReq:'lu_cheng',trigger:{minAge:12},choices:[
-    {text:'设法买下玉印',effect:{wealth:-20,cultivation:10,qiyun:5},log:'玉印入手时微微发热，似有灵性'},
+    {text:'设法买下玉印',effect:{wealth:-20,cultivation:10,qiyun:5},log:'玉印入手时微微发热，似有灵性',req:{wealth:20}},
     {text:'只是看热闹',effect:{comprehension:3},log:'猪肚里出玉印，世间无奇不有'}]},
   {text:'<span class="loc">鲁城</span>东门的<span class="npc">赊刀人</span>出现了——他留下一把菜刀不收钱，只说"等某件事发生了再来收钱"。',
     locReq:'lu_cheng',trigger:{minAge:15},choices:[
@@ -2886,6 +2949,63 @@ const WEALTH_EVENTS = [
     wealthReq:{max:0},trigger:{minAge:14},choices:[
     {text:'加入白莲教',effect:{wealth:20,connections:10,sanity:-5},log:'你在走投无路之下加入了白莲教',factionJoin:'bailian'},
     {text:'宁死不从',effect:{constitution:-3,comprehension:3,karma:5},log:'你宁可饿肚子也不愿入邪教'}]},
+  // Medium wealth events
+  {text:'你有了些积蓄，<span class="npc">药铺掌柜</span>推荐一剂<span class="itm">培元丹</span>，说能固本培元。',
+    wealthReq:{min:40},trigger:{minAge:14},choices:[
+    {text:'买来服用',effect:{wealth:-25,constitution:8,cultivation:5},log:'丹药入腹，浑身暖洋洋的，精气神大增'},
+    {text:'太贵了不买',effect:{},log:'银子还是攥在手里踏实'}]},
+  {text:'镇上开了一家<span class="npc">武馆</span>，入门学艺需要一笔<span class="itm">束脩</span>。',
+    wealthReq:{min:30},trigger:{minAge:10,maxAge:25},choices:[
+    {text:'交钱拜师',effect:{wealth:-20,cultivation:10,constitution:5,comprehension:3},log:'你在武馆学了三个月，打下了扎实的根基'},
+    {text:'在外面偷看',effect:{cultivation:3,comprehension:2},log:'偷学了几招花架子，聊胜于无'},
+    {text:'不感兴趣',effect:{},log:'舞刀弄枪的，有什么用'}]},
+  {text:'你听说远方有一处<span class="loc">秘境</span>即将开启，但路途遥远需要盘缠。',
+    wealthReq:{min:50},trigger:{minAge:18},choices:[
+    {text:'筹集盘缠出发',effect:{wealth:-40,cultivation:20,comprehension:8,qiyun:5},log:'秘境中机缘不断，你满载而归'},
+    {text:'没钱去不了',effect:{qiyun:-3},log:'错失良机，你暗暗叹息'}]},
+  {text:'一位<span class="npc">落魄修士</span>在街头低价出售一本<span class="itm">功法残卷</span>。',
+    wealthReq:{min:20},trigger:{minAge:12},choices:[
+    {text:'买下来研究',effect:{wealth:-15,comprehension:8,cultivation:5},log:'残卷中记载的功法虽不完整，但让你茅塞顿开'},
+    {text:'他的东西来路不明',effect:{karma:2},log:'谨慎行事总没错'}]},
+  {text:'年关将至，你有余钱置办年货，邻里都来你家蹭饭。',
+    wealthReq:{min:25},trigger:{minAge:8},choices:[
+    {text:'大摆宴席',effect:{wealth:-15,connections:10,karma:5},log:'远亲近邻齐聚一堂，好不热闹'},
+    {text:'只请几家亲近的',effect:{wealth:-5,connections:3},log:'人多是非多，小聚就好'}]},
+  // Wealth investment/gamble events
+  {text:'有人邀你合伙做<span class="itm">灵药生意</span>，说利润翻倍。',
+    wealthReq:{min:50},trigger:{minAge:20},choices:[
+    {text:'投资入股',effect:{wealth:40,connections:8},log:'生意兴隆，你赚了一笔',req:{connections:10}},
+    {text:'小额试水',effect:{wealth:10,connections:3},log:'你只投了一小部分，赚了点小钱'},
+    {text:'不参与',effect:{},log:'你不想冒这个险'}]},
+  {text:'一场<span class="danger-text">大旱</span>袭来，粮价飞涨。你有余钱可以囤粮。',
+    wealthReq:{min:30},trigger:{minAge:15},choices:[
+    {text:'囤粮高价卖出',effect:{wealth:25,karma:-10},log:'你发了一笔灾难财，但良心有些不安'},
+    {text:'平价卖给乡亲',effect:{wealth:-10,karma:15,connections:15},log:'乡亲们感激涕零，你的名声传遍了十里八村'},
+    {text:'只管自己',effect:{wealth:-5},log:'管好自己就行了'}]},
+  // Deep poverty events
+  {text:'你穷得连草鞋都穿不起，<span class="danger-text">赤脚</span>走在碎石路上，脚底磨出了血泡。',
+    wealthReq:{max:-30},trigger:{minAge:8},choices:[
+    {text:'咬牙继续走',effect:{constitution:-3,comprehension:3,cultivation:2},log:'痛苦使人坚韧，你的意志更加坚定'},
+    {text:'在路边歇一歇',effect:{constitution:-1},log:'你蹲在路边，看着来来往往的行人'}]},
+  {text:'你太穷了，有人说<span class="fac">袄景教</span>给信众发放<span class="itm">救济粮</span>——只要你愿意受"苍蜣之礼"。',
+    wealthReq:{max:-15},trigger:{minAge:14},choices:[
+    {text:'忍痛加入',effect:{wealth:15,constitution:-5,sanity:-8},log:'苍蜣之礼痛入骨髓——你的左臂上多了一道诡异的疤痕',factionJoin:'aojing'},
+    {text:'宁死不从',effect:{constitution:-3},log:'你饿得眼冒金星，但还是拒绝了'}]},
+  {text:'你穷困潦倒，连客栈都住不起——只能在<span class="loc">破庙</span>里过夜。半夜庙里传来怪声。',
+    wealthReq:{max:-10},trigger:{minAge:12},choices:[
+    {text:'壮着胆子查看',effect:{cultivation:5,sanity:-8,comprehension:5},log:'你在神像后面发现了一具干尸和一本泛黄的手札'},
+    {text:'连夜逃跑',effect:{constitution:-2,sanity:-3},log:'你跑了一夜，天亮后才敢停下来'},
+    {text:'念经壮胆继续睡',effect:{karma:3,sanity:-3},log:'一夜无事，也许是你多想了'}]},
+  // Wealth affects cultivation
+  {text:'修炼到了关键时刻，你需要购买一批<span class="itm">灵石</span>来布阵辅助突破。',
+    wealthReq:{min:40},trigger:{minAge:16,cultivation:20},choices:[
+    {text:'买灵石布阵',effect:{wealth:-30,cultivation:15,comprehension:5},log:'灵石阵法催动之下，修为突飞猛进'},
+    {text:'靠自己硬突破',effect:{cultivation:5,constitution:-5,sanity:-5},log:'没有辅助材料，突破的过程格外凶险'}]},
+  // Wealth + connections interaction
+  {text:'你在<span class="loc">酒楼</span>请人吃饭，席间有人提到一桩<span class="itm">机缘</span>。',
+    wealthReq:{min:20},trigger:{minAge:16},choices:[
+    {text:'继续请客打探',effect:{wealth:-15,connections:8,qiyun:5,comprehension:3},log:'酒过三巡，对方把机缘的位置告诉了你'},
+    {text:'记在心里',effect:{connections:3},log:'这个消息也许以后用得上'}]},
 ];
 
 // === CONNECTIONS EVENTS (triggered by connections thresholds) ===
@@ -2916,6 +3036,38 @@ const CONNECTIONS_EVENTS = [
     connReq:{max:5},trigger:{minAge:18,cultivation:15},choices:[
     {text:'独自摸索',effect:{comprehension:8,cultivation:5,sanity:-5},log:'没有人指点，你只能靠自己'},
     {text:'去书店买功法',effect:{wealth:-15,cultivation:8,comprehension:3},log:'花钱买经验，也算一条路',req:{wealth:15}}]},
+  // Medium connections
+  {text:'你的人缘不错，有人想把女儿/儿子<span class="npc">许配</span>给你。',
+    connReq:{min:20},trigger:{minAge:18},choices:[
+    {text:'欣然接受',effect:{connections:10,karma:5,wealth:10},log:'你成了家，多了份牵挂也多了份温暖',setFlag:'married'},
+    {text:'婉言谢绝',effect:{connections:-5},log:'你心中另有打算'}],noFlag:'married'},
+  {text:'你认识的一个<span class="npc">商人</span>遇到了麻烦，请你帮忙说情。',
+    connReq:{min:15},trigger:{minAge:16},choices:[
+    {text:'帮他说情',effect:{connections:8,wealth:15,karma:3},log:'事情解决后，商人重谢了你'},
+    {text:'不想掺和',effect:{connections:-3},log:'你不想卷入是非'}]},
+  {text:'凭借你的人脉，有人介绍你去<span class="fac">世俗朝廷</span>谋个差事。',
+    connReq:{min:25},trigger:{minAge:20},choices:[
+    {text:'去当差',effect:{wealth:20,connections:10},log:'你凭着关系在衙门里谋了个不错的位置',factionJoin:'chaoting'},
+    {text:'不想当官',effect:{comprehension:3},log:'庙堂之高不如江湖之远'}]},
+  {text:'你在人群中偶然听到有人在议论一个<span class="itm">藏宝地</span>的位置。',
+    connReq:{min:10},trigger:{minAge:14},choices:[
+    {text:'找人搭伙去寻宝',effect:{wealth:20,cultivation:5,connections:5},log:'你和几个朋友找到了一些值钱的东西',req:{wealth:10}},
+    {text:'独自去找',effect:{wealth:10,constitution:-3},log:'你找到了一些东西，但路上受了点伤'},
+    {text:'当没听到',effect:{},log:'天上不会掉馅饼'}]},
+  // Very low connections
+  {text:'你被诬陷偷了东西，由于<span class="danger-text">无人作证</span>，你百口莫辩。',
+    connReq:{max:-5},trigger:{minAge:12},choices:[
+    {text:'据理力争',effect:{connections:-5,karma:3,constitution:-3},log:'没人帮你说话，你被打了一顿赶了出来'},
+    {text:'默默承受',effect:{sanity:-5,comprehension:3},log:'有苦说不出，这就是孤身一人的代价'},
+    {text:'以武力反抗',effect:{cultivation:5,karma:-5,connections:-5},log:'你打了对方，虽然出了气，但名声更差了',combat:20}]},
+  {text:'你想加入一个修炼团体，但因为<span class="danger-text">无人推荐</span>被拒之门外。',
+    connReq:{max:5},trigger:{minAge:15,cultivation:5},choices:[
+    {text:'再三恳求',effect:{connections:5,sanity:-3},log:'管事的勉强让你旁听了几次'},
+    {text:'自己修炼',effect:{cultivation:5,comprehension:5},log:'没有团体也一样能修炼——你暗暗发誓要超过他们'}]},
+  {text:'你结交了一位<span class="npc">江湖游医</span>，他愿意免费给你治伤。',
+    connReq:{min:15},trigger:{minAge:14},choices:[
+    {text:'接受治疗',effect:{constitution:8,connections:5},log:'游医妙手回春，你的旧伤终于好了'},
+    {text:'顺便学几手医术',effect:{comprehension:5,constitution:5,connections:3},log:'你跟着游医学了一些简单的医术'}]},
 ];
 
 // === CULTIVATION BREAKTHROUGH EVENTS (triggered during realm transitions) ===

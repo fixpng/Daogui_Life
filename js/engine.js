@@ -412,6 +412,9 @@ function nextYear() {
     if(gameState.talents.find(function(t){return t.id==='dao_xian';})) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='xian_gu';})) cultGain += 1;
     if(gameState.talents.find(function(t){return t.id==='wu_xing';})) cultGain += 1;
+    // Wealth enables better cultivation resources
+    if(gameState.wealth > 50 && Math.random() < 0.3) cultGain += 1;
+    if(gameState.wealth < -20) cultGain = Math.max(0, cultGain - (Math.random() < 0.3 ? 1 : 0));
   }
   if(gameState.faction!=='none' && FACTIONS[gameState.faction]) {
     var fb = FACTIONS[gameState.faction].bonus;
@@ -438,7 +441,8 @@ function nextYear() {
     var curRank = gameState.factionRank || 0;
     if(curRank < fData.rankReqs.length - 1) {
       var nextReq = fData.rankReqs[curRank + 1];
-      if(gameState.cultivation >= nextReq && gameState.age >= (fData.rankAgeReqs ? fData.rankAgeReqs[curRank+1] || 0 : 0)) {
+      var connBonus = gameState.connections > 20 ? -5 : (gameState.connections < -10 ? 10 : 0);
+      if(gameState.cultivation >= (nextReq + connBonus) && gameState.age >= (fData.rankAgeReqs ? fData.rankAgeReqs[curRank+1] || 0 : 0)) {
         gameState.factionRank = curRank + 1;
         var newRankName = fData.ranks[gameState.factionRank];
         addLog('你在<span class="fac">' + fData.name + '</span>中晋升为<span class="itm">' + newRankName + '</span>！');
@@ -620,6 +624,29 @@ function nextYear() {
   // Track bingjia blood_warrior achievement
   if(gameState.faction === 'bingjia' && gameState.constitution < 10) gameState._bingjiaLowConst = true;
   if(gameState._bingjiaLowConst && gameState.constitution >= 50) unlockAchieve('blood_warrior');
+
+  // === WEALTH PASSIVE EFFECTS ===
+  // Living costs - everyone spends money each year
+  if(gameState.age >= 5) {
+    var livingCost = 1;
+    if(gameState.faction !== 'none') livingCost += 1; // faction dues
+    if(gameState.age >= 18) livingCost += 1; // adult expenses
+    if(gameState.flags.married) livingCost += 2; // family costs
+    if(gameState.flags.has_child) livingCost += 1; // children costs
+    gameState.wealth -= livingCost;
+  }
+  // Wealth affects constitution (nutrition/healthcare)
+  if(gameState.wealth < -40 && Math.random() < 0.12) gameState.constitution -= 2; // malnutrition
+  if(gameState.wealth < -20 && Math.random() < 0.08) gameState.constitution -= 1; // poor diet
+  if(gameState.wealth > 80 && Math.random() < 0.06) gameState.constitution += 1; // good healthcare
+  // Wealth affects cultivation (can afford resources)
+  if(gameState.wealth > 60 && gameState.age >= 12 && Math.random() < 0.05) gameState.cultivation += 1; // buy cultivation resources
+  if(gameState.wealth < -30 && Math.random() < 0.08) gameState.cultivation = Math.max(0, gameState.cultivation - 1); // too poor to cultivate
+  // Wealth affects connections (social standing)
+  if(gameState.wealth > 100 && Math.random() < 0.08) gameState.connections += 2; // money attracts people
+  if(gameState.wealth < -50 && Math.random() < 0.10) gameState.connections -= 2; // poverty repels
+  // Extreme poverty affects sanity (for xinsu)
+  if(gameState.wealth < -60 && isXinsu && Math.random() < 0.08) gameState.sanity = Math.max(0, gameState.sanity - 2);
 
   // === XINPAN (心蟠) PASSIVE EFFECTS ===
   if(gameState.xinpan) {
@@ -1208,6 +1235,10 @@ function nextYear() {
   if(gameState.qiyun < -30) eventChance += 0.05; // 低气运也容易遇到（坏）事件
   if(gameState.connections > 30) eventChance += 0.05; // 人脉广，事情多
   if(gameState.comprehension > 50) eventChance += 0.03; // 悟性高，感知到更多机缘
+  if(gameState.wealth > 80) eventChance += 0.05; // wealth opens doors to opportunities
+  if(gameState.wealth < -30) eventChance += 0.08; // poverty brings trouble
+  if(gameState.karma < -50) eventChance += 0.06; // bad karma attracts events
+  if(gameState.karma > 50) eventChance += 0.04; // good karma attracts blessings
 
   // Priority: mandatory events that haven't been seen yet are guaranteed to trigger
   var mandatoryPool = eventPool.filter(function(ev){
@@ -1248,6 +1279,8 @@ function nextYear() {
     gameOver('你安详地合上了双眼，走完了这一世。'); return;
   }
   if(gameState.wealth <= -80) { gameOver('你因<span class="danger-text">饥寒交迫</span>，倒毙在冰冷的街头。'); return; }
+  if(gameState.karma <= -90 && Math.random() < 0.15) { unlockAchieve('karma_death'); gameOver('无边<span class="danger-text">业障</span>将你吞噬——善恶终有报，天道好轮回。'); return; }
+  if(gameState.qiyun <= -80 && Math.random() < 0.10) { gameOver('你的<span class="danger-text">气运耗尽</span>，一连串不幸接踵而至，最终倒在了命运的车轮下。'); return; }
   if(gameState.age<=10 && !gameState.alive) unlockAchieve('early_death');
   }
 
@@ -1663,6 +1696,9 @@ function applyChoice(c) {
   if(c.relocate) {
     var newLoc = LOCATIONS.find(function(l){return l.id===c.relocate;});
     if(newLoc) {
+      // Travel costs wealth
+      var travelCost = Math.max(3, Math.floor(Math.random() * 8) + 2);
+      gameState.wealth -= travelCost;
       gameState.location = newLoc;
       if(!gameState.visitedLocations.includes(c.relocate)) gameState.visitedLocations.push(c.relocate);
       document.getElementById('current-location').textContent = newLoc.name;
