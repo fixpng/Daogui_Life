@@ -179,6 +179,10 @@ function startGame() {
 function confirmBorn() {
   showPanel('game');
   document.getElementById('log').innerHTML = '';
+  document.getElementById('event-text').innerHTML = '等待命运的齿轮转动...';
+  document.getElementById('choices').innerHTML = '';
+  waitingForChoice = false;
+  window._currentChoices = null;
   var names = gameState.talents.map(function(t){return '<span class="itm">'+t.name+'</span>';}).join('、');
   var genderName = gameState.gender === 'male' ? '男' : '女';
   addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+'）');
@@ -524,12 +528,21 @@ function nextYear() {
   }
   // New novel-based talent yearly effects
   if(gameState.talents.find(function(t){return t.id==='tian_sha';}) && Math.random()<0.05) { gameState.connections -= 2; gameState.cultivation += 1; }
-  if(gameState.talents.find(function(t){return t.id==='shi_yi';}) && Math.random()<0.04) { gameState.comprehension += 2; } // 前世记忆闪回
+  if(gameState.talents.find(function(t){return t.id==='tong_ling';}) && Math.random()<0.05) { gameState.cultivation += 2; gameState.sanity = Math.max(0, gameState.sanity - 1); } // 阴阳眼感知灵气
   if(gameState.talents.find(function(t){return t.id==='gui_ying';}) && Math.random()<0.05) { gameState.cultivation += 2; gameState.sanity = Math.max(0, gameState.sanity - 2); }
   if(gameState.talents.find(function(t){return t.id==='fan_gu';}) && Math.random()<0.06) { gameState.comprehension += 1; }
   if(gameState.talents.find(function(t){return t.id==='duan_ming';}) && Math.random()<0.08) { gameState.constitution -= 1; } // 命格短促
   if(gameState.talents.find(function(t){return t.id==='ling_gen';}) && Math.random()<0.08) { gameState.cultivation += 1; }
   if(gameState.talents.find(function(t){return t.id==='yi_xin';}) && Math.random()<0.08) { gameState.constitution += 1; }
+  // New talent yearly effects
+  if(gameState.talents.find(function(t){return t.id==='shang_jia';}) && Math.random()<0.10) { gameState.wealth += 5; } // 商贾世家经商收入
+  if(gameState.talents.find(function(t){return t.id==='shang_jia';}) && Math.random()<0.05) { gameState.connections += 1; } // 生意带来人脉
+  if(gameState.talents.find(function(t){return t.id==='gu_wu';}) && Math.random()<0.06) { gameState.cultivation += 1; gameState.constitution += 1; } // 古武日常修炼
+  if(gameState.talents.find(function(t){return t.id==='yin_ti';}) && Math.random()<0.06) { gameState.cultivation += 1; gameState.sanity = Math.max(0, gameState.sanity - 1); } // 阴体感应
+  if(gameState.talents.find(function(t){return t.id==='chi_she';}) && Math.random()<0.08) { gameState.cultivation += 1; } // 心无杂念易入定
+  if(gameState.talents.find(function(t){return t.id==='chi_she';}) && Math.random()<0.06) { gameState.connections -= 1; } // 被人嫌弃
+  if(gameState.talents.find(function(t){return t.id==='liu_lang';}) && Math.random()<0.06) { gameState.comprehension += 1; } // 见多识广
+  if(gameState.talents.find(function(t){return t.id==='liu_lang';}) && Math.random()<0.08) { gameState.constitution -= 1; } // 居无定所体弱
 
   // === 心素深度影响：一生受两界裂隙折磨 ===
   if(gameState.talents.find(function(t){return t.id==='xinsu';})) {

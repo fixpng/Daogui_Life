@@ -26,6 +26,8 @@ const TALENTS = {
     {id:'duo_mou',name:'多谋',desc:'心思缜密，善于筹划',effect:{comprehension:12,connections:8,qiyun:5},type:'good',rarity:'rare',hint:'悟性+12 人脉+8 气运+5'},
     {id:'jing_shang',name:'精商',desc:'天生生意头脑，善于经营',effect:{wealth:35,connections:10},type:'good',rarity:'uncommon',hint:'金银+35 人脉+10'},
     {id:'yi_xin',name:'医心',desc:'天生对药理有天赋，懂得养生之道',effect:{constitution:10,comprehension:8,sanity:5},type:'good',rarity:'uncommon',hint:'体魄+10 悟性+8 神志+5'},
+    {id:'shang_jia',name:'商贾世家',desc:'祖上三代经商，耳濡目染精于算计',effect:{wealth:25,connections:8,comprehension:5},type:'good',rarity:'uncommon',hint:'金银+25 人脉+8 悟性+5 经商获利更多'},
+    {id:'gu_wu',name:'古武传承',desc:'家传古武功法，自幼习练',effect:{cultivation:8,constitution:12,comprehension:5},type:'good',rarity:'rare',hint:'修为+8 体魄+12 悟性+5 战斗时有额外优势'},
   ],
   bad: [
     {id:'ji_bing',name:'疾病',desc:'体弱多病，时常卧床',effect:{sanity:-20,constitution:-15},type:'bad',rarity:'common',hint:'神志-20 体魄-15 但久病成医，偶有奇遇'},
@@ -44,10 +46,13 @@ const TALENTS = {
     {id:'ti_ruo',name:'体弱',desc:'先天体弱，弱不禁风',effect:{constitution:-25},type:'bad',rarity:'common',hint:'体魄-25 但心思细腻，悟性偶有提升'},
     {id:'po_yun',name:'破运',desc:'天生克运，诸事不顺',effect:{qiyun:-25,karma:-10,wealth:-10},type:'bad',rarity:'cursed',hint:'气运-25 因果-10 金银-10 但逆运而行，偶有奇遇'},
     {id:'tian_sha',name:'天煞孤星',desc:'命犯天煞，近身之人皆遭横祸',effect:{connections:-25,qiyun:-10,cultivation:5},type:'bad',rarity:'cursed',hint:'人脉-25 气运-10 修为+5 但无人敢近身'},
-    {id:'shi_yi',name:'失忆',desc:'出生时便失去了所有前世记忆，对世界一片茫然',effect:{comprehension:-10,connections:-5,sanity:-5},type:'bad',rarity:'common',hint:'悟性-10 人脉-5 神志-5 但偶尔闪回前世片段'},
+    {id:'tong_ling',name:'通灵',desc:'天生阴阳眼，能看到常人看不到的东西',effect:{sanity:-15,comprehension:8,cultivation:3},type:'bad',rarity:'common',hint:'神志-15 悟性+8 修为+3 能看到鬼魂和灵体 容易被邪祟盯上'},
     {id:'gui_ying',name:'鬼婴',desc:'出生时便有鬼魂附体，阴气极重',effect:{sanity:-20,cultivation:10,constitution:-10},type:'bad',rarity:'cursed',hint:'神志-20 体魄-10 修为+10 阴气吸引邪祟'},
     {id:'fan_gu',name:'反骨',desc:'天生反骨，不服管束',effect:{connections:-15,karma:-10,comprehension:5},type:'bad',rarity:'common',hint:'人脉-15 因果-10 悟性+5 难以融入任何势力'},
     {id:'duan_ming',name:'短命',desc:'先天命格短促，阳寿不永',effect:{constitution:-15,qiyun:-10},type:'bad',rarity:'cursed',hint:'体魄-15 气运-10 寿命大幅缩短'},
+    {id:'yin_ti',name:'阴体',desc:'生于阴时阴日，天生招阴',effect:{sanity:-10,constitution:-5,cultivation:5},type:'bad',rarity:'common',hint:'神志-10 体魄-5 修为+5 容易撞邪但对阴属功法亲和'},
+    {id:'chi_she',name:'痴傻',desc:'天生痴傻，说话做事慢半拍',effect:{comprehension:-15,connections:-10},type:'bad',rarity:'common',hint:'悟性-15 人脉-10 但心无杂念，修道反而少魔障'},
+    {id:'liu_lang',name:'流浪儿',desc:'从记事起就在流浪，居无定所',effect:{wealth:-25,constitution:-5,qiyun:-5,comprehension:3},type:'bad',rarity:'common',hint:'金银-25 体魄-5 气运-5 但见多识广，悟性偶有提升'},
   ]
 };
 
@@ -376,7 +381,8 @@ const CHILDHOOD_EVENTS = [
   {text:'<span class="npc">村里的孩子们</span>围着你，推搡嘲弄。',trigger:{minAge:4},choices:[
     {text:'告诉长辈',effect:{connections:5},log:'大人出面教训了他们'},{text:'默默忍受',effect:{sanity:-5,comprehension:2},log:'从此变得沉默寡言'}]},
   {text:'深夜，你看到窗外有一道<span class="mys">模糊的人影</span>站在月光里。',trigger:{minAge:3},choices:[
-    {text:'蒙上被子',effect:{sanity:-5},log:'一夜未眠'},{text:'走出去看',effect:{sanity:-10,cultivation:3,comprehension:3},log:'什么都没有...真的什么都没有吗？'}]},
+    {text:'蒙上被子',effect:{sanity:-5},log:'一夜未眠'},{text:'走出去看',effect:{sanity:-10,cultivation:3,comprehension:3},log:'什么都没有...真的什么都没有吗？'},
+    {text:'感受阴气的来源',effect:{cultivation:8,comprehension:5,sanity:-8},log:'你的阴体与那道人影产生了共鸣——它不是来害你的，它在向你传递什么信息',check:'yin_ti'}]},
   {text:'<span class="npc">父亲</span>带你去镇上赶集，你看到一个<span class="npc">算命先生</span>。',trigger:{minAge:5},noTalent:'wu_qin',choices:[
     {text:'让他算一卦',effect:{cultivation:3,wealth:-5,comprehension:2},log:'他说你命格奇特'},{text:'不信这个',effect:{sanity:3},log:'理性是最好的护盾'}]},
   {text:'你帮<span class="npc">母亲</span>在田里干活，累得满头大汗。',trigger:{minAge:6},noTalent:'wu_qin',choices:[
@@ -386,7 +392,8 @@ const CHILDHOOD_EVENTS = [
   {text:'后山传来奇怪的<span class="mys">哭声</span>，整个村子的狗都在叫。',trigger:{minAge:6},choices:[
     {text:'假装没听到',effect:{sanity:-3},log:'那声音在梦里反复出现'},{text:'和小伙伴去探险',effect:{sanity:-8,cultivation:5,constitution:2},log:'在山洞里发现了奇怪的符文'}]},
   {text:'你<span class="danger-text">饿了好几天</span>，肚子咕咕叫。',trigger:{minAge:3},choices:[
-    {text:'忍着',effect:{sanity:-5,constitution:-2},log:'饥饿让人坚强'},{text:'去镇上讨饭',effect:{connections:-5,wealth:5,qiyun:-2},log:'学会了低头'}]},
+    {text:'忍着',effect:{sanity:-5,constitution:-2},log:'饥饿让人坚强'},{text:'去镇上讨饭',effect:{connections:-5,wealth:5,qiyun:-2},log:'学会了低头'},
+    {text:'凭经验找食物',effect:{constitution:3,comprehension:3,wealth:5},log:'流浪多年的本能让你轻车熟路——哪棵树有野果、哪条沟有螃蟹、哪家后门会倒剩饭，你全都门儿清',check:'liu_lang'}]},
   {text:'过年了，<span class="npc">父母</span>给你做了新衣裳。',trigger:{minAge:3},noTalent:'wu_qin',choices:[
     {text:'开心地穿上',effect:{sanity:10,qiyun:2},log:'这是最快乐的一天'},{text:'想着村外的世界',effect:{cultivation:2,comprehension:2},log:'你心里藏着远方'}]},
   {text:'你在河边洗衣服，看到水中倒映的<span class="mys">不是自己的脸</span>。',trigger:{minAge:5},choices:[
@@ -496,7 +503,8 @@ const TEENAGE_EVENTS = [
   {text:'<span class="fac">坐忘道</span>的人在镇上设坛讲法，围观者甚众。',choices:[
     {text:'揭穿骗局',effect:{connections:15,wealth:-10,qiyun:5},log:'引来坐忘道的敌意'},
     {text:'请求入道',effect:{sanity:-20,wealth:30},log:'坐忘道弟子考验你的欺骗天赋...你获得了一张<span class="itm">易容面皮</span>',factionJoin:'zuowang',item:'yi_rong_mian'},
-    {text:'默默走开',effect:{},log:'与你无关'}]},
+    {text:'默默走开',effect:{},log:'与你无关'},
+    {text:'呆呆地听完全没反应',effect:{sanity:10,qiyun:5,comprehension:3},log:'坐忘道的人使尽浑身解数，但你心无杂念，他们的蛊惑对你毫无效果。那人叹道："此子心如顽石，无隙可入。"',check:'chi_she'}]},
   {text:'<span class="npc">县太爷</span>贴出告示征兵，抵御南疆蛮族。',choices:[
     {text:'投军报国',effect:{connections:20,wealth:20,cultivation:5,constitution:5,qiyun:5},log:'成为一名士兵'},{text:'想办法逃避',effect:{connections:-15,qiyun:-5},log:'躲在山里三个月'}]},
   {text:'夜里，你看到自己同时出现在<span class="mys">两个不同的地方</span>。',choices:[
@@ -531,7 +539,8 @@ const TEENAGE_EVENTS = [
   {text:'你在镇上被<span class="npc">一群纨绔子弟</span>围住，他们看你不顺眼。',choices:[
     {text:'以武力突围',effect:{cultivation:5,constitution:3,connections:-5},log:'你打翻了几个，但也结了仇',req:{constitution:20}},
     {text:'以言语化解',effect:{connections:5,comprehension:2},log:'你三言两语化解了冲突',req:{connections:5}},
-    {text:'忍气吞声',effect:{sanity:-5,karma:3},log:'被人欺负的滋味不好受'}]},
+    {text:'忍气吞声',effect:{sanity:-5,karma:3},log:'被人欺负的滋味不好受'},
+    {text:'舌灿莲花反客为主',effect:{connections:15,comprehension:5,qiyun:3},log:'你口若悬河、妙语连珠，不但化解了冲突，还把纨绔子弟说得心服口服，非要拜你为大哥',check:'kou_cai'}]},
 ];
 
 const ADULT_EVENTS = [
@@ -542,7 +551,8 @@ const ADULT_EVENTS = [
     {text:'深入探索',effect:{cultivation:25,wealth:40,sanity:-20,comprehension:10},log:'获得了难以想象的机缘！',item:'tian_shu',req:{constitution:30}},{text:'原路返回',effect:{sanity:5},log:'好奇心害死猫'}]},
   {text:'一个<span class="npc">神秘商人</span>向你兜售一颗<span class="itm">来历不明的丹药</span>。',choices:[
     {text:'买来服下',effect:{cultivation:15,sanity:-25,wealth:-20,constitution:5},log:'修为暴涨，但总感觉哪里不对...',item:'dan_yao',req:{wealth:20}},
-    {text:'谢绝',effect:{sanity:5},log:'来路不明的东西不能乱吃'}]},
+    {text:'谢绝',effect:{sanity:5},log:'来路不明的东西不能乱吃'},
+    {text:'验货砍价',effect:{wealth:10,cultivation:15,comprehension:5},log:'你一眼看出丹药品相不佳，三言两语把价格压到一半——商贾世家的眼力不是白给的',check:'shang_jia'}]},
   {text:'有人带你去见<span class="mys">黑太岁</span>——一种能让人看到另一个世界的东西。',choices:[
     {text:'吞食黑太岁',effect:{sanity:-50,cultivation:40,comprehension:15,qiyun:-15},log:'你看到了！两个世界叠加在一起！',item:'hei_tai_sui',req:{constitution:40}},
     {text:'坚决不吃',effect:{sanity:10},log:'你选择留在"正常"的世界'}]},
@@ -556,10 +566,12 @@ const ADULT_EVENTS = [
   {text:'<span class="danger-text">山贼</span>拦路抢劫，为首的是个独眼大汉。',choices:[
     {text:'拼死反抗',effect:{cultivation:10,sanity:-5,constitution:3,qiyun:3},log:'打跑了山贼，身上添了几道伤疤',combat:40},
     {text:'乖乖交钱',effect:{wealth:-30},log:'破财免灾'},
-    {text:'动之以情',effect:{connections:5,comprehension:2},log:'居然说动了他，放你一马',req:{connections:10}}]},
+    {text:'动之以情',effect:{connections:5,comprehension:2},log:'居然说动了他，放你一马',req:{connections:10}},
+    {text:'以古武之术迎敌',effect:{cultivation:15,constitution:8,qiyun:5},log:'你施展家传古武功法，拳风凌厉——山贼头目大惊失色，带着手下仓皇逃窜',check:'gu_wu'}]},
   {text:'你在客栈休息时，隔壁传来<span class="mys">诡异的念经声</span>，持续了一整夜。',choices:[
     {text:'敲门查看',effect:{sanity:-15,cultivation:8,comprehension:5},log:'房间里空无一人...但经声还在继续'},
-    {text:'用被子捂住耳朵',effect:{sanity:-5},log:'一夜噩梦'}]},
+    {text:'用被子捂住耳朵',effect:{sanity:-5},log:'一夜噩梦'},
+    {text:'以通灵之力与念经者沟通',effect:{cultivation:12,comprehension:8,sanity:-10,connections:5},log:'你睁开阴阳眼，看到一个枯坐百年的亡僧——他并非恶灵，只是死后仍在诵经超度自己。你帮他念完了最后一段经文，他含笑消散了',check:'tong_ling'}]},
   {text:'路遇一位<span class="npc">老道</span>，他说你身上有<span class="mys">不干净的东西</span>。',choices:[
     {text:'请他驱邪',effect:{sanity:15,wealth:-20,qiyun:5},log:'他画了一道符给你',item:'fu_lu'},
     {text:'不信这些',effect:{sanity:-5},log:'老道叹了口气走了'}]},
@@ -578,7 +590,8 @@ const ADULT_EVENTS = [
     {text:'帮他安详离去',effect:{connections:10,sanity:10,qiyun:10},log:'他走得很平静'}]},
   {text:'你听说<span class="loc">鬼市</span>今夜会出现，可以买到奇物。',choices:[
     {text:'前往鬼市',effect:{wealth:-15,sanity:-10,cultivation:10,qiyun:-5},log:'用阳寿换了一件法器',item:'gui_mian',req:{wealth:15}},
-    {text:'不去那种地方',effect:{sanity:5},log:'还是阳间好'}]},
+    {text:'不去那种地方',effect:{sanity:5},log:'还是阳间好'},
+    {text:'去鬼市做生意',effect:{wealth:50,comprehension:5,sanity:-8},log:'你天生的商业嗅觉在鬼市也管用——低价收了几件阴间奇物，转手卖给阳间修士，净赚一大笔',check:'jing_shang'}]},
   {text:'夜里有<span class="mys">敲门声</span>，打开门却空无一人，只有地上一滩血迹。',choices:[
     {text:'追出去',effect:{sanity:-20,cultivation:10,comprehension:5},log:'你在黑暗中看到了不该看到的东西'},
     {text:'关门上锁',effect:{sanity:-5},log:'一整夜门外都有窸窣声'}]},
@@ -598,7 +611,8 @@ const ADULT_EVENTS = [
     {text:'不趟这浑水',effect:{},log:'杀人的买卖做不得'}]},
   {text:'一位<span class="npc">采药老人</span>摔下山崖，命悬一线。',choices:[
     {text:'冒险救人',effect:{constitution:-5,qiyun:15,karma:15,connections:10},log:'你冒死将他背下山，自己也摔伤了',req:{constitution:20}},
-    {text:'叫人来帮忙',effect:{qiyun:5,karma:3,connections:5},log:'等人来时老人已经咽气了'}]},
+    {text:'叫人来帮忙',effect:{qiyun:5,karma:3,connections:5},log:'等人来时老人已经咽气了'},
+    {text:'就地施救治伤',effect:{qiyun:10,karma:10,connections:15,comprehension:5},log:'你凭医心天赋判断伤势，用山间草药止血接骨——老人竟奇迹般保住了性命。他醒来后传授你一套秘传药方作为答谢',check:'yi_xin'}]},
   {text:'你在修炼中感到<span class="mys">一道灵光</span>掠过脑海，似乎悟到了什么。',choices:[
     {text:'深入冥想',effect:{comprehension:12,cultivation:15,sanity:-5},log:'你触碰到了大道的边缘！',req:{comprehension:30}},
     {text:'稳扎稳打',effect:{comprehension:5,cultivation:5},log:'积跬步以至千里'}]},
@@ -640,7 +654,8 @@ const ADULT_EVENTS = [
   {text:'一头<span class="danger-text">下山猛虎</span>挡在了你的去路上，虎目如炬。',choices:[
     {text:'与虎搏斗',effect:{cultivation:12,constitution:8,qiyun:8},log:'你打退了猛虎，虎皮卖了个好价钱',combat:60},
     {text:'装死',effect:{sanity:-8},log:'猛虎嗅了嗅你，走了...吓出一身冷汗'},
-    {text:'慢慢后退',effect:{},log:'你缓缓退离虎的领地，松了一口气'}]},
+    {text:'慢慢后退',effect:{},log:'你缓缓退离虎的领地，松了一口气'},
+    {text:'硬接虎爪不闪不避',effect:{cultivation:15,constitution:12,qiyun:10,connections:5},log:'猛虎一掌拍在你身上——你纹丝不动。铁骨之体硬扛虎爪，皮肉无损！猛虎惊惧后退，你趁势将其制服',check:'tie_gu'}]},
   {text:'夜间，三名<span class="danger-text">黑衣人</span>破门而入，说有人出钱买你的命。',choices:[
     {text:'迎战杀手',effect:{cultivation:10,constitution:3,sanity:-5},log:'你击退了杀手，但不知是谁要害你',combat:55},
     {text:'从窗户逃跑',effect:{wealth:-20,connections:-5},log:'你丢下行李仓皇逃出'},
@@ -1648,6 +1663,12 @@ const TALENT_CONFLICTS = {
   ling_gen: ['yu_ben'],
   gui_ying: ['jian_kang'],
   fan_gu: ['kou_cai'],
+  tong_ling: ['yu_ben'],
+  yin_ti: ['jian_kang','tie_gu'],
+  chi_she: ['zhi_hui','duo_mou','ling_gen'],
+  liu_lang: ['fu_gui','jing_shang','shang_jia'],
+  shang_jia: ['pin_kun','du_zhai','liu_lang'],
+  gu_wu: ['ti_ruo','can_ji','chi_she'],
 };
 
 // === ATTRIBUTE TOOLTIP DESCRIPTIONS ===
@@ -3426,9 +3447,10 @@ const TALENT_EVENTS = [
   {check:'tian_sha',trigger:{minAge:15},text:'你的第三个朋友也出事了——骑马时马突然发疯。你开始信了：命犯<span class="danger-text">天煞</span>，不能靠近任何人。',choices:[
     {text:'远离人群独自修炼',effect:{cultivation:12,comprehension:8,connections:-10},log:'你搬到山上独居。孤独是你的宿命'},
     {text:'寻找破煞之法',effect:{connections:5,comprehension:10,karma:3},log:'算命先生说只有"至阳之物"才能破煞'}]},
-  {check:'shi_yi',trigger:{minAge:10},text:'你做了不像梦的梦——梦里你是<span class="mys">另一个人</span>，在一座辉煌的宫殿里走动。醒来后只记得一个字："<span class="mys">归</span>"。',choices:[
-    {text:'尝试回忆更多',effect:{comprehension:12,sanity:-10,cultivation:5},log:'断断续续想起了些画面——剑、光、一扇巨大的门'},
-    {text:'不管它，过好这辈子',effect:{sanity:5,constitution:3},log:'前世的事留给前世吧'}]},
+  {check:'tong_ling',trigger:{minAge:5},text:'你又看到了——墙角蹲着一个<span class="danger-text">透明的人</span>，它在盯着你笑。别人都说那里什么都没有。',choices:[
+    {text:'试着跟它说话',effect:{comprehension:10,cultivation:8,sanity:-12},log:'那东西咧开嘴，发出了不属于人类的声音——但你听懂了'},
+    {text:'装作没看到',effect:{sanity:-5,comprehension:3},log:'你低下头快步走过。它的目光一直跟着你'},
+    {text:'大喊"走开！"',effect:{sanity:-3,constitution:3,connections:-3},log:'旁人以为你在发疯，但那东西确实消失了'}]},
   {check:'gui_ying',trigger:{minAge:8},text:'附在你身上的<span class="danger-text">鬼魂</span>今晚格外躁动——它低语："<span class="mys">让我出来……我只想看看月亮……</span>"',choices:[
     {text:'允许它借用你的眼睛',effect:{sanity:-12,cultivation:8,comprehension:5},log:'鬼魂看了月亮后安静了。它低声说了句"谢谢"'},
     {text:'用力压制它',effect:{sanity:-5,constitution:-3,cultivation:5},log:'你用意志力把鬼魂压了回去。它发出了悲鸣'}]},
@@ -3438,6 +3460,26 @@ const TALENT_EVENTS = [
   {check:'duan_ming',trigger:{minAge:18},text:'一个<span class="npc">相士</span>拉住你："施主面有<span class="danger-text">死气</span>，恐怕不过而立之年。"',choices:[
     {text:'问有无破解之法',effect:{comprehension:8,cultivation:5,wealth:-10},log:'相士说唯有修真可延寿，卖了你一本入门功法'},
     {text:'既然命短就活得精彩',effect:{qiyun:10,cultivation:5,karma:3,sanity:5},log:'不怕死的人反而活得比谁都洒脱'}]},
+  // New talent dedicated events
+  {check:'shang_jia',trigger:{minAge:12},text:'你在市集上看到两个商人吵架，一眼就看出谁在说谎——这是<span class="npc">祖传</span>的眼力。一旁的掌柜看你有商才，想收你当学徒。',choices:[
+    {text:'跟他学做生意',effect:{wealth:20,connections:10,comprehension:5},log:'三个月后你把掌柜的店利润翻了一番'},
+    {text:'自己做买卖',effect:{wealth:15,comprehension:8},log:'你用零钱倒卖山货，赚了第一桶金'},
+    {text:'不感兴趣',effect:{comprehension:3},log:'经商有什么意思，你想做更大的事'}]},
+  {check:'gu_wu',trigger:{minAge:8},text:'半夜你梦见一个老人在你面前打拳——醒来后身体自动摆出了那个架势。这是<span class="mys">血脉中的记忆</span>。',choices:[
+    {text:'按照记忆苦练',effect:{cultivation:12,constitution:8,comprehension:5},log:'古武功法在你体内苏醒，你的筋骨咔咔作响，变得更加强韧'},
+    {text:'去找人印证这套拳法',effect:{cultivation:8,connections:5,comprehension:8},log:'一个老拳师看了目瞪口呆："这是失传百年的功法！"'}]},
+  {check:'yin_ti',trigger:{minAge:6},text:'每到阴天你就浑身发冷，能看到别人看不到的<span class="danger-text">黑影</span>在房梁上爬。你娘说你是"阴时生的，八字太轻"。',choices:[
+    {text:'学着与阴气共处',effect:{cultivation:8,comprehension:5,sanity:-8},log:'你开始能分辨哪些阴气有害，哪些无害——这也是一种修行'},
+    {text:'请道士做法驱阴',effect:{wealth:-10,sanity:5,constitution:3},log:'道士烧了一道符，你舒服了一阵，但过几天又犯了'},
+    {text:'不管它',effect:{sanity:-5,constitution:-2},log:'你习惯了身边总有阴冷的东西飘过'}]},
+  {check:'chi_she',trigger:{minAge:8},text:'私塾先生教了三遍，别人都会了，你还是一脸懵。同窗们在背后叫你<span class="danger-text">"傻子"</span>。但你发现自己虽然学东西慢，打坐时却出奇地静——心里什么杂念都没有。',choices:[
+    {text:'专心打坐修炼',effect:{cultivation:10,comprehension:5,sanity:5},log:'你打坐时入定极深，连先生都觉得不可思议——"此子心无杂念，是修道的料"'},
+    {text:'不理会嘲笑继续学',effect:{comprehension:8,connections:3,karma:3},log:'你用别人三倍的时间学会了，但记得比谁都牢'},
+    {text:'揍那个叫你傻子的人',effect:{constitution:3,connections:-5,karma:-3},log:'你追了他三条街才追上——但你打赢了'}]},
+  {check:'liu_lang',trigger:{minAge:6},text:'你又换了一个睡觉的地方——这次是<span class="loc">城门洞</span>下面。虽然冷，但你已经习惯了。夜里一个<span class="npc">乞丐老头</span>凑过来，教你怎么在城里混。',choices:[
+    {text:'跟老头学求生之道',effect:{comprehension:8,connections:5,constitution:3},log:'老头教你哪家饭馆后门有剩饭、哪条巷子安全——这些是书本上学不到的'},
+    {text:'自己找活路',effect:{wealth:5,constitution:5,comprehension:3},log:'你去码头帮人搬货，虽然被克扣了大半工钱，但至少吃上了热饭'},
+    {text:'偷东西',effect:{wealth:10,karma:-8,qiyun:-3},log:'你摸了个商人的钱袋——活下去比什么都重要'}]},
 ];
 
 // ========== 前后联系事件（需要flag/npc系统） ==========
