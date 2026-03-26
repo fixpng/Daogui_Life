@@ -2169,6 +2169,7 @@ function restart() {
 
 function showTalentCarryOver() {
   showPanel('setup');
+  document.querySelector('.btn-refresh').style.display = 'none';
   var grid = document.getElementById('talent-options');
   grid.innerHTML = '<div class="talent-grid-header" style="text-align:center;color:var(--gold);margin-bottom:16px;font-size:1.1em;">前世天赋 — 选择一个保留至来世（或跳过）</div>' +
     gameState.lastLifeTalents.map(function(t,i){return (
@@ -2195,6 +2196,7 @@ function keepTalent(idx) {
 function skipKeepTalent() {
   keptTalent = null;
   document.getElementById('btn-start').style.display = '';
+  document.querySelector('.btn-refresh').style.display = '';
   initTalents();
 }
 
@@ -2212,6 +2214,7 @@ function initTalentsWithKept() {
       '</div>');
     }).join('');
   document.getElementById('btn-start').style.display = '';
+  document.querySelector('.btn-refresh').style.display = '';
   updateSelectCount();
 }
 

@@ -71,7 +71,7 @@ const LOCATIONS = [
   {id:'qing_feng',name:'清风观遗址',desc:'丹阳子的道观废墟，灵气残留',danger:40,wealth:5},
   {id:'shang_jing',name:'上京城',desc:'大梁国都，天子脚下，龙气汇聚',danger:15,wealth:90},
   {id:'si_qi',name:'四齐',desc:'大齐故地，法教入侵后满目疮痍',danger:55,wealth:20},
-  {id:'an_ci',name:'安慈庵',desc:'静心师太曾在此驱邪济世',danger:25,wealth:10},
+  {id:'an_ci',name:'安慈庵',desc:'信奉腐烂司命的门派遗址，静心师太（陈红袖）曾在此驱邪济世，已衰落',danger:25,wealth:10},
   {id:'zheng_de_si',name:'正德寺',desc:'佛门圣地，但传闻做着什么勾当',danger:45,wealth:35},
   {id:'kun_lun',name:'昆仑',desc:'传说中的万山之祖，上古秘境所在',danger:60,wealth:40},
   {id:'baiyu_jing',name:'白玉京',desc:'倒悬于天空的神之城，天道汇聚之地',danger:80,wealth:0},
@@ -90,7 +90,7 @@ const FACTIONS = {
     ranks:['万子','饼子','条子','东风','南风','西风','北风','红中','白板','发财','骰子'],
     rankReqs:[0,10,20,35,50,65,80,100,150,200,300],
     rankAgeReqs:[0,0,0,0,0,0,0,0,0,0,0]},
-  jiantian: {name:'监天司', bonus:{wealth:10,connections:5,qiyun:3}, desc:'大梁朝廷官方机构，专司监察天下异事、对抗邪修。地位超然，在超自然事务上有无限权限。等级以十天干划分，自癸至甲共十等。最高为甲等司天监（大梁为玄牝）。晋升依据阳寿丹贡献、斩邪功绩、任务完成度。',
+  jiantian: {name:'监天司', bonus:{wealth:10,connections:5,qiyun:3}, desc:'列国为应对天灾而设立的组织，创建者为上古人皇颛顼。地位超然，在超自然事务上有无限权限。大梁监天司由司天监统领，五位司天少监协助管理，下辖监丞、记相等。等级以十天干划分，自癸至甲共十等，最高为甲等司天监（大梁为玄牝）。内部流通货币为阳寿丹，设有内库按等级逐步开放。虽服务于皇室但不参与皇室内部斗争。',
     requirement:{connections:10}, requireDesc:'需人脉10以上',
     ranks:['癸卒','壬伍','辛什','庚旗','己监丞','戊记相','丁将','丙将','司天少监','司天监'],
     rankReqs:[0,10,20,35,50,70,90,120,170,250],
@@ -135,13 +135,18 @@ const FACTIONS = {
     ranks:['小吏','县令','刺史','重臣'],
     rankReqs:[0,20,60,150],
     rankAgeReqs:[0,18,28,40]},
+  yueliang: {name:'月亮门', bonus:{cultivation:8,comprehension:5,sanity:-8,connections:-3}, desc:'信奉月亮的神秘组织，来源不明，疑似外来世界入侵者。修炼月相之术，可偷取他人记忆、情感、五感。行事极端隐秘，凡是月亮门出现过的地方，当地人都会遗忘一些东西。首领据说能让整座城的人集体失忆。',
+    requirement:{cultivation:25,comprehension:20}, requireDesc:'需修为筑基以上且悟性20以上',
+    ranks:['月影','月使','月将','月主'],
+    rankReqs:[0,30,70,160],
+    rankAgeReqs:[0,0,20,35]},
   // ===== 游戏原创势力（非原著正统） =====
   biaoju: {name:'镖局', bonus:{wealth:8,connections:5,constitution:2}, desc:'【游戏原创】刀口舔血，押镖为生。江湖人的正道营生，凭武艺和信誉立足。',
     requirement:{constitution:30}, requireDesc:'需体魄30以上',
     ranks:['趟子手','镖师','镖头','总镖头'],
     rankReqs:[0,15,40,80],
     rankAgeReqs:[0,0,20,30]},
-  fa_jiao: {name:'法教', bonus:{cultivation:10,sanity:-8,karma:-5,qiyun:-3}, desc:'【游戏原创】引入福生天外来司命（于儿神等）的危险教派，协助外来司命入侵大傩世界。以活人祭祀和十二大巫闻名。',
+  fa_jiao: {name:'法教', bonus:{cultivation:10,sanity:-8,karma:-5,qiyun:-3}, desc:'引入福生天外来司命（于儿神等）的危险教派，协助外来司命入侵大傩世界。以活人祭祀和巫祝闻名，曾发动法教之乱侵占四齐。法教巫祝擅长遁地术、飞蝗石、抽骨之术，巫婆擅长黑玉匕首和影遁术。后被大梁监天司、白莲教等联合剿灭。',
     requirement:{cultivation:30,karma_max:10}, requireDesc:'需修为筑基以上且因果不高于10',
     ranks:['祭品','小巫','大巫','十二大巫','大祭司'],
     rankReqs:[0,35,60,120,250],
@@ -313,7 +318,7 @@ const ACHIEVEMENTS = [
   {id:'shuangxiu_master',name:'欢喜禅定',desc:'修成五智如来双修法门',icon:'☸'},
   {id:'shuangxiu_resist',name:'以爱破道',desc:'以人间情爱对抗血肉天道',icon:'❤'},
   // === 跨世界成就 ===
-  {id:'crossworld_witness',name:'三界见证',desc:'见证三重历史交汇并沟通三条龙脉',icon:'🌐'},
+  {id:'crossworld_witness',name:'五界见证',desc:'见证五重历史交汇并沟通龙脉（已知大梁、大齐、天陈三重）',icon:'🌐'},
   {id:'daqi_explorer',name:'幽都访客',desc:'在梦境或裂缝中踏入大齐幽都',icon:'🏙'},
   {id:'tianchen_contact',name:'天陈来客',desc:'与左丘咏直接接触',icon:'🌿'},
   {id:'longmai_hero',name:'龙脉守护',desc:'参与龙脉续接大事',icon:'🐉'},
@@ -509,8 +514,8 @@ const TEENAGE_EVENTS = [
     {text:'投军报国',effect:{connections:20,wealth:20,cultivation:5,constitution:5,qiyun:5},log:'成为一名士兵'},{text:'想办法逃避',effect:{connections:-15,qiyun:-5},log:'躲在山里三个月'}]},
   {text:'夜里，你看到自己同时出现在<span class="mys">两个不同的地方</span>。',choices:[
     {text:'"这是幻觉"',effect:{sanity:-10},log:'但那感觉太真实了'},{text:'"我果然与众不同"',effect:{cultivation:8,sanity:-5,comprehension:5},log:'你开始理解这个世界的裂痕'}],check:'xinsu'},
-  {text:'一位<span class="npc">白化女子</span>在路边哭泣，请你帮忙寻找丢失的妹妹。',choices:[
-    {text:'帮助她',effect:{connections:20,sanity:-5,qiyun:10},log:'她叫白灵淼，你们成了朋友'},{text:'抱歉走开',effect:{connections:-5,qiyun:-5},log:'她哀伤的眼神挥之不去'}]},
+  {text:'路边蹲着一个<span class="npc">浑身白化的女子</span>，皮肤惨白，头发雪白，连眼睫毛都是白的。她在哭，说自己妹妹丢了。路人都绕着她走——有人小声说"这是<span class="fac">白莲教</span>的人，别沾上"。',choices:[
+    {text:'硬着头皮帮她',effect:{connections:15,sanity:-8,qiyun:5},log:'她说她叫白灵淼。你帮她找了一阵——但你心里越来越不安，因为她口中的"妹妹"好像根本不是人类'},{text:'像其他人一样绕开',effect:{sanity:3},log:'你加快脚步走了。那个白化女子的哭声在你身后很久才消失'}]},
   {text:'你在山中发现一具<span class="mys">穿道袍的枯骨</span>，旁边有一卷竹简。',choices:[
     {text:'取走竹简',effect:{cultivation:15,sanity:-8,comprehension:5},log:'竹简上记载着奇怪的功法',item:'jing_shu'},{text:'合掌离去',effect:{sanity:5,qiyun:5},log:'入土为安'}]},
   {text:'<span class="npc">镇上的铁匠</span>说可以教你打铁的手艺。',choices:[
@@ -700,15 +705,15 @@ const ADULT_EVENTS = [
 ];
 
 const SPECIAL_EVENTS = [
-  {text:'你遇到了一个<span class="npc">疯疯癫癫的少年</span>，他自称<span class="npc">李火旺</span>，说这个世界是假的。',
+  {text:'前方路上有个<span class="npc">浑身是血的少年</span>——他嘴里不停念叨着"假的，都是假的"，突然对着空气猛砍了一刀，地面被劈开一条裂缝。路人尖叫着四散奔逃。有人认出他："是那个<span class="danger-text">李火旺</span>！快跑！"',
     trigger:{minAge:15,maxAge:50,yearMin:-5,yearMax:35},choices:[
-    {text:'帮助他',effect:{connections:50,cultivation:20,qiyun:15},log:'李火旺感谢了你，你看到他眼中的挣扎',achieve:'meet_li',req:{qiyun_min:-10}},
-    {text:'攻击他',effect:{connections:-30,cultivation:10,qiyun:-20},log:'他轻松躲开了...这个人不简单',req:{cultivation:30}},
-    {text:'静静旁观',effect:{sanity:-20,cultivation:5,comprehension:10},log:'你看到了不可思议的一幕'}]},
-  {text:'听闻<span class="npc">诸葛渊</span>正在<span class="loc">杏岛</span>收徒，天下修士趋之若鹜。',
+    {text:'壮着胆子没有跑',effect:{sanity:-20,cultivation:5,comprehension:10},log:'他忽然扭头看向你——那双眼睛里同时有两种完全不同的神情。你浑身僵硬不敢动，他却像没看到你一样走了',achieve:'meet_li'},
+    {text:'跟着人群拼命跑',effect:{sanity:-8,constitution:3},log:'跑出去好远你才敢回头——那个少年还站在原地对着空气说话，像是在跟什么看不见的东西争论'},
+    {text:'躲在暗处偷看',effect:{sanity:-15,comprehension:8},log:'你看到他时哭时笑，手上的刀一会指着天一会指着地。最可怕的是——他砍的那些"空气"，好像真的流出了什么东西'}]},
+  {text:'听说<span class="npc">诸葛渊</span>在<span class="loc">杏岛</span>收徒——整个修真界都疯了。传闻赶去杏岛的修士把海面都站满了，但诸葛渊只见了三个人。据说他只用一种古怪的<span class="mys">文言文</span>写字，写出来的字能直接让人开悟。你一个普通人，想都不敢想。',
     trigger:{minAge:20,cultivation:50,yearMin:-20,yearMax:30},choices:[
-    {text:'前去拜访',effect:{connections:60,cultivation:40,comprehension:15},log:'诸葛渊亲自指点了你！'},
-    {text:'不凑这个热闹',effect:{},log:'错过就是错过了'}]},
+    {text:'远远去杏岛看了个热闹',effect:{comprehension:10,cultivation:5},log:'你连岛都没上去——外围全是修士，一个比一个吓人。但你远远看到了诸葛渊的背影，那一瞬间你觉得脑子里有什么东西通了'},
+    {text:'这种热闹不敢凑',effect:{sanity:3},log:'修士扎堆的地方，普通人去了就是送菜'}]},
   {text:'你在梦中见到了<span class="npc">太清真人</span>，他在无尽虚空中打坐。',
     trigger:{minAge:25,cultivation:80},choices:[
     {text:'请教大道',effect:{cultivation:50,sanity:-20,comprehension:20},log:'太清真人传你一段真言'},
@@ -725,28 +730,28 @@ const SPECIAL_EVENTS = [
     trigger:{minAge:20},choices:[
     {text:'与影子对话',effect:{sanity:-25,cultivation:15,comprehension:8},log:'影子说了一些你不愿相信的话'},
     {text:'点亮所有灯',effect:{sanity:-5,wealth:-10},log:'灯亮了，影子消失了...暂时'}]},
-  {text:'<span class="npc">白灵淼</span>再次出现，她说南疆有大变故，请你帮忙。',
+  {text:'<span class="fac">白莲教</span>的<span class="npc">圣女白灵淼</span>带着教众路过此地，说是南疆出了大事。她周身裹着一层淡淡的白光，教众们对她顶礼膜拜。你注意到她的眼神很空——像是能看穿人心，又像是什么都没在看。白莲教的人向路人"请求帮忙"，但语气不像是在问。',
     trigger:{minAge:20,maxAge:60,yearMin:-5,yearMax:30},choices:[
-    {text:'随她前往南疆',effect:{connections:30,cultivation:15,sanity:-10,qiyun:10},log:'你踏入了南疆的瘴气之中'},
-    {text:'爱莫能助',effect:{connections:-10,qiyun:-5},log:'她独自离去，身影消失在雾中'}]},
+    {text:'跟着白莲教南下',effect:{connections:15,cultivation:10,sanity:-15,qiyun:5},log:'你被半推半就地加入了队伍。白灵淼对你说了一句"菩萨保佑"——你后来才知道她口中的"菩萨"跟你理解的完全不一样'},
+    {text:'装作没听见赶紧走',effect:{sanity:-5},log:'白莲教的人盯着你看了一会才移开目光。你后背发凉'}]},
   // === NEW SPECIAL EVENTS ===
   {text:'你在古道上遇到一柄<span class="itm">断裂的长剑</span>，剑身上刻着"<span class="npc">丹阳</span>"二字。',
     trigger:{minAge:18,cultivation:30,yearMin:-15,yearMax:30},choices:[
     {text:'尝试修复此剑',effect:{cultivation:25,comprehension:15,sanity:-10},log:'你感受到了丹阳子残留的剑意！',item:'dan_yang_jian',achieve:'meet_danyang'},
     {text:'将剑安葬于此',effect:{qiyun:10,sanity:5},log:'你为前辈立了一座剑冢'}]},
-  {text:'<span class="npc">柳若飞</span>从天而降，他的眼神冰冷如刀锋。他问你："你信这个世界是真的吗？"',
+  {text:'一个穿黑衣的男人忽然出现在你面前——不是走过来的，是<span class="danger-text">凭空出现</span>的。他叫<span class="npc">柳若飞</span>，眼神冷得像刀子。他盯着你看了几秒，问了一句："你信这个世界是真的吗？"你感觉自己答错了就会死。',
     trigger:{minAge:20,cultivation:60,yearMin:0,yearMax:35},choices:[
-    {text:'"信"',effect:{sanity:10,qiyun:5,comprehension:5},log:'柳若飞冷笑一声消失了'},
-    {text:'"不信"',effect:{sanity:-20,cultivation:20,comprehension:10},log:'柳若飞看你的眼神变了："那你和我是同路人。"'},
-    {text:'"不知道"',effect:{comprehension:15},log:'柳若飞沉默片刻："也许这才是最诚实的回答。"'}]},
+    {text:'颤抖着说"…信"',effect:{sanity:-5,qiyun:5},log:'柳若飞冷哼一声，人又凭空消失了。你站在原地腿软了半天——刚才那几秒你确信他随时可以杀你'},
+    {text:'不知道哪来的胆子说了"不信"',effect:{sanity:-20,cultivation:20,comprehension:10},log:'柳若飞的表情变了——不是愤怒，是某种难以形容的…认同？他说了句"那你和我是同路人"就消失了。你事后越想越后怕'},
+    {text:'吓得说不出话',effect:{sanity:-10,comprehension:5},log:'你嘴巴张了张什么都没说出来。柳若飞看了你一会，说了句"算了"就消失了。你发现自己裤子湿了'}]},
   {text:'你被卷入了一场<span class="mys">大傩仪式</span>——无数戴着面具的人在跳傩舞。',
     trigger:{minAge:25,cultivation:80},choices:[
     {text:'戴上傩面加入',effect:{cultivation:40,sanity:-30,qiyun:-20,comprehension:15},log:'你在傩舞中看到了生死轮回的真相！',item:'nuo_mian',achieve:'nuo_ritual'},
     {text:'拼命挣脱',effect:{sanity:-10,constitution:-5},log:'那些面具人的笑声将永远萦绕在你耳边'}]},
-  {text:'你偶遇<span class="npc">清风观</span>的遗址，断壁残垣中隐约有人影闪过。',
+  {text:'你无意间走到了<span class="npc">清风观</span>的废墟——就是那个传说中<span class="npc">丹阳子</span>拿小孩炼丹的邪门道观。断壁残垣上还有<span class="danger-text">干涸的血迹</span>，空气里弥漫着一股怪味。你隐约看到废墟深处有人影一闪而过。',
     trigger:{minAge:15,maxAge:40,yearMin:-2,yearMax:30},choices:[
-    {text:'进入探索',effect:{cultivation:20,sanity:-15,comprehension:10},log:'你在废墟中找到了丹阳子留下的修炼笔记'},
-    {text:'原路离开',effect:{sanity:5},log:'有些地方，不去比去好'}]},
+    {text:'硬着头皮进去看看',effect:{cultivation:15,sanity:-18,comprehension:10},log:'你在坍塌的丹房里找到了一本笔记——上面记着丹阳子的炼丹心得。字迹工整得可怕，内容却让你胃里翻江倒海'},
+    {text:'撒腿就跑',effect:{sanity:-5},log:'丹阳子虽然死了，但那些被他炼成丹的孩子们的怨气还在——你跑出去好远才敢回头'}]},
   {text:'你修炼时突然感到<span class="mys">两个世界在你体内碰撞</span>，痛苦异常。',
     trigger:{minAge:20,cultivation:100},choices:[
     {text:'以身合道',effect:{cultivation:60,sanity:-35,comprehension:20,constitution:-10},log:'你的身体成了两个世界的桥梁！',req:{constitution:40}},
@@ -945,11 +950,11 @@ const SPECIAL_EVENTS = [
     {text:'戴上傩面加入',effect:{cultivation:30,sanity:-25,comprehension:15,qiyun:-10},log:'你戴上面具的瞬间感到人格在分裂——但在疯狂的边缘，你窥见了大傩的力量'},
     {text:'在暗处观察',effect:{comprehension:10,sanity:-15,cultivation:10},log:'你看到他们的舞步似乎在改变着什么——空间在扭曲，时间在流逝'},
     {text:'大声喝止',effect:{sanity:-10,connections:-5,constitution:-3},log:'所有傩面同时转向你——那一刻你感到了死亡的注视'}]},
-  {text:'天地间忽然传来一声巨响，你眼前出现了<span class="npc">季灾</span>的幻象——那个曾经是<span class="npc">李火旺</span>的存在。他对你说了一句话："<span class="mys">迷惘即是清醒，清醒即是迷惘。</span>"',
+  {text:'天地间忽然传来一声<span class="danger-text">闷响</span>——你抬头看到天空裂开了一条缝，缝里透出一张巨大的、模糊的<span class="npc">脸</span>。有人尖叫着跪下说那是<span class="npc">季灾</span>。那张脸的嘴唇动了动，虽然没有声音，但你脑子里突然冒出一句话："<span class="mys">迷惘即是清醒，清醒即是迷惘。</span>"然后天空合上了。',
     trigger:{minAge:25,cultivation:80,yearMin:20,yearMax:45},choices:[
-    {text:'尝试参悟这句话',effect:{cultivation:40,comprehension:25,sanity:-20},log:'你在迷惘与清醒之间反复横跳——最终，你似乎理解了一点点：道，不是确定的答案'},
-    {text:'向季灾行礼',effect:{cultivation:20,sanity:10,qiyun:10},log:'季灾的幻象缓缓消散，但那句话将永远印在你心中'},
-    {text:'恐惧退缩',effect:{sanity:-10},log:'直面司命的压迫感让你双腿发软'}]},
+    {text:'被这句话搅得几天睡不着',effect:{cultivation:40,comprehension:25,sanity:-20},log:'你翻来覆去想那句话——什么是迷惘？什么是清醒？你越想越觉得自己才是那个疯的人'},
+    {text:'跟其他人一起跪',effect:{cultivation:15,sanity:5,qiyun:10},log:'管它什么意思——天上的那张脸是季灾的，就是那个一个人顶着天道的疯子。你跪了，因为不跪你怕他看你'},
+    {text:'吓得瘫在地上',effect:{sanity:-15},log:'你这辈子没见过这种东西——天上出现一张脸对你说话。你当场就软了'}]},
   {text:'大地震颤，<span class="loc">龙眠泽</span>方向传来龙吟之声——一条<span class="mys">龙脉</span>正在苏醒！龙气冲天而起，方圆百里的修士都感受到了那股秩序之力。',
     trigger:{minAge:20,cultivation:60,yearMin:15,yearMax:30},choices:[
     {text:'前往龙眠泽吸收龙气',effect:{cultivation:35,constitution:10,comprehension:10,sanity:-10},log:'龙气入体，你感到自身的秩序在被重塑——这股力量远超你的想象！',req:{constitution:30}},
@@ -1446,7 +1451,7 @@ const ROMANCE_EVENTS = [
     {text:'向门派求助',effect:{connections:-5,karma:3,wealth:-10},log:'你拉下脸向人求助，好在有人伸出了援手',factionReq:true}]},
   {text:'你与<span class="npc">伴侣</span>在后院里晒着太阳。孩子在一旁追逐蝴蝶。你忽然觉得——修道也好，世俗也罢，也许<span class="mys">这一刻</span>才是真正的道。',
     trigger:{minAge:30},flagReq:'has_child',choices:[
-    {text:'享受这一刻',effect:{sanity:10,karma:8,qiyun:5,comprehension:5},log:'你什么也没做，只是在阳光下微微笑了。李火旺选择了迷惘与爱——也许你也一样'},
+    {text:'享受这一刻',effect:{sanity:10,karma:8,qiyun:5,comprehension:5},log:'你什么也没做，只是在阳光下微微笑了。外面的世界再疯再乱，这一刻就够了'},
     {text:'心中不安',effect:{comprehension:8,cultivation:5,sanity:-3},log:'越是美好的东西越怕失去。你看着家人的笑脸，暗自警惕'}]},
   // --- 老来伴 ---
   {text:'你两鬓斑白，<span class="npc">伴侣</span>也早已不复当年模样。但每天清晨，对方都会为你煮一碗热粥。这种默契无需言语。',
@@ -1564,7 +1569,7 @@ const CROSSWORLD_EVENTS = [
     {text:'后退',effect:{sanity:5,comprehension:8},log:'裂缝在你退后的同时关闭了。你呆坐了很久，不确定刚才看到的是真是假'}]},
   {text:'你在<span class="loc">杏岛</span>上诸葛渊曾修炼的地方打坐时，一个<span class="mys">虚幻的身影</span>出现在你面前。他手持<span class="itm">判官笔</span>，腰佩<span class="itm">六曜通书</span>，面容虽已模糊，但气势如山如海——这是<span class="npc">诸葛渊</span>的残魂。"<span class="mys">你能看到我，说明你已经触碰到了两重历史的边界。</span>"他说。',
     trigger:{minAge:24,cultivation:45},flagReq:'daqi_youdu_dream',locReq:'xing_dao',choices:[
-    {text:'请教跨世界之法',effect:{comprehension:25,cultivation:20,sanity:-20,connections:10},log:'诸葛渊说："大齐、大梁、天陈——三重历史空间重叠。大齐是正统原史，大梁是分裂分支，天陈……"他顿了顿，"天陈是比大齐更早的存在，拥有最古老的金龙龙脉。穿越其间需要龙脉碎片为引、心蟠之力为桥。"他递给你一枚金色令符',setFlag:'met_zhuge_spirit',item:'daqi_jinfu'},
+    {text:'请教跨世界之法',effect:{comprehension:25,cultivation:20,sanity:-20,connections:10},log:'诸葛渊说："大傩世界有五重历史空间重叠，对应佛门五方。已知的有大齐、大梁、天陈——大齐是正统原史，大梁是分裂分支，天陈……"他顿了顿，"天陈是比大齐更早的存在，拥有最古老的金龙龙脉。还有两重未知历史，至今无人到达过。穿越其间需要龙脉碎片为引、心蟠之力为桥。"他递给你一枚金色令符',setFlag:'met_zhuge_spirit',item:'daqi_jinfu'},
     {text:'询问大齐的命运',effect:{comprehension:18,cultivation:10,sanity:-12,karma:5},log:'诸葛渊说他用心蟠之力维持着大齐的残存，但已力竭。"龙脉需要新的皇帝，新的牺牲。"他看向远方——"高智坚身上流着大齐龙脉之血。如果他能登上龙椅……大齐或许还有救。"',setFlag:'met_zhuge_spirit'},
     {text:'默默感受他的气息',effect:{cultivation:15,comprehension:12,sanity:-8},log:'你没有说话，只是感受着"司命之下第一人"的余威。诸葛渊看了你一眼便消散了。但他的气息让你的修为有了突破',setFlag:'met_zhuge_spirit'}]},
   {text:'你得到了<span class="itm">大齐金符</span>后，每到夜深人静时便能隐约<span class="mys">看到两个世界的重叠</span>——大梁的街道上浮现出大齐幽都的轮廓，路人之间穿行着一千年前的鬼影。你发现<span class="npc">高智坚</span>——那个自称大齐皇族后裔的年轻人——确实与龙脉有着非同寻常的联系。他走过的地方，大齐的影像更加清晰。',
@@ -2135,17 +2140,17 @@ const CANONICAL_EVENTS = [
     trigger:{minAge:10,yearMin:-2,yearMax:3},choices:[
     {text:'前去查看废墟',effect:{cultivation:15,sanity:-12,comprehension:8},log:'废墟中有残留的灵气波动，你隐约感知到了一场惊天之战的余波'},
     {text:'听人议论',effect:{comprehension:5},log:'茶馆里众说纷纭——有人说丹阳子死了，有人说他还活着'}]},
-  {text:'你在路上遇到一群从<span class="loc">清风观</span>逃出来的孩子，为首的少年神情坚毅却时常恍惚。',
+  {text:'路上遇到一群衣衫褴褛的孩子——面色蜡黄，眼神空洞，一个个瘦得像骷髅。为首的少年浑身是伤，手里攥着一把刀，眼神有时清醒有时迷离。有人说他们是从<span class="loc">清风观</span>逃出来的，是<span class="npc">丹阳子</span>拿来"炼药"的孩子。那少年就是杀了丹阳子的<span class="npc">李火旺</span>。',
     trigger:{minAge:10,yearMin:-1,yearMax:5},choices:[
-    {text:'给他们食物和银两',effect:{wealth:-15,qiyun:15,karma:10,connections:10},log:'那少年认真地谢过你，你注意到他腰间挂着一个铜铃'},
-    {text:'报告官府',effect:{connections:5,karma:-5},log:'官府来时他们已经走了'},
-    {text:'不管闲事',effect:{},log:'流浪的孩子太多了'}]},
+    {text:'偷偷留下食物和银两',effect:{wealth:-15,qiyun:10,karma:10},log:'你不敢靠太近——那个叫李火旺的少年身上有股吓人的气息。你把东西放在路边就走了。回头偷看，他愣了一会才把东西分给孩子们'},
+    {text:'报告官府',effect:{connections:5,karma:-5},log:'官府来时他们已经走了。有人骂你多管闲事："那可是杀了丹阳子的狠人，你去报官，他知道了不得来找你？"'},
+    {text:'离远点',effect:{sanity:-3},log:'那少年忽然扭头看了你一眼——你心跳漏了一拍，赶紧低头走了。一群被邪修炼过药的孩子跟着一个杀人的疯子——你可招惹不起'}]},
   {text:'<span class="loc">正德寺</span>近日香火极盛，但有传闻说寺中<span class="npc">心慧方丈</span>做着<span class="danger-text">不可告人之事</span>——以女婴制作"花瓶娃"。',
     trigger:{minAge:15,yearMin:-5,yearMax:10},choices:[
     {text:'暗中调查',effect:{sanity:-15,comprehension:10,cultivation:8,karma:5},log:'你在寺后发现了令人作呕的真相...正德寺并非什么善地'},
     {text:'向监天司举报',effect:{connections:15,qiyun:5,karma:10},log:'监天司记下了，但似乎对正德寺无可奈何'},
     {text:'不碰这种事',effect:{sanity:3},log:'佛门之事，外人莫问'}]},
-  {text:'<span class="loc">安慈庵</span>的<span class="npc">静心师太</span>是远近闻名的驱邪高手。你路过时发现庵门大开，师太竟然<span class="danger-text">死在了猪圈中</span>。',
+  {text:'<span class="loc">安慈庵</span>的<span class="npc">静心师太</span>是远近闻名的驱邪高手——本名<span class="npc">陈红袖</span>，据说是<span class="mys">腐烂司命</span>的心蟠，有一个心素体质的儿子叫<span class="npc">徐儿</span>。你路过时发现庵门大开，师太竟然<span class="danger-text">死在了猪圈中</span>。有修士说她的死跟白玉京里的事有关——腐烂司命被<span class="npc">季灾</span>吞噬，她作为心蟠受了牵连。',
     trigger:{minAge:15,yearMin:2,yearMax:8},choices:[
     {text:'为师太收殓安葬',effect:{karma:15,qiyun:10,sanity:-10},log:'你亲手埋葬了师太，心中悲痛——谁能杀死这样一位高人？'},
     {text:'搜寻线索',effect:{comprehension:10,sanity:-15,cultivation:5},log:'你发现现场有坐忘道的痕迹...还有更诡异的东西'},
@@ -2304,21 +2309,21 @@ const CANONICAL_EVENTS = [
     {text:'逃离战场',effect:{sanity:-15,qiyun:-5},log:'你拼命逃跑，身后是毁天灭地的战斗余波'}]},
 
   // --- 李火旺相关补充 (多时期) ---
-  {text:'你在<span class="loc">赵家村</span>附近遇到一个年轻人，他神情恍惚，手里攥着一个<span class="itm">铜铃</span>，嘴里反复念叨着"这个世界是真的…这个世界是真的…"',
+  {text:'<span class="loc">赵家村</span>外的官道上，一个<span class="npc">面色青白的年轻人</span>蹲在路中间，手里死死攥着一个铜铃，浑身发抖。他嘴里反复念叨："这个世界是真的…这个世界是真的…"忽然他猛地站起来朝你的方向看过来——你浑身寒毛竖起。',
     trigger:{minAge:12,yearMin:0,yearMax:8},choices:[
-    {text:'上前询问',effect:{connections:10,sanity:-8,comprehension:5},log:'他叫李火旺。他问你："你觉得这个世界是真的吗？"你不知如何回答'},
-    {text:'给他一碗水',effect:{connections:5,karma:5,qiyun:5},log:'他接过水喝了一口，恍惚间像是清醒了片刻，对你说了声"谢谢"'},
-    {text:'绕道走开',effect:{},log:'那个年轻人的眼神让你不安'}]},
-  {text:'<span class="npc">李火旺</span>正在路边与一群从清风观逃出来的孩子一起生火做饭。他的眼中既有温柔又有挣扎——他在努力照顾那些比他小的孩子。',
+    {text:'僵在原地不敢动',effect:{sanity:-12,comprehension:5},log:'他盯了你好一会，忽然问你："你觉得这个世界是真的吗？"你不敢回答，他也没等你答就走了。你发现自己后背全湿了'},
+    {text:'扔下一碗水就跑',effect:{karma:5,sanity:-5},log:'你把水碗放在地上就跑。回头偷看，他愣愣地看了碗好一会才喝——那一瞬间他像个普通人。但你不敢再看第二眼'},
+    {text:'绕远路走',effect:{sanity:-3},log:'村里人说这个年轻人叫李火旺，疯疯癫癫的，但谁也不敢招惹——因为上次有人骂了他一句，第二天那人就疯了'}]},
+  {text:'路过一片空地，几个<span class="npc">瘦得皮包骨的孩子</span>围着一堆篝火。旁边站着一个浑身是血的少年——<span class="npc">李火旺</span>。他正拿刀在自己手臂上<span class="danger-text">割血</span>滴进锅里，那些孩子却像习以为常一样等着。附近的大人都远远躲着，有人低声说"那些是从<span class="fac">清风观</span>逃出来的，被丹阳子喂了一辈子的药…"',
     trigger:{minAge:10,yearMin:0,yearMax:6},choices:[
-    {text:'加入他们的篝火',effect:{connections:15,sanity:-5,qiyun:5},log:'李火旺对你点点头。孩子们虽然瘦弱却很团结——他们都是从丹阳子手下逃出来的幸存者'},
-    {text:'暗中留下一些干粮',effect:{karma:8,wealth:-5},log:'你不想打扰他们，但希望能帮上一点忙'},
-    {text:'只是远远看着',effect:{comprehension:3},log:'那个少年身上有一种说不清的气质——仿佛两个世界在他身上重叠'}]},
-  {text:'<span class="fac">监天司</span>新来了一个奇怪的人——<span class="npc">李火旺</span>。据说他既不是修士也不是世家子弟，却被直接破格录用。更奇怪的是，他时不时会对着空气说话。',
+    {text:'远远看着不敢靠近',effect:{sanity:-10,comprehension:5},log:'你看到李火旺把血混进粥里给那些孩子喝——最可怕的是孩子们喝完后气色确实好了一些。他到底是人还是邪祟？'},
+    {text:'偷偷留下一些干粮',effect:{karma:8,wealth:-5,sanity:-5},log:'你不敢正面接触他们。那些孩子面无表情地嚼着干粮——他们的眼神空洞得像死人'},
+    {text:'赶紧离开这个地方',effect:{sanity:-3},log:'一个浑身是血的疯子带着一群半死不活的孩子——这光景你做噩梦都不敢梦'}]},
+  {text:'<span class="fac">监天司</span>来了个怪人——<span class="npc">李火旺</span>。你听人说他既不是修士出身也没有背景，监天司的人却对他又忌惮又客气。最离谱的是他经常<span class="danger-text">对着空气大喊大叫</span>，有时候还会突然拔刀捅向身旁的虚空——然后那片虚空就会渗出血来。',
     trigger:{minAge:15,yearMin:5,yearMax:12},choices:[
-    {text:'找机会与他交谈',effect:{connections:15,comprehension:10,sanity:-8},log:'李火旺的话半真半假，但你隐约感到他能看到常人看不到的东西'},
-    {text:'跟踪观察他',effect:{comprehension:8,sanity:-10},log:'你发现他夜晚会独自一人坐在屋顶，对着月亮自言自语——仿佛在和另一个世界的人对话'},
-    {text:'保持距离',effect:{sanity:3},log:'监天司的人说他是"心素"，身体是上好的药引，各方势力都在盯着他'}]},
+    {text:'偷偷跟踪观察他',effect:{comprehension:8,sanity:-15},log:'你发现他夜里独自坐在屋顶上，一会哭一会笑，嘴里说着你听不懂的话——好像在和另一个世界的什么人对话。你看得头皮发麻'},
+    {text:'打听他的底细',effect:{comprehension:5,sanity:-8,connections:5},log:'监天司的人压低声音说："别去招惹他。他是心素——他的肉能炼法器，各方势力都在盯着。但谁动他谁死。"'},
+    {text:'离他远远的',effect:{sanity:3},log:'凡是跟这个人扯上关系的，没有一个有好下场——你决定当他不存在'}]},
 
   // --- 赊刀人 (year 0 ~ 20) ---
   {text:'一位戴着斗笠的<span class="npc">赊刀人</span>出现在集市上，他不卖东西，只留下物件说"等那一天来了再收账"。人们都说他是<span class="fac">监天司</span>的人。',
@@ -2328,17 +2333,17 @@ const CANONICAL_EVENTS = [
     {text:'觉得他是骗子',effect:{},log:'免费的东西最贵——你不信这一套'}]},
 
   // --- 无根生 (远古/传说) ---
-  {text:'你在古籍中读到了一个名字——<span class="npc">无根生</span>。据说他在世时走遍大梁，创建了<span class="fac">坐忘道</span>并成就了司命<span class="mys">斗姥</span>。但最终他选择将自己的一切散尽，以<span class="itm">先天一炁</span>转世重来。',
+  {text:'茶馆里一个老修士喝多了酒，开始讲<span class="npc">无根生</span>的故事——说这人当年走遍大梁，一手创了<span class="fac">坐忘道</span>，把斗姥都给拱成了司命。最后居然把自己全散了，用<span class="itm">先天一炁</span>转世重来。更吓人的是有人说他转世成了那个疯子<span class="npc">李火旺</span>——你听得酒都醒了。',
     trigger:{minAge:18,cultivation:30},choices:[
-    {text:'研究无根生的生平',effect:{comprehension:15,cultivation:10,sanity:-10},log:'无根生的一生就像一场自我毁灭的壮举——他用全部的自己去证明"道"不在天上，在人心'},
-    {text:'尝试寻找他的转世',effect:{cultivation:8,sanity:-12,comprehension:8},log:'有人说无根生的转世就是李火旺...但这话太过骇人'},
-    {text:'翻过这一页',effect:{comprehension:5},log:'无根生的事迹太过久远，真假难辨'}]},
+    {text:'追问那个老修士',effect:{comprehension:15,sanity:-12,cultivation:5},log:'"无根生啊，你们这些小辈不懂。他把自己活生生散了——不是死，是散。魂魄、肉身、记忆全碎了重来。你说他图什么？"老修士说到这里忽然不说了，眼神有些怕'},
+    {text:'琢磨李火旺和无根生的关系',effect:{cultivation:8,sanity:-10,comprehension:10},log:'如果李火旺真是无根生的转世…那个在路边对着空气砍刀的疯子，前世竟然是整个修真界最牛的人？这太他妈离谱了'},
+    {text:'当故事听听就算了',effect:{comprehension:5},log:'老修士的话真真假假，但"把自己散了转世重来"这话你记住了——什么样的人才能对自己下这种手？'}]},
 
   // --- 柳挽晴（李火旺的妻子） (year 3 ~ 20) ---
-  {text:'你听说<span class="npc">李火旺</span>成婚了——新娘是一个名叫<span class="npc">柳挽晴</span>的女子。她不是修士，只是一个普通的采药女。但据说她是唯一能让李火旺安静下来的人。',
+  {text:'你听到一个不可思议的消息：那个疯子<span class="npc">李火旺</span>居然成亲了——新娘叫<span class="npc">柳挽晴</span>，是个普通采药女。周围人都在议论："那个见人就砍的疯子怎么还有人嫁？""那女人怕不是被迷了心窍。"但也有人说，李火旺在她面前就不发疯了。',
     trigger:{minAge:15,yearMin:3,yearMax:20},choices:[
-    {text:'前去道贺',effect:{connections:10,qiyun:5},log:'你看到了那个传说中在两界间挣扎的男人，在她面前笑得像个普通人'},
-    {text:'感叹世间有情',effect:{sanity:5,comprehension:3},log:'在这充满邪祟和阴谋的世界里，竟然还有这样纯粹的感情'}]},
+    {text:'远远看了一眼婚礼',effect:{sanity:-5,comprehension:5},log:'你偷偷看了一眼——那个平时对着空气挥刀的疯子，此刻笑得像个正常人。但你注意到他偶尔还是会扭头看向某个空无一人的方向，嘴唇微动。新娘似乎已经习惯了'},
+    {text:'替那女人担心',effect:{karma:3,comprehension:3},log:'跟一个随时可能发疯杀人的家伙过日子…你不知道该说她勇敢还是疯了'}]},
 
   // --- 孟婆（孟斓音） (year 15 ~ 35) ---
   {text:'修士圈中流传着一个可怕的传闻：有人在黄泉路上遇到了<span class="npc">孟婆</span>——不是传说中的老太婆，而是一个年轻美貌的女子。她端着<span class="itm">孟婆汤</span>，微笑着说"忘了吧"。凡是喝下去的人，都忘记了最重要的人。',
@@ -2360,11 +2365,11 @@ const CANONICAL_EVENTS = [
     {text:'这不过是改朝换代',effect:{comprehension:3},log:'对百姓来说，谁做皇帝都一样苦'}]},
 
   // --- 红中（坐忘道高层） (year 8 ~ 20) ---
-  {text:'<span class="fac">坐忘道</span>的<span class="npc">红中</span>在一座城镇中现身——他戴着红色面具，所到之处百姓不由自主地开始说谎。这就是真假天道的力量。',
+  {text:'城里出了大事——<span class="fac">坐忘道</span>的<span class="npc">红中</span>来了。一个戴红色面具的人走在街上，所有人突然开始<span class="danger-text">不受控制地说谎</span>。丈夫对妻子说"我从没爱过你"，母亲对孩子说"你不是我亲生的"——说的人自己都吓坏了，嘴巴却停不下来。那个红面具的人笑着走过，像在欣赏什么有趣的东西。',
     trigger:{minAge:18,yearMin:8,yearMax:20,cultivation:20},choices:[
-    {text:'尝试抵抗谎言之力',effect:{cultivation:10,sanity:-15,comprehension:10},log:'你咬破舌尖保持清醒——红中注意到了你，笑着说"有意思"'},
-    {text:'向监天司报告红中的行踪',effect:{connections:10,karma:5,qiyun:5},log:'等监天司的人赶到时，红中早已消失无踪'},
-    {text:'立刻逃离',effect:{sanity:-5},log:'红中太过恐怖——在他面前连自己的想法都不可信'}]},
+    {text:'咬舌头拼命不说话',effect:{sanity:-15,comprehension:10,cultivation:5},log:'你咬破了舌头——嘴里全是血味，但至少没有说出不该说的话。红中经过你身边时侧头看了你一眼，笑了笑说"有意思"——你差点被吓死'},
+    {text:'躲进屋里不出来',effect:{sanity:-8},log:'你把门窗全关死了。但你听到自己的嘴巴在自言自语——说的都是你最不愿承认的事。红中的力量连门都挡不住'},
+    {text:'事后去监天司报告',effect:{connections:8,karma:5},log:'监天司的人脸色铁青地记下了。他们说红中是坐忘道最恐怖的人之一——掌控真假天道之力，在他面前没有秘密'}]},
 
   // --- 福生天 (year 30 ~ 42) ---
   {text:'天空中出现了一道<span class="danger-text">黑色裂隙</span>——<span class="npc">福生天</span>的气息从中泄露。那是一个比所有司命都更古老的存在，它的目的只有一个：<span class="mys">让一切归于虚无</span>。',
@@ -2380,11 +2385,11 @@ const CANONICAL_EVENTS = [
     {text:'远远观战',effect:{comprehension:15,sanity:-15},log:'你看到了司命之间的战斗——那已经超越了凡人所能理解的维度'}]},
 
   // --- 季灾成道后 (year 40+) ---
-  {text:'<span class="npc">季灾</span>——曾经的李火旺——在白玉京中守护着天道。你偶尔能感受到他的存在：一种<span class="mys">迷惘与清醒交织</span>的力量笼罩着整个世界。',
+  {text:'大战过后，天下人才知道那个疯子<span class="npc">李火旺</span>变成了什么——<span class="npc">季灾</span>。他坐在<span class="loc">白玉京</span>中央，一个人扛着快要塌的天道。有时你抬头看天，会觉得天空在<span class="danger-text">抖</span>，老人们说那是季灾在和什么东西搏斗。整个世界的安宁系于一个曾经的疯子之身——你不知道该感到安心还是更害怕。',
     trigger:{minAge:25,yearMin:40,cultivation:60},choices:[
-    {text:'尝试与季灾沟通',effect:{cultivation:20,sanity:-15,comprehension:15},log:'你在冥想中触碰到了季灾的意识——他说："我曾经也不知道哪个世界是真的。现在我知道了——两个都是。"'},
-    {text:'在季灾的庇护下修行',effect:{cultivation:15,sanity:10,comprehension:8},log:'季灾的存在让天道趋于稳定，你在这份安宁中修行受益匪浅'},
-    {text:'感恩即可',effect:{karma:5,qiyun:5},log:'是他以一人之力撑住了崩塌的天道——你默默向白玉京方向行了一礼'}]},
+    {text:'心里发毛地望着天',effect:{sanity:-15,comprehension:15},log:'那个在赵家村对着空气砍刀的少年，现在成了守护天道的存在。你有时在想——他那时候砍的，真的是空气吗？'},
+    {text:'老老实实过日子不去想',effect:{sanity:5,cultivation:5},log:'管他是季灾还是李火旺，你只是个普通人。天塌了有高个子顶着——虽然顶着的那个以前是个疯子'},
+    {text:'默默朝白玉京方向磕了个头',effect:{karma:5,qiyun:5},log:'不管怎么说，是他撑住的。一个疯子撑住了整个天——你不懂这是伟大还是荒诞'}]},
   // 季灾心蟠已移除：季灾是主角李火旺专属，玩家不可触发
 
   // --- 左丘咏之女 左千户 (year 28 ~ 36) ---
@@ -2395,33 +2400,33 @@ const CANONICAL_EVENTS = [
     {text:'保持同僚关系',effect:{connections:5},log:'她不太与人交谈，但你能感受到她心中的重担'}]},
 
   // --- 岁岁（李岁/黑太岁） (year 8 ~ 40+) ---
-  {text:'你在<span class="loc">赵家村</span>附近遇到一个奇怪的小女孩——她自称<span class="npc">岁岁</span>，皮肤黝黑，眼神灵动却透着诡异。她叫<span class="npc">李火旺</span>"爹"，叫<span class="npc">白灵淼</span>"大娘"。',
+  {text:'<span class="loc">赵家村</span>附近出了件怪事——那个疯子<span class="npc">李火旺</span>身边多了个<span class="npc">皮肤漆黑的小女孩</span>，管他叫"爹"。村民说她不是人——有人亲眼看到她的手臂化成<span class="danger-text">一团黑色的蠕动物质</span>去抓树上的果子，抓完又变回手。李火旺却像带亲闺女一样牵着她逛街。',
     trigger:{minAge:12,yearMin:5,yearMax:15},choices:[
-    {text:'和岁岁聊天',effect:{connections:10,sanity:-8,comprehension:8},log:'岁岁虽然看着像小孩，但说话老气横秋。她说她本体是黑太岁，是李火旺从青丘地下洞穴找来压制幻觉的'},
-    {text:'给她买糖吃',effect:{connections:5,karma:5,wealth:-3},log:'岁岁高兴地接过糖，然后身体突然变成一团黑色的黏稠物质又变回来——你被吓了一跳'},
-    {text:'保持距离',effect:{sanity:3},log:'那个小女孩身上有一种说不清的气息——不像人类'}]},
-  {text:'<span class="npc">岁岁</span>的真实身份在修士圈中传开了——她是<span class="mys">黑太岁</span>，能在两界间自由穿梭。据说她长期寄生在<span class="npc">李火旺</span>体内学习人类的一切，如今已是一个极为特殊的存在。',
+    {text:'壮着胆子远远看了几眼',effect:{sanity:-12,comprehension:8},log:'那小女孩忽然扭头朝你看了一眼——她的瞳孔是竖的，像蛇。你的血液瞬间冻住了。但她只是咧嘴笑了笑，又去缠着李火旺要糖吃'},
+    {text:'赶紧躲起来',effect:{sanity:-5},log:'跟在那个疯子身边的东西，怎么想都不是善茬。村里老人说那是黑太岁——碰了就没命'},
+    {text:'跟其他村民一起议论',effect:{sanity:-3,connections:3},log:'"那个疯子身边多了个妖怪闺女——""嘘！小声点！那东西听得见！"'}]},
+  {text:'一个可怕的消息在修士圈里传开：跟在<span class="npc">李火旺</span>身边的那个黑皮肤小女孩<span class="npc">岁岁</span>，真实身份是<span class="mys">黑太岁</span>——一种能吞噬万物、在两界间穿行的<span class="danger-text">上古凶物</span>。那个疯子居然把这种东西当女儿养，更可怕的是这黑太岁竟然真的学会了像人一样说话、走路、笑。',
     trigger:{minAge:18,yearMin:10,yearMax:25},choices:[
-    {text:'请教岁岁关于两界的事',effect:{comprehension:15,sanity:-12,cultivation:10},log:'岁岁歪着头想了想说："两个世界嘛，我爹在两边都活着，但两边的他不一样。"这句话让你思考了很久'},
-    {text:'研究黑太岁的特性',effect:{comprehension:10,cultivation:8},log:'黑太岁能吞噬万物、变化形态，同时拥有极强的适应力。岁岁是目前已知最特殊的一只'},
-    {text:'不去招惹',effect:{},log:'黑太岁可不是善茬'}]},
-  {text:'<span class="npc">岁岁</span>在<span class="npc">季灾</span>成道后留在了人间，成为了<span class="fac">监天司</span>的特殊成员，同时也是<span class="fac">白莲教</span>的少主。她以黑太岁之身守护着两界的秩序——在某种意义上，她继承了父亲的意志。',
+    {text:'听人描述岁岁的恐怖之处',effect:{comprehension:12,sanity:-15,cultivation:5},log:'有人说亲眼看到她一口吞掉了一整头牛，然后拍拍肚子说"好撑"。还有人说她能把自己变成任何人的样子——你怎么知道身边的人不是她变的？'},
+    {text:'打听黑太岁到底是什么',effect:{comprehension:10,cultivation:8,sanity:-8},log:'据说黑太岁的本体是一种不死不灭的黑色胶状物，能适应任何环境。李火旺当初从青丘地底把它挖出来压制自己的幻觉——结果养出了个"女儿"'},
+    {text:'决定以后绕着李火旺走',effect:{sanity:3},log:'一个疯子加一只上古凶物——你离他们越远越好'}]},
+  {text:'天下大乱之后，有个骇人听闻的传言——当初跟着<span class="npc">李火旺</span>攻上<span class="loc">白玉京</span>的那只<span class="npc">黑太岁</span>，在大战中从天上<span class="danger-text">坠落</span>，竟穿越到了<span class="mys">三甲子（一百八十年）</span>之前。她一个人在一百八十年前那个陌生的世道里挣扎求生，先后吞噬融合了两任<span class="fac">司天监</span>，最终化为<span class="mys">玄牝</span>——大梁最强的甲等司天监。后来她甚至<span class="mys">化了龙</span>，在大战最关键的时刻率领<span class="mys">百万兵家英灵</span>以自身为祭召唤<span class="mys">将相首</span>从天而降反助李火旺——原来三甲子前的那位玄牝大人，就是一百八十年后坠落的黑太岁岁岁。',
     trigger:{minAge:20,yearMin:38,yearMax:50},choices:[
-    {text:'拜访岁岁',effect:{connections:15,cultivation:15,comprehension:10},log:'岁岁已经不再是那个古灵精怪的小女孩了，她目光深邃，身上同时有着监天司的肃穆和白莲教的慈悲'},
-    {text:'请求她的帮助',effect:{cultivation:20,connections:10,qiyun:10},log:'岁岁看了你一眼说："我爹以前也帮过很多人。"随后给了你一些指点'},
-    {text:'远远致敬',effect:{karma:5,qiyun:3},log:'季灾之女，黑太岁化身——她的存在本身就是一个奇迹'}]},
+    {text:'细想之下毛骨悚然',effect:{comprehension:15,sanity:-12,qiyun:5},log:'一只黑太岁从天上掉下来，穿越三甲子，吞了两任司天监化为玄牝，又化了龙，率百万兵家召唤将相首，再回到原来的时间点——这他娘的到底是命运还是诅咒？'},
+    {text:'跟人争论这事的真假',effect:{comprehension:8,connections:5,sanity:-5},log:'"怎么可能？一百八十年前的玄牝大人是个妖怪？""你别不信——你以为李火旺身边能有正常人吗？那个玄牝连龙都能化，你觉得是人干的事？"'},
+    {text:'不想再听了',effect:{sanity:-3},log:'关于李火旺和他身边那些东西的事，你每多听一个字就多一晚睡不着觉'}]},
 
   // --- 诸葛渊补充 (year 0 ~ 15) ---
-  {text:'<span class="npc">诸葛渊</span>路过你所在的城镇——这位修真界的传奇人物，据说修为通天，为人正直。他身边跟着一个叫<span class="npc">苏北</span>的年轻人。诸葛渊正在用一种奇怪的<span class="mys">文言文</span>写着什么。',
+  {text:'<span class="npc">诸葛渊</span>路过你所在的城镇——整条街的人都跪下了。这位修真界的传奇人物，据说一个人能灭一座城。他身边跟着一个叫<span class="npc">苏北</span>的年轻人帮他拎东西。诸葛渊正用毛笔在半空中<span class="mys">写字</span>——那些字悬浮在空中发着光，然后消失了。',
     trigger:{minAge:12,yearMin:0,yearMax:15},choices:[
-    {text:'上前请教修行',effect:{cultivation:15,comprehension:15,connections:10},log:'诸葛渊看了你一眼，用文言文写了一段话递给你——那些文字竟然蕴含着修行的真意'},
-    {text:'远远观察',effect:{comprehension:8,cultivation:5},log:'你注意到诸葛渊写的文言文没有沾染任何司命的因果——这是一种极罕见的纯净力量'},
-    {text:'不打扰前辈',effect:{karma:3},log:'高人自有高人的事，你不便打扰'}]},
-  {text:'你得知<span class="npc">诸葛渊</span>正在为即将到来的大战做准备——他预感到了白玉京的危机。作为修真界最受敬仰的人物，他开始秘密联络各方势力。',
+    {text:'跪在路边偷偷抬头看',effect:{comprehension:10,cultivation:5,sanity:-5},log:'你看到了那些悬浮的字——虽然一个都不认识，但你的脑子里突然冒出了一些从没想过的念头。等你回过神，诸葛渊已经走远了'},
+    {text:'趴在地上不敢看',effect:{sanity:3},log:'这种大人物，多看一眼都可能招祸。等他走远了你才敢起来，发现自己的腿还在抖'},
+    {text:'不知道他是谁',effect:{karma:3},log:'旁边的人疯了一样跪，你跟着跪了但不知道为什么。事后才有人告诉你那是诸葛渊——你后悔没多看两眼'}]},
+  {text:'坊间传言：<span class="npc">诸葛渊</span>正在秘密联络各方势力，说<span class="loc">白玉京</span>要出大事。那些平时互相看不顺眼的门派居然真的被他一封信就叫到了一起——这老头的面子大到什么程度？连<span class="fac">监天司</span>都派人去了。',
     trigger:{minAge:15,yearMin:8,yearMax:16,cultivation:30},choices:[
-    {text:'加入诸葛渊的联盟',effect:{connections:20,cultivation:15,qiyun:10,comprehension:8},log:'你成为了诸葛渊麾下的一员——他的号召力让各方修士放下成见，联合起来'},
-    {text:'提供情报支援',effect:{connections:10,wealth:10,karma:5},log:'你将自己所知的消息传递给诸葛渊，他郑重地记下了'},
-    {text:'自己准备',effect:{cultivation:8,constitution:5},log:'大战将至，你需要提升自己的实力'}]},
+    {text:'打听到底要出什么事',effect:{comprehension:10,sanity:-8,connections:5},log:'没人说得清楚。但你注意到最近天上的云总是一种诡异的颜色——诸葛渊一定是看到了什么普通人看不到的东西'},
+    {text:'趁乱囤点物资',effect:{wealth:10,constitution:5},log:'大人物打仗，遭殃的永远是小老百姓。你开始默默屯粮'},
+    {text:'管不了那么多',effect:{sanity:3},log:'你连饭都快吃不起了，哪有功夫管白玉京的闲事'}]},
 
   // --- 骰子补充 (year 5 ~ 20) ---
   {text:'你在<span class="loc">上京城</span>的一家赌坊里看到一个奇怪的人——他自称<span class="npc">骰子</span>，手中不停地摇着一个骰盅。每一次骰子落定，赌坊里就有人大喜或大悲。你直觉这不是普通的赌博。',
@@ -3840,4 +3845,168 @@ const ITEM_STORY_EVENTS = [
   {itemReq:'xin_su_ji_gu_jian',check:'xinsu',trigger:{minAge:32,maxAge:65,cultivation:65},text:'你在月圆之夜修炼时，<span class="itm">心素脊骨剑</span>忽然与你的心素体质产生了<span class="mys">完全共鸣</span>。你的意识扩散开来，你发现自己可以"看到"方圆百米内所有物体的内部结构——骨骼、经脉、甚至灵气的流向。',choices:[
     {text:'尝试用意识扭曲物体',effect:{cultivation:30,comprehension:15,sanity:-15},log:'你将意识集中在一块巨石上，用心素之力扭曲它的内部结构。巨石无声无息地碎裂了。你意识到这就是心素脊骨剑的真正力量——从内部瓦解一切。但过度使用让你的神志有些恍惚。'},
     {text:'收敛心神，慢慢适应',effect:{comprehension:20,cultivation:15},log:'你不敢贸然使用这种力量，而是慢慢感受共鸣带来的变化。你的感知力大幅提升，对战时能看透对手的弱点。'}]},
+
+  // ========== 新增NPC事件（路人视角） ==========
+
+  // --- 春小满（清风观药引） (year 5 ~ 30) ---
+  {text:'你在<span class="loc">赵家村</span>附近听到几个妇人在嚼舌根——说<span class="fac">清风观</span>以前有个叫<span class="npc">春小满</span>的药引，浑身长毛，被自己亲爹卖给了<span class="npc">丹阳子</span>。"后来李火旺杀了丹阳子，那丫头活下来了。""活下来又怎样？她回去手刃了自己的亲生父亲——就那个把她卖掉的王八蛋。""啧，性子够烈的。""可不是，发誓一辈子不嫁人，谁追她她骂谁。连<span class="npc">高志坚</span>都被她拒了。"',
+    trigger:{minAge:12,yearMin:5,yearMax:30},choices:[
+    {text:'听妇人们继续议论',effect:{connections:3,sanity:-5},log:'"后来她加入了白莲教，说要保护更多像她一样的人。再后来……大战的时候，她和几万白莲教众一起献祭给了将相首。""献祭？""嗯。高志坚亲眼看着她死的——他们说那个皇帝当场就变了个人。"'},
+    {text:'感慨一下她的命运',effect:{karma:5,sanity:-3},log:'被亲爹卖掉，被当药引关着，杀了亲爹，拒绝所有追求者，最后把自己献祭了——这种人生，比你听过的任何故事都狠'},
+    {text:'不想掺和这些事',effect:{sanity:2},log:'清风观出来的人，一个比一个命苦'}]},
+
+  // --- 兰花（坐忘道） (year 5 ~ 20) ---
+  {text:'你在<span class="loc">鲁城</span>的酒馆里听到有人悄声议论一个叫<span class="npc">兰花</span>的女人。"原本是被买来的村妇，受尽侮辱折磨，后来被<span class="fac">坐忘道</span>的<span class="npc">红中</span>救了出来。""然后呢？""然后她就成了坐忘道的人——你以为被救就能走？她暗恋那个红中，可红中根本不是什么好人。"说话的人压低了声音："听说在<span class="danger-text">神山鬼之眼</span>那档子事里，她被红中亲手掐死了。死前还在告白。"',
+    trigger:{minAge:12,yearMin:5,yearMax:20},choices:[
+    {text:'追问红中是谁',effect:{comprehension:8,sanity:-8},log:'"红中？坐忘道的高层啊——脸上长着一张红中麻将牌的那个。据说有好几个红中，真真假假分不清。兰花跟的那个是真的还是假的，谁知道呢。反正人已经死了。"'},
+    {text:'同情兰花的遭遇',effect:{karma:5,sanity:-5},log:'从受尽折磨的村妇到坐忘道的人，再被自己暗恋的人掐死——这世道，从头烂到尾'},
+    {text:'不想听了',effect:{sanity:-2},log:'坐忘道的事你一个字都不想多听——那帮人的故事没有一个不让人恶心的'}]},
+
+  // --- 洪大/赊刀人洪大（监天司赊刀人） (year 3 ~ 25) ---
+  {text:'一个独臂的中年男人出现在<span class="loc">集市</span>上——旁人说这位就是<span class="fac">监天司</span>大名鼎鼎的<span class="npc">赊刀人洪大</span>。他本名洪大，据说是这一带最强的赊刀人，专门对付<span class="fac">坐忘道</span>那帮骗子。他浑身上下伤痕累累，那条断臂就是跟坐忘道的人拼命时丢的。',
+    trigger:{minAge:12,yearMin:3,yearMax:25},choices:[
+    {text:'壮着胆子上前搭话',effect:{connections:10,comprehension:5,sanity:-3},log:'洪大看了你一眼："小老百姓，别往邪祟堆里凑。看到有人请你猜谜、对对联、下棋——跑，越远越好。那是坐忘道的人在骗你。"他说完把一枚铜钱拍在你手心就走了'},
+    {text:'远远观察',effect:{comprehension:5,sanity:-5},log:'洪大在集市上走了一圈，忽然一把抓住一个卖糖葫芦的——那人的脸瞬间裂开，露出了一张<span class="danger-text">麻将牌</span>的面孔。周围人尖叫着四散。洪大拔刀，一刀将那东西劈成两半'},
+    {text:'赶紧溜',effect:{sanity:3},log:'监天司的人出现意味着附近有邪祟——你不想成为那个被波及的倒霉蛋'}]},
+
+  // --- 舞狮宫（青丘地下·合之道） (year 5 ~ 18) ---
+  {text:'<span class="loc">南疆</span>方向传来骇人的消息——有猎人在<span class="loc">青丘</span>地下洞穴里看到了<span class="npc">舞狮宫</span>。那不是什么表演舞狮的戏班子——是<span class="danger-text">一群群巨大的白色舞狮</span>在地下移动。每只舞狮里面不是两个人，而是<span class="danger-text">一大堆人和生物的集合体</span>，修炼一种叫<span class="mys">"合之道"</span>的功法——合舞万物，共享意识和身体。它们身上垂着白色的穗子，据说那些<span class="danger-text">白穗</span>才是本体，只要碰到你的皮肤就能扭曲你的器官。',
+    trigger:{minAge:12,yearMin:5,yearMax:18},choices:[
+    {text:'打听舞狮宫到底是什么',effect:{comprehension:10,sanity:-12},log:'"青丘地下的东西——你以为那些舞狮是人扮的？那是无数人和畜生融合在一起的怪物！它们能把任何门派的功法都吸收进去，变成自己的一部分。丹阳子以前还用过舞狮宫的五脏邪术——借五行命数人头替换五脏。那个猎人后来怎么了？他说自己的手「不是自己的了」，三天后整个人消失了"'},
+    {text:'以后绝不去青丘',effect:{sanity:-5,constitution:3},log:'地底下藏着一群由无数生物融合而成的巨型舞狮——光想想就让人头皮发麻。那些白穗碰一下就能扭曲你的器官，谁敢去？'},
+    {text:'连夜离远一点',effect:{wealth:-5,sanity:5},log:'跟青丘沾边的东西没一个正常的——地下住着舞狮宫，地上的中阴庙天天向死亡献祭。你决定离那片地方越远越好'}]},
+
+  // --- 杨娜（现代世界/无生老母投影） (year 20 ~ 45) ---
+  {text:'<span class="loc">上京城</span>街头出了件诡异的事——<span class="npc">李火旺</span>站在一个十字路口嚎啕大哭，喊着一个叫<span class="npc">"杨娜"</span>的名字。旁边的人吓得纷纷绕道，但你注意到他在对着<span class="danger-text">空气</span>说话，好像真的看得到什么人。"别走……你是真的……那个世界是真的……"他的声音嘶哑得不像人声。',
+    trigger:{minAge:15,yearMin:20,yearMax:45},choices:[
+    {text:'向旁人打听"杨娜"是谁',effect:{comprehension:12,sanity:-10},log:'"据说是李火旺在「另一个世界」认识的女人——你知道他一直说自己能看到两个世界吧？一个是咱们大梁，一个是……反正没人搞得清。那个杨娜就是他说的那个世界的人。更吓人的是，有修士说那个杨娜可能跟<span class="mys">无生老母</span>有关系——"说到这里那人不敢说了'},
+    {text:'可怜他',effect:{karma:5,sanity:-5},log:'不管他是疯子还是什么，一个人对着空气哭成那样，总归是因为失去了什么。你在路边站了一会儿，看着他跪在地上抱着空气，嘴里叫着那个名字'},
+    {text:'赶紧跑远',effect:{sanity:3},log:'李火旺发疯的时候你可不想在旁边——上次他发疯砍了三条街，监天司出动了二十个人才按住他'}]},
+
+  // --- 申屠刚（跳大神/出马仙） (year 10 ~ 30) ---
+  {text:'<span class="loc">阳城</span>郊外闹邪祟，请来了一个叫<span class="npc">申屠刚</span>的<span class="mys">跳大神</span>的人。他不是监天司的，也不是哪个大门派的——就是个民间的<span class="mys">出马仙</span>。但你亲眼看到他念了一段<span class="mys">帮兵决</span>，身上就附了一层诡异的气息，然后赤手空拳冲进了闹鬼的宅子。里面惨叫了半柱香的功夫，他浑身是血地走出来说："行了。"',
+    trigger:{minAge:14,yearMin:10,yearMax:30},choices:[
+    {text:'壮着胆子请教',effect:{connections:8,comprehension:10,sanity:-8},log:'申屠刚看了你一眼："跳大神这行，说好听了叫出马弟子，说难听了就是被仙家奴役一辈子。帮兵决请来的仙家会帮你打邪祟，但代价是你的十情——喜怒悲贪嗔痴惧爱恶，一点一点地被仙家吃掉。你看我像个有感情的人吗？"他面无表情地说完就走了'},
+    {text:'远远观察他的手段',effect:{comprehension:8,sanity:-10},log:'你注意到申屠刚身边跟着一团<span class="danger-text">看不清的东西</span>——不是人，也不是鬼，像是一种寄生在他身上的"仙家"。他还有一种叫<span class="mys">养大祟</span>的手段，专门用来制衡那些不听话的仙家。跳大神的人都不简单'},
+    {text:'不敢靠近',effect:{sanity:3},log:'被仙家奴役一辈子——光听着就够可怕了。你可不想跟这种人打交道'}]},
+
+  // --- 月亮门 (year 15 ~ 35) ---
+  {text:'最近<span class="loc">边境</span>一带流传着一个叫<span class="fac">月亮门</span>的新势力的消息。据说他们信奉<span class="mys">月亮</span>，行事诡谲无比——有人说他们是外来的邪教，有人说他们是被从另一个世界"入侵"过来的修士。唯一确定的是，<span class="danger-text">凡是月亮门出现过的地方，当地人都会忘记一些东西</span>。',
+    trigger:{minAge:16,yearMin:15,yearMax:35},choices:[
+    {text:'深入了解月亮门',effect:{comprehension:12,sanity:-15,cultivation:5},log:'你辗转打听到：月亮门的人修炼的不是大傩世界的道，而是一种叫<span class="mys">月相之术</span>的诡异法门。他们可以"偷走"别人的记忆、情感、甚至五感。更可怕的是，他们的首领据说能让整座城的人集体遗忘一件事'},
+    {text:'检查自己有没有忘记什么',effect:{sanity:-8,comprehension:5},log:'你仔细回忆最近的事——好像都记得。但问题是，如果你真的忘了什么，你怎么知道自己忘了？这个想法让你一整晚都没睡着'},
+    {text:'离月亮门远一点',effect:{sanity:3},log:'信什么不好信月亮——这世道怪事够多了'}]},
+
+  // --- 崔米婆（坐忘道） (year 3 ~ 15) ---
+  {text:'<span class="loc">阳城</span>郊外来了个老太婆，自称<span class="npc">崔米婆</span>，摆摊算命分文不收。排队的人从街头排到街尾——因为她算得<span class="danger-text">太准了</span>。你亲眼看到一个汉子被她说中了藏钱的地方，当场吓得脸色煞白。但有个老修士经过时冷笑了一声："<span class="fac">坐忘道</span>的骗术——她不是在算命，是在<span class="danger-text">骗你交出信息</span>。"',
+    trigger:{minAge:10,yearMin:3,yearMax:15},choices:[
+    {text:'去试试算命',effect:{wealth:-10,sanity:-12,comprehension:5},log:'崔米婆笑眯眯地拉着你的手，说了一串你的家事——全对。然后她问你："孩子，你信不信命是可以改的？"你下意识点了头。等你回过神来，已经站在城门口了，你不记得她后来说了什么，但你总觉得自己答应了什么'},
+    {text:'听那个老修士的话',effect:{comprehension:8,sanity:-5},log:'老修士告诉你：坐忘道的人靠"骗"获取力量——每成功骗一个人，他们就能从斗姥那里换来一份非罡之力。崔米婆这种级别的骗修，一个人能骗一整座城'},
+    {text:'不算命不凑热闹',effect:{sanity:3},log:'免费的东西最贵——你娘从小就教你这个道理'}]},
+
+  // --- 人魈（邪祟） (year 5 ~ 30) ---
+  {text:'<span class="loc">城外郊野</span>有猎户发现一件恐怖的事——林子里出现了<span class="danger-text">人魈</span>。那东西看起来像个人，但没有脸，身上挂满了树枝和泥巴。它会<span class="danger-text">模仿人的声音</span>喊你的名字。已经有三个进山砍柴的人失踪了——后来在树上找到了他们，被拧成了树枝的形状。',
+    trigger:{minAge:10,yearMin:5,yearMax:30},choices:[
+    {text:'跟着猎户远远看了一眼',effect:{sanity:-18,comprehension:8,cultivation:3},log:'你躲在灌木丛后面看到了——那个东西蹲在地上，穿着失踪的王大嫂的衣服，用王大嫂的声音喊着她儿子的名字。你捂住嘴不敢出声，浑身发抖。猎户拉着你跑了三里地才停下来'},
+    {text:'告诉官府或监天司',effect:{connections:8,karma:5},log:'你跑去报了官。县令的脸一下子白了——他二话不说就往监天司发了急报。三天后来了两个赊刀人，进山之后一天一夜没出来。出来时浑身是血，只说了一句："处理了。别再进那片林子。"'},
+    {text:'绝对不进那片山',effect:{sanity:-3},log:'你从小就知道：听到林子里有人叫你名字，千万别回头，千万别答应'}]},
+
+  // --- 胡姬（狐妖） (year 8 ~ 25) ---
+  {text:'<span class="loc">狐山</span>脚下的客栈来了个绝色女子，自称<span class="npc">胡姬</span>。她一出现，客栈里所有男人都看傻了——但老板娘狠狠打了自家男人一巴掌："<span class="danger-text">那是狐山下来的东西，看一眼少活三年！</span>"你注意到那女子经过的地方，花瓶里的花全开了，但她的影子……好像比她矮了一截。',
+    trigger:{minAge:14,yearMin:8,yearMax:25},choices:[
+    {text:'壮着胆子搭话',effect:{sanity:-15,connections:5,comprehension:8},log:'她朝你笑了一下——你的脑子瞬间变成了浆糊。等你回过神，已经是第二天早上了。你不记得昨晚说了什么做了什么，只记得她的笑容。老板娘说你昨晚自己一个人对着空椅子说了一夜的话'},
+    {text:'低头不看',effect:{sanity:-3},log:'你死死盯着地面。你能闻到一股奇异的香味——像是深山里的兰花，又像是腐肉上的薄霜。你咬着嘴唇硬撑到她走了才敢抬头'},
+    {text:'立刻离开客栈',effect:{sanity:5,wealth:-3},log:'你丢下饭钱就跑了。跑出半里地才觉得脑子清醒了——那种吸引力太不正常了。你发誓这辈子不去狐山方圆十里'}]},
+
+  // --- 囍神（邪祟/诡异） (year 10 ~ 35) ---
+  {text:'<span class="loc">阳城</span>城南的一条巷子被<span class="fac">监天司</span>封了——原因是那里出了<span class="danger-text">囍神</span>。据说前天一户人家办喜事，半夜花轿突然自己动了起来，从巷头走到巷尾。第二天早上人们发现，那条巷子里<span class="danger-text">所有人都在笑</span>——嘴角咧到耳根，眼里全是血，但还在笑。活着的、死了的，全在笑。',
+    trigger:{minAge:12,yearMin:10,yearMax:35},choices:[
+    {text:'在封锁线外偷看',effect:{sanity:-20,comprehension:10},log:'你从缝隙里看到了——巷子里的人全都穿着红衣，脸上挂着恐怖的笑容，他们一动不动地站着，像是在等什么人。一顶<span class="danger-text">空花轿</span>停在巷子正中间。你看到花轿的帘子动了一下——你没敢继续看，转身就跑'},
+    {text:'打听囍神是什么',effect:{comprehension:12,sanity:-10},log:'"囍神是一种跟「喜事」有关的邪祟——哪里有婚嫁、满月、搬家之类的喜事，它就可能出现。被它沾上的人会永远「开心」下去，笑到脸烂掉还在笑。监天司来了都要带上专门的面具才敢进去。"'},
+    {text:'离那条巷子越远越好',effect:{sanity:-5},log:'你搬到了城北住，再也不从城南走。后来听说监天司的人花了七天才把囍神镇住——巷子里活下来的人没有一个还能正常说话，因为他们的嘴已经笑裂了'}]},
+
+  // --- 酆都/阴间探索 (year 20 ~ 45) ---
+  {text:'你在<span class="loc">鬼市</span>听到一个令人胆寒的消息——有人发现了通往<span class="mys">酆都</span>的入口。酆都，传说中的<span class="danger-text">阴间</span>，死人去的地方。那个发现入口的人已经疯了，被<span class="fac">监天司</span>带走了。但消息传开之前，已经有好几个不怕死的修士进去了——<span class="danger-text">一个都没出来</span>。',
+    trigger:{minAge:18,yearMin:20,yearMax:45,cultivation:25},choices:[
+    {text:'打听酆都的详情',effect:{comprehension:15,sanity:-15,cultivation:5},log:'一个半死不活的老修士告诉你："酆都不是你以为的那种阴间——那里有城，有官，有法。十殿阎罗？别闹了，真正的酆都比那恐怖一万倍。那里的东西不是鬼，是<span class="mys">比鬼更古老的东西</span>。连司命都不愿意去酆都——那是天道管不到的地方。"'},
+    {text:'远离那个入口',effect:{sanity:5},log:'活人去阴间——这种事光想想就能把人吓死。你不是那种不怕死的修士，还是安安分分待在阳间吧'},
+    {text:'暗中记下入口位置',effect:{comprehension:8,sanity:-8,qiyun:-5},log:'你把入口的位置记在了心里。不是说你想去——但万一哪天走投无路呢？……不，还是别想了'}]},
+
+  // --- 高智坚/僵尸皇帝 (year 25 ~ 45) ---
+  {text:'<span class="loc">四齐</span>传来一个荒诞至极的消息——<span class="npc">高智坚</span>，大齐的皇帝，居然是一具<span class="danger-text">僵尸</span>。更荒诞的是，据说他跟那只黑太岁岁岁一样，也是从未来被送回过去的。一个死了不知道多少年的僵尸，坐在龙椅上治理一个国家，底下的大臣们每天对着一具尸体上朝。',
+    trigger:{minAge:18,yearMin:25,yearMax:45,cultivation:20},choices:[
+    {text:'这也太离谱了',effect:{comprehension:10,sanity:-8},log:'"你不信？大齐那边的天从来不黑——永远是白天。那不是因为他们的太阳不落山，是因为他们的皇帝是僵尸，僵尸怕黑，所以他以龙脉的力量让整个大齐永远不会天黑。"你越听越觉得这世界疯了'},
+    {text:'想想大梁皇帝是不是也有什么猫腻',effect:{comprehension:8,sanity:-10,qiyun:-3},log:'如果大齐皇帝是僵尸，那大梁呢？你听说大梁历代皇帝的尸身也都被保存在宫里——拼接成了<span class="mys">龙脉</span>。你觉得自己不该想这些'},
+    {text:'管它是人是尸',effect:{sanity:3},log:'皇帝是人还是僵尸跟你有什么关系——你一个平头百姓，过好自己的日子就行了'}]},
+
+  // --- 坐忘道·修假 (year 8 ~ 22) ---
+  {text:'你无意间偷听到两个<span class="fac">坐忘道</span>弟子的对话——他们在讨论一种叫<span class="mys">"修假"</span>的修炼法门。"咱们修的不是真的道，是假的——但假到极致就是真。骗天骗地骗自己，连斗姥都被咱们骗了。"另一个人笑道："<span class="danger-text">骗经</span>上说了，世间万物皆可骗，唯独不能骗自己相信自己在骗。一旦你意识到自己在骗，功力就全废了。"',
+    trigger:{minAge:14,yearMin:8,yearMax:22,cultivation:15},choices:[
+    {text:'竖着耳朵继续听',effect:{comprehension:15,sanity:-12,cultivation:5},log:'"修假的关键是<span class="mys">非罡</span>——斗姥给的力量。每成功骗一个人，非罡就增长一分。但代价是你的脸会慢慢变成麻将牌——万饼条是底层，东南西北是中层。到了红中发财白板那个级别，你的脸已经完全不是人脸了。"你吓出一身冷汗，赶紧溜了'},
+    {text:'假装没听到',effect:{sanity:-5},log:'你低着头快步走过——那两个人的脸你看清了，一个像是饼子，一个像是条子。不是面具，是真的长在脸上的'},
+    {text:'去举报给监天司',effect:{connections:8,karma:8,sanity:-3},log:'你跑去城里的监天司据点举报了。他们很重视，给了你一点赏钱——但也告诉你以后少在外面乱走，"坐忘道的人认出举报者会报复的"'}]},
+
+  // --- 染煞令 (year 15 ~ 30) ---
+  {text:'<span class="fac">监天司</span>发布了<span class="danger-text">染煞令</span>——这是一种极其罕见的紧急命令，意味着某个地区已经被邪祟污染到了无法挽回的程度。你看到大批<span class="fac">兵家</span>修士列队进入<span class="loc">边境</span>的一座小城，浑身散发着血红色的煞气。当地百姓被勒令全部撤离。',
+    trigger:{minAge:15,yearMin:15,yearMax:30},choices:[
+    {text:'跟着百姓撤离时回头看了一眼',effect:{sanity:-18,comprehension:10},log:'你看到兵家的修士们在城墙上布下了<span class="mys">军阵</span>——数百人同时以鲜血涂抹兵书，煞气冲天而起形成了一个巨大的血色穹顶。然后城里传来了惨叫声——不是人的惨叫，是邪祟的。染煞令意味着"宁可毁掉一座城，也不让邪祟扩散"'},
+    {text:'问旁边的兵丁到底发生了什么',effect:{comprehension:8,connections:5,sanity:-8},log:'"那座城里的东西已经不是邪祟了——是<span class="danger-text">天道层面的污染</span>。说白了就是某个司命在那里动了手，把整座城的人都变成了不人不鬼的东西。染煞令就是让兵家去把整座城连同里面的东西一起抹掉。"'},
+    {text:'闭上眼睛不看',effect:{sanity:-5},log:'你闭上眼睛——但你闭不上耳朵。风里传来的声音你一辈子都忘不了'}]},
+
+  // --- 狗娃（清风观药引） (year 3 ~ 15) ---
+  {text:'你在<span class="loc">赵家村</span>附近的<span class="loc">牛心村</span>见到一个皮肤上有白斑的年轻人，村民叫他<span class="npc">狗娃</span>。"以前是<span class="fac">清风观</span>的药引——丹阳子拿来炼丹的那种。""他怎么活下来的？""运气好加脑子活，自称曹操——那帮药引里就他最圆滑。后来丹阳子被杀了，他就在牛心村安顿下来了。"你远远看到他在照顾一个疯疯癫癫的老人——据说那就是已经疯了的<span class="npc">李火旺</span>。',
+    trigger:{minAge:10,yearMin:3,yearMax:15},choices:[
+    {text:'上前搭话',effect:{connections:8,comprehension:5,sanity:-3},log:'狗娃挺健谈的："你别看我这白斑吓人，当年在清风观可全靠这张嘴活命。丹阳子那个老东西，不识字还想炼丹成仙，被坐忘道骗得团团转。李大哥……"他看了眼身后的疯人，声音低了下去："他是好人。"'},
+    {text:'看他照顾李火旺',effect:{karma:5,sanity:-8},log:'狗娃端着碗在喂李火旺吃饭。李火旺嘴里不停念叨着什么——"杨娜""白灵淼""岁岁"——每个名字都让他哭一场。狗娃擦掉他嘴角的饭粒，跟哄孩子似的说："行了行了，先吃饭。"'},
+    {text:'不打扰他们',effect:{sanity:3},log:'能活下来已经不容易了。你不想去揭别人的伤疤'}]},
+
+  // --- 吕家戏班 (year 5 ~ 20) ---
+  {text:'<span class="loc">上京城</span>最近新开了一家大戏楼——据说老板叫<span class="npc">吕状元</span>，是个油滑的老头，带着两个儿子<span class="npc">吕举人</span>和<span class="npc">吕秀才</span>唱戏。"那老头等了一辈子，终于在上京开了戏楼。""生意好吗？""好得很——但你说这年头开戏楼能安稳多久？"话音未落，法教之乱就来了。',
+    trigger:{minAge:12,yearMin:5,yearMax:20},choices:[
+    {text:'去听一出戏',effect:{sanity:5,connections:3},log:'吕状元的戏确实好看——父子三人同台，吕举人憨厚老实演忠臣，吕秀才叛逆机灵演奸相，吕状元在台下骂骂咧咧地指挥。你难得看了一出让人笑出声的戏'},
+    {text:'后来听说了吕家的遭遇',effect:{sanity:-12,karma:5},log:'法教之乱时，吕举人和他妻子罗娟花都被害了——罗娟花为了保护公公献出了身体。吕状元疯了。吕秀才为了报仇用大千录自残修炼，加入白莲教后又发现白莲教饲养邪祟的秘密而崩溃。最后这个家只剩吕秀才一个人，重新拾起了唱戏的行当'},
+    {text:'凑热闹而已',effect:{connections:3},log:'你看了半出就走了——戏唱得不错，但你更惦记明天的饭钱'}]},
+
+  // --- 金山找/纵横家 (year 8 ~ 22) ---
+  {text:'你在<span class="loc">大梁城</span>的官道上看到一个穿着体面的中年人在给两队剑拔弩张的人做调解——三言两语就把一场血斗化解了。旁边有人啧啧称奇："这是<span class="npc">金山找</span>，<span class="mys">纵横家</span>的人。""纵横家？""知大局、善揣摩、通辩辞、会机变——在各国之间搞外交的。他一张嘴能抵十万兵。"',
+    trigger:{minAge:14,yearMin:8,yearMax:22},choices:[
+    {text:'向金山找请教',effect:{connections:12,comprehension:8},log:'金山找笑着说："天下事无非纵横二字——合众弱攻一强为纵，事一强攻诸弱为横。小老弟，你记住一句话：能用嘴解决的事，千万别动手。"这话你记了一辈子'},
+    {text:'远远观察他的手段',effect:{comprehension:10,sanity:-3},log:'你注意到金山找说话时眼神一直在变——看着张三的时候像看老朋友，转向李四就变成了推心置腹。这人脸变得比坐忘道还快，但他不是在骗——他是在让每个人都觉得自己赢了'},
+    {text:'不想跟这种人打交道',effect:{sanity:3},log:'嘴巴太厉害的人，你不太信得过'}]},
+
+  // --- 中阴庙/魁櫑 (year 10 ~ 25) ---
+  {text:'<span class="loc">南疆</span>方向来了个骇人的消息——<span class="loc">青丘</span>地下的<span class="fac">中阴庙</span>散了。这个信奉<span class="mys">死亡司命魁櫑</span>的门派，成天在地下向死亡献祭牲畜甚至活人。但现在他们的司命魁櫑的<span class="danger-text">死亡天道</span>被<span class="npc">无生老母</span>抢走了——中阴庙没了靠山，干脆集体加入了<span class="fac">白莲教</span>。',
+    trigger:{minAge:14,yearMin:10,yearMax:25},choices:[
+    {text:'打听中阴庙的事',effect:{comprehension:12,sanity:-10},log:'"中阴庙是青丘地下最阴暗的地方——那帮人天天研究死亡，活人献祭、尸体实验，什么都干。他们的司命魁櫑掌管死亡天道，死亡消失以后整个大傩世界的人都死不了——你说吓不吓人？后来无生老母拿走了死亡天道，死亡才重新降临。"'},
+    {text:'担心白莲教收编这帮人',effect:{comprehension:8,connections:5,sanity:-5},log:'"白莲教现在越来越大了——连中阴庙都收编了。那帮人以前天天跟死人打交道，现在穿上白莲教的衣服就成好人了？你信吗？"你确实不太信'},
+    {text:'管不了这些',effect:{sanity:3},log:'司命之间抢天道、门派合并分裂——这些事离你太远了，你只想安安稳稳过日子'}]},
+
+  // --- 花瓶姑娘/正德寺邪物 (year 8 ~ 20) ---
+  {text:'你在<span class="loc">鬼市</span>看到一个诡异的"货物"——一个<span class="danger-text">花瓶</span>，从瓶口露出一颗女孩的脑袋。她还活着，眼珠在转动。卖家压低声音说这是<span class="fac">正德寺</span>的<span class="npc">花瓶姑娘</span>——正德寺的和尚把被遗弃的女婴从小塞进花瓶里养大，四肢被瓶壁挤压收紧，只有头露在外面。',
+    trigger:{minAge:14,yearMin:8,yearMax:20},choices:[
+    {text:'看得浑身发抖',effect:{sanity:-18,karma:5,comprehension:5},log:'那个花瓶姑娘嘴唇在动——她在说什么？你凑近了听，她用极小的声音说了一句话。你没听清，但你的手在发抖。丹阳子以前就有一个花瓶姑娘，被李火旺砸碎了。你突然很感激李火旺'},
+    {text:'想买下来救她',effect:{wealth:-30,karma:15,sanity:-10},log:'你问了价格——天价。你倾尽所有买下了她，但你不知道怎么把她从花瓶里弄出来。请了大夫来看，大夫说她的四肢骨骼已经完全变形，取出来也活不了。你最后只能守着她，直到她闭上眼睛'},
+    {text:'转身就走',effect:{sanity:-8},log:'你快步离开了鬼市。那颗从花瓶里探出的脑袋，那双还在转动的眼珠——你知道你这辈子都忘不了'}]},
+
+  // --- 十情八苦 (year 15 ~ 35) ---
+  {text:'一个游方道士在<span class="loc">鲁城</span>的茶馆里讲道——说的是<span class="mys">十情八苦</span>。"人的灵魂由十情八苦构成，十情是喜、怒、悲、贪、嗔、痴、惧、爱、恶；八苦是生、老、病、死、怨憎会、肉别离、求不得、五蕴盛。"他顿了顿："<span class="fac">坐忘道</span>的功法能看到人身上的十情八苦——那些东西在你身上像蛛网一样缠绕。<span class="danger-text">每割掉一条，你就少一分人味。</span>"',
+    trigger:{minAge:15,yearMin:15,yearMax:35,cultivation:15},choices:[
+    {text:'认真听下去',effect:{comprehension:15,sanity:-8,cultivation:5},log:'"所以跳大神的人为什么变得面无表情？因为仙家在吃他们的十情。坐忘道的人为什么不像人？因为他们把十情八苦当商品交易。你修炼越深入，十情八苦就越薄——到最后，你连「害怕」都不会了。但你也不再是「人」了。"你陷入了沉思'},
+    {text:'不太相信',effect:{comprehension:5,sanity:3},log:'"灵魂由十情八苦构成？那把这些全去掉人不就没了？"你心里嘀咕。但转念一想——你确实见过一些修士，他们活着，但"不像人"'},
+    {text:'觉得自己听不懂',effect:{sanity:3},log:'太深奥了。你一个凡人，还是先想想明天吃什么吧'}]},
+
+  // --- 颛顼/人皇传说 (year 20 ~ 40) ---
+  {text:'你在<span class="loc">昆仑</span>附近听到一个老修士讲述上古传说——<span class="mys">人皇颛顼</span>。"上古时候，司命们住在凡间，跟人类混在一起。颛顼带着两位大将军<span class="npc">白重</span>和<span class="npc">玉黎</span>，硬是把所有司命赶回了<span class="loc">白玉京</span>，还用<span class="mys">牦之门</span>封印了入口——那块巨大的玉佩上左边刻着「颛顼」两个字。<span class="fac">监天司</span>就是颛顼创建的，为的是在司命被赶走以后继续镇压天灾。"',
+    trigger:{minAge:18,yearMin:20,yearMax:40,cultivation:30},choices:[
+    {text:'追问颛顼的下落',effect:{comprehension:15,sanity:-10,cultivation:5},log:'"后来？后来颛顼就消失了——没人知道他去了哪里。有人说他也进了白玉京，有人说他掌握了<span class="mys">秩序天道</span>成了司命，也有人说他死在了封印牦之门的过程中。但你看看龙脉——那东西的本质就是秩序天道，跟颛顼脱不了关系。"'},
+    {text:'感叹一番',effect:{comprehension:8,karma:5},log:'一个凡人，把神赶回了天上。哪怕你已经见识过很多不可思议的事，这个故事依然让你心潮澎湃'},
+    {text:'半信半疑',effect:{comprehension:5},log:'上古的事，谁说得清真假'}]},
+
+  // --- 寓（灾兆生物） (year 10 ~ 30) ---
+  {text:'<span class="loc">边境</span>的一个村庄诞生了一只<span class="danger-text">寓</span>——一种<span class="mys">人首兽身</span>的怪物，出生即预言灾祸，预言完毕后马上死去。每逢大乱必有寓生。你赶到的时候那只寓已经死了，但村民们围在它的尸体旁瑟瑟发抖——它死前说了一句话。',
+    trigger:{minAge:12,yearMin:10,yearMax:30},choices:[
+    {text:'问它说了什么',effect:{comprehension:12,sanity:-15,qiyun:-5},log:'村民的声音在抖："它说……<span class="danger-text">「天要破了。从外面来的东西，比里面的所有东西加起来都可怕。」</span>"你不知道这话是什么意思——但你的直觉告诉你，这跟<span class="mys">福生天</span>有关'},
+    {text:'看了一眼寓的尸体',effect:{sanity:-10,comprehension:8},log:'人的脑袋长在一具扭曲的兽类身体上——嘴还张着，表情是死前最后的恐惧。它的眼睛是睁开的，仿佛还在看着什么你看不到的东西'},
+    {text:'扭头就走',effect:{sanity:-5},log:'灾兆生物出现意味着大祸要来了——你不想知道具体是什么祸'}]},
+
 ];
