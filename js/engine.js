@@ -4,7 +4,7 @@ var gameState = {
   sanity:100, baseSanity:100, cultivation:0,
   wealth:10, connections:0, faction:'none',
   comprehension:10, karma:0, qiyun:0, constitution:50,
-  gender:'male', factionRank:0,
+  gender:'male', orientation:'straight', factionRank:0,
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
@@ -122,6 +122,7 @@ function startGame() {
     qiyun: 0,
     constitution: 50,
     gender: 'male',
+    orientation: 'straight',
     factionRank: 0,
     alive: true,
     totalRuns: gameState.totalRuns, // Keep totalRuns counter
@@ -138,6 +139,12 @@ function startGame() {
 
   // Assign gender randomly
   gameState.gender = Math.random() < 0.5 ? 'male' : 'female';
+
+  // Assign sexual orientation
+  var orientRoll = Math.random();
+  if(orientRoll < 0.70) gameState.orientation = 'straight';
+  else if(orientRoll < 0.85) gameState.orientation = 'bisexual';
+  else gameState.orientation = 'gay';
 
   // If a talent was kept from previous life, add it
   if(keptTalent && !gameState.talents.find(function(t){return t.id===keptTalent.id;})) {
@@ -170,10 +177,12 @@ function startGame() {
   showPanel('born');
   document.getElementById('born-location').textContent = gameState.location.name;
   var genderText = gameState.gender === 'male' ? '男子' : '女子';
-  document.getElementById('born-desc').innerHTML =
-    '<span style="color:var(--gold)">' + genderText + '</span> · ' +
-    gameState.location.desc + ' · 气运: ' +
+  var orientText = getOrientationName();
+  var bornDescText = '<span style="color:var(--gold)">' + genderText + '</span>';
+  if(orientText) bornDescText += ' · <span style="color:var(--mystery)">' + orientText + '</span>';
+  bornDescText += ' · ' + gameState.location.desc + ' · 气运: ' +
     (gameState.qiyun > 0 ? '+' + gameState.qiyun : gameState.qiyun);
+  document.getElementById('born-desc').innerHTML = bornDescText;
 }
 
 function confirmBorn() {
@@ -185,7 +194,8 @@ function confirmBorn() {
   window._currentChoices = null;
   var names = gameState.talents.map(function(t){return '<span class="itm">'+t.name+'</span>';}).join('、');
   var genderName = gameState.gender === 'male' ? '男' : '女';
-  addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+'）');
+  var orientLogText = getOrientationName();
+  addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+(orientLogText ? '·'+orientLogText : '')+'）');
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
 
@@ -326,6 +336,72 @@ function getMaxAge() {
   if(c>=10) return Math.max(base, 85);
   if(c>=3) return Math.max(base, 80);
   return base;
+}
+
+// === ORIENTATION HELPERS ===
+function likesGender(g) {
+  if(gameState.orientation === 'bisexual') return true;
+  if(gameState.orientation === 'straight') return (gameState.gender === 'male' ? g === 'female' : g === 'male');
+  if(gameState.orientation === 'gay') return g === gameState.gender;
+  return false;
+}
+
+function getPartnerGender() {
+  if(gameState.orientation === 'straight') return gameState.gender === 'male' ? 'female' : 'male';
+  if(gameState.orientation === 'gay') return gameState.gender;
+  // bisexual: random
+  return Math.random() < 0.5 ? 'male' : 'female';
+}
+
+function getOrientationName() {
+  if(gameState.orientation === 'gay') {
+    return gameState.gender === 'male' ? '龙阳之好' : '磨镜之交';
+  }
+  if(gameState.orientation === 'bisexual') return '不拘男女';
+  return '';
+}
+
+function canHaveBioChildren() {
+  if(!gameState.flags.married) return false;
+  var partnerIsMale = gameState.flags.partner_is_male;
+  var partnerIsFemale = gameState.flags.partner_is_female;
+  if(partnerIsMale) return gameState.gender === 'female';
+  if(partnerIsFemale) return gameState.gender === 'male';
+  // Fallback: infer from orientation for arranged marriages without explicit flag
+  if(gameState.orientation === 'gay') return false;
+  return true;
+}
+
+function isSameSexCouple() {
+  if(!gameState.flags.married) return false;
+  if(gameState.flags.partner_is_male && gameState.gender === 'male') return true;
+  if(gameState.flags.partner_is_female && gameState.gender === 'female') return true;
+  if(gameState.orientation === 'gay') return true;
+  return false;
+}
+
+function checkOrientationReq(ev) {
+  if(!ev.orientationReq) return true;
+  if(ev.orientationReq === 'likes_male') return likesGender('male');
+  if(ev.orientationReq === 'likes_female') return likesGender('female');
+  return true;
+}
+
+function checkSamesexReq(ev) {
+  if(ev.samesexReq === undefined) return true;
+  if(ev.samesexReq === true) return isSameSexCouple();
+  if(ev.samesexReq === false) return !isSameSexCouple();
+  return true;
+}
+
+function getSpouseTitle() {
+  if(!gameState.flags.married) return '未婚';
+  if(isSameSexCouple()) {
+    if(gameState.gender === 'male') return gameState.flags.spouse_candidate || '知己';
+    return gameState.flags.spouse_candidate || '金兰';
+  }
+  if(gameState.gender === 'male') return gameState.flags.spouse_candidate || '娘子';
+  return gameState.flags.spouse_candidate || '夫君';
 }
 
 // === NEXT YEAR ===
@@ -766,6 +842,8 @@ function nextYear() {
   // Filter out gender-mismatched events and check trigger conditions on base events
   eventPool = eventPool.filter(function(ev){
     if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
+    if(!checkOrientationReq(ev)) return false;
+    if(!checkSamesexReq(ev)) return false;
     if(ev.locReq && !gameState.visitedLocations.includes(ev.locReq)) return false;
     if(ev.noTalent && gameState.talents.find(function(t){return t.id===ev.noTalent;})) return false;
     if(ev.check && !gameState.talents.find(function(t){return t.id===ev.check;})) return false;
@@ -788,6 +866,8 @@ function nextYear() {
   // Add special events
   SPECIAL_EVENTS.forEach(function(se){
     if(se.genderReq && se.genderReq !== gameState.gender) return;
+    if(!checkOrientationReq(se)) return;
+    if(!checkSamesexReq(se)) return;
     // Filter factionJoin choices for already-joined factions
     if(se.choices) {
       se.choices = se.choices.filter(function(c){
@@ -878,6 +958,8 @@ function nextYear() {
   if(typeof ROMANCE_EVENTS !== 'undefined' && gameState.age >= 16) {
     ROMANCE_EVENTS.forEach(function(re){
       if(re.genderReq && re.genderReq !== gameState.gender) return;
+      if(!checkOrientationReq(re)) return;
+      if(!checkSamesexReq(re)) return;
       if(re.trigger) {
         if(re.trigger.minAge && gameState.age < re.trigger.minAge) return;
         if(re.trigger.cultivation && gameState.cultivation < re.trigger.cultivation) return;
@@ -895,6 +977,8 @@ function nextYear() {
   if(typeof SHUANGXIU_EVENTS !== 'undefined' && gameState.age >= 18) {
     SHUANGXIU_EVENTS.forEach(function(se){
       if(se.genderReq && se.genderReq !== gameState.gender) return;
+      if(!checkOrientationReq(se)) return;
+      if(!checkSamesexReq(se)) return;
       if(se.trigger) {
         if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
         if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
@@ -910,6 +994,8 @@ function nextYear() {
   if(typeof CROSSWORLD_EVENTS !== 'undefined' && gameState.age >= 15) {
     CROSSWORLD_EVENTS.forEach(function(cwe){
       if(cwe.genderReq && cwe.genderReq !== gameState.gender) return;
+      if(!checkOrientationReq(cwe)) return;
+      if(!checkSamesexReq(cwe)) return;
       if(cwe.trigger) {
         if(cwe.trigger.minAge && gameState.age < cwe.trigger.minAge) return;
         if(cwe.trigger.maxAge && gameState.age > cwe.trigger.maxAge) return;
@@ -929,6 +1015,8 @@ function nextYear() {
   if(typeof CANONICAL_EVENTS !== 'undefined') {
     CANONICAL_EVENTS.forEach(function(ce){
       if(ce.genderReq && ce.genderReq !== gameState.gender) return;
+      if(!checkOrientationReq(ce)) return;
+      if(!checkSamesexReq(ce)) return;
       if(ce.trigger) {
         if(ce.trigger.minAge !== undefined && gameState.age < ce.trigger.minAge) return;
         if(ce.trigger.maxAge !== undefined && gameState.age > ce.trigger.maxAge) return;
@@ -950,6 +1038,8 @@ function nextYear() {
     LOCAL_STORIES.forEach(function(ls){
       if(ls.locReq && !gameState.visitedLocations.includes(ls.locReq)) return;
       if(ls.genderReq && ls.genderReq !== gameState.gender) return;
+      if(!checkOrientationReq(ls)) return;
+      if(!checkSamesexReq(ls)) return;
       if(ls.trigger) {
         if(ls.trigger.minAge !== undefined && gameState.age < ls.trigger.minAge) return;
         if(ls.trigger.maxAge !== undefined && gameState.age > ls.trigger.maxAge) return;
@@ -1416,9 +1506,12 @@ function quietYear() {
       msgs.push('你回到家中，孩子扑上来抱住你的腿——平凡的一天');
       msgs.push('伴侣做了你爱吃的菜，一家人围坐在桌前');
       if(a > 40) msgs.push('看着孩子一天天长大，你感到时光飞逝');
+      if(gameState.flags.adopted) msgs.push('义子虽非亲生，却越来越像你们——言行举止，点滴间都是家的痕迹');
     } else if(gameState.flags.married) {
       msgs.push('你和伴侣在院中闲坐，岁月静好');
       msgs.push('伴侣叮嘱你修炼时小心些。你点了点头');
+      if(isSameSexCouple() && gameState.gender === 'male') msgs.push('你与知己对坐品茶，无需多言便已心意相通');
+      if(isSameSexCouple() && gameState.gender === 'female') msgs.push('你与她在月下并肩而坐，琴声悠扬，岁月静好');
     }
     if(gameState.flags.shuangxiu_deep) {
       msgs.push('夜深人静时，你感到五智如来的目光仿佛穿透了虚空');
@@ -1485,6 +1578,8 @@ function showEvent(event) {
   var validChoices = event.choices.filter(function(c){
     if(c.check && !gameState.talents.find(function(t){return t.id===c.check;})) return false;
     if(c.genderReq && c.genderReq !== gameState.gender) return false;
+    if(!checkOrientationReq(c)) return false;
+    if(!checkSamesexReq(c)) return false;
     return true;
   });
   if(!validChoices.length) { quietYear(); scheduleNext(); return; }
@@ -1706,6 +1801,12 @@ function applyChoice(c) {
     if(typeof c.setFlag === 'string') gameState.flags[c.setFlag] = true;
     else if(typeof c.setFlag === 'object') { for(var fk in c.setFlag) gameState.flags[fk] = c.setFlag[fk]; }
   }
+  // Check same-sex couple achievements
+  if(gameState.flags.married && isSameSexCouple()) {
+    if(gameState.gender === 'male') unlockAchieve('longyang');
+    if(gameState.gender === 'female') unlockAchieve('mojing');
+  }
+  if(gameState.flags.adopted) unlockAchieve('adopt_child');
   if(c.relocate) {
     var newLoc = LOCATIONS.find(function(l){return l.id===c.relocate;});
     if(newLoc) {
@@ -1824,8 +1925,9 @@ function updateDisplay() {
   var spouseEl = document.getElementById('spouse-display');
   if(spouseEl) {
     if(gameState.flags.married) {
-      var spouseName = gameState.flags.spouse_candidate || '伴侣';
+      var spouseName = getSpouseTitle();
       var childText = gameState.flags.children ? ' · 子嗣'+gameState.flags.children+'人' : '';
+      if(gameState.flags.adopted) childText = childText.replace('子嗣','义子女');
       spouseEl.textContent = spouseName + childText;
       spouseEl.className = 'detail-value good-karma';
     } else if(gameState.flags.romance_met) {
@@ -2068,12 +2170,24 @@ function gameOver(reason) {
 
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
+  var endOrientText = getOrientationName();
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
   // 解析死因
   var deathReasonText = lastDeathReason || reason;
+  // Married display for ending
+  var marriedEndText = '';
+  if(gameState.flags.married) {
+    var endSpouseName = getSpouseTitle();
+    marriedEndText = '<p style="color:var(--gold);">红尘有伴 — '+endSpouseName+'相随';
+    if(gameState.flags.children) {
+      if(gameState.flags.adopted) marriedEndText += '，收养义子女'+gameState.flags.children+'人';
+      else marriedEndText += '，育有'+gameState.flags.children+'子';
+    }
+    marriedEndText += '</p>';
+  }
   document.getElementById('ending-text').innerHTML =
-    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span></p>' +
+    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span>'+(endOrientText ? ' · <span style="color:var(--mystery)">'+endOrientText+'</span>' : '')+'</p>' +
     '<p>死因: <span style="color:var(--danger)">'+deathReasonText+'</span></p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +
@@ -2088,7 +2202,7 @@ function gameOver(reason) {
     ) + '</p>' : '') +
     (gameState.factionHistory.length > 1 ? '<p style="color:var(--danger);">曾叛出门派 '+gameState.factionHistory.length+'次 — 散修之路，九死一生</p>' : '') +
     (factionName === '散修' ? '<p style="color:var(--gold);">散修之身，不拘一格 — 曾历'+gameState.factionHistory.map(function(f){return FACTIONS[f]?FACTIONS[f].name:f;}).join('、')+'</p>' : '') +
-    (gameState.flags.married ? '<p style="color:var(--gold);">红尘有伴 — '+(gameState.flags.spouse_candidate||'佳人')+'相随'+(gameState.flags.children ? '，育有'+gameState.flags.children+'子' : '')+'</p>' : '') +
+    marriedEndText +
     (gameState.flags.shuangxiu_master ? '<p style="color:var(--mystery);">五智如来·欢喜禅 — 双修法门已成</p>' : '') +
     (gameState.flags.longmai_succession ? '<p style="color:var(--gold);">三界见证者 — 亲历龙脉续接，见证大齐·大梁·天陈交汇</p>' : gameState.flags.daqi_youdu_dream ? '<p style="color:var(--mystery);">曾踏入大齐幽都</p>' : '') +
     (gameState.flags.met_zuoqiu ? '<p style="color:var(--accent-green);">曾面见天陈·左丘咏</p>' : '') +

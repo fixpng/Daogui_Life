@@ -235,7 +235,7 @@ const ITEMS = [
   {id:'pian_jing',name:'骗经',desc:'罗教骗术幻术功法，混淆视听',rarity:'rare',effect:{cultivation:20,comprehension:15,karma:-5}},
   {id:'jin_qiao_miao_jing',name:'金桥妙经',desc:'感悟可生死人肉白骨，需长期诵读',rarity:'rare',effect:{cultivation:25,comprehension:20,karma:10}},
   {id:'huo_ao_zhen_jing',name:'火袄箴经',desc:'祆景教经文，蜡油烧伤口以轻伤代重伤，施法需怜悯',rarity:'rare',effect:{cultivation:20,constitution:10,karma:-8}},
-  {id:'shuangxiu_jing',name:'欢喜禅残经',desc:'五智如来双修法门残卷，记载男女交合修炼之术，散发着令人不安的金光',rarity:'rare',effect:{cultivation:20,comprehension:15,sanity:-15,karma:-10}},
+  {id:'shuangxiu_jing',name:'欢喜禅残经',desc:'五智如来双修法门残卷，记载阴阳交合修炼之术，散发着令人不安的金光',rarity:'rare',effect:{cultivation:20,comprehension:15,sanity:-15,karma:-10}},
   {id:'longmai_suipian',name:'龙脉碎片',desc:'一块通体金色的鳞状碎片，触之可感受到一个庞大帝国的余韵——那是大齐的龙脉残骸',rarity:'rare',effect:{cultivation:15,comprehension:15,qiyun:8}},
   {id:'shichen_shalou',name:'时辰沙漏',desc:'一个古旧的沙漏，沙粒永远向上流。据说来自一个永远没有黑夜的世界',rarity:'rare',effect:{comprehension:20,sanity:-10,cultivation:10}},
   {id:'tianchen_guyu',name:'天陈古玉',desc:'一块散发着勃勃生机的墨绿古玉，上面刻着已失传千年的文字。握住它时你能听到树木生长的声音',rarity:'rare',effect:{cultivation:18,constitution:12,comprehension:10}},
@@ -369,6 +369,10 @@ const ACHIEVEMENTS = [
   {id:'xinpan_doumo_master',name:'谎言织网',desc:'斗姥心蟠且人脉达50',icon:'🕸'},
   {id:'xinpan_wusheng_master',name:'大慈大悲',desc:'无生老母心蟠且因果达60',icon:'🪷'},
   {id:'xinpan_panchi_master',name:'龙脉守护',desc:'蟠螭心蟠且气运40以上体魄60以上',icon:'🏛'},
+  // === 同性婚恋 ACHIEVEMENTS ===
+  {id:'longyang',name:'龙阳遗风',desc:'男子之身，与男子结为知己伴侣',icon:'🏳️'},
+  {id:'mojing',name:'磨镜情深',desc:'女子之身，与女子结为金兰伴侣',icon:'🏳️'},
+  {id:'adopt_child',name:'义子承欢',desc:'收养义子或义女',icon:'👶'},
 ];
 
 // === EVENTS ===
@@ -1384,15 +1388,26 @@ const SANXIU_EVENTS = [
 const ROMANCE_EVENTS = [
   // --- 初遇 ---
   {text:'你在<span class="loc">集市</span>上与一名<span class="npc">温婉女子</span>擦肩而过，她回头看了你一眼，眼波流转间似有万语千言。',
-    genderReq:'male',trigger:{minAge:16},noFlag:'married',choices:[
-    {text:'搭话',effect:{connections:10,qiyun:3},log:'你鼓起勇气搭话，她微微一笑——她叫苏婉儿，是附近药铺的采药女',setFlag:{romance_met:true,spouse_candidate:'苏婉儿'}},
+    genderReq:'male',orientationReq:'likes_female',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'搭话',effect:{connections:10,qiyun:3},log:'你鼓起勇气搭话，她微微一笑——她叫苏婉儿，是附近药铺的采药女',setFlag:{romance_met:true,spouse_candidate:'苏婉儿',partner_is_female:true}},
     {text:'错过',effect:{comprehension:2},log:'缘分来了又走了，你转身离开'},
-    {text:'暗中跟随',effect:{connections:3,karma:-3},log:'你远远跟了一段路，记住了她家的方向',setFlag:{romance_met:true,spouse_candidate:'苏婉儿'}}]},
+    {text:'暗中跟随',effect:{connections:3,karma:-3},log:'你远远跟了一段路，记住了她家的方向',setFlag:{romance_met:true,spouse_candidate:'苏婉儿',partner_is_female:true}}]},
   {text:'你在山路上偶遇一名<span class="npc">青年剑客</span>，他替你挡下了一只山中邪祟，然后冲你笑了笑。',
-    genderReq:'female',trigger:{minAge:16},noFlag:'married',choices:[
-    {text:'道谢并询问姓名',effect:{connections:10,qiyun:3},log:'他说他叫沈鹤，是个走南闯北的游侠',setFlag:{romance_met:true,spouse_candidate:'沈鹤'}},
+    genderReq:'female',orientationReq:'likes_male',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'道谢并询问姓名',effect:{connections:10,qiyun:3},log:'他说他叫沈鹤，是个走南闯北的游侠',setFlag:{romance_met:true,spouse_candidate:'沈鹤',partner_is_male:true}},
     {text:'独自离开',effect:{comprehension:2},log:'你点了点头便走了，但心里记住了那个身影'},
-    {text:'邀他同行一程',effect:{connections:8,qiyun:5},log:'你们结伴走了一段路，他的见闻让你大开眼界',setFlag:{romance_met:true,spouse_candidate:'沈鹤'}}]},
+    {text:'邀他同行一程',effect:{connections:8,qiyun:5},log:'你们结伴走了一段路，他的见闻让你大开眼界',setFlag:{romance_met:true,spouse_candidate:'沈鹤',partner_is_male:true}}]},
+  // --- 同性初遇 ---
+  {text:'你在<span class="loc">酒肆</span>中与一名<span class="npc">清俊书生</span>对坐而饮。他谈吐不凡，目光坦荡，举杯间无意碰到了你的手——你们相视一笑，竟有些说不清道不明的默契。世人多道<span class="mys">龙阳断袖</span>为异，但在这修仙乱世，谁又在乎这些。',
+    genderReq:'male',orientationReq:'likes_male',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'邀他再饮',effect:{connections:10,qiyun:3},log:'他叫柳惊鸿，游历四方的散修。你们从天黑聊到天明——有些人，一见如故',setFlag:{romance_met:true,spouse_candidate:'柳惊鸿',partner_is_male:true}},
+    {text:'别过',effect:{comprehension:2},log:'你起身告辞，但心头莫名牵挂'},
+    {text:'暗记住他',effect:{connections:3,karma:-3},log:'你没有开口，只是默默记下了他的名字',setFlag:{romance_met:true,spouse_candidate:'柳惊鸿',partner_is_male:true}}]},
+  {text:'月下浣衣时，你偶遇一名<span class="npc">素衣女子</span>。她在溪边抚琴，琴声如诉如泣。你不由自主地驻足，她抬头见你，嫣然一笑。世俗或称<span class="mys">磨镜之交</span>为禁忌，可在这诡道横行的乱世，真心相待才是最难得之事。',
+    genderReq:'female',orientationReq:'likes_female',trigger:{minAge:16},noFlag:'married',choices:[
+    {text:'坐下聆听',effect:{connections:10,qiyun:3},log:'她叫云绮，是一名采药的女修。你们在月光下相谈甚欢——有些情愫，不必言说',setFlag:{romance_met:true,spouse_candidate:'云绮',partner_is_female:true}},
+    {text:'默默离去',effect:{comprehension:2},log:'你转身走了，但那琴声在你心中久久不散'},
+    {text:'每日去听琴',effect:{connections:3,qiyun:2},log:'你开始每天傍晚去溪边。她似乎也在等你',setFlag:{romance_met:true,spouse_candidate:'云绮',partner_is_female:true}}]},
   // --- 情愫 ---
   {text:'你与<span class="npc">心仪之人</span>在月下不期而遇。夜风拂面，月光如水——在这个满是邪祟和阴谋的世界里，这样的宁静格外珍贵。',
     trigger:{minAge:17},flagReq:'romance_met',noFlag:'married',choices:[
@@ -1412,21 +1427,28 @@ const ROMANCE_EVENTS = [
     {text:'暂时推迟',effect:{connections:-5,comprehension:3},log:'你说修为未成，不愿拖累对方。对方虽有不舍，但也理解'}]},
   {text:'你到了成家的年纪，经人介绍认识了一位门当户对的<span class="npc">良人</span>。虽非一见钟情，但相处下来越发觉得合适。',
     trigger:{minAge:20},noFlag:'married',noFlag2:'romance_met',choices:[
-    {text:'顺其自然，成婚',effect:{connections:15,wealth:-20,qiyun:5,karma:5,sanity:3},log:'你们成了亲。婚后日子虽平淡，但有人等你回家的感觉很好',setFlag:{married:true,children:0,spouse_candidate:'良人'},genderReq:'male'},
-    {text:'顺其自然，出嫁',effect:{connections:15,wealth:10,qiyun:5,karma:5,sanity:3},log:'你嫁入了一个殷实人家。丈夫虽不懂修行，却待你很好',setFlag:{married:true,children:0,spouse_candidate:'良人'},genderReq:'female'},
+    {text:'顺其自然，成婚',effect:{connections:15,wealth:-20,qiyun:5,karma:5,sanity:3},log:'你们成了亲。婚后日子虽平淡，但有人等你回家的感觉很好',setFlag:{married:true,children:0,spouse_candidate:'良人',partner_is_female:true},genderReq:'male',orientationReq:'likes_female'},
+    {text:'顺其自然，出嫁',effect:{connections:15,wealth:10,qiyun:5,karma:5,sanity:3},log:'你嫁入了一个殷实人家。丈夫虽不懂修行，却待你很好',setFlag:{married:true,children:0,spouse_candidate:'良人',partner_is_male:true},genderReq:'female',orientationReq:'likes_male'},
+    {text:'与知己结为契兄弟',effect:{connections:15,wealth:-15,qiyun:5,karma:3,sanity:5},log:'你们在月下焚香结拜，世人道龙阳断袖，你只知此生得一知己足矣',setFlag:{married:true,children:0,spouse_candidate:'知己',partner_is_male:true},genderReq:'male',orientationReq:'likes_male'},
+    {text:'与她结为金兰',effect:{connections:15,wealth:-10,qiyun:5,karma:3,sanity:5},log:'你们义结金兰，对外以姐妹相称，冷暖自知。世人或称磨镜对食，你们只道知心',setFlag:{married:true,children:0,spouse_candidate:'金兰',partner_is_female:true},genderReq:'female',orientationReq:'likes_female'},
     {text:'一心修道，婉拒',effect:{cultivation:10,connections:-10,comprehension:5},log:'你拒绝了婚事，一心向道。长辈叹了口气'}]},
   // --- 子嗣 ---
   {text:'你的<span class="npc">伴侣</span>告诉你一个消息——你们要有孩子了。在这个充满诡异的世界里，新生命的到来显得格外珍贵。',
-    trigger:{minAge:20},flagReq:'married',noFlag:'has_child',choices:[
+    trigger:{minAge:20},flagReq:'married',noFlag:'has_child',samesexReq:false,choices:[
     {text:'喜极而泣',effect:{qiyun:10,karma:10,connections:10,sanity:5},log:'你小心翼翼地守护着这个即将到来的小生命。数月后，一声啼哭响彻屋内——你有了第一个孩子',setFlag:{has_child:true,children:1}},
     {text:'又喜又忧',effect:{qiyun:5,karma:5,connections:5,wealth:-10},log:'喜的是后继有人，忧的是这世道太危险。孩子出生时你看着那张小脸，暗暗发誓要守护好这个家',setFlag:{has_child:true,children:1}},
     {text:'忧心忡忡',effect:{sanity:-5,karma:3,connections:5},log:'你不确定自己能否在这个满是邪祟的世界里保护好一个孩子。但当孩子出生的那一刻，你什么都不想了',setFlag:{has_child:true,children:1}}]},
+  {text:'你们虽无法有亲生骨肉，但在乱世中救下了一个<span class="npc">无家可归的孩子</span>。那孩子怯生生地看着你们，瘦得皮包骨头。',
+    trigger:{minAge:22},flagReq:'married',noFlag:'has_child',samesexReq:true,choices:[
+    {text:'收为义子/义女',effect:{qiyun:10,karma:15,connections:10,sanity:5,wealth:-10},log:'你们将孩子收养，取名安儿。虽非亲生，却视如己出。孩子渐渐有了笑容，叫你们的声音越来越响亮',setFlag:{has_child:true,children:1,adopted:true}},
+    {text:'送到安全的人家',effect:{karma:10,connections:5},log:'你帮孩子找了一户善良人家。走时孩子回头看了你一眼，你心里说不出的滋味'},
+    {text:'暂且照顾',effect:{karma:8,connections:5,wealth:-5},log:'你们先养着他，日子久了，竟舍不得送走了',setFlag:{has_child:true,children:1,adopted:true}}]},
   {text:'你的孩子周岁了。<span class="npc">伴侣</span>抱着孩子站在门口等你回家，你突然觉得这一刻比任何修炼突破都要珍贵。',
     trigger:{minAge:21},flagReq:'has_child',choices:[
     {text:'多陪陪家人',effect:{connections:10,sanity:8,karma:5,cultivation:-3},log:'你放下修炼，陪孩子度过了几个安宁的日子'},
     {text:'为家人更努力修炼',effect:{cultivation:10,comprehension:5,connections:-3},log:'你想变强，为了守护他们——但伴侣说你已经很久没回家了'}]},
   {text:'你的第二个孩子出生了——这一次你多了几分从容，也多了几分牵挂。',
-    trigger:{minAge:23},flagReq:'has_child',noFlag:'second_child',choices:[
+    trigger:{minAge:23},flagReq:'has_child',noFlag:'second_child',samesexReq:false,choices:[
     {text:'感到满足',effect:{qiyun:5,karma:8,connections:8,sanity:3},log:'家中又多了一张小嘴巴，热闹了不少',setFlag:{second_child:true,children:2}},
     {text:'倍感压力',effect:{wealth:-15,constitution:-3,comprehension:3},log:'养家的担子更重了，你咬牙扛着',setFlag:{second_child:true,children:2}}]},
   // --- 家庭生活 ---
@@ -1463,14 +1485,14 @@ const ROMANCE_EVENTS = [
 // === 双修事件 SHUANGXIU EVENTS (五智如来·男女双修) ===
 const SHUANGXIU_EVENTS = [
   // --- 初识双修法门 ---
-  {text:'你在<span class="loc">正德寺</span>的藏经阁深处发现了一卷被刻意藏起的<span class="itm">残经</span>。经文上记载着一种名为"<span class="mys">欢喜禅</span>"的秘法——以男女交合之术修炼，号称可直通<span class="mys">五智如来</span>法门。经文边注写着："<span class="danger-text">切莫轻试，血肉天道非凡人可驾驭。</span>"',
+  {text:'你在<span class="loc">正德寺</span>的藏经阁深处发现了一卷被刻意藏起的<span class="itm">残经</span>。经文上记载着一种名为"<span class="mys">欢喜禅</span>"的秘法——以阴阳交合之术修炼，号称可直通<span class="mys">五智如来</span>法门。经文边注写着："<span class="danger-text">切莫轻试，血肉天道非凡人可驾驭。</span>"',
     trigger:{minAge:20,cultivation:20},choices:[
     {text:'仔细研读',effect:{comprehension:15,cultivation:10,sanity:-10,karma:-5},log:'你通读全文——这法门以阴阳交合为媒介，引动体内真元互相流转。修炼时需双方心意相通，否则轻则走火入魔，重则形神俱灭。你心中隐约有了一些领悟',setFlag:'know_shuangxiu'},
     {text:'放回原处',effect:{karma:5,comprehension:3},log:'你把经文放了回去。有些东西，不该碰'},
     {text:'带走经文',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-8},log:'你将残经揣入怀中。总觉得这东西日后会有大用——或大祸',setFlag:'know_shuangxiu',item:'shuangxiu_jing'}]},
   {text:'一名云游的<span class="npc">老僧</span>在路边化缘时突然拉住你说："<span class="mys">施主身上有五智如来的气息。</span>"他说佛门修行并非只有苦行一途，<span class="danger-text">血肉</span>本身也是天道的一部分——五智如来掌管此道，以欢喜禅定为法门。但他的眼神深处，藏着某种你看不透的东西。',
     trigger:{minAge:18,cultivation:15},choices:[
-    {text:'请教五智如来法门',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-3},log:'老僧说：男女交合，阴阳流转，可引天地灵气入体。但——"佛门背后的那位，可不是什么慈悲的存在。"说完他便消失了',setFlag:'know_shuangxiu'},
+    {text:'请教五智如来法门',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-3},log:'老僧说：阴阳交合，真元流转，可引天地灵气入体。但——"佛门背后的那位，可不是什么慈悲的存在。"说完他便消失了',setFlag:'know_shuangxiu'},
     {text:'不理他',effect:{sanity:3,qiyun:3},log:'你加快脚步走了。这世道疯子太多'},
     {text:'施舍他一些食物',effect:{karma:5,connections:3},log:'老僧道了谢便离开了。临走前意味深长地看了你一眼'}]},
   // --- 寻找双修道侣 ---
@@ -1480,10 +1502,15 @@ const SHUANGXIU_EVENTS = [
     {text:'独自琢磨',effect:{comprehension:10,sanity:-8},log:'你没有告诉伴侣，而是独自研读经文——但经文明确说了，双修不可独行'},
     {text:'放弃此念',effect:{karma:5,sanity:5},log:'你看了看熟睡的伴侣，打消了这个念头。有些东西不该让无辜的人卷入'}]},
   {text:'你在修炼途中遇到一位<span class="npc">女修士</span>（自称来自<span class="fac">佛门</span>别院），她直言不讳地说自己正在寻找<span class="mys">双修道侣</span>。她修为不低，眉心隐约有一点<span class="danger-text">金光</span>——那是修行五智如来法门的痕迹。',
-    genderReq:'male',trigger:{minAge:20,cultivation:30},flagReq:'know_shuangxiu',noFlag:'married',choices:[
-    {text:'答应与她双修',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-10,constitution:-5},log:'你们在一处隐秘洞府中修炼欢喜禅。交合之际，你感到体内真元如潮水般涌动——但也感受到了一股来自深处的、不属于你们任何人的<span class="danger-text">窥视</span>',setFlag:'shuangxiu_ready'},
+    orientationReq:'likes_female',trigger:{minAge:20,cultivation:30},flagReq:'know_shuangxiu',noFlag:'married',choices:[
+    {text:'答应与她双修',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-10,constitution:-5},log:'你们在一处隐秘洞府中修炼欢喜禅。真元在两具身体间流转如潮——你感受到了一股来自深处的<span class="danger-text">窥视</span>',setFlag:'shuangxiu_ready'},
     {text:'婉拒',effect:{comprehension:5,karma:3},log:'你拒绝了她。她并不意外，只是说："缘分未到。"'},
     {text:'询问五智如来的真相',effect:{comprehension:12,sanity:-10,cultivation:5},log:'她说五智如来是佛门背后真正的主人——它掌管血肉天道，所有欢喜禅修行者的力量最终都会流向它。"但力量是真的。"她补充道'}]},
+  {text:'一名眉目清冷的<span class="npc">青年僧人</span>拦住你的去路，说他感应到你身上有<span class="mys">五智如来</span>的气息。他的袈裟下隐约可见<span class="danger-text">金色纹路</span>遍布全身——那是深修血肉天道的痕迹。他说他需要一位<span class="mys">双修道侣</span>，言语坦荡，毫无扭捏。',
+    orientationReq:'likes_male',trigger:{minAge:20,cultivation:30},flagReq:'know_shuangxiu',noFlag:'married',choices:[
+    {text:'答应与他双修',effect:{cultivation:25,comprehension:15,sanity:-15,karma:-10,constitution:-5},log:'你们在山间古刹中修炼欢喜禅。真元在两具身体间流转如潮——你感受到了一股来自深处的<span class="danger-text">窥视</span>',setFlag:'shuangxiu_ready'},
+    {text:'婉拒',effect:{comprehension:5,karma:3},log:'你拒绝了他。他并不意外，只是合十道："缘法未至。"'},
+    {text:'询问五智如来的真相',effect:{comprehension:12,sanity:-10,cultivation:5},log:'他说五智如来掌管血肉天道，所有欢喜禅修行者的力量最终都会流向它。"但力量是真的。"他补充道'}]},
   // --- 双修实践 ---
   {text:'夜深人静，你与<span class="npc">道侣</span>开始尝试<span class="mys">欢喜禅</span>双修。按照经文所述，你们盘膝相对，双手相握，然后——交合。真元在两具身体之间流转，如同阴阳太极。你能感受到对方的心跳、呼吸、甚至思绪。在某一刻，你们仿佛融为了一体——天地灵气疯狂涌入，修为暴涨。但在灵气深处，你隐约看到了一尊<span class="danger-text">金色巨佛</span>的虚影。它在笑。',
     trigger:{minAge:20,cultivation:30},flagReq:'shuangxiu_ready',choices:[
