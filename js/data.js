@@ -545,6 +545,17 @@ const TEENAGE_EVENTS = [
     {text:'上前帮忙',effect:{connections:10,cultivation:5,constitution:3},log:'你们联手击退了恶人',genderReq:'male'},
     {text:'上前帮忙',effect:{connections:10,cultivation:5,constitution:3},log:'两位女侠并肩作战',genderReq:'female'},
     {text:'在旁观看',effect:{comprehension:3},log:'看她的身手，受益匪浅'}]},
+  // === 性取向觉醒事件 ===
+  {text:'你与一名<span class="npc">同窗少年</span>在山间练剑，汗水湿透了衣衫。他回头朝你笑了一下，你的心莫名跳了一拍——这感觉让你困惑不已，夜里翻来覆去难以入眠。',
+    genderReq:'male',orientationReq:'likes_male',awakeningEvent:true,trigger:{minAge:13,maxAge:17},noFlag:'orientation_awakened',choices:[
+    {text:'坦然接受内心的感觉',effect:{sanity:5,comprehension:5,karma:3},log:'你渐渐明白，自己的心意与旁人不同。古有龙阳君、弥子瑕，你并不孤独',setFlag:'orientation_awakened'},
+    {text:'压在心底，不去多想',effect:{sanity:-5,comprehension:3},log:'你告诉自己这只是一时迷惑。但那个笑容在脑海中挥之不去',setFlag:'orientation_awakened'},
+    {text:'试着与同龄女子相处',effect:{connections:3,sanity:-3},log:'你刻意接近镇上的姑娘们，却总觉得差了些什么',setFlag:'orientation_awakened'}]},
+  {text:'夜里你与<span class="npc">同门师姐</span>促膝长谈，月光映在她的脸上，你看得出了神。她问你怎么了，你慌忙别开目光——心底泛起一种从未有过的悸动，像是春水破冰。',
+    genderReq:'female',orientationReq:'likes_female',awakeningEvent:true,trigger:{minAge:13,maxAge:17},noFlag:'orientation_awakened',choices:[
+    {text:'在心里轻声承认',effect:{sanity:5,comprehension:5,karma:3},log:'你终于明白那些诗词里"磨镜"的典故不只是故事。这份心意，你不再逃避',setFlag:'orientation_awakened'},
+    {text:'装作若无其事',effect:{sanity:-5,comprehension:3},log:'你笑着岔开了话题，但那夜你翻来覆去，满脑子都是她的笑容',setFlag:'orientation_awakened'},
+    {text:'告诉自己这只是仰慕',effect:{connections:3,sanity:-3},log:'师姐本就出色，仰慕她不是很正常么？但你心底知道，这不仅仅是仰慕',setFlag:'orientation_awakened'}]},
   {text:'你在镇上被<span class="npc">一群纨绔子弟</span>围住，他们看你不顺眼。',choices:[
     {text:'以武力突围',effect:{cultivation:5,constitution:3,connections:-5},log:'你打翻了几个，但也结了仇',req:{constitution:20}},
     {text:'以言语化解',effect:{connections:5,comprehension:2},log:'你三言两语化解了冲突',req:{connections:5}},

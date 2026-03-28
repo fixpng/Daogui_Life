@@ -177,9 +177,7 @@ function startGame() {
   showPanel('born');
   document.getElementById('born-location').textContent = gameState.location.name;
   var genderText = gameState.gender === 'male' ? '男子' : '女子';
-  var orientText = getOrientationName();
   var bornDescText = '<span style="color:var(--gold)">' + genderText + '</span>';
-  if(orientText) bornDescText += ' · <span style="color:var(--mystery)">' + orientText + '</span>';
   bornDescText += ' · ' + gameState.location.desc + ' · 气运: ' +
     (gameState.qiyun > 0 ? '+' + gameState.qiyun : gameState.qiyun);
   document.getElementById('born-desc').innerHTML = bornDescText;
@@ -194,8 +192,7 @@ function confirmBorn() {
   window._currentChoices = null;
   var names = gameState.talents.map(function(t){return '<span class="itm">'+t.name+'</span>';}).join('、');
   var genderName = gameState.gender === 'male' ? '男' : '女';
-  var orientLogText = getOrientationName();
-  addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+(orientLogText ? '·'+orientLogText : '')+'）');
+  addLog('出生于<span class="loc">'+gameState.location.name+'</span>（'+genderName+'）');
   addLog('天赋: '+names);
   addLog('大梁'+(gameState.year<0?'前'+Math.abs(gameState.year):gameState.year)+'年');
 
@@ -382,8 +379,18 @@ function isSameSexCouple() {
 
 function checkOrientationReq(ev) {
   if(!ev.orientationReq) return true;
-  if(ev.orientationReq === 'likes_male') return likesGender('male');
-  if(ev.orientationReq === 'likes_female') return likesGender('female');
+  if(ev.orientationReq === 'likes_male') {
+    if(!likesGender('male')) return false;
+    // Same-sex scenario for male: require orientation awakened (skip for awakening events themselves)
+    if(gameState.gender === 'male' && !ev.awakeningEvent && !gameState.flags.orientation_awakened) return false;
+    return true;
+  }
+  if(ev.orientationReq === 'likes_female') {
+    if(!likesGender('female')) return false;
+    // Same-sex scenario for female: require orientation awakened (skip for awakening events themselves)
+    if(gameState.gender === 'female' && !ev.awakeningEvent && !gameState.flags.orientation_awakened) return false;
+    return true;
+  }
   return true;
 }
 
@@ -2170,7 +2177,7 @@ function gameOver(reason) {
 
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
-  var endOrientText = getOrientationName();
+  var endOrientText = gameState.flags.orientation_awakened ? getOrientationName() : '';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
   // 解析死因
