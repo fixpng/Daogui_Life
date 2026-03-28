@@ -4,7 +4,7 @@ var gameState = {
   sanity:100, baseSanity:100, cultivation:0,
   wealth:10, connections:0, faction:'none',
   comprehension:10, karma:0, qiyun:0, constitution:50,
-  gender:'male', orientation:'straight', factionRank:0,
+  gender:'male', orientation:'straight', kink:'none', factionRank:0,
   alive:true, totalRuns:parseInt(localStorage.getItem('dg_runs')||'0'),
   items:[], visitedLocations:[], factionHistory:[],
   eventHistory: new Set(),
@@ -123,6 +123,7 @@ function startGame() {
     constitution: 50,
     gender: 'male',
     orientation: 'straight',
+    kink: 'none',
     factionRank: 0,
     alive: true,
     totalRuns: gameState.totalRuns, // Keep totalRuns counter
@@ -140,11 +141,21 @@ function startGame() {
   // Assign gender randomly
   gameState.gender = Math.random() < 0.5 ? 'male' : 'female';
 
-  // Assign sexual orientation
+  // Assign sexual orientation (realistic ratios)
   var orientRoll = Math.random();
-  if(orientRoll < 0.70) gameState.orientation = 'straight';
-  else if(orientRoll < 0.85) gameState.orientation = 'bisexual';
-  else gameState.orientation = 'gay';
+  if(orientRoll < 0.92) gameState.orientation = 'straight';
+  else if(orientRoll < 0.96) gameState.orientation = 'bisexual';
+  else if(orientRoll < 0.99) gameState.orientation = 'gay';
+  else gameState.orientation = 'asexual';
+
+  // Assign hidden kink trait
+  var kinkRoll = Math.random();
+  if(kinkRoll < 0.43) gameState.kink = 'none';
+  else if(kinkRoll < 0.58) gameState.kink = 'artifact';   // 器痴 — 恋物
+  else if(kinkRoll < 0.68) gameState.kink = 'pain';        // 苦修 — BDSM
+  else if(kinkRoll < 0.78) gameState.kink = 'disguise';    // 易容 — 角色扮演
+  else if(kinkRoll < 0.88) gameState.kink = 'voyeur';      // 窥天 — 窥视
+  else gameState.kink = 'foot';                              // 恋足 — 12%
 
   // If a talent was kept from previous life, add it
   if(keptTalent && !gameState.talents.find(function(t){return t.id===keptTalent.id;})) {
@@ -337,6 +348,7 @@ function getMaxAge() {
 
 // === ORIENTATION HELPERS ===
 function likesGender(g) {
+  if(gameState.orientation === 'asexual') return false;
   if(gameState.orientation === 'bisexual') return true;
   if(gameState.orientation === 'straight') return (gameState.gender === 'male' ? g === 'female' : g === 'male');
   if(gameState.orientation === 'gay') return g === gameState.gender;
@@ -344,6 +356,7 @@ function likesGender(g) {
 }
 
 function getPartnerGender() {
+  if(gameState.orientation === 'asexual') return null;
   if(gameState.orientation === 'straight') return gameState.gender === 'male' ? 'female' : 'male';
   if(gameState.orientation === 'gay') return gameState.gender;
   // bisexual: random
@@ -355,7 +368,27 @@ function getOrientationName() {
     return gameState.gender === 'male' ? '龙阳之好' : '磨镜之交';
   }
   if(gameState.orientation === 'bisexual') return '不拘男女';
+  if(gameState.orientation === 'asexual') return '绝情绝欲';
   return '';
+}
+
+function getKinkName() {
+  if(gameState.kink === 'artifact') return '器痴';
+  if(gameState.kink === 'pain') return '苦修之癖';
+  if(gameState.kink === 'disguise') return '易容之癖';
+  if(gameState.kink === 'voyeur') return '窥天之癖';
+  if(gameState.kink === 'foot') return '恋足之癖';
+  return '';
+}
+
+function checkKinkReq(ev) {
+  if(!ev.kinkReq) return true;
+  return gameState.kink === ev.kinkReq;
+}
+
+function checkOrientationType(ev) {
+  if(!ev.orientationType) return true;
+  return gameState.orientation === ev.orientationType;
 }
 
 function canHaveBioChildren() {
@@ -379,6 +412,8 @@ function isSameSexCouple() {
 
 function checkOrientationReq(ev) {
   if(!ev.orientationReq) return true;
+  // Asexual characters skip all orientation-gated romance events
+  if(gameState.orientation === 'asexual' && !ev.awakeningEvent) return false;
   if(ev.orientationReq === 'likes_male') {
     if(!likesGender('male')) return false;
     // Same-sex scenario for male: require orientation awakened (skip for awakening events themselves)
@@ -851,6 +886,8 @@ function nextYear() {
     if(ev.genderReq && ev.genderReq !== gameState.gender) return false;
     if(!checkOrientationReq(ev)) return false;
     if(!checkSamesexReq(ev)) return false;
+    if(!checkKinkReq(ev)) return false;
+    if(!checkOrientationType(ev)) return false;
     if(ev.locReq && !gameState.visitedLocations.includes(ev.locReq)) return false;
     if(ev.noTalent && gameState.talents.find(function(t){return t.id===ev.noTalent;})) return false;
     if(ev.check && !gameState.talents.find(function(t){return t.id===ev.check;})) return false;
@@ -875,7 +912,8 @@ function nextYear() {
     if(se.genderReq && se.genderReq !== gameState.gender) return;
     if(!checkOrientationReq(se)) return;
     if(!checkSamesexReq(se)) return;
-    // Filter factionJoin choices for already-joined factions
+    if(!checkKinkReq(se)) return;
+    if(!checkOrientationType(se)) return;
     if(se.choices) {
       se.choices = se.choices.filter(function(c){
         if(!c.factionJoin) return true;
@@ -967,6 +1005,7 @@ function nextYear() {
       if(re.genderReq && re.genderReq !== gameState.gender) return;
       if(!checkOrientationReq(re)) return;
       if(!checkSamesexReq(re)) return;
+      if(!checkKinkReq(re)) return;
       if(re.trigger) {
         if(re.trigger.minAge && gameState.age < re.trigger.minAge) return;
         if(re.trigger.cultivation && gameState.cultivation < re.trigger.cultivation) return;
@@ -986,6 +1025,7 @@ function nextYear() {
       if(se.genderReq && se.genderReq !== gameState.gender) return;
       if(!checkOrientationReq(se)) return;
       if(!checkSamesexReq(se)) return;
+      if(!checkKinkReq(se)) return;
       if(se.trigger) {
         if(se.trigger.minAge && gameState.age < se.trigger.minAge) return;
         if(se.trigger.cultivation && gameState.cultivation < se.trigger.cultivation) return;
@@ -1003,6 +1043,7 @@ function nextYear() {
       if(cwe.genderReq && cwe.genderReq !== gameState.gender) return;
       if(!checkOrientationReq(cwe)) return;
       if(!checkSamesexReq(cwe)) return;
+      if(!checkKinkReq(cwe)) return;
       if(cwe.trigger) {
         if(cwe.trigger.minAge && gameState.age < cwe.trigger.minAge) return;
         if(cwe.trigger.maxAge && gameState.age > cwe.trigger.maxAge) return;
@@ -1024,6 +1065,7 @@ function nextYear() {
       if(ce.genderReq && ce.genderReq !== gameState.gender) return;
       if(!checkOrientationReq(ce)) return;
       if(!checkSamesexReq(ce)) return;
+      if(!checkKinkReq(ce)) return;
       if(ce.trigger) {
         if(ce.trigger.minAge !== undefined && gameState.age < ce.trigger.minAge) return;
         if(ce.trigger.maxAge !== undefined && gameState.age > ce.trigger.maxAge) return;
@@ -1047,6 +1089,7 @@ function nextYear() {
       if(ls.genderReq && ls.genderReq !== gameState.gender) return;
       if(!checkOrientationReq(ls)) return;
       if(!checkSamesexReq(ls)) return;
+      if(!checkKinkReq(ls)) return;
       if(ls.trigger) {
         if(ls.trigger.minAge !== undefined && gameState.age < ls.trigger.minAge) return;
         if(ls.trigger.maxAge !== undefined && gameState.age > ls.trigger.maxAge) return;
@@ -1587,6 +1630,8 @@ function showEvent(event) {
     if(c.genderReq && c.genderReq !== gameState.gender) return false;
     if(!checkOrientationReq(c)) return false;
     if(!checkSamesexReq(c)) return false;
+    if(!checkKinkReq(c)) return false;
+    if(!checkOrientationType(c)) return false;
     return true;
   });
   if(!validChoices.length) { quietYear(); scheduleNext(); return; }
@@ -1814,6 +1859,16 @@ function applyChoice(c) {
     if(gameState.gender === 'female') unlockAchieve('mojing');
   }
   if(gameState.flags.adopted) unlockAchieve('adopt_child');
+  // Asexual achievement
+  if(gameState.orientation === 'asexual' && gameState.flags.orientation_awakened && !gameState.flags.married) unlockAchieve('asexual_path');
+  // Kink achievements
+  if(gameState.flags.kink_awakened) {
+    if(gameState.kink === 'artifact') unlockAchieve('kink_artifact');
+    if(gameState.kink === 'pain') unlockAchieve('kink_pain');
+    if(gameState.kink === 'disguise') unlockAchieve('kink_disguise');
+    if(gameState.kink === 'voyeur') unlockAchieve('kink_voyeur');
+    if(gameState.kink === 'foot') unlockAchieve('kink_foot');
+  }
   if(c.relocate) {
     var newLoc = LOCATIONS.find(function(l){return l.id===c.relocate;});
     if(newLoc) {
@@ -2178,6 +2233,7 @@ function gameOver(reason) {
   showPanel('ending');
   var genderName = gameState.gender === 'male' ? '男' : '女';
   var endOrientText = gameState.flags.orientation_awakened ? getOrientationName() : '';
+  var endKinkText = gameState.flags.kink_awakened ? getKinkName() : '';
   var qiyunDesc = gameState.qiyun > 30 ? '气运旺盛' : gameState.qiyun < -30 ? '气运衰败' : '气运平平';
   var karmaDesc = gameState.karma > 30 ? '善因善果' : gameState.karma < -30 ? '业障深重' : '因果中平';
   // 解析死因
@@ -2194,7 +2250,7 @@ function gameOver(reason) {
     marriedEndText += '</p>';
   }
   document.getElementById('ending-text').innerHTML =
-    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span>'+(endOrientText ? ' · <span style="color:var(--mystery)">'+endOrientText+'</span>' : '')+'</p>' +
+    '<p>享年: <span style="color:var(--gold)">'+gameState.age+'</span> 岁 · 性别: <span style="color:var(--gold)">'+genderName+'</span>'+(endOrientText ? ' · <span style="color:var(--mystery)">'+endOrientText+'</span>' : '')+(endKinkText ? ' · <span style="color:var(--mystery)">'+endKinkText+'</span>' : '')+'</p>' +
     '<p>死因: <span style="color:var(--danger)">'+deathReasonText+'</span></p>' +
     '<p>境界: <span style="color:var(--gold)">'+realm+'</span></p>' +
     '<p>金银: <span style="color:var(--gold)">'+gameState.wealth+'</span></p>' +

@@ -276,6 +276,10 @@ const ITEMS = [
   {id:'liu_yao_tong_shu',name:'六曜通书',desc:'诸葛渊的老皇历，言出法随写啥发生啥，可禁一切',rarity:'legendary',effect:{cultivation:55,comprehension:30,sanity:-20}},
   {id:'xin_zhuo_hua_juan',name:'心浊画卷',desc:'诸葛渊法器，使人忘却记忆并收入画卷中的世界',rarity:'legendary',effect:{cultivation:50,sanity:-25,comprehension:20}},
   {id:'hei_fang_chui',name:'黑色心浊纺锤',desc:'诸葛渊所赠，蜡黄老骨缠黑丝，强力掩盖心素体质',rarity:'legendary',effect:{sanity:30,cultivation:20,qiyun:10}},
+  // === 性癖相关物品 ===
+  {id:'gu_jian',name:'无铭古剑',desc:'通体泛青的古剑，剑身铭文已模糊不可辨认。毫无灵力，却让你爱不释手',rarity:'uncommon',effect:{comprehension:8,cultivation:5}},
+  {id:'qi_qiao_mian',name:'七窍玲珑面',desc:'坐忘道秘制面皮，可同时变化面容、声音、气息。每次使用都让你心跳加速',rarity:'rare',effect:{connections:15,comprehension:10,sanity:-8}},
+  {id:'xian_ren_bu',name:'仙人步',desc:'传说可凌空虚度的灵靴，你买它的理由只有你自己知道',rarity:'uncommon',effect:{constitution:8,cultivation:5,comprehension:5}},
 ];
 
 const ACHIEVEMENTS = [
@@ -373,6 +377,13 @@ const ACHIEVEMENTS = [
   {id:'longyang',name:'龙阳遗风',desc:'男子之身，与男子结为知己伴侣',icon:'🏳️'},
   {id:'mojing',name:'磨镜情深',desc:'女子之身，与女子结为金兰伴侣',icon:'🏳️'},
   {id:'adopt_child',name:'义子承欢',desc:'收养义子或义女',icon:'👶'},
+  // === 无性恋 & 性癖成就 ===
+  {id:'asexual_path',name:'绝情绝欲',desc:'无性恋者，一生未动情念',icon:'🧊'},
+  {id:'kink_artifact',name:'器痴成魔',desc:'发现自己对法器有异常执念',icon:'🏺'},
+  {id:'kink_pain',name:'以苦为乐',desc:'发现自己在苦修中获得异常快感',icon:'⛓'},
+  {id:'kink_disguise',name:'千面无我',desc:'发现自己沉迷于易容扮演',icon:'🎭'},
+  {id:'kink_voyeur',name:'窥天之眼',desc:'发现自己有窥探他人的隐秘欲望',icon:'👁'},
+  {id:'kink_foot',name:'莲步生香',desc:'发现自己对足部有特殊偏好',icon:'🦶'},
 ];
 
 // === EVENTS ===
@@ -556,6 +567,33 @@ const TEENAGE_EVENTS = [
     {text:'在心里轻声承认',effect:{sanity:5,comprehension:5,karma:3},log:'你终于明白那些诗词里"磨镜"的典故不只是故事。这份心意，你不再逃避',setFlag:'orientation_awakened'},
     {text:'装作若无其事',effect:{sanity:-5,comprehension:3},log:'你笑着岔开了话题，但那夜你翻来覆去，满脑子都是她的笑容',setFlag:'orientation_awakened'},
     {text:'告诉自己这只是仰慕',effect:{connections:3,sanity:-3},log:'师姐本就出色，仰慕她不是很正常么？但你心底知道，这不仅仅是仰慕',setFlag:'orientation_awakened'}]},
+  // === 无性恋觉醒事件 ===
+  {text:'同龄人都开始谈论<span class="npc">心仪之人</span>，你却对此毫无感觉。他们描述的那种心跳加速、辗转难眠的感觉，你从未体会过。你以为自己只是开窍晚，直到有一天你看着面前容貌出众的同门，心中一片平静——你终于意识到，你就是不一样。',
+    orientationType:'asexual',trigger:{minAge:14,maxAge:18},noFlag:'orientation_awakened',choices:[
+    {text:'坦然接受自己',effect:{sanity:10,comprehension:8,cultivation:5},log:'别人有别人的红尘，你有你的大道。心无旁骛，修道更近一步',setFlag:'orientation_awakened'},
+    {text:'有些困惑',effect:{sanity:-3,comprehension:5},log:'你不明白为什么自己和别人不同。但这份清明让你在修炼中格外专注',setFlag:'orientation_awakened'},
+    {text:'一心向道',effect:{cultivation:10,comprehension:5},log:'你暗想：也许这就是天生的道心。无情无欲，正合修行',setFlag:'orientation_awakened'}]},
+  // === 性癖觉醒事件 ===
+  {text:'你偶然得到一柄<span class="itm">残破的法器</span>，虽已无灵力，你却忍不住反复抚摸其纹路。那种触感让你心神荡漾，远超常人对器物的喜爱。夜里你把它放在枕边，竟比平日睡得安稳。',
+    kinkReq:'artifact',trigger:{minAge:14,maxAge:20},noFlag:'kink_awakened',choices:[
+    {text:'你就是喜欢法器',effect:{comprehension:5,wealth:-5},log:'你开始四处搜集法器残片。每一件器物在你手中都仿佛有了温度——你对法器的感知力远超同辈',setFlag:'kink_awakened'},
+    {text:'压下这奇怪的感觉',effect:{sanity:-3,comprehension:3},log:'你把法器收了起来，但夜里总会想起它的触感',setFlag:'kink_awakened'}]},
+  {text:'修炼时你不慎受伤，剧痛传来——然而在痛苦的极致，你感到一股<span class="mys">异样的快感</span>涌遍全身，经脉运转竟比平日通畅数倍。这让你既困惑又兴奋。',
+    kinkReq:'pain',trigger:{minAge:14,maxAge:20},noFlag:'kink_awakened',choices:[
+    {text:'主动加大修炼强度',effect:{cultivation:8,constitution:3,sanity:-5},log:'你开始刻意进行苦修。旁人以为你意志坚定，只有你知道那种痛苦中混杂的快感驱使着你',setFlag:'kink_awakened'},
+    {text:'这不正常……',effect:{sanity:-3,comprehension:5},log:'你知道自己的反应和别人不同。但那种感觉确实让修炼事半功倍',setFlag:'kink_awakened'}]},
+  {text:'你偶然戴上一张<span class="itm">易容面皮</span>——镜中映出一张陌生的脸。你的心跳骤然加速，一种难以言喻的兴奋感从心底升起。扮作别人的感觉，竟如此令人……沉迷。',
+    kinkReq:'disguise',trigger:{minAge:14,maxAge:20},noFlag:'kink_awakened',choices:[
+    {text:'多试几种面孔',effect:{connections:5,comprehension:5,sanity:-3},log:'你开始热衷于以不同身份行走世间。每一张面孔背后，都是一种全新的人生体验',setFlag:'kink_awakened'},
+    {text:'赶紧取下',effect:{sanity:-3,comprehension:3},log:'你摘下面皮，但那种兴奋感久久不散。你发现自己在期待下一次',setFlag:'kink_awakened'}]},
+  {text:'深夜你路过<span class="npc">师兄</span>的房间，门缝透出微光。你本该走开，却不自觉地驻足窥视。看到别人不被观察时的真实模样，你感到一种<span class="mys">隐秘的满足</span>——这种感觉让你脸红心跳。',
+    kinkReq:'voyeur',trigger:{minAge:14,maxAge:20},noFlag:'kink_awakened',choices:[
+    {text:'承认自己喜欢观察',effect:{comprehension:8,sanity:-5,karma:-3},log:'你开始留意他人不经意间流露的真实。这种洞察力让你在人际中如鱼得水——代价是那份隐秘的负罪感',setFlag:'kink_awakened'},
+    {text:'赶紧离开',effect:{sanity:-3,karma:3},log:'你匆匆走开，但那种感觉已经刻在了记忆里',setFlag:'kink_awakened'}]},
+  {text:'夏日你在溪边洗脚，偶然看到<span class="npc">同门</span>也在对岸濯足。你的目光不由自主地停留在那双白皙的脚上，心跳骤然加速。这种感觉让你手足无措。',
+    kinkReq:'foot',trigger:{minAge:14,maxAge:20},noFlag:'kink_awakened',choices:[
+    {text:'不去纠结这种感觉',effect:{sanity:3,comprehension:3},log:'你告诉自己每个人都有不同的喜好。古人亦有"三寸金莲"之说，不必大惊小怪',setFlag:'kink_awakened'},
+    {text:'匆忙离去',effect:{sanity:-3,connections:-3},log:'你慌张地穿上鞋跑了。但此后每当看到别人的脚，你都会不自觉地多看一眼',setFlag:'kink_awakened'}]},
   {text:'你在镇上被<span class="npc">一群纨绔子弟</span>围住，他们看你不顺眼。',choices:[
     {text:'以武力突围',effect:{cultivation:5,constitution:3,connections:-5},log:'你打翻了几个，但也结了仇',req:{constitution:20}},
     {text:'以言语化解',effect:{connections:5,comprehension:2},log:'你三言两语化解了冲突',req:{connections:5}},
@@ -1393,6 +1431,58 @@ const SANXIU_EVENTS = [
     {text:'收下他',effect:{connections:15,karma:10,comprehension:5},log:'你第一次有了弟子，散修也可以传道'},
     {text:'拒绝',effect:{comprehension:3},log:'你不想让任何人走你这条九死一生的路'},
     {text:'指点几句便走',effect:{karma:8,connections:5},log:'你点拨了他几句，便飘然而去——散修来去自如'}]},
+  // === 性癖专属事件 ===
+  // --- 器痴 ---
+  {text:'你在<span class="loc">坊市</span>中见到一柄<span class="itm">通体泛青的古剑</span>，剑身上刻满了你看不懂的铭文。店主说它是死物，毫无灵力——但你伸手一握，浑身酥麻，仿佛触碰了一个沉睡万年的灵魂。你知道这种感觉不正常，但你根本放不下手。',
+    kinkReq:'artifact',flagReq:'kink_awakened',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'不惜代价买下',effect:{wealth:-30,comprehension:10,cultivation:8,sanity:-5},log:'你花光了积蓄。每天夜里你都会把古剑抱在怀中，那种触感让你比任何丹药都安稳——你对法器的敏感度再次提升',item:'gu_jian'},
+    {text:'忍痛离开',effect:{sanity:-8,comprehension:5},log:'你走出三步又回了两步，最终还是走了。但此后你再也没能忘记那柄剑'}]},
+  {text:'你听闻<span class="loc">深山</span>中有一处<span class="mys">上古器灵墓</span>，传说里面封存着数十件远古法器的残骸。对常人而言不过是废铁堆，但你的呼吸已经急促了起来。',
+    kinkReq:'artifact',flagReq:'kink_awakened',trigger:{minAge:25,cultivation:30},choices:[
+    {text:'独自前往',effect:{cultivation:15,comprehension:12,sanity:-10,constitution:-5,wealth:20},log:'你在器灵墓中待了七天七夜，抚摸每一件残器。你能感受到它们残留的灵性——这种与器物的共鸣让你的炼器天赋大增'},
+    {text:'邀同伴同行',effect:{cultivation:10,comprehension:8,connections:5},log:'同伴不理解你为什么对着一堆破铜烂铁如此兴奋，但你收获颇丰'}]},
+  // --- 苦修 ---
+  {text:'你在修炼<span class="mys">金刚不坏</span>功法时，需要以铁链缠身、以烈火炙烤来锤炼肉身。其他弟子叫苦不迭，你却在极致的痛苦中体验到一种<span class="mys">超脱凡俗的快感</span>——修为暴涨。',
+    kinkReq:'pain',flagReq:'kink_awakened',trigger:{minAge:18,cultivation:15},choices:[
+    {text:'主动加重修炼',effect:{cultivation:15,constitution:8,sanity:-10,comprehension:5},log:'你以铁链缠身三日三夜，将金刚功法推进到常人难以企及的层次。旁人叫你疯子，你只觉得通体舒泰'},
+    {text:'按部就班',effect:{cultivation:8,constitution:5,sanity:-3},log:'你按照功法要求修炼，不多不少——但内心深处渴望更多'}]},
+  {text:'你偶遇<span class="fac">巴虺</span>教众的<span class="mys">痛苦天道</span>修炼场。他们以极端苦行获取力量——自残、鞭挞、针刺，每一种痛苦都是修行。你看着这些人，竟觉得……有些理解他们。',
+    kinkReq:'pain',flagReq:'kink_awakened',trigger:{minAge:22,cultivation:25},choices:[
+    {text:'请教修炼法门',effect:{cultivation:20,sanity:-15,karma:-10,constitution:5},log:'你学到了一套以痛苦为引的功法。在旁人避之不及的苦行中，你如鱼得水——修为突飞猛进',setFlag:'pain_cultivation'},
+    {text:'不能再深入了',effect:{sanity:5,comprehension:5},log:'你及时抽身。巴虺之道太危险了——但你无法否认，那种感觉确实让你着迷'}]},
+  // --- 易容 ---
+  {text:'<span class="fac">坐忘道</span>的一位<span class="npc">长老</span>看中了你的易容天赋，私下找你密谈。他给你一套<span class="itm">七窍玲珑面</span>——能同时变化面容、声音、甚至气息。你戴上它的那一刻，灵魂都在颤栗。',
+    kinkReq:'disguise',flagReq:'kink_awakened',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'欣然接受',effect:{connections:10,comprehension:8,sanity:-5,cultivation:5},log:'你以不同身份穿梭于各大门派之间，每一次变身都让你兴奋不已。你开始分不清哪个才是真正的自己——但你并不在乎',item:'qi_qiao_mian',setFlag:'disguise_master'},
+    {text:'婉拒',effect:{karma:5,comprehension:3},log:'你知道自己一旦接受，就再也停不下来了'}]},
+  {text:'你用<span class="itm">易容术</span>扮成一名<span class="npc">青楼花魁</span>混入敌方据点刺探情报。任务圆满完成，但让你不安的是——你发现自己格外享受扮演另一个人的过程，甚至有些不舍得恢复原貌。',
+    kinkReq:'disguise',flagReq:'kink_awakened',trigger:{minAge:22,cultivation:20},choices:[
+    {text:'多保持一会儿',effect:{connections:8,comprehension:5,sanity:-8},log:'你在那个身份里多留了三天。行走坊间，别人的目光落在你身上——却看不到真正的你。这种感觉让你痴迷'},
+    {text:'立即恢复原貌',effect:{sanity:3,karma:3},log:'你强迫自己撕下面皮。但回忆起那种感觉，你知道还会有下一次'}]},
+  // --- 窥天 ---
+  {text:'你无意中修炼出一种<span class="mys">灵觉感应</span>——闭目便能感知方圆百丈内所有人的举动、表情、甚至心跳。这种能力极为实用，但你不得不承认：窥视他人毫无防备时的真实模样，给你带来了一种难以言喻的满足感。',
+    kinkReq:'voyeur',flagReq:'kink_awakened',trigger:{minAge:18,cultivation:20},choices:[
+    {text:'精进感应术',effect:{comprehension:12,cultivation:8,sanity:-8,karma:-5},log:'你的感应范围越来越大。你知道了太多人的秘密——门派中的暗恋、背叛、恐惧，尽在你的感知之中',setFlag:'voyeur_sense'},
+    {text:'克制使用',effect:{comprehension:5,karma:5,sanity:3},log:'你限制自己只在必要时使用。但每次"窥视"结束后的空虚感，让你知道这种克制不会永远持续'}]},
+  {text:'<span class="fac">监天司</span>注意到你异常的<span class="mys">感知能力</span>，派人找你谈话。他们需要你帮忙监视一名疑似邪修——这正中你下怀。',
+    kinkReq:'voyeur',flagReq:'kink_awakened',trigger:{minAge:22,cultivation:25},flagReq2:'voyeur_sense',choices:[
+    {text:'欣然接受任务',effect:{connections:15,wealth:20,comprehension:8,sanity:-10,karma:-5},log:'你花了七天七夜监视目标的一切行踪。这是你做过最"正当"的窥视——但你知道，驱使你的不只是正义感'},
+    {text:'拒绝',effect:{karma:5,connections:-5},log:'你不想让自己的……爱好被人利用'}]},
+  // --- 恋足 ---
+  {text:'你在<span class="loc">坊市</span>见到一双<span class="itm">仙人步</span>——传说穿上便能凌空虚度的灵靴。你明知以自己的修为根本驾驭不了，但看着那双靴子，你的心跳不由自主地加速。你买它的理由，和修炼无关。',
+    kinkReq:'foot',flagReq:'kink_awakened',trigger:{minAge:18,cultivation:10},choices:[
+    {text:'买下来',effect:{wealth:-25,comprehension:5,sanity:5},log:'你把灵靴供在案头，时常擦拭。旁人以为你在养器，只有你知道真正的原因',item:'xian_ren_bu'},
+    {text:'理智地离开',effect:{sanity:-3,comprehension:3},log:'你走了，但那双靴子在你梦里出现了好几次'}]},
+  {text:'修炼<span class="mys">踏虚步</span>轻功时，师父要求赤足在灵石上行走以感应地脉。你发现自己对这项修炼异常投入——赤足触碰灵石的感觉，让你比任何功法都专注。',
+    kinkReq:'foot',flagReq:'kink_awakened',trigger:{minAge:20,cultivation:15},choices:[
+    {text:'勤加练习',effect:{cultivation:10,constitution:5,comprehension:8},log:'你成了踏虚步修炼最刻苦的弟子。师父夸你天赋异禀——你没有告诉他真正的原因'},
+    {text:'和其他功法轮换练习',effect:{cultivation:5,comprehension:5},log:'你不想让自己太沉迷。但每次轮到踏虚步，你都格外期待'}]},
+  // --- 无性恋专属 ---
+  {text:'门中同门纷纷成婚生子，长辈们也开始催促你的婚事。你一次次推脱——不是没有合适的人选，而是你内心对此毫无波澜。一位<span class="npc">老修士</span>看出你的心思，对你说："天道有缺，才需人补。你心中无情，正合我<span class="mys">太上忘情</span>一脉。"',
+    orientationType:'asexual',flagReq:'orientation_awakened',trigger:{minAge:20,cultivation:15},noFlag:'married',choices:[
+    {text:'修炼太上忘情',effect:{cultivation:20,comprehension:15,sanity:10,connections:-10},log:'你修炼了太上忘情诀。情欲尽去，道心澄明——修为突飞猛进。但你与世间的联系，又淡了一分',setFlag:'taishang_wangqing'},
+    {text:'婉拒，走自己的路',effect:{cultivation:5,comprehension:8,karma:3},log:'你不需要一个名头来定义自己的无情。你就是你'},
+    {text:'勉强答应相亲',effect:{connections:5,sanity:-10},log:'你去了，对方很好，但你心里空空如也。你知道，这不是你的道'}]},
 ];
 
 // === 婚恋事件 ROMANCE EVENTS ===
