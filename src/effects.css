@@ -1,0 +1,370 @@
+/* === ENHANCED UI ANIMATIONS & EFFECTS === */
+
+/* --- Panel entrance animation --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.panel:not(.hidden) {
+  animation: fadeInUp 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Talent card hover effects --- */
+.talent-card {
+  transition: transform 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.22s ease,
+              border-color 0.22s ease;
+}
+
+.talent-card:hover:not(.disabled) {
+  transform: translateY(-4px) scale(1.025);
+  box-shadow: 0 8px 24px rgba(184, 134, 11, 0.18),
+              0 0 0 1px rgba(184, 134, 11, 0.15);
+  z-index: 2;
+}
+
+.talent-card:active:not(.disabled) {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.08s;
+}
+
+/* --- Enhanced talent selection pulse --- */
+@keyframes selectionPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 18px 4px rgba(184, 134, 11, 0.22);
+  }
+}
+
+.talent-card.selected {
+  animation: selectionPulse 2s ease-in-out infinite;
+}
+
+/* --- Choice button hover improvements --- */
+.choice-btn {
+  transition: transform 0.18s ease,
+              border-color 0.2s ease,
+              background 0.2s ease,
+              box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.choice-btn:hover:not(.locked) {
+  transform: translateX(6px);
+  border-left: 3px solid var(--gold, #b8860b);
+  box-shadow: -4px 0 16px -6px rgba(184, 134, 11, 0.3);
+}
+
+.choice-btn:active:not(.locked) {
+  transform: translateX(3px) scale(0.985);
+}
+
+/* Ripple effect for choice buttons */
+.choice-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+    rgba(184, 134, 11, 0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.choice-btn:active::after {
+  opacity: 1;
+}
+
+/* --- Sanity bar pulsing when low --- */
+@keyframes sanityPulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.4);
+  }
+}
+
+.sanity-bar-fill {
+  transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.stat-value.danger {
+  animation: sanityPulse 1.5s ease-in-out infinite;
+}
+
+/* --- Stat value change flash --- */
+@keyframes statFlashUp {
+  0% { color: inherit; }
+  20% { color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
+  100% { color: inherit; text-shadow: none; }
+}
+
+@keyframes statFlashDown {
+  0% { color: inherit; }
+  20% { color: #e53935; text-shadow: 0 0 8px rgba(229, 57, 53, 0.4); }
+  100% { color: inherit; text-shadow: none; }
+}
+
+.stat-flash-up {
+  animation: statFlashUp 0.8s ease-out;
+}
+
+.stat-flash-down {
+  animation: statFlashDown 0.8s ease-out;
+}
+
+/* --- Achievement popup shimmer --- */
+@keyframes achieveShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.achieve-popup.active {
+  animation: fadeInUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.achieve-popup.active .achieve-popup-title {
+  background: linear-gradient(90deg,
+    var(--gold, #b8860b) 0%,
+    #ffd700 40%,
+    var(--gold, #b8860b) 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: achieveShimmer 2.5s linear infinite;
+}
+
+/* --- Smooth panel transitions --- */
+#setup, #born, #game, #ending {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(12px) !important;
+  position: absolute !important;
+  visibility: hidden !important;
+}
+
+/* --- Title decorative border animation --- */
+@keyframes titleBorderRotate {
+  0% { border-image-source: linear-gradient(0deg, rgba(184,134,11,0.3), transparent, rgba(184,134,11,0.3)); }
+  25% { border-image-source: linear-gradient(90deg, rgba(184,134,11,0.3), transparent, rgba(184,134,11,0.3)); }
+  50% { border-image-source: linear-gradient(180deg, rgba(184,134,11,0.3), transparent, rgba(184,134,11,0.3)); }
+  75% { border-image-source: linear-gradient(270deg, rgba(184,134,11,0.3), transparent, rgba(184,134,11,0.3)); }
+  100% { border-image-source: linear-gradient(360deg, rgba(184,134,11,0.3), transparent, rgba(184,134,11,0.3)); }
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(184, 134, 11, 0.2); }
+  50% { text-shadow: 0 0 20px rgba(184, 134, 11, 0.35), 0 0 40px rgba(184, 134, 11, 0.1); }
+}
+
+.game-title h1 {
+  animation: titleGlow 4s ease-in-out infinite;
+}
+
+/* --- Event text fade-in reveal --- */
+@keyframes eventReveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.event-area {
+  animation: eventReveal 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Enhanced scrollbar styling --- */
+.log-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.log-area::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.log-area::-webkit-scrollbar-thumb {
+  background: rgba(184, 134, 11, 0.25);
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.log-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(184, 134, 11, 0.45);
+}
+
+/* --- Button click feedback --- */
+.btn {
+  transition: transform 0.15s ease,
+              box-shadow 0.15s ease,
+              background 0.2s ease,
+              border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+  transform: translateY(0px) scale(0.97);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ripple on btn */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.btn:active::after {
+  opacity: 1;
+}
+
+/* --- Log entry staggered slide-in --- */
+@keyframes logSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.log-entry {
+  animation: logSlideIn 0.35s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Item badge hover --- */
+.item-badge {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(184, 134, 11, 0.2);
+}
+
+/* --- Stats grid subtle hover --- */
+.stat-box {
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.stat-box:hover {
+  background: rgba(184, 134, 11, 0.06);
+  transform: scale(1.03);
+}
+
+/* --- Detail row hover highlight --- */
+.detail-row {
+  transition: background 0.18s ease;
+}
+
+.detail-row:hover {
+  background: rgba(184, 134, 11, 0.04);
+}
+
+/* --- Year bar subtle animation --- */
+.year-bar {
+  transition: background 0.3s ease;
+}
+
+/* --- Ending panel entrance --- */
+@keyframes endingReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+#ending:not(.hidden) {
+  animation: endingReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.ending-reason {
+  animation: eventReveal 0.8s 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Achievement badge hover --- */
+.achieve-badge {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.achieve-badge.unlocked:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.25);
+}
+
+/* --- Control bar button glow on active --- */
+.btn-pause.active {
+  box-shadow: 0 0 8px rgba(184, 134, 11, 0.2);
+}
+
+/* --- Speed slider enhanced thumb --- */
+input[type="range"]::-webkit-slider-thumb {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 8px rgba(184, 134, 11, 0.35);
+  transform: scale(1.15);
+}
+
+/* --- Conflict popup entrance --- */
+.conflict-popup.active {
+  animation: fadeInUp 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Born panel special entrance --- */
+#born:not(.hidden) {
+  animation: fadeInUp 0.55s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.born-info {
+  animation: eventReveal 0.6s 0.15s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+/* --- Refresh button spin icon --- */
+.btn-refresh {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-refresh:active {
+  transform: rotate(15deg) scale(0.95);
+}
