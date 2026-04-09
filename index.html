@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>道诡人生 · Daogui Life</title>
+<link rel="icon" href="data:,">
+  <script type="module" crossorigin src="/Daogui_Life/assets/index-v0K_AUgg.js"></script>
+  <link rel="stylesheet" crossorigin href="/Daogui_Life/assets/index-BqYm2E3j.css">
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+
+<!-- Audio Toggle Button -->
+<button id="audio-toggle" title="开启音效">♪</button>
+
+<!-- Day/Night Theme Toggle Button -->
+<button id="theme-toggle" title="切换白天/黑夜">🌙</button>
+
+<div class="container">
+  <!-- Achievement Popup -->
+  <div id="achieve-popup" class="achieve-popup">
+    <div class="achieve-popup-icon"></div>
+    <div class="achieve-popup-text">
+      <div class="achieve-popup-title">成就解锁</div>
+      <div class="achieve-popup-name"></div>
+      <div class="achieve-popup-desc"></div>
+    </div>
+  </div>
+
+  <!-- Conflict Warning Popup -->
+  <div id="conflict-popup" class="conflict-popup">
+    <div class="conflict-msg"></div>
+  </div>
+
+  <!-- Stat Tooltip -->
+  <div id="stat-tooltip" class="stat-tooltip"></div>
+  <!-- TITLE -->
+  <div class="game-title">
+    <h1>道诡人生</h1>
+    <div class="subtitle">一念成道 · 一念成诡</div>
+  </div>
+
+  <!-- SETUP: TALENT SELECTION -->
+  <div id="setup" class="panel">
+    <div class="panel-title"><span class="icon">命</span> 天命抽取</div>
+    <p style="color:var(--text-dim);margin-bottom:16px;font-size:0.9em;">命运如丝，从十道天命中择三而行</p>
+    <button class="btn btn-refresh" onclick="refreshTalents()">刷新天赋</button>
+    <div class="talent-grid" id="talent-options"></div>
+    <div style="text-align:center;margin:14px 0;color:var(--text-dim);font-size:0.9em;">
+      已择: <span id="selected-count" style="color:var(--gold);">0</span> / 3
+    </div>
+    <button class="btn" onclick="startGame()" id="btn-start" disabled>踏入轮回</button>
+  </div>
+
+  <!-- BORN PANEL -->
+  <div id="born" class="panel hidden">
+    <div class="born-info">
+      <div class="panel-title" style="justify-content:center;"><span class="icon">生</span> 出身</div>
+      <div class="born-location" id="born-location"></div>
+      <div class="born-desc" id="born-desc"></div>
+    </div>
+    <button class="btn" onclick="confirmBorn()">确认出身，踏入红尘</button>
+  </div>
+
+  <!-- GAME PANEL -->
+  <div id="game" class="hidden">
+    <!-- Year bar -->
+    <div class="year-bar">
+      <div class="year-text">当前: <span id="year-display">大梁年间</span> · <span id="era-name">未知</span></div>
+      <div class="runs-text">轮回: <span id="total-runs">1</span></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="panel">
+      <div class="stats-grid">
+        <div class="stat-box"><div class="stat-label">年岁</div><div class="stat-value" id="age">0</div></div>
+        <div class="stat-box" id="sanity-stat-box"><div class="stat-label">神志</div><div class="stat-value" id="sanity">100</div></div>
+        <div class="stat-box"><div class="stat-label">修为</div><div class="stat-value" id="cultivation">凡人</div></div>
+        <div class="stat-box"><div class="stat-label">金银</div><div class="stat-value" id="wealth">10</div></div>
+      </div>
+      <div class="sanity-section" id="sanity-section">
+      <div class="sanity-bar-wrap">
+        <div class="sanity-bar-bg"><div class="sanity-bar-fill" id="sanity-bar" style="width:100%"></div></div>
+        <div class="sanity-label"><span>神志</span><span id="sanity-pct">100%</span></div>
+      </div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-row"><span class="detail-label">所在地</span><span class="detail-value" id="current-location">-</span></div>
+        <div class="detail-row"><span class="detail-label">势力</span><span class="detail-value" id="faction">无</span></div>
+        <div class="detail-row"><span class="detail-label">性别</span><span class="detail-value" id="gender">-</span></div>
+        <div class="detail-row"><span class="detail-label">人脉</span><span class="detail-value" id="connections">0</span></div>
+        <div class="detail-row"><span class="detail-label">悟性</span><span class="detail-value" id="comprehension">10</span></div>
+        <div class="detail-row"><span class="detail-label">气运</span><span class="detail-value" id="qiyun">0</span></div>
+        <div class="detail-row"><span class="detail-label">体魄</span><span class="detail-value" id="constitution">50</span></div>
+        <div class="detail-row"><span class="detail-label">因果</span><span class="detail-value" id="karma">0</span></div>
+        <div class="detail-row"><span class="detail-label">姻缘</span><span class="detail-value" id="spouse-display">未婚</span></div>
+      </div>
+      <div class="items-row" id="items-display"></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="control-bar playback-bar">
+      <button class="btn btn-pause active" onclick="toggleAuto()" id="btn-auto">⏸ 暂停</button>
+      <div class="speed-control">
+        <input type="range" min="1" max="5" value="1" id="speed-slider" oninput="setSpeedFromSlider(this.value)">
+        <span id="speed-label">1x</span>
+      </div>
+    </div>
+
+    <!-- Event -->
+    <div class="panel">
+      <div class="event-area" id="event-text">等待命运的齿轮转动...</div>
+      <div id="choices"></div>
+    </div>
+
+    <!-- Log -->
+    <div class="panel">
+      <div class="panel-title"><span class="icon">录</span> 人生轨迹</div>
+      <div class="log-area" id="log"></div>
+    </div>
+  </div>
+
+  <!-- ENDING -->
+  <div id="ending" class="panel hidden">
+    <div class="panel-title" style="justify-content:center;"><span class="icon">终</span> 人生终结</div>
+    <div class="ending-content" id="ending-text"></div>
+    <div class="divider"></div>
+    <button class="btn" onclick="restart()">重入轮回</button>
+    <button class="btn btn-auto" onclick="restartAuto()">自动重开</button>
+    <div class="divider-ornate">— 人生轨迹 —</div>
+    <div class="log-area" id="ending-log"></div>
+    <div class="divider-ornate">— 成就 —</div>
+    <div class="achieve-grid" id="achieve-display"></div>
+  </div>
+
+</div>
+
+<footer style="text-align:center;padding:24px 0 16px;color:#666;font-size:0.8em;">
+  <span>Author: <a href="https://github.com/fixpng" target="_blank" rel="noopener" style="color:#b8860b;text-decoration:none;">fixpng</a></span>
+  <span style="margin:0 8px;">|</span>
+  <span><a href="https://github.com/fixpng/Daogui_Life" target="_blank" rel="noopener" style="color:#b8860b;text-decoration:none;">GitHub</a></span>
+</footer>
+
+</body>
+</html>
